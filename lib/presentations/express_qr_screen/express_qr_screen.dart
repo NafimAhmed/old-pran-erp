@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -183,13 +184,17 @@ class _ExpressQrScreenBodyState extends State<ExpressQrScreenBody> {
                     ),
                     IconButton.filled(
                       onPressed: () async {
-                        var data = await _buildScanner(context, controller);
-                        context.read<QrCodeBloc>().add(
-                              QrCodeDataGet(
-                                sourceQrData: "",
-                                destinationQrData: data,
-                              ),
-                            );
+                        try {
+                          var data = await _buildScanner(context, controller);
+                          context.read<QrCodeBloc>().add(
+                                QrCodeDataGet(
+                                  sourceQrData: "",
+                                  destinationQrData: data,
+                                ),
+                              );
+                        } catch (e) {
+                          log('Error');
+                        }
                       },
                       icon: Icon(
                         Icons.qr_code_scanner_rounded,
@@ -264,110 +269,6 @@ class _ExpressQrScreenBodyState extends State<ExpressQrScreenBody> {
     );
   }
 
-  Widget _buidSourceInfoWidget(String text) {
-    final Map<String, dynamic> data = json.decode(text);
-
-    // if (text.isNotEmpty && text != "No data found") {
-    //   List<String> splittedData = text.split("\n");
-    //   splittedData.removeWhere(
-    //     (element) => element.isEmpty,
-    //   );
-    //   return Column(
-    //     children: [
-    //       Container(
-    //         decoration: BoxDecoration(
-    //           color: appTheme.primary.withOpacity(0.2),
-    //           borderRadius: const BorderRadius.only(
-    //             topLeft: Radius.circular(10),
-    //             bottomLeft: Radius.circular(10),
-    //           ),
-    //         ),
-    //         child: Row(
-    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //           children: [
-    //             Container(
-    //               padding: const EdgeInsets.all(10),
-    //               decoration: BoxDecoration(
-    //                 color: appTheme.tertiary,
-    //                 borderRadius: const BorderRadius.only(
-    //                   topLeft: Radius.circular(10),
-    //                   bottomLeft: Radius.circular(10),
-    //                 ),
-    //               ),
-    //               child: Text(
-    //                 "Product Code",
-    //                 style: textTheme.bodyMedium!.copyWith(
-    //                   color: appTheme.white,
-    //                 ),
-    //               ),
-    //             ),
-    //             Flexible(
-    //               child: Text(
-    //                 splittedData[0],
-    //                 style: textTheme.bodyMedium,
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // }
-
-    return Text(data.toString());
-  }
-
-  Widget _buidDestInfoWidget(String text) {
-    if (text.isNotEmpty && text != "No data found") {
-      List<String> splittedData = text.split("\n");
-      splittedData.removeWhere(
-        (element) => element.isEmpty,
-      );
-      return Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: appTheme.primary.withOpacity(0.2),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: appTheme.tertiary,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    "Rack Code",
-                    style: textTheme.bodyMedium!.copyWith(
-                      color: appTheme.white,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    splittedData[0],
-                    style: textTheme.bodyMedium,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Text(text);
-  }
-
   Future<String> _buildScanner(
       BuildContext context, MobileScannerController? controller) async {
     // Use a completer to wait for the scanned result
@@ -420,15 +321,19 @@ class QrScannerWidget extends StatelessWidget {
     super.key,
     required this.controller,
     required this.onDetect,
+    this.errorBuilder,
   });
 
   final MobileScannerController? controller;
   final void Function(BarcodeCapture)? onDetect;
+  final Widget Function(BuildContext context, MobileScannerException exception,
+      Widget? widget)? errorBuilder;
   @override
   Widget build(BuildContext context) {
     return MobileScanner(
       controller: controller,
       onDetect: onDetect,
+      errorBuilder: errorBuilder,
     );
   }
 }
