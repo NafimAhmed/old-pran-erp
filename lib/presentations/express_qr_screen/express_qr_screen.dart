@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -252,7 +251,18 @@ class _ExpressQrScreenBodyState extends State<ExpressQrScreenBody> {
                   },
                 ),
                 const SizedBox(
-                  width: 10,
+                  height: 15,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<QrCodeBloc>().add(QrCodeDataSave());
+                  },
+                  child: Text(
+                    "Save",
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: appTheme.white,
+                    ),
+                  ),
                 ),
                 // Visibility(
                 //   visible: destinationQrData.isNotEmpty &&

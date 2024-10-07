@@ -13,6 +13,10 @@ final class QrCodeDataGet extends QrCodeEvent {
   QrCodeDataGet({required this.sourceQrData, required this.destinationQrData});
 }
 
+final class QrCodeDataSave extends QrCodeEvent {
+  QrCodeDataSave();
+}
+
 @immutable
 sealed class QrCodeState {}
 
@@ -45,6 +49,21 @@ class QrCodeBloc extends Bloc<QrCodeEvent, QrCodeState> {
           _destinationQrData.clear();
           _destinationQrData = json.decode(event.destinationQrData);
         }
+        emit(
+          QrCodeLoaded(
+            sourceQrData: _sourceQrData,
+            destinationQrData: _destinationQrData,
+          ),
+        );
+      } catch (e) {
+        emit(QrCodeError(error: e));
+      }
+    });
+
+    on<QrCodeDataSave>((event, emit) {
+      try {
+        _sourceQrData.clear();
+        _destinationQrData.clear();
         emit(
           QrCodeLoaded(
             sourceQrData: _sourceQrData,
