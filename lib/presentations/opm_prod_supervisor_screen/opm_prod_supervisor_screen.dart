@@ -123,17 +123,17 @@ class _OpmProdSupervisorScreenBodyState
                 controller: _tabController,
                 children: [
                   Container(
-                    child: Center(
+                    child: const Center(
                       child: Text("Products"),
                     ),
                   ),
                   Container(
-                    child: Center(
+                    child: const Center(
                       child: Text("Ingredients"),
                     ),
                   ),
                   Container(
-                    child: Center(
+                    child: const Center(
                       child: Text("By-Products"),
                     ),
                   ),
