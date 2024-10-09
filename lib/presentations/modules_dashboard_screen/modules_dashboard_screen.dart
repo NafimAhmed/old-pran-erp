@@ -49,16 +49,25 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                     width: 80,
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: appTheme.dividerColor,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(80),
-                      child: Image.asset(
-                        fit: BoxFit.fill,
-                        ImageConstant.malePlaceholder,
+                      border: Border.all(
+                        color: appTheme.white,
+                        width: 2,
                       ),
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage(
+                          ImageConstant.malePlaceholder,
+                        ),
+                      ),
+                      shape: BoxShape.circle,
                     ),
+                    // child: ClipRRect(
+                    //   borderRadius: BorderRadius.circular(80),
+                    //   child: Image.asset(
+                    //     fit: BoxFit.fill,
+                    //     ImageConstant.malePlaceholder,
+                    //   ),
+                    // ),
                   ),
                   const SizedBox(
                     width: 10,
