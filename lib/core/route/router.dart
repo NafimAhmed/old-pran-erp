@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/presentations/production_screen/production_screen.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
@@ -62,6 +63,13 @@ class AppNavigation {
                 name: TransferScreen.routeName,
                 builder: (context, state) {
                   return const TransferScreen();
+                },
+              ),
+              GoRoute(
+                path: ProductionScreen.routePath,
+                name: ProductionScreen.routeName,
+                builder: (context, state) {
+                  return const ProductionScreen();
                 },
               ),
             ],

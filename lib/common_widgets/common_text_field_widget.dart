@@ -3,16 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
 class CommonTextFieldWidget extends StatelessWidget {
-  const CommonTextFieldWidget(
-      {super.key,
-      this.focusNode,
-      this.controller,
-      this.keyboardType,
-      this.labelText,
-      this.inputFormatters,
-      this.style,
-      this.obscureText = false,
-      this.validator});
+  const CommonTextFieldWidget({
+    super.key,
+    this.focusNode,
+    this.controller,
+    this.keyboardType,
+    this.labelText,
+    this.inputFormatters,
+    this.style,
+    this.obscureText = false,
+    this.validator,
+    this.textAlign = TextAlign.start,
+    this.onChanged,
+  });
   final FocusNode? focusNode;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
@@ -21,6 +24,8 @@ class CommonTextFieldWidget extends StatelessWidget {
   final TextStyle? style;
   final bool obscureText;
   final String? Function(String? value)? validator;
+  final TextAlign textAlign;
+  final void Function(String value)? onChanged;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -28,6 +33,7 @@ class CommonTextFieldWidget extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       autocorrect: false,
+      textAlign: textAlign,
       enableSuggestions: false,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
@@ -41,6 +47,7 @@ class CommonTextFieldWidget extends StatelessWidget {
         Theme.of(context).inputDecorationTheme,
       ),
       validator: validator,
+      onChanged: onChanged,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/presentations/production_screen/production_screen.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
 
@@ -118,9 +119,15 @@ class _OpmScreenBodyState extends State<OpmScreenBody> {
                         },
                       ),
                       OPMSubModuleWidget(
-                        title: "Express QR",
+                        title: "Transfer",
                         onTap: () {
                           context.pushNamed(TransferScreen.routeName);
+                        },
+                      ),
+                      OPMSubModuleWidget(
+                        title: "Production",
+                        onTap: () {
+                          context.pushNamed(ProductionScreen.routeName);
                         },
                       ),
                       OPMSubModuleWidget(
