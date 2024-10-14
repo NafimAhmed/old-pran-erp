@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/presentations/express_qr_screen/express_qr_screen.dart';
+import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
@@ -65,6 +66,13 @@ class AppNavigation {
               ),
             ],
           ),
+          GoRoute(
+            path: InventoryManagementScreen.routePath,
+            name: InventoryManagementScreen.routeName,
+            builder: (context, state) {
+              return const InventoryManagementScreen();
+            },
+          )
         ],
       ),
     ],

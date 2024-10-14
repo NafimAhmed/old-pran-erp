@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class EmployeResponse {
-  final List<Item> items;
+  final List<Employee> items;
   final bool hasMore;
   final int limit;
   final int offset;
@@ -18,7 +18,7 @@ class EmployeResponse {
   });
 
   EmployeResponse copyWith({
-    List<Item>? items,
+    List<Employee>? items,
     bool? hasMore,
     int? limit,
     int? offset,
@@ -40,7 +40,8 @@ class EmployeResponse {
   String toJson() => json.encode(toMap());
 
   factory EmployeResponse.fromMap(Map<String, dynamic> json) => EmployeResponse(
-        items: List<Item>.from(json["items"].map((x) => Item.fromMap(x))),
+        items:
+            List<Employee>.from(json["items"].map((x) => Employee.fromMap(x))),
         hasMore: json["hasMore"],
         limit: json["limit"],
         offset: json["offset"],
@@ -58,7 +59,7 @@ class EmployeResponse {
       };
 }
 
-class Item {
+class Employee {
   final int empno;
   final String ename;
   final String job;
@@ -68,7 +69,7 @@ class Item {
   final int? comm;
   final int deptno;
 
-  Item({
+  Employee({
     required this.empno,
     required this.ename,
     required this.job,
@@ -79,7 +80,7 @@ class Item {
     required this.deptno,
   });
 
-  Item copyWith({
+  Employee copyWith({
     int? empno,
     String? ename,
     String? job,
@@ -89,7 +90,7 @@ class Item {
     int? comm,
     int? deptno,
   }) =>
-      Item(
+      Employee(
         empno: empno ?? this.empno,
         ename: ename ?? this.ename,
         job: job ?? this.job,
@@ -100,11 +101,11 @@ class Item {
         deptno: deptno ?? this.deptno,
       );
 
-  factory Item.fromJson(String str) => Item.fromMap(json.decode(str));
+  factory Employee.fromJson(String str) => Employee.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Item.fromMap(Map<String, dynamic> json) => Item(
+  factory Employee.fromMap(Map<String, dynamic> json) => Employee(
         empno: json["empno"],
         ename: json["ename"],
         job: json["job"],

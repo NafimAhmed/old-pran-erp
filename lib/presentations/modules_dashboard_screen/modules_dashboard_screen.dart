@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter2.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
+import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_screen/opm_screen.dart';
 
 class ModulesDashboardScreen extends StatelessWidget {
@@ -112,11 +113,16 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                         context.pushNamed(OpmScreen.routeName);
                       },
                     ),
-                    Visibility(
-                      visible: true,
-                      child: ModuleWidget(
-                        icon: ImageConstant.inventory,
-                        title: "Inventory Management",
+                    GestureDetector(
+                      onTap: () {
+                        context.pushNamed(InventoryManagementScreen.routeName);
+                      },
+                      child: Visibility(
+                        visible: true,
+                        child: ModuleWidget(
+                          icon: ImageConstant.inventory,
+                          title: "Inventory Management",
+                        ),
                       ),
                     ),
                     ModuleWidget(
