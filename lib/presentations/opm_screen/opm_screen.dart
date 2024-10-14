@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/presentations/express_qr_screen/express_qr_screen.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
 
 class OpmScreen extends StatelessWidget {
@@ -120,7 +120,7 @@ class _OpmScreenBodyState extends State<OpmScreenBody> {
                       OPMSubModuleWidget(
                         title: "Express QR",
                         onTap: () {
-                          context.pushNamed(ExpressQrScreen.routeName);
+                          context.pushNamed(TransferScreen.routeName);
                         },
                       ),
                       OPMSubModuleWidget(

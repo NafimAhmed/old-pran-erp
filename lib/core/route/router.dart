@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pran_rfl_erp/presentations/express_qr_screen/express_qr_screen.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
@@ -58,10 +58,10 @@ class AppNavigation {
                 },
               ),
               GoRoute(
-                path: ExpressQrScreen.routePath,
-                name: ExpressQrScreen.routeName,
+                path: TransferScreen.routePath,
+                name: TransferScreen.routeName,
                 builder: (context, state) {
-                  return const ExpressQrScreen();
+                  return const TransferScreen();
                 },
               ),
             ],
