@@ -20,4 +20,22 @@ class RemoteDataRepositoryImpl
 
     return decodeResponse(response, decoder: EmployeResponse.fromJson);
   }
+
+  @override
+  Future<bool> sendProdQrInfo(
+    String itemId,
+    String batchId,
+    String qty,
+    String goodQty,
+    String badQty,
+  ) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/qrinfo?itemid=$itemId&BATCHID=$batchId&QTY=$qty&GOOD_QTY=$goodQty&BAD_QTY=$badQty'));
+
+    http.StreamedResponse response = await request.send();
+
+    return response.statusCode == 200 ? true : false;
+  }
 }

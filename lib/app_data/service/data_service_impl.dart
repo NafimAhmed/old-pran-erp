@@ -2,6 +2,7 @@ import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
 
 class DataServiceImpl implements DataService {
   final LocalDataRepository localDataRepository;
@@ -16,5 +17,21 @@ class DataServiceImpl implements DataService {
   Future<List<Employee>> getEmplist() async {
     var response = await remoteDataRepository.getEmplist();
     return response.items;
+  }
+
+  @override
+  Future<bool> sendProdQrInfo(String itemId, String batchId, String qty,
+      String goodQty, String badQty) async {
+    var response = await remoteDataRepository.sendProdQrInfo(
+      itemId,
+      batchId,
+      qty,
+      goodQty,
+      badQty,
+    );
+    if (!response) {
+      throw const ApiDataException("Unable to save the data");
+    }
+    return response;
   }
 }

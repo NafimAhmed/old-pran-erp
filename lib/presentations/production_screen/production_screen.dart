@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_bloc.dart';
+import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 
 class ProductionScreen extends StatelessWidget {
@@ -18,8 +20,15 @@ class ProductionScreen extends StatelessWidget {
   static const String routePath = "prod-supervisor/production-screen";
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProdQrBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProdQrBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProdQrInfoBloc(getService()),
+        ),
+      ],
       child: const ProductionScreenBody(),
     );
   }
@@ -39,6 +48,17 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   FocusNode goodQtyFocusNode = FocusNode();
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
+
+  String _locatorId = "";
+  String _itemId = "";
+  @override
+  void initState() {
+    quentityTextController.text = "0";
+    goodQtyTextController.text = "0";
+    badQtyTextController.text = "0";
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,9 +159,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                     ),
                     const SizedBox(
-                      width: 10,
+                      width: 15,
                     ),
                     IconButton.filled(
+                      iconSize: 30,
                       onPressed: () async {
                         var data = await _buildScanner(context, controller);
 
@@ -163,6 +184,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                 buildWhen: (previous, current) => previous != current,
                 builder: (context, state) {
                   if (state is ProdQrLoaded) {
+                    _locatorId = state.batchId;
+                    _itemId = state.itemId;
                     return Container(
                       padding: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
@@ -170,20 +193,40 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             0.5,
                           ),
                           borderRadius: BorderRadius.circular(5)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         children: [
-                          Text(
-                            "Locator Id",
-                            style: textTheme.bodyMedium,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Batch Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                state.batchId,
+                                style: textTheme.bodyMedium,
+                              )
+                            ],
                           ),
-                          const SizedBox(
-                            width: 10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Item Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                state.itemId,
+                                style: textTheme.bodyMedium,
+                              )
+                            ],
                           ),
-                          Text(
-                            state.locatorId,
-                            style: textTheme.bodyMedium,
-                          )
                         ],
                       ),
                     );
@@ -197,7 +240,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               Row(
                 children: [
                   Expanded(
-                    flex: 6,
+                    flex: 2,
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -213,7 +256,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                       child: Center(
                         child: Text(
-                          "Enter Quantity",
+                          "Quantity",
                           style: textTheme.bodyMedium!.copyWith(
                             color: appTheme.white,
                           ),
@@ -242,7 +285,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         }
                         return null;
                       },
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        goodQtyTextController.text = value;
+                      },
                     ),
                   ),
                 ],
@@ -273,7 +318,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             ),
                             child: Center(
                               child: Text(
-                                "Good Quantity",
+                                "Good Qty",
                                 style: textTheme.bodyMedium!.copyWith(
                                   color: appTheme.white,
                                 ),
@@ -334,7 +379,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             ),
                             child: Center(
                               child: Text(
-                                "Bad Quantity",
+                                "Bad Qty",
                                 style: textTheme.bodyMedium!.copyWith(
                                   color: appTheme.white,
                                 ),
@@ -376,19 +421,70 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               const SizedBox(
                 height: 10,
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // context.read<QrCodeBloc>().add(QrCodeDataSave());
-                  },
-                  child: Text(
-                    "Save",
-                    style: textTheme.bodyMedium!.copyWith(
-                      color: appTheme.white,
+              BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
+                listener: (context, state) {
+                  if (state is ProdQrInfoSuccess) {
+                    quentityTextController.text = "0";
+                    goodQtyTextController.text = "0";
+                    badQtyTextController.text = "0";
+                    context.read<ProdQrBloc>().add(ProdQrDataReset());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          "Successfully Added..",
+                        ),
+                        backgroundColor: appTheme.primary,
+                      ),
+                    );
+                  }
+                  if (state is ProdQrInfoError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Couldn't save the data",
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is ProdQrInfoSuccess) {}
+                  return Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (int.parse(quentityTextController.text) !=
+                            int.parse(goodQtyTextController.text) +
+                                int.parse(badQtyTextController.text)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Quantity Mismatch",
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          context.read<ProdQrInfoBloc>().add(
+                                ProdQrInfoSend(
+                                    itemId: _itemId,
+                                    batchId: _locatorId,
+                                    qty: quentityTextController.text,
+                                    goodQty: goodQtyTextController.text,
+                                    badQty: badQtyTextController.text),
+                              );
+                        }
+                      },
+                      child: Text(
+                        state is ProdQrInfoLoading ? "Saving" : "Save",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.white,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ],
           ),
