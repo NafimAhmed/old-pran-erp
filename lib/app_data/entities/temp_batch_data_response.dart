@@ -69,13 +69,17 @@ class TempBatchDataResponse {
 }
 
 class TempBatchData {
+  final String? organizationCode;
+  final String? organizationName;
   final String? batchNo;
   final String? itemCode;
   final String? itemName;
-  final double? originalQty;
+  final num? originalQty;
   final int? totalQty;
 
   TempBatchData({
+    this.organizationCode,
+    this.organizationName,
     this.batchNo,
     this.itemCode,
     this.itemName,
@@ -84,6 +88,8 @@ class TempBatchData {
   });
 
   TempBatchData copyWith({
+    String? organizationCode,
+    String? organizationName,
     String? batchNo,
     String? itemCode,
     String? itemName,
@@ -91,6 +97,8 @@ class TempBatchData {
     int? totalQty,
   }) =>
       TempBatchData(
+        organizationCode: organizationCode ?? this.organizationCode,
+        organizationName: organizationName ?? this.organizationName,
         batchNo: batchNo ?? this.batchNo,
         itemCode: itemCode ?? this.itemCode,
         itemName: itemName ?? this.itemName,
@@ -104,6 +112,8 @@ class TempBatchData {
   String toJson() => json.encode(toMap());
 
   factory TempBatchData.fromMap(Map<String, dynamic> json) => TempBatchData(
+        organizationCode: json["organization_code"],
+        organizationName: json["organization_name"],
         batchNo: json["batch_no"],
         itemCode: json["item_code"],
         itemName: json["item_name"],
@@ -112,6 +122,8 @@ class TempBatchData {
       );
 
   Map<String, dynamic> toMap() => {
+        "organization_code": organizationCode,
+        "organization_name": organizationName,
         "batch_no": batchNo,
         "item_code": itemCode,
         "item_name": itemName,

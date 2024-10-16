@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
@@ -489,25 +491,124 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                 );
               },
             ),
+            const SizedBox(
+              height: 10,
+            ),
             Expanded(
               child: BlocBuilder<TempBatchDataBloc, TempBatchDataState>(
                 builder: (context, state) {
-                  return ListView.separated(
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 50,
-                        color: appTheme.primary,
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        height: 10,
-                      );
-                    },
-                    itemCount: state is TempBatchDataSuccess
-                        ? state.tempBatchDataList.length
-                        : 0,
-                  );
+                  if (state is TempBatchDataSuccess) {
+                    var groupedList = groupBy(
+                      state.tempBatchDataList,
+                      (p0) => p0.organizationCode,
+                    );
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: appTheme.primary.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                color: appTheme.primary,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "ORG No:",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.white,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      groupedList.keys.elementAt(index) ?? "",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.white,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: DataTable(columns: const [
+                                  // Set the name of the column
+                                  DataColumn(
+                                    label: Text('Batch No'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Item Code'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Item Name'),
+                                  ),
+                                  DataColumn(
+                                    numeric: true,
+                                    label: Text('Original Qty'),
+                                  ),
+                                  DataColumn(
+                                    numeric: true,
+                                    label: Text('Total Qty'),
+                                  ),
+                                ], rows: [
+                                  ...List.generate(
+                                    groupedList.entries
+                                        .elementAt(index)
+                                        .value
+                                        .length,
+                                    (indx) {
+                                      TempBatchData tempBatchData = groupedList
+                                          .entries
+                                          .elementAt(index)
+                                          .value[indx];
+                                      return DataRow(
+                                        cells: [
+                                          DataCell(
+                                            Text(tempBatchData.batchNo ?? ""),
+                                          ),
+                                          DataCell(
+                                            Text(tempBatchData.itemCode ?? ""),
+                                          ),
+                                          DataCell(
+                                            Text(tempBatchData.itemName ?? ""),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              tempBatchData.originalQty
+                                                  .toString(),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              tempBatchData.totalQty.toString(),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                ]),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          height: 10,
+                        );
+                      },
+                      itemCount: groupedList.length,
+                    );
+                  }
+                  return Container();
                 },
               ),
             ),
