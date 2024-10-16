@@ -11,4 +11,5 @@ abstract class DataService {
     String badQty,
   );
   Future<List<TempBatchData>> getTempBatchData();
+  Future<void> transferBatch(String batchId, String itemId, String rackId);
 }

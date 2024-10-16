@@ -11,4 +11,5 @@ abstract class RemoteDataRepository {
     String badQty,
   );
   Future<TempBatchDataResponse> getTempBatchData();
+  Future<void> transferBatch(String batchId, String itemId, String rackId);
 }

@@ -49,4 +49,17 @@ class RemoteDataRepositoryImpl
 
     return decodeResponse(response, decoder: TempBatchDataResponse.fromJson);
   }
+
+  @override
+  Future<void> transferBatch(
+      String batchId, String itemId, String rackId) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch?BATCHID=$batchId&itemid=$itemId&rackid=$rackId'));
+
+    http.StreamedResponse response = await request.send();
+
+    decodeResponse(response);
+  }
 }

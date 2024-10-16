@@ -41,4 +41,10 @@ class DataServiceImpl implements DataService {
     var response = await remoteDataRepository.getTempBatchData();
     return response.items ?? [];
   }
+
+  @override
+  Future<void> transferBatch(
+      String batchId, String itemId, String rackId) async {
+    await remoteDataRepository.transferBatch(batchId, itemId, rackId);
+  }
 }
