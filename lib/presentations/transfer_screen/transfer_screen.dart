@@ -3,11 +3,15 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/qr_code_bloc.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfer_batch_bloc.dart';
+
+import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/rack_qr_cubit.dart';
 
 class TransferScreen extends StatelessWidget {
   const TransferScreen({super.key});
@@ -15,8 +19,18 @@ class TransferScreen extends StatelessWidget {
   static const String routePath = "prod-supervisor/express-qr-screen";
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => QrCodeBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ItemQrCubit(),
+        ),
+        BlocProvider(
+          create: (context) => RackQrCubit(),
+        ),
+        BlocProvider(
+          create: (context) => TransferBatchBloc(getService()),
+        ),
+      ],
       child: const TransferScreenBody(),
     );
   }
@@ -32,137 +46,137 @@ class TransferScreenBody extends StatefulWidget {
 MobileScannerController? controller = MobileScannerController();
 
 class _TransferScreenBodyState extends State<TransferScreenBody> {
-  Map<String, dynamic> sourceQrData = {};
+  List<String> itemQrData = [];
 
-  Map<String, dynamic> destinationQrData = {};
+  List<String> rackQrData = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar(appBartitle: "Transfer"),
-      body: BlocConsumer<QrCodeBloc, QrCodeState>(
-        listener: (context, state) {
-          if (state is QrCodeError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  "Unable to Read QR Code",
-                ),
-                backgroundColor: Colors.red,
+      body: CustomPaint(
+        painter: CustomShapePainter(),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 5,
               ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is QrCodeLoaded) {
-            sourceQrData = state.sourceQrData;
-            destinationQrData = state.destinationQrData;
-          }
-          return CustomPaint(
-            painter: CustomShapePainter(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Material(
-                    elevation: 10,
+              Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: appTheme.primary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(5),
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Row(
-                        children: [
-                          const Flexible(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.person_2,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Flexible(child: Text("Miraj Hossain Shawon"))
-                              ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Flexible(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.person_2,
                             ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(child: Text("Miraj Hossain Shawon"))
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_today,
                           ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.calendar_today,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                DateTime.now().toFormatedString("dd-MMM-yyy"),
-                              )
-                            ],
+                          const SizedBox(
+                            width: 10,
                           ),
+                          Text(
+                            DateTime.now().toFormatedString("dd-MMM-yyy"),
+                          )
                         ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: appTheme.primary,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(
+                            20,
+                          ),
+                          bottomRight: Radius.circular(
+                            20,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Item QR",
+                          style: textTheme.bodyMedium!.copyWith(
+                            color: appTheme.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(
-                                20,
-                              ),
-                              bottomRight: Radius.circular(
-                                20,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Item QR",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      IconButton.filled(
-                        onPressed: () async {
-                          var data = await _buildScanner(context, controller);
-
-                          context.read<QrCodeBloc>().add(
-                                QrCodeDataGet(
-                                    sourceQrData: data, destinationQrData: ""),
-                              );
-                        },
-                        icon: Icon(
-                          Icons.qr_code_scanner_rounded,
-                          color: appTheme.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
                     width: 10,
                   ),
-                  Visibility(
-                    visible: sourceQrData.isNotEmpty,
-                    child: Container(
+                  IconButton.filled(
+                    onPressed: () async {
+                      var data = await _buildScanner(context, controller);
+
+                      // context.read<QrCodeBloc>().add(
+                      //       QrCodeDataGet(
+                      //           sourceQrData: data, destinationQrData: ""),
+                      //     );
+                      context.read<ItemQrCubit>().setItemData(itemQrData: data);
+                    },
+                    icon: Icon(
+                      Icons.qr_code_scanner_rounded,
+                      color: appTheme.white,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              BlocConsumer<ItemQrCubit, ItemQrState>(
+                listener: (context, state) {
+                  if (state is ItemQrDataError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Unable to Get Item QR Data",
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is ItemQrInitial) {
+                    itemQrData.clear();
+                  }
+                  if (state is ItemQrDataLoaded) {
+                    itemQrData = state.itemQRDatalist;
+                    return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 10,
@@ -174,160 +188,193 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                       ),
                       child: Column(
                         children: [
-                          ...List.generate(
-                            sourceQrData.length,
-                            (index) {
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    sourceQrData.entries.elementAt(index).key,
-                                  ),
-                                  Text(
-                                    sourceQrData.entries
-                                        .elementAt(index)
-                                        .value
-                                        .toString(),
-                                  ),
-                                ],
-                              );
-                            },
-                          )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Batch Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                itemQrData[0],
+                                style: textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Item Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                itemQrData[1],
+                                style: textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
                         ],
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: appTheme.primary,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(
+                            20,
+                          ),
+                          bottomRight: Radius.circular(
+                            20,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Rack QR",
+                          style: textTheme.bodyMedium!.copyWith(
+                            color: appTheme.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(
-                    height: 15,
+                    width: 10,
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(
-                                20,
-                              ),
-                              bottomRight: Radius.circular(
-                                20,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Rack QR",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      IconButton.filled(
-                        onPressed: () async {
-                          try {
-                            var data = await _buildScanner(context, controller);
-                            context.read<QrCodeBloc>().add(
-                                  QrCodeDataGet(
-                                    sourceQrData: "",
-                                    destinationQrData: data,
-                                  ),
-                                );
-                          } catch (e) {
-                            log('Error');
-                          }
-                        },
-                        icon: Icon(
-                          Icons.qr_code_scanner_rounded,
-                          color: appTheme.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  BlocBuilder<QrCodeBloc, QrCodeState>(
-                    builder: (context, state) {
-                      if (state is QrCodeLoaded &&
-                          state.destinationQrData.isNotEmpty) {
-                        destinationQrData = state.destinationQrData;
+                  IconButton.filled(
+                    onPressed: () async {
+                      try {
+                        var data = await _buildScanner(context, controller);
+                        context
+                            .read<RackQrCubit>()
+                            .setrackData(rackQrData: data);
+                      } catch (e) {
+                        log('Error');
                       }
-                      return Visibility(
-                        visible: destinationQrData.isNotEmpty,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary.withOpacity(
-                              0.2,
-                            ),
-                          ),
-                          child: Column(
+                    },
+                    icon: Icon(
+                      Icons.qr_code_scanner_rounded,
+                      color: appTheme.white,
+                    ),
+                  ),
+                ],
+              ),
+              BlocConsumer<RackQrCubit, RackQrState>(
+                listener: (context, state) {
+                  if (state is RackQrDataError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Unable to Get Rack QR Data",
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is RackQrInitial) {
+                    rackQrData.clear();
+                  }
+                  if (state is RackQrDataLoaded) {
+                    rackQrData = state.rackQRDatalist;
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: appTheme.primary.withOpacity(
+                          0.2,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ...List.generate(
-                                destinationQrData.length,
-                                (index) {
-                                  return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        destinationQrData.entries
-                                            .elementAt(index)
-                                            .key,
-                                      ),
-                                      Text(
-                                        destinationQrData.entries
-                                            .elementAt(index)
-                                            .value
-                                            .toString(),
-                                      ),
-                                    ],
-                                  );
-                                },
+                              Text(
+                                "Rack Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                rackQrData[0],
+                                style: textTheme.bodyMedium,
                               )
                             ],
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Align(
+                        ],
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              BlocConsumer<TransferBatchBloc, TransferBatchState>(
+                listener: (context, state) {
+                  if (state is TransferBatchSuccess) {
+                    context.read<ItemQrCubit>().resetItemData();
+                    context.read<RackQrCubit>().resetRackData();
+                  }
+                },
+                builder: (context, state) {
+                  return Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<QrCodeBloc>().add(QrCodeDataSave());
+                        if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
+                          context.read<TransferBatchBloc>().add(
+                                TransferBatch(
+                                    batchId: itemQrData[0],
+                                    itemId: itemQrData[1],
+                                    rackId: rackQrData[0]),
+                              );
+                        }
                       },
                       child: Text(
-                        "Save",
+                        state is TransferBatchLoading ? "Saving..." : "Save",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.white,
                         ),
                       ),
                     ),
-                  ),
-                  // Visibility(
-                  //   visible: destinationQrData.isNotEmpty &&
-                  //           destinationQrData != "No data found"
-                  //       ? true
-                  //       : false,
-                  //   child: _buidDestInfoWidget(destinationQrData),
-                  // ),
-                ],
+                  );
+                },
               ),
-            ),
-          );
-        },
+              // Visibility(
+              //   visible: destinationQrData.isNotEmpty &&
+              //           destinationQrData != "No data found"
+              //       ? true
+              //       : false,
+              //   child: _buidDestInfoWidget(destinationQrData),
+              // ),
+            ],
+          ),
+        ),
       ),
     );
   }
