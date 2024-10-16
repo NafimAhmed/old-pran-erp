@@ -441,6 +441,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       backgroundColor: appTheme.primary,
                     ),
                   );
+                  context.read<TempBatchDataBloc>().add(TempBatchDataGet());
                 }
                 if (state is ProdQrInfoError) {
                   ScaffoldMessenger.of(context).showSnackBar(
