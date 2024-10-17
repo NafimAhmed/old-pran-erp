@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
@@ -75,5 +76,15 @@ class RemoteDataRepositoryImpl
 
     return decodeResponse(response,
         decoder: TransferBatchDataResponse.fromJson);
+  }
+
+  @override
+  Future<LovResponse> getLov() async {
+    var request = http.Request(
+        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/qrinfo'));
+
+    http.StreamedResponse response = await request.send();
+
+    return decodeResponse(response, decoder: LovResponse.fromJson);
   }
 }
