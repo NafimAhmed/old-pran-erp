@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
+
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfer_batch_bloc.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfered_batch_data_bloc.dart';
 
 import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/item_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/rack_qr_cubit.dart';
@@ -29,6 +30,10 @@ class TransferScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => TransferBatchBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => TransferedBatchDataBloc(getService())
+            ..add(TransferBatchDataGet()),
         ),
       ],
       child: const TransferScreenBody(),
@@ -53,327 +58,537 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar(appBartitle: "Transfer"),
-      body: CustomPaint(
-        painter: CustomShapePainter(),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 5,
-              ),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: appTheme.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    children: [
-                      const Flexible(
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person_2,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Flexible(child: Text("Miraj Hossain Shawon"))
-                          ],
-                        ),
-                      ),
-                      Row(
+      body: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 5,
+            ),
+            Material(
+              elevation: 10,
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: appTheme.primary.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    const Flexible(
+                      child: Row(
                         children: [
-                          const Icon(
-                            Icons.calendar_today,
+                          Icon(
+                            Icons.person_2,
                           ),
-                          const SizedBox(
+                          SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            DateTime.now().toFormatedString("dd-MMM-yyy"),
-                          )
+                          Flexible(child: Text("Miraj Hossain Shawon"))
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_today,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          DateTime.now().toFormatedString("dd-MMM-yyy"),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(
-                            20,
-                          ),
-                          bottomRight: Radius.circular(
-                            20,
-                          ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: appTheme.primary,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(
+                          20,
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Item QR",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
+                        bottomRight: Radius.circular(
+                          20,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconButton.filled(
-                    onPressed: () async {
-                      var data = await _buildScanner(context, controller);
-
-                      // context.read<QrCodeBloc>().add(
-                      //       QrCodeDataGet(
-                      //           sourceQrData: data, destinationQrData: ""),
-                      //     );
-                      context.read<ItemQrCubit>().setItemData(itemQrData: data);
-                    },
-                    icon: Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: appTheme.white,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              BlocConsumer<ItemQrCubit, ItemQrState>(
-                listener: (context, state) {
-                  if (state is ItemQrDataError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Unable to Get Item QR Data",
-                        ),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is ItemQrInitial) {
-                    itemQrData.clear();
-                  }
-                  if (state is ItemQrDataLoaded) {
-                    itemQrData = state.itemQRDatalist;
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(
-                          0.2,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Batch Id",
-                                style: textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                itemQrData[0],
-                                style: textTheme.bodyMedium,
-                              )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Item Id",
-                                style: textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                itemQrData[1],
-                                style: textTheme.bodyMedium,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return Container();
-                },
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(
-                            20,
-                          ),
-                          bottomRight: Radius.circular(
-                            20,
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Rack QR",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconButton.filled(
-                    onPressed: () async {
-                      try {
-                        var data = await _buildScanner(context, controller);
-                        context
-                            .read<RackQrCubit>()
-                            .setrackData(rackQrData: data);
-                      } catch (e) {
-                        log('Error');
-                      }
-                    },
-                    icon: Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: appTheme.white,
-                    ),
-                  ),
-                ],
-              ),
-              BlocConsumer<RackQrCubit, RackQrState>(
-                listener: (context, state) {
-                  if (state is RackQrDataError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Unable to Get Rack QR Data",
-                        ),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is RackQrInitial) {
-                    rackQrData.clear();
-                  }
-                  if (state is RackQrDataLoaded) {
-                    rackQrData = state.rackQRDatalist;
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(
-                          0.2,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Rack Id",
-                                style: textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                rackQrData[0],
-                                style: textTheme.bodyMedium,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return Container();
-                },
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              BlocConsumer<TransferBatchBloc, TransferBatchState>(
-                listener: (context, state) {
-                  if (state is TransferBatchSuccess) {
-                    context.read<ItemQrCubit>().resetItemData();
-                    context.read<RackQrCubit>().resetRackData();
-                  }
-                },
-                builder: (context, state) {
-                  return Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
-                          context.read<TransferBatchBloc>().add(
-                                TransferBatch(
-                                    batchId: itemQrData[0],
-                                    itemId: itemQrData[1],
-                                    rackId: rackQrData[0]),
-                              );
-                        }
-                      },
+                    child: Center(
                       child: Text(
-                        state is TransferBatchLoading ? "Saving..." : "Save",
+                        "Item QR",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.white,
                         ),
                       ),
                     ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                IconButton.filled(
+                  onPressed: () async {
+                    var data = await _buildScanner(context, controller);
+
+                    // context.read<QrCodeBloc>().add(
+                    //       QrCodeDataGet(
+                    //           sourceQrData: data, destinationQrData: ""),
+                    //     );
+                    context.read<ItemQrCubit>().setItemData(itemQrData: data);
+                  },
+                  icon: Icon(
+                    Icons.qr_code_scanner_rounded,
+                    color: appTheme.white,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            BlocConsumer<ItemQrCubit, ItemQrState>(
+              listener: (context, state) {
+                if (state is ItemQrDataError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Unable to Get Item QR Data",
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
                   );
+                }
+              },
+              builder: (context, state) {
+                if (state is ItemQrInitial) {
+                  itemQrData.clear();
+                }
+                if (state is ItemQrDataLoaded) {
+                  itemQrData = state.itemQRDatalist;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: appTheme.primary.withOpacity(
+                        0.2,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Batch Id",
+                              style: textTheme.bodyMedium,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              itemQrData[0],
+                              style: textTheme.bodyMedium,
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Item Id",
+                              style: textTheme.bodyMedium,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              itemQrData[1],
+                              style: textTheme.bodyMedium,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: appTheme.primary,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(
+                          20,
+                        ),
+                        bottomRight: Radius.circular(
+                          20,
+                        ),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Rack QR",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                IconButton.filled(
+                  onPressed: () async {
+                    try {
+                      var data = await _buildScanner(context, controller);
+                      context.read<RackQrCubit>().setrackData(rackQrData: data);
+                    } catch (e) {
+                      log('Error');
+                    }
+                  },
+                  icon: Icon(
+                    Icons.qr_code_scanner_rounded,
+                    color: appTheme.white,
+                  ),
+                ),
+              ],
+            ),
+            BlocConsumer<RackQrCubit, RackQrState>(
+              listener: (context, state) {
+                if (state is RackQrDataError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Unable to Get Rack QR Data",
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is RackQrInitial) {
+                  rackQrData.clear();
+                }
+                if (state is RackQrDataLoaded) {
+                  rackQrData = state.rackQRDatalist;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: appTheme.primary.withOpacity(
+                        0.2,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Rack Id",
+                              style: textTheme.bodyMedium,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              rackQrData[0],
+                              style: textTheme.bodyMedium,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            BlocConsumer<TransferBatchBloc, TransferBatchState>(
+              listener: (context, state) {
+                if (state is TransferBatchSuccess) {
+                  context.read<ItemQrCubit>().resetItemData();
+                  context.read<RackQrCubit>().resetRackData();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: const Text(
+                          "Successfully Added...",
+                        ),
+                        backgroundColor: appTheme.primary),
+                  );
+                  context
+                      .read<TransferedBatchDataBloc>()
+                      .add(TransferBatchDataGet());
+                }
+                if (state is TransferBatchError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Failed",
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
+                        context.read<TransferBatchBloc>().add(
+                              TransferBatch(
+                                  batchId: itemQrData[0],
+                                  itemId: itemQrData[1],
+                                  rackId: rackQrData[0]),
+                            );
+                      }
+                    },
+                    child: Text(
+                      state is TransferBatchLoading ? "Saving..." : "Save",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.white,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Expanded(
+              child: BlocBuilder<TransferedBatchDataBloc,
+                  TransferedBatchDataState>(
+                builder: (context, state) {
+                  if (state is TransferedBatchDataLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is TransferedBatchDataSuccess) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.all(
+                            5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: appTheme.primary.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Batch No:",
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Flexible(
+                                    child: Text(state
+                                            .transferBatchDataList[index]
+                                            .batchNo ??
+                                        ""),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: appTheme.primary.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: appTheme.primary,
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Item Name:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(state
+                                                  .transferBatchDataList[index]
+                                                  .itemName ??
+                                              ""),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Item Code:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(state
+                                                  .transferBatchDataList[index]
+                                                  .itemCode ??
+                                              ""),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Originar Qty:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            state.transferBatchDataList[index]
+                                                .originalQty
+                                                .toString(),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Total Qty:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            state.transferBatchDataList[index]
+                                                .totalQty
+                                                .toString(),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: appTheme.primary.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: appTheme.primary,
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Rack Org Name:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(state
+                                                  .transferBatchDataList[index]
+                                                  .rackOrgName ??
+                                              ""),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Rack Locator:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(state
+                                                  .transferBatchDataList[index]
+                                                  .rackLocator ??
+                                              ""),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          height: 10,
+                        );
+                      },
+                      itemCount: state.transferBatchDataList.length,
+                    );
+                  }
+                  return Container();
                 },
               ),
-              // Visibility(
-              //   visible: destinationQrData.isNotEmpty &&
-              //           destinationQrData != "No data found"
-              //       ? true
-              //       : false,
-              //   child: _buidDestInfoWidget(destinationQrData),
-              // ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
