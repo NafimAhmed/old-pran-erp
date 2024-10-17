@@ -1,5 +1,6 @@
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 
 abstract class RemoteDataRepository {
   Future<EmployeResponse> getEmplist();
@@ -12,4 +13,5 @@ abstract class RemoteDataRepository {
   );
   Future<TempBatchDataResponse> getTempBatchData();
   Future<void> transferBatch(String batchId, String itemId, String rackId);
+  Future<TransferBatchDataResponse> getTransferBatchData();
 }

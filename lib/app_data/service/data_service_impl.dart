@@ -1,5 +1,6 @@
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
@@ -46,5 +47,10 @@ class DataServiceImpl implements DataService {
   Future<void> transferBatch(
       String batchId, String itemId, String rackId) async {
     await remoteDataRepository.transferBatch(batchId, itemId, rackId);
+  }
+
+  Future<List<TransferBatchData>> getTransferBatchData() async {
+    var response = await remoteDataRepository.getTransferBatchData();
+    return response.items ?? [];
   }
 }
