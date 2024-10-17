@@ -68,7 +68,7 @@ class LovResponse {
 
 class Lov {
   final int? orgId;
-  final OrgCode? orgCode;
+  final String? orgCode;
   final String? machineName;
   final String? machineDesc;
 
@@ -81,7 +81,7 @@ class Lov {
 
   Lov copyWith({
     int? orgId,
-    OrgCode? orgCode,
+    String? orgCode,
     String? machineName,
     String? machineDesc,
   }) =>
@@ -93,27 +93,27 @@ class Lov {
       );
 
   factory Lov.fromJson(String str) => Lov.fromMap(json.decode(str));
+  @override
+  String toString() {
+    return machineName ?? "";
+  }
 
   String toJson() => json.encode(toMap());
 
   factory Lov.fromMap(Map<String, dynamic> json) => Lov(
         orgId: json["org_id"],
-        orgCode: orgCodeValues.map[json["org_code"]]!,
+        orgCode: json["org_code"],
         machineName: json["machine_name"],
         machineDesc: json["machine_desc"],
       );
 
   Map<String, dynamic> toMap() => {
         "org_id": orgId,
-        "org_code": orgCodeValues.reverse[orgCode],
+        "org_code": orgCode,
         "machine_name": machineName,
         "machine_desc": machineDesc,
       };
 }
-
-enum OrgCode { PB0 }
-
-final orgCodeValues = EnumValues({"PB0": OrgCode.PB0});
 
 class Link {
   final String? rel;
@@ -146,16 +146,4 @@ class Link {
         "rel": rel,
         "href": href,
       };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

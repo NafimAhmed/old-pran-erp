@@ -11,6 +11,7 @@ final class ProdQrInfoSend extends ProdQrInfoEvent {
   final String qty;
   final String goodQty;
   final String badQty;
+  final String machine;
 
   ProdQrInfoSend({
     required this.itemId,
@@ -18,6 +19,7 @@ final class ProdQrInfoSend extends ProdQrInfoEvent {
     required this.qty,
     required this.goodQty,
     required this.badQty,
+    required this.machine,
   });
 }
 
@@ -48,6 +50,7 @@ class ProdQrInfoBloc extends Bloc<ProdQrInfoEvent, ProdQrInfoState> {
           event.qty,
           event.goodQty,
           event.badQty,
+          event.machine,
         );
         emit(ProdQrInfoSuccess());
       } catch (e) {

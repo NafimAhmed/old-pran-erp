@@ -9,7 +9,7 @@ sealed class LovEvent {}
 final class LovGet extends LovEvent {}
 
 final class LovChanged extends LovEvent {
-  final Lov selectedLov;
+  final Lov? selectedLov;
 
   LovChanged({required this.selectedLov});
 }

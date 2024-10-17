@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -12,6 +13,7 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/presentations/production_screen/bloc/lov_bloc.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_bloc.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/temp_batch_data_bloc.dart';
@@ -34,6 +36,9 @@ class ProductionScreen extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               TempBatchDataBloc(getService())..add(TempBatchDataGet()),
+        ),
+        BlocProvider(
+          create: (context) => LovBloc(getService())..add(LovGet()),
         ),
       ],
       child: const ProductionScreenBody(),
@@ -58,6 +63,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
 
   String _locatorId = "";
   String _itemId = "";
+  Lov? selectedLov;
   @override
   void initState() {
     quentityTextController.text = "0";
@@ -426,71 +432,107 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             const SizedBox(
               height: 10,
             ),
-            BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
-              listener: (context, state) {
-                if (state is ProdQrInfoSuccess) {
-                  quentityTextController.text = "0";
-                  goodQtyTextController.text = "0";
-                  badQtyTextController.text = "0";
-                  context.read<ProdQrBloc>().add(ProdQrDataReset());
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        "Successfully Added..",
-                      ),
-                      backgroundColor: appTheme.primary,
-                    ),
-                  );
-                  context.read<TempBatchDataBloc>().add(TempBatchDataGet());
-                }
-                if (state is ProdQrInfoError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Couldn't save the data",
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is ProdQrInfoSuccess) {}
-                return Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (int.parse(quentityTextController.text) !=
-                          int.parse(goodQtyTextController.text) +
-                              int.parse(badQtyTextController.text)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Quantity Mismatch",
-                            ),
-                            backgroundColor: Colors.red,
+            Row(
+              children: [
+                Expanded(
+                  child: BlocBuilder<LovBloc, LovState>(
+                    builder: (context, state) {
+                      if (state is LovLoaded) {
+                        selectedLov = state.selectedLov;
+                      }
+                      return CommonDropdownButton<Lov>(
+                        hintText: "Select Machine",
+                        items: state is LovLoaded ? state.lovList : [],
+                        value: state is LovLoaded ? state.selectedLov : null,
+                        onChanged: (value) {
+                          context
+                              .read<LovBloc>()
+                              .add(LovChanged(selectedLov: value));
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
+                  listener: (context, state) {
+                    if (state is ProdQrInfoSuccess) {
+                      quentityTextController.text = "0";
+                      goodQtyTextController.text = "0";
+                      badQtyTextController.text = "0";
+                      context.read<ProdQrBloc>().add(ProdQrDataReset());
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text(
+                            "Successfully Added..",
                           ),
-                        );
-                      } else {
+                          backgroundColor: appTheme.primary,
+                        ),
+                      );
+                      context.read<TempBatchDataBloc>().add(TempBatchDataGet());
+                    }
+                    if (state is ProdQrInfoError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Couldn't save the data",
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is ProdQrInfoSuccess) {}
+                    return ElevatedButton(
+                      onPressed: () {
+                        if (selectedLov == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Select Machine",
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+                        if (int.parse(quentityTextController.text) !=
+                            int.parse(goodQtyTextController.text) +
+                                int.parse(badQtyTextController.text)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Quantity Mismatch",
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
                         context.read<ProdQrInfoBloc>().add(
                               ProdQrInfoSend(
-                                  itemId: _itemId,
-                                  batchId: _locatorId,
-                                  qty: quentityTextController.text,
-                                  goodQty: goodQtyTextController.text,
-                                  badQty: badQtyTextController.text),
+                                itemId: _itemId,
+                                batchId: _locatorId,
+                                qty: quentityTextController.text,
+                                goodQty: goodQtyTextController.text,
+                                badQty: badQtyTextController.text,
+                                machine: selectedLov?.machineName ?? "",
+                              ),
                             );
-                      }
-                    },
-                    child: Text(
-                      state is ProdQrInfoLoading ? "Saving" : "Save",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.white,
+                      },
+                      child: Text(
+                        state is ProdQrInfoLoading ? "Saving" : "Save",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.white,
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+              ],
             ),
             const SizedBox(
               height: 10,
@@ -498,6 +540,11 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             Expanded(
               child: BlocBuilder<TempBatchDataBloc, TempBatchDataState>(
                 builder: (context, state) {
+                  if (state is TempBatchDataLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                   if (state is TempBatchDataSuccess) {
                     var groupedList = groupBy(
                       state.tempBatchDataList,
@@ -666,5 +713,47 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
 
     // Await the completion of the completer and return the result
     return completer.future;
+  }
+}
+
+class CommonDropdownButton<T> extends StatelessWidget {
+  const CommonDropdownButton({
+    super.key,
+    required this.hintText,
+    this.items,
+    this.value,
+    required this.onChanged,
+  });
+  final String hintText;
+  final List<T>? items;
+  final T? value;
+  final void Function(T?) onChanged;
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<T>(
+      value: value,
+      isExpanded: true,
+      menuMaxHeight: 250,
+      hint: Text(
+        hintText,
+        style: textTheme.bodyMedium!.copyWith(
+          color: appTheme.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      style: textTheme.bodyMedium!.copyWith(
+        color: appTheme.primary,
+        fontWeight: FontWeight.bold,
+      ),
+      items: items?.map(
+        (e) {
+          return DropdownMenuItem(
+            value: e,
+            child: Text(e.toString()),
+          );
+        },
+      ).toList(),
+      onChanged: onChanged,
+    );
   }
 }

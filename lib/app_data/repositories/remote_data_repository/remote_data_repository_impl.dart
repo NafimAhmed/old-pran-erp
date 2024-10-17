@@ -31,11 +31,12 @@ class RemoteDataRepositoryImpl
     String qty,
     String goodQty,
     String badQty,
+    String machine,
   ) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/qrinfo?itemid=$itemId&BATCHID=$batchId&QTY=$qty&GOOD_QTY=$goodQty&BAD_QTY=$badQty'));
+            '${appConfig.baseUrl}/ords/rpro/batch/qrinfo?itemid=$itemId&BATCHID=$batchId&QTY=$qty&GOOD_QTY=$goodQty&BAD_QTY=$badQty&machine=$machine'));
 
     http.StreamedResponse response = await request.send();
 
