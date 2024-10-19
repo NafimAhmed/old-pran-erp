@@ -15,6 +15,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.validator,
     this.textAlign = TextAlign.start,
     this.onChanged,
+    this.readOnly = false,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -25,10 +26,12 @@ class CommonTextFieldWidget extends StatelessWidget {
   final bool obscureText;
   final String? Function(String? value)? validator;
   final TextAlign textAlign;
+  final bool readOnly;
   final void Function(String value)? onChanged;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       focusNode: focusNode,
       controller: controller,
       obscureText: obscureText,
