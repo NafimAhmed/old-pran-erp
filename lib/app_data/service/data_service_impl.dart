@@ -1,4 +1,5 @@
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
@@ -72,5 +73,11 @@ class DataServiceImpl implements DataService {
   @override
   Future<void> rackTransfer(int transactId) async {
     var response = await remoteDataRepository.rackTransfer(transactId);
+  }
+
+  @override
+  Future<List<JobHisory>> getJobHistory() async {
+    var response = await remoteDataRepository.getJobHistory();
+    return response.items ?? [];
   }
 }

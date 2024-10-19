@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
@@ -22,7 +23,7 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
 
-    return decodeResponse(response, decoder: EmployeResponse.fromJson);
+    return await decodeResponse(response, decoder: EmployeResponse.fromJson);
   }
 
   @override
@@ -51,7 +52,8 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
 
-    return decodeResponse(response, decoder: TempBatchDataResponse.fromJson);
+    return await decodeResponse(response,
+        decoder: TempBatchDataResponse.fromJson);
   }
 
   @override
@@ -76,7 +78,7 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
 
-    return decodeResponse(response,
+    return await decodeResponse(response,
         decoder: TransferBatchDataResponse.fromJson);
   }
 
@@ -87,7 +89,7 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
 
-    return decodeResponse(response, decoder: LovResponse.fromJson);
+    return await decodeResponse(response, decoder: LovResponse.fromJson);
   }
 
   @override
@@ -99,6 +101,18 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
 
-    decodeResponse(response, decoder: GenericResponse.fromJson);
+    await decodeResponse(
+      response,
+    );
+  }
+
+  @override
+  Future<JobHistoryResponse> getJobHistory() async {
+    var request = http.Request(
+        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/jobhist'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response, decoder: JobHistoryResponse.fromJson);
   }
 }
