@@ -55,7 +55,7 @@ class ProductionScreenBody extends StatefulWidget {
 
 class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController quentityTextController = TextEditingController();
-  FocusNode passwordFocusNode = FocusNode();
+  FocusNode quantityFocusNode = FocusNode();
   TextEditingController goodQtyTextController = TextEditingController();
   FocusNode goodQtyFocusNode = FocusNode();
   TextEditingController badQtyTextController = TextEditingController();
@@ -68,6 +68,18 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    quentityTextController.dispose();
+    goodQtyTextController.dispose();
+    badQtyTextController.dispose();
+    quantityFocusNode.dispose();
+    goodQtyFocusNode.dispose();
+    badQtyFocusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -281,7 +293,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                       Expanded(
                         child: CommonTextFieldWidget(
-                          focusNode: passwordFocusNode,
+                          focusNode: quantityFocusNode,
                           textAlign: TextAlign.center,
                           controller: quentityTextController,
                           keyboardType: TextInputType.phone,
