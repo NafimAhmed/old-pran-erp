@@ -73,10 +73,11 @@ class TransferBatchData {
   final String? organizationName;
   final String? batchNo;
   final int? batchId;
+  final int? transactId;
   final String? itemCode;
   final int? inventoryItemId;
   final String? itemName;
-  final num? originalQty;
+  final double? originalQty;
   final int? totalQty;
   final String? rackOrg;
   final String? rackOrgName;
@@ -88,6 +89,7 @@ class TransferBatchData {
     this.organizationName,
     this.batchNo,
     this.batchId,
+    this.transactId,
     this.itemCode,
     this.inventoryItemId,
     this.itemName,
@@ -104,6 +106,7 @@ class TransferBatchData {
     String? organizationName,
     String? batchNo,
     int? batchId,
+    int? transactId,
     String? itemCode,
     int? inventoryItemId,
     String? itemName,
@@ -119,6 +122,7 @@ class TransferBatchData {
         organizationName: organizationName ?? this.organizationName,
         batchNo: batchNo ?? this.batchNo,
         batchId: batchId ?? this.batchId,
+        transactId: transactId ?? this.transactId,
         itemCode: itemCode ?? this.itemCode,
         inventoryItemId: inventoryItemId ?? this.inventoryItemId,
         itemName: itemName ?? this.itemName,
@@ -141,6 +145,7 @@ class TransferBatchData {
         organizationName: json["organization_name"],
         batchNo: json["batch_no"],
         batchId: json["batch_id"],
+        transactId: json["transact_id"],
         itemCode: json["item_code"],
         inventoryItemId: json["inventory_item_id"],
         itemName: json["item_name"],
@@ -157,6 +162,7 @@ class TransferBatchData {
         "organization_name": organizationName,
         "batch_no": batchNo,
         "batch_id": batchId,
+        "transact_id": transactId,
         "item_code": itemCode,
         "inventory_item_id": inventoryItemId,
         "item_name": itemName,
