@@ -313,6 +313,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           },
                           onChanged: (value) {
                             goodQtyTextController.text = value;
+                            badQtyTextController.text = 0.toString();
                           },
                         ),
                       ),
@@ -371,11 +372,11 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             return null;
                           },
                           onChanged: (value) {
-                            // var goodQty = int.parse(value);
-                            // var totalQty =
-                            //     int.parse(quentityTextController.text);
-                            // badQtyTextController.text =
-                            //     (totalQty - goodQty).toString();
+                            var goodQty = int.parse(value);
+                            var totalQty =
+                                int.parse(quentityTextController.text);
+                            badQtyTextController.text =
+                                (totalQty - goodQty).toString();
                           },
                         ),
                       ),
@@ -415,6 +416,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                       Expanded(
                         child: CommonTextFieldWidget(
+                          readOnly: true,
                           focusNode: badQtyFocusNode,
                           textAlign: TextAlign.center,
                           controller: badQtyTextController,
