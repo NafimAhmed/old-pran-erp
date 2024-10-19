@@ -64,11 +64,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   String _locatorId = "";
   String _itemId = "";
   Lov? selectedLov;
+  GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
-    quentityTextController.text = "0";
-    goodQtyTextController.text = "0";
-    badQtyTextController.text = "0";
     super.initState();
   }
 
@@ -248,72 +246,72 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: appTheme.primary,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(
-                          20,
-                        ),
-                        bottomRight: Radius.circular(
-                          20,
-                        ),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Quantity",
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CommonTextFieldWidget(
-                    focusNode: passwordFocusNode,
-                    textAlign: TextAlign.center,
-                    controller: quentityTextController,
-                    keyboardType: TextInputType.phone,
-                    style: textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: appTheme.primary,
-                    ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    labelText: "",
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Quantity";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      goodQtyTextController.text = value;
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Row(
+            Form(
+              key: fromkey,
+              child: Column(
+                children: [
+                  Row(
                     children: [
                       Expanded(
-                        flex: 2,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: appTheme.primary,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(
+                                20,
+                              ),
+                              bottomRight: Radius.circular(
+                                20,
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Quantity",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: CommonTextFieldWidget(
+                          focusNode: passwordFocusNode,
+                          textAlign: TextAlign.center,
+                          controller: quentityTextController,
+                          keyboardType: TextInputType.phone,
+                          style: textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: appTheme.primary,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          labelText: "",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please Enter Quantity";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            goodQtyTextController.text = value;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -360,21 +358,23 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             }
                             return null;
                           },
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            // var goodQty = int.parse(value);
+                            // var totalQty =
+                            //     int.parse(quentityTextController.text);
+                            // badQtyTextController.text =
+                            //     (totalQty - goodQty).toString();
+                          },
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Row(
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
                     children: [
                       Expanded(
-                        flex: 2,
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -426,113 +426,123 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: BlocBuilder<LovBloc, LovState>(
-                    builder: (context, state) {
-                      if (state is LovLoaded) {
-                        selectedLov = state.selectedLov;
-                      }
-                      return CommonDropdownButton<Lov>(
-                        hintText: "Select Machine",
-                        items: state is LovLoaded ? state.lovList : [],
-                        value: state is LovLoaded ? state.selectedLov : null,
-                        onChanged: (value) {
-                          context
-                              .read<LovBloc>()
-                              .add(LovChanged(selectedLov: value));
-                        },
-                      );
-                    },
+                  const SizedBox(
+                    height: 10,
                   ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
-                  listener: (context, state) {
-                    if (state is ProdQrInfoSuccess) {
-                      quentityTextController.text = "0";
-                      goodQtyTextController.text = "0";
-                      badQtyTextController.text = "0";
-                      context.read<ProdQrBloc>().add(ProdQrDataReset());
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                            "Successfully Added..",
-                          ),
-                          backgroundColor: appTheme.primary,
-                        ),
-                      );
-                      context.read<TempBatchDataBloc>().add(TempBatchDataGet());
-                    }
-                    if (state is ProdQrInfoError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Couldn't save the data",
-                          ),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is ProdQrInfoSuccess) {}
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (selectedLov == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Select Machine",
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-                        if (int.parse(quentityTextController.text) !=
-                            int.parse(goodQtyTextController.text) +
-                                int.parse(badQtyTextController.text)) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Quantity Mismatch",
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-                        context.read<ProdQrInfoBloc>().add(
-                              ProdQrInfoSend(
-                                itemId: _itemId,
-                                batchId: _locatorId,
-                                qty: quentityTextController.text,
-                                goodQty: goodQtyTextController.text,
-                                badQty: badQtyTextController.text,
-                                machine: selectedLov?.machineName ?? "",
-                              ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: BlocBuilder<LovBloc, LovState>(
+                          builder: (context, state) {
+                            if (state is LovLoaded) {
+                              selectedLov = state.selectedLov;
+                            }
+                            return CommonDropdownButton<Lov>(
+                              hintText: "Select Machine",
+                              items: state is LovLoaded ? state.lovList : [],
+                              value:
+                                  state is LovLoaded ? state.selectedLov : null,
+                              onChanged: (value) {
+                                context
+                                    .read<LovBloc>()
+                                    .add(LovChanged(selectedLov: value));
+                              },
+                              validator: (value) {
+                                if (value == null) {
+                                  return "Please Select Machine";
+                                }
+                              },
                             );
-                      },
-                      child: Text(
-                        state is ProdQrInfoLoading ? "Saving" : "Save",
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.white,
+                          },
                         ),
                       ),
-                    );
-                  },
-                ),
-              ],
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
+                        listener: (context, state) {
+                          if (state is ProdQrInfoSuccess) {
+                            quentityTextController.clear();
+                            goodQtyTextController.clear();
+                            badQtyTextController.clear();
+                            context.read<ProdQrBloc>().add(ProdQrDataReset());
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                  "Successfully Added..",
+                                ),
+                                backgroundColor: appTheme.primary,
+                              ),
+                            );
+                            context
+                                .read<TempBatchDataBloc>()
+                                .add(TempBatchDataGet());
+                          }
+                          if (state is ProdQrInfoError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Couldn't save the data",
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is ProdQrInfoSuccess) {}
+                          return ElevatedButton(
+                            onPressed: () {
+                              if (fromkey.currentState!.validate()) {
+                                if (int.parse(quentityTextController.text) !=
+                                    int.parse(goodQtyTextController.text) +
+                                        int.parse(badQtyTextController.text)) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Quantity Mismatch",
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                context.read<ProdQrInfoBloc>().add(
+                                      ProdQrInfoSend(
+                                        itemId: _itemId,
+                                        batchId: _locatorId,
+                                        qty: quentityTextController.text,
+                                        goodQty: goodQtyTextController.text,
+                                        badQty: badQtyTextController.text,
+                                        machine: selectedLov?.machineName ?? "",
+                                      ),
+                                    );
+                              }
+                              // if (selectedLov == null) {
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //     const SnackBar(
+                              //       content: Text(
+                              //         "Select Machine",
+                              //       ),
+                              //       backgroundColor: Colors.red,
+                              //     ),
+                              //   );
+                              //   return;
+                              // }
+                            },
+                            child: Text(
+                              state is ProdQrInfoLoading ? "Saving" : "Save",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 10,
@@ -723,11 +733,13 @@ class CommonDropdownButton<T> extends StatelessWidget {
     this.items,
     this.value,
     required this.onChanged,
+    this.validator,
   });
   final String hintText;
   final List<T>? items;
   final T? value;
   final void Function(T?) onChanged;
+  final String? Function(T?)? validator;
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
@@ -754,6 +766,7 @@ class CommonDropdownButton<T> extends StatelessWidget {
         },
       ).toList(),
       onChanged: onChanged,
+      validator: validator,
     );
   }
 }
