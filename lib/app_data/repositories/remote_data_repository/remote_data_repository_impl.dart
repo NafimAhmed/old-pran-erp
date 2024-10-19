@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
@@ -87,5 +88,17 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
 
     return decodeResponse(response, decoder: LovResponse.fromJson);
+  }
+
+  @override
+  Future<void> rackTransfer(int transactId) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
+
+    http.StreamedResponse response = await request.send();
+
+    decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

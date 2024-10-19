@@ -68,4 +68,9 @@ class DataServiceImpl implements DataService {
     var response = await remoteDataRepository.getLov();
     return response.items ?? [];
   }
+
+  @override
+  Future<void> rackTransfer(int transactId) async {
+    var response = await remoteDataRepository.rackTransfer(transactId);
+  }
 }

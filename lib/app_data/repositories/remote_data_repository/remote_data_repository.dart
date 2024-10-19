@@ -17,4 +17,6 @@ abstract class RemoteDataRepository {
   Future<void> transferBatch(String batchId, String itemId, String rackId);
   Future<TransferBatchDataResponse> getTransferBatchData();
   Future<LovResponse> getLov();
+
+  Future<void> rackTransfer(int transactId);
 }

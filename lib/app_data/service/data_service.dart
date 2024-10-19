@@ -17,4 +17,5 @@ abstract class DataService {
   Future<void> transferBatch(String batchId, String itemId, String rackId);
   Future<List<TransferBatchData>> getTransferBatchData();
   Future<List<Lov>> getLov();
+  Future<void> rackTransfer(int transactId);
 }
