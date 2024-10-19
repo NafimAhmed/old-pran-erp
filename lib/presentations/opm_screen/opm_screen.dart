@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/production_screen.dart';
+import 'package:pran_rfl_erp/presentations/transfer_details_screen/transfer_details_screen.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
 
@@ -104,18 +105,28 @@ class _OpmScreenBodyState extends State<OpmScreenBody> {
                       ),
                     ),
                     children: <Widget>[
-                      OPMSubModuleWidget(
-                        title: "Firm Planned Order Details",
-                        onTap: () {},
-                      ),
-                      OPMSubModuleWidget(
-                        title: "Create Document",
-                        onTap: () {},
-                      ),
+                      // OPMSubModuleWidget(
+                      //   title: "Firm Planned Order Details",
+                      //   onTap: () {},
+                      // ),
+                      // OPMSubModuleWidget(
+                      //   title: "Create Document",
+                      //   onTap: () {},
+                      // ),
                       OPMSubModuleWidget(
                         title: "Batch Details",
                         onTap: () {
                           context.pushNamed(OpmProdSupervisorScreen.routeName);
+                        },
+                      ),
+                      OPMSubModuleWidget(
+                        title: "Material Transactions",
+                        onTap: () {},
+                      ),
+                      OPMSubModuleWidget(
+                        title: "Production",
+                        onTap: () {
+                          context.pushNamed(ProductionScreen.routeName);
                         },
                       ),
                       OPMSubModuleWidget(
@@ -125,31 +136,28 @@ class _OpmScreenBodyState extends State<OpmScreenBody> {
                         },
                       ),
                       OPMSubModuleWidget(
-                        title: "Production",
+                        title: "Tranfer Details",
                         onTap: () {
-                          context.pushNamed(ProductionScreen.routeName);
+                          context.pushNamed(TransferDetailsScreen.routeName);
                         },
                       ),
-                      OPMSubModuleWidget(
-                        title: "On-Hand, Availability",
-                        onTap: () {},
-                      ),
-                      OPMSubModuleWidget(
-                        title: "OPM Item Cost",
-                        onTap: () {},
-                      ),
-                      OPMSubModuleWidget(
-                        title: "Stock Transfer(Auto TO/IT)",
-                        onTap: () {},
-                      ),
-                      OPMSubModuleWidget(
-                        title: "Material Transactions",
-                        onTap: () {},
-                      ),
-                      OPMSubModuleWidget(
-                        title: "Change Organization",
-                        onTap: () {},
-                      ),
+                      // OPMSubModuleWidget(
+                      //   title: "On-Hand, Availability",
+                      //   onTap: () {},
+                      // ),
+                      // OPMSubModuleWidget(
+                      //   title: "OPM Item Cost",
+                      //   onTap: () {},
+                      // ),
+                      // OPMSubModuleWidget(
+                      //   title: "Stock Transfer(Auto TO/IT)",
+                      //   onTap: () {},
+                      // ),
+
+                      // OPMSubModuleWidget(
+                      //   title: "Change Organization",
+                      //   onTap: () {},
+                      // ),
                     ],
                   ),
                 ),
