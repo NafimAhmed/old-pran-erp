@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/rack_transact_bloc.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfer_batch_bloc.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfered_batch_data_bloc.dart';
 
@@ -34,6 +36,9 @@ class TransferScreen extends StatelessWidget {
         BlocProvider(
           create: (context) => TransferedBatchDataBloc(getService())
             ..add(TransferBatchDataGet()),
+        ),
+        BlocProvider(
+          create: (context) => RackTransactBloc(getService()),
         ),
       ],
       child: const TransferScreenBody(),
@@ -402,6 +407,8 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                   if (state is TransferedBatchDataSuccess) {
                     return ListView.separated(
                       itemBuilder: (context, index) {
+                        TransferBatchData transferBatchData =
+                            state.transferBatchDataList[index];
                         return Container(
                           padding: const EdgeInsets.all(
                             5,
@@ -415,18 +422,62 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text(
-                                    "Batch No:",
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
                                   Flexible(
-                                    child: Text(state
-                                            .transferBatchDataList[index]
-                                            .batchNo ??
-                                        ""),
-                                  )
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Batch No:",
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Flexible(
+                                          child: Text(
+                                            transferBatchData.transactId
+                                                    .toString() ??
+                                                "",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  BlocConsumer<RackTransactBloc,
+                                      RackTransactState>(
+                                    listener: (context, state) {
+                                      if (state is RackTransactSuccess) {
+                                        context
+                                            .read<TransferedBatchDataBloc>()
+                                            .add(TransferBatchDataGet());
+                                      }
+                                    },
+                                    builder: (context, state) {
+                                      return ElevatedButton(
+                                        onPressed: state is RackTransactLoading
+                                            ? () {}
+                                            : () {
+                                                context
+                                                    .read<RackTransactBloc>()
+                                                    .add(RackTransact(
+                                                        transactId:
+                                                            transferBatchData
+                                                                    .transactId ??
+                                                                0));
+                                              },
+                                        child: Text(
+                                          state is RackTransactLoading
+                                              ? state.transactId ==
+                                                      transferBatchData
+                                                          .transactId
+                                                  ? "Transacting..."
+                                                  : "Transact"
+                                              : "Transact",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
                               Container(
@@ -452,10 +503,8 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                           width: 10,
                                         ),
                                         Expanded(
-                                          child: Text(state
-                                                  .transferBatchDataList[index]
-                                                  .itemName ??
-                                              ""),
+                                          child: Text(
+                                              transferBatchData.itemName ?? ""),
                                         )
                                       ],
                                     ),
@@ -470,10 +519,8 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                           width: 10,
                                         ),
                                         Expanded(
-                                          child: Text(state
-                                                  .transferBatchDataList[index]
-                                                  .itemCode ??
-                                              ""),
+                                          child: Text(
+                                              transferBatchData.itemCode ?? ""),
                                         ),
                                       ],
                                     ),
@@ -489,8 +536,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            state.transferBatchDataList[index]
-                                                .originalQty
+                                            transferBatchData.originalQty
                                                 .toString(),
                                           ),
                                         ),
@@ -508,8 +554,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            state.transferBatchDataList[index]
-                                                .totalQty
+                                            transferBatchData.totalQty
                                                 .toString(),
                                           ),
                                         ),
@@ -544,10 +589,9 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                           width: 10,
                                         ),
                                         Expanded(
-                                          child: Text(state
-                                                  .transferBatchDataList[index]
-                                                  .rackOrgName ??
-                                              ""),
+                                          child: Text(
+                                              transferBatchData.rackOrgName ??
+                                                  ""),
                                         )
                                       ],
                                     ),
@@ -562,10 +606,9 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                           width: 10,
                                         ),
                                         Expanded(
-                                          child: Text(state
-                                                  .transferBatchDataList[index]
-                                                  .rackLocator ??
-                                              ""),
+                                          child: Text(
+                                              transferBatchData.rackLocator ??
+                                                  ""),
                                         ),
                                       ],
                                     ),
