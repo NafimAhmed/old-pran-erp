@@ -521,6 +521,17 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   );
                                   return;
                                 }
+                                if (_itemId.isEmpty || _locatorId.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Please Scan QR Code",
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
                                 context.read<ProdQrInfoBloc>().add(
                                       ProdQrInfoSend(
                                         itemId: _itemId,
@@ -532,17 +543,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ),
                                     );
                               }
-                              // if (selectedLov == null) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //     const SnackBar(
-                              //       content: Text(
-                              //         "Select Machine",
-                              //       ),
-                              //       backgroundColor: Colors.red,
-                              //     ),
-                              //   );
-                              //   return;
-                              // }
                             },
                             child: Text(
                               state is ProdQrInfoLoading ? "Saving" : "Save",
