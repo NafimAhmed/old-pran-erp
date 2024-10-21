@@ -433,9 +433,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                         ),
                                         Flexible(
                                           child: Text(
-                                            transferBatchData.transactId
-                                                    .toString() ??
-                                                "",
+                                            transferBatchData.batchNo ?? "",
                                           ),
                                         ),
                                       ],
