@@ -29,7 +29,7 @@ class TransferDetailsScreenBody extends StatefulWidget {
 }
 
 class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
-  List<JobHisory> jobHisory = <JobHisory>[];
+  List<JobHistory> jobHisory = <JobHistory>[];
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                     frozenColumnsCount: 1,
                     gridLinesVisibility: GridLinesVisibility.both,
                     headerGridLinesVisibility: GridLinesVisibility.both,
-                    columnWidthMode: ColumnWidthMode.fitByColumnName,
+                    columnWidthMode: ColumnWidthMode.fitByCellValue,
                     columns: <GridColumn>[
                       GridColumn(
                         columnName: 'job_order_no',
@@ -81,6 +81,19 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                           alignment: Alignment.center,
                           child: Text(
                             'FPO No',
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      GridColumn(
+                        columnName: 'item',
+                        label: Container(
+                          color: appTheme.primary,
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Item',
                             style: textTheme.bodyMedium!.copyWith(
                               color: appTheme.white,
                             ),
@@ -127,25 +140,12 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                         ),
                       ),
                       GridColumn(
-                        columnName: 'plan_qty',
+                        columnName: 'fpo_qty',
                         label: Container(
                           color: appTheme.primary,
                           alignment: Alignment.center,
                           child: Text(
-                            'plan Qty',
-                            style: textTheme.bodyMedium!.copyWith(
-                              color: appTheme.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      GridColumn(
-                        columnName: 'original_qty',
-                        label: Container(
-                          color: appTheme.primary,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Original Qty',
+                            'Fpo Qty',
                             style: textTheme.bodyMedium!.copyWith(
                               color: appTheme.white,
                             ),
@@ -273,7 +273,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
 /// is used to map the employee data to the datagrid widget.
 class JobHistoryDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
-  JobHistoryDataSource({required List<JobHisory> jobHistoryData}) {
+  JobHistoryDataSource({required List<JobHistory> jobHistoryData}) {
     _jobHisData = jobHistoryData
         .map<DataGridRow>(
           (e) => DataGridRow(
@@ -281,15 +281,14 @@ class JobHistoryDataSource extends DataGridSource {
               DataGridCell<String>(
                   columnName: 'job_order_no', value: e.jobOrderNo),
               DataGridCell<String>(columnName: 'fpo_no', value: e.fpoNo),
+              DataGridCell<String>(columnName: 'item', value: e.item),
               DataGridCell<String>(
                   columnName: 'creation_date', value: e.creationDate),
               DataGridCell<String>(
                   columnName: 'plan_start_date', value: e.planStartDate),
               DataGridCell<String>(
                   columnName: 'plan_cmplt_date', value: e.planCmpltDate),
-              DataGridCell<num>(columnName: 'plan_qty', value: e.planQty),
-              DataGridCell<num>(
-                  columnName: 'original_qty', value: e.originalQty),
+              DataGridCell<num>(columnName: 'fpo_qty', value: e.fpoQty),
               DataGridCell<String>(columnName: 'dtl_um', value: e.dtlUm),
               DataGridCell<num>(
                   columnName: 'total_made_qty', value: e.totalMadeQty),
@@ -297,8 +296,9 @@ class JobHistoryDataSource extends DataGridSource {
               DataGridCell<num>(columnName: 'bad_qty', value: e.badQty),
               DataGridCell<num>(columnName: 'trn_qty', value: e.trnQty),
               DataGridCell<num>(columnName: 'rack_qty', value: e.rackQty),
-              DataGridCell<num>(columnName: 'made_p', value: e.madeP),
-              DataGridCell<num>(columnName: 'due_made_p', value: e.dueMadeP),
+              DataGridCell<String>(columnName: 'made_p', value: "${e.madeP}%"),
+              DataGridCell<String>(
+                  columnName: 'due_made_p', value: "${e.dueMadeP}%"),
             ],
           ),
         )

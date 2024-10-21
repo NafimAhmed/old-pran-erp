@@ -19,5 +19,5 @@ abstract class DataService {
   Future<List<TransferBatchData>> getTransferBatchData();
   Future<List<Lov>> getLov();
   Future<void> rackTransfer(int transactId);
-  Future<List<JobHisory>> getJobHistory();
+  Future<List<JobHistory>> getJobHistory();
 }

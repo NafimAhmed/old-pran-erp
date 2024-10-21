@@ -16,7 +16,7 @@ final class JobHistoryInitial extends JobHistoryState {}
 final class JobHistoryLoading extends JobHistoryState {}
 
 final class JobHistorySuccess extends JobHistoryState {
-  final List<JobHisory> jobHistoryList;
+  final List<JobHistory> jobHistoryList;
 
   JobHistorySuccess({required this.jobHistoryList});
 }

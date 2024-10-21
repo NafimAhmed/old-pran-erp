@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class JobHistoryResponse {
-  final List<JobHisory>? items;
+  final List<JobHistory>? items;
   final bool? hasMore;
   final int? limit;
   final int? offset;
@@ -18,7 +18,7 @@ class JobHistoryResponse {
   });
 
   JobHistoryResponse copyWith({
-    List<JobHisory>? items,
+    List<JobHistory>? items,
     bool? hasMore,
     int? limit,
     int? offset,
@@ -43,8 +43,8 @@ class JobHistoryResponse {
       JobHistoryResponse(
         items: json["items"] == null
             ? []
-            : List<JobHisory>.from(
-                json["items"]!.map((x) => JobHisory.fromMap(x))),
+            : List<JobHistory>.from(
+                json["items"]!.map((x) => JobHistory.fromMap(x))),
         hasMore: json["hasMore"],
         limit: json["limit"],
         offset: json["offset"],
@@ -68,14 +68,14 @@ class JobHistoryResponse {
       };
 }
 
-class JobHisory {
+class JobHistory {
   final String? jobOrderNo;
   final String? fpoNo;
+  final String? item;
   final String? creationDate;
   final String? planStartDate;
   final String? planCmpltDate;
-  final num? planQty;
-  final num? originalQty;
+  final num? fpoQty;
   final String? dtlUm;
   final int? totalMadeQty;
   final int? goodQty;
@@ -85,14 +85,14 @@ class JobHisory {
   final num? madeP;
   final num? dueMadeP;
 
-  JobHisory({
+  JobHistory({
     this.jobOrderNo,
     this.fpoNo,
+    this.item,
     this.creationDate,
     this.planStartDate,
     this.planCmpltDate,
-    this.planQty,
-    this.originalQty,
+    this.fpoQty,
     this.dtlUm,
     this.totalMadeQty,
     this.goodQty,
@@ -103,31 +103,31 @@ class JobHisory {
     this.dueMadeP,
   });
 
-  JobHisory copyWith({
+  JobHistory copyWith({
     String? jobOrderNo,
     String? fpoNo,
+    String? item,
     String? creationDate,
     String? planStartDate,
     String? planCmpltDate,
-    num? planQty,
-    num? originalQty,
+    double? fpoQty,
     String? dtlUm,
     int? totalMadeQty,
     int? goodQty,
     int? badQty,
     int? trnQty,
     int? rackQty,
-    num? madeP,
-    num? dueMadeP,
+    double? madeP,
+    double? dueMadeP,
   }) =>
-      JobHisory(
+      JobHistory(
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
         fpoNo: fpoNo ?? this.fpoNo,
+        item: item ?? this.item,
         creationDate: creationDate ?? this.creationDate,
         planStartDate: planStartDate ?? this.planStartDate,
         planCmpltDate: planCmpltDate ?? this.planCmpltDate,
-        planQty: planQty ?? this.planQty,
-        originalQty: originalQty ?? this.originalQty,
+        fpoQty: fpoQty ?? this.fpoQty,
         dtlUm: dtlUm ?? this.dtlUm,
         totalMadeQty: totalMadeQty ?? this.totalMadeQty,
         goodQty: goodQty ?? this.goodQty,
@@ -138,36 +138,37 @@ class JobHisory {
         dueMadeP: dueMadeP ?? this.dueMadeP,
       );
 
-  factory JobHisory.fromJson(String str) => JobHisory.fromMap(json.decode(str));
+  factory JobHistory.fromJson(String str) =>
+      JobHistory.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory JobHisory.fromMap(Map<String, dynamic> json) => JobHisory(
+  factory JobHistory.fromMap(Map<String, dynamic> json) => JobHistory(
         jobOrderNo: json["job_order_no"],
         fpoNo: json["fpo_no"],
+        item: json["item"],
         creationDate: json["creation_date"],
         planStartDate: json["plan_start_date"],
         planCmpltDate: json["plan_cmplt_date"],
-        planQty: json["plan_qty"],
-        originalQty: json["original_qty"],
+        fpoQty: json["fpo_qty"]?.toDouble(),
         dtlUm: json["dtl_um"],
         totalMadeQty: json["total_made_qty"],
         goodQty: json["good_qty"],
         badQty: json["bad_qty"],
         trnQty: json["trn_qty"],
         rackQty: json["rack_qty"],
-        madeP: json["made_p"],
-        dueMadeP: json["due_made_p"],
+        madeP: json["made_p"]?.toDouble(),
+        dueMadeP: json["due_made_p"]?.toDouble(),
       );
 
   Map<String, dynamic> toMap() => {
         "job_order_no": jobOrderNo,
         "fpo_no": fpoNo,
+        "item": item,
         "creation_date": creationDate,
         "plan_start_date": planStartDate,
         "plan_cmplt_date": planCmpltDate,
-        "plan_qty": planQty,
-        "original_qty": originalQty,
+        "fpo_qty": fpoQty,
         "dtl_um": dtlUm,
         "total_made_qty": totalMadeQty,
         "good_qty": goodQty,
