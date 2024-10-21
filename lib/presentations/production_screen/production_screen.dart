@@ -54,7 +54,7 @@ class ProductionScreenBody extends StatefulWidget {
 }
 
 class _ProductionScreenBodyState extends State<ProductionScreenBody> {
-  TextEditingController quentityTextController = TextEditingController();
+  TextEditingController quantityTextController = TextEditingController();
   FocusNode quantityFocusNode = FocusNode();
   TextEditingController goodQtyTextController = TextEditingController();
   FocusNode goodQtyFocusNode = FocusNode();
@@ -72,7 +72,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
 
   @override
   void dispose() {
-    quentityTextController.dispose();
+    quantityTextController.dispose();
     goodQtyTextController.dispose();
     badQtyTextController.dispose();
     quantityFocusNode.dispose();
@@ -262,63 +262,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               key: fromkey,
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(
-                                20,
-                              ),
-                              bottomRight: Radius.circular(
-                                20,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Quantity",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CommonTextFieldWidget(
-                          focusNode: quantityFocusNode,
-                          textAlign: TextAlign.center,
-                          controller: quentityTextController,
-                          keyboardType: TextInputType.phone,
-                          style: textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.primary,
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          labelText: "",
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please Enter Quantity";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            goodQtyTextController.text = value;
-                            badQtyTextController.text = 0.toString();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -372,11 +315,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             return null;
                           },
                           onChanged: (value) {
-                            var goodQty = int.parse(value);
-                            var totalQty =
-                                int.parse(quentityTextController.text);
-                            badQtyTextController.text =
-                                (totalQty - goodQty).toString();
+                            var goodQty = value.isEmpty ? 0 : int.parse(value);
+                            var badQty = badQtyTextController.text.isEmpty
+                                ? 0
+                                : int.parse(badQtyTextController.text);
+                            quantityTextController.text =
+                                (goodQty + badQty).toString();
                           },
                         ),
                       ),
@@ -416,7 +360,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                       Expanded(
                         child: CommonTextFieldWidget(
-                          readOnly: true,
                           focusNode: badQtyFocusNode,
                           textAlign: TextAlign.center,
                           controller: badQtyTextController,
@@ -432,6 +375,71 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "Please Enter Bad Quantity";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            var badQty = value.isEmpty ? 0 : int.parse(value);
+                            var goodQty = goodQtyTextController.text.isEmpty
+                                ? 0
+                                : int.parse(goodQtyTextController.text);
+                            quantityTextController.text =
+                                (goodQty + badQty).toString();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: appTheme.primary,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(
+                                20,
+                              ),
+                              bottomRight: Radius.circular(
+                                20,
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Quantity",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: CommonTextFieldWidget(
+                          readOnly: true,
+                          focusNode: quantityFocusNode,
+                          textAlign: TextAlign.center,
+                          controller: quantityTextController,
+                          keyboardType: TextInputType.phone,
+                          style: textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: appTheme.primary,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          labelText: "",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please Enter Quantity";
                             }
                             return null;
                           },
@@ -476,7 +484,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
                         listener: (context, state) {
                           if (state is ProdQrInfoSuccess) {
-                            quentityTextController.clear();
+                            quantityTextController.clear();
                             goodQtyTextController.clear();
                             badQtyTextController.clear();
                             context.read<ProdQrBloc>().add(ProdQrDataReset());
@@ -508,7 +516,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           return ElevatedButton(
                             onPressed: () {
                               if (fromkey.currentState!.validate()) {
-                                if (int.parse(quentityTextController.text) !=
+                                if (int.parse(quantityTextController.text) !=
                                     int.parse(goodQtyTextController.text) +
                                         int.parse(badQtyTextController.text)) {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -536,7 +544,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ProdQrInfoSend(
                                         itemId: _itemId,
                                         batchId: _locatorId,
-                                        qty: quentityTextController.text,
+                                        qty: quantityTextController.text,
                                         goodQty: goodQtyTextController.text,
                                         badQty: badQtyTextController.text,
                                         machine: selectedLov?.machineName ?? "",
