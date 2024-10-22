@@ -27,6 +27,7 @@ dependencies:
   collection: ^1.18.0
   syncfusion_flutter_datagrid: ^27.1.53
   syncfusion_flutter_charts: ^27.1.53
+  syncfusion_flutter_core: ^27.1.53
 
 dev_dependencies:
   flutter_test:

@@ -178,6 +178,23 @@ class JobHistory {
         "made_p": madeP,
         "due_made_p": dueMadeP,
       };
+  Map<String, dynamic> toMapForTab() => {
+        "Job Order No": jobOrderNo,
+        "FPO No": fpoNo,
+        "Item": item,
+        "Creation Date": creationDate,
+        "Plan Start Date": planStartDate,
+        "Plan Cmplt Date": planCmpltDate,
+        "FPO Qty": fpoQty,
+        "Unit": dtlUm,
+        "Total Made Qty": totalMadeQty,
+        "Good Qty": goodQty,
+        "Bad Qty": badQty,
+        "Trn Qty": trnQty,
+        "Rack Qty": rackQty,
+        "Made P %": "$madeP %",
+        "Due Made P %": "$dueMadeP %",
+      };
 }
 
 class Link {

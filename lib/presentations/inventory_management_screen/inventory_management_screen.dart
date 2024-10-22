@@ -12,7 +12,7 @@ class InventoryManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EmployeeBloc(getService())..add(EmployeeGet()),
+      create: (context) => EmployeeBloc(getService()),
       child: const InventoryManagementScreenBody(),
     );
   }
