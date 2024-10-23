@@ -130,6 +130,15 @@ class TempBatchData {
         "original_qty": originalQty,
         "total_qty": totalQty,
       };
+  Map<String, dynamic> toTabMap() => {
+        // "organization_code": organizationCode,
+        // "organization_name": organizationName,
+        "Batch No": batchNo,
+        "Item Code": itemCode,
+        "Item Name": itemName,
+        "Original Qty": originalQty,
+        "Total Qty": totalQty,
+      };
 }
 
 class Link {

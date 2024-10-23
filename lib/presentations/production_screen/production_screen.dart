@@ -17,6 +17,7 @@ import 'package:pran_rfl_erp/presentations/production_screen/bloc/lov_bloc.dart'
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_bloc.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/temp_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/production_screen/prod_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
 
 class ProductionScreen extends StatelessWidget {
@@ -473,6 +474,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 if (value == null) {
                                   return "Please Select Machine";
                                 }
+                                return null;
                               },
                             );
                           },
@@ -584,6 +586,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     );
                     return ListView.separated(
                       itemBuilder: (context, index) {
+                        var tempBatchDataSource = TempBatchDataSource(
+                            tempBatchData:
+                                groupedList.entries.elementAt(index).value);
                         return Container(
                           decoration: BoxDecoration(
                             color: appTheme.primary.withOpacity(0.4),
@@ -616,66 +621,18 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   ],
                                 ),
                               ),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: DataTable(columns: const [
-                                  // Set the name of the column
-                                  DataColumn(
-                                    label: Text('Batch No'),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 1,
+                                  vertical: 1,
+                                ),
+                                child: SizedBox(
+                                  height: 250,
+                                  child: ProdTableWidget(
+                                    source: tempBatchDataSource,
                                   ),
-                                  DataColumn(
-                                    label: Text('Item Code'),
-                                  ),
-                                  DataColumn(
-                                    label: Text('Item Name'),
-                                  ),
-                                  DataColumn(
-                                    numeric: true,
-                                    label: Text('Original Qty'),
-                                  ),
-                                  DataColumn(
-                                    numeric: true,
-                                    label: Text('Total Qty'),
-                                  ),
-                                ], rows: [
-                                  ...List.generate(
-                                    groupedList.entries
-                                        .elementAt(index)
-                                        .value
-                                        .length,
-                                    (indx) {
-                                      TempBatchData tempBatchData = groupedList
-                                          .entries
-                                          .elementAt(index)
-                                          .value[indx];
-                                      return DataRow(
-                                        cells: [
-                                          DataCell(
-                                            Text(tempBatchData.batchNo ?? ""),
-                                          ),
-                                          DataCell(
-                                            Text(tempBatchData.itemCode ?? ""),
-                                          ),
-                                          DataCell(
-                                            Text(tempBatchData.itemName ?? ""),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              tempBatchData.originalQty
-                                                  .toString(),
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              tempBatchData.totalQty.toString(),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  )
-                                ]),
-                              ),
+                                ),
+                              )
                             ],
                           ),
                         );
@@ -700,7 +657,68 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
       ),
     );
   }
+// SingleChildScrollView(
+//                                 scrollDirection: Axis.horizontal,
+//                                 child: DataTable(
 
+//                                   columns: const [
+//                                   // Set the name of the column
+//                                   DataColumn(
+//                                     label: Text('Batch No'),
+//                                   ),
+//                                   DataColumn(
+//                                     label: Text('Item Code'),
+//                                   ),
+//                                   DataColumn(
+//                                     label: Text('Item Name'),
+//                                   ),
+//                                   DataColumn(
+//                                     numeric: true,
+//                                     label: Text('Original Qty'),
+//                                   ),
+//                                   DataColumn(
+//                                     numeric: true,
+//                                     label: Text('Total Qty'),
+//                                   ),
+//                                 ], rows: [
+//                                   ...List.generate(
+//                                     groupedList.entries
+//                                         .elementAt(index)
+//                                         .value
+//                                         .length,
+//                                     (indx) {
+//                                       TempBatchData tempBatchData = groupedList
+//                                           .entries
+//                                           .elementAt(index)
+//                                           .value[indx];
+//                                       return DataRow(
+//                                         cells: [
+//                                           DataCell(
+//                                             Text(tempBatchData.batchNo ?? ""),
+//                                           ),
+//                                           DataCell(
+//                                             Text(tempBatchData.itemCode ?? ""),
+//                                           ),
+//                                           DataCell(
+//                                             Text(tempBatchData.itemName ?? ""),
+//                                           ),
+//                                           DataCell(
+//                                             Text(
+//                                               tempBatchData.originalQty
+//                                                   .toString(),
+//                                             ),
+//                                           ),
+//                                           DataCell(
+//                                             Text(
+//                                               tempBatchData.totalQty.toString(),
+//                                             ),
+//                                           ),
+//                                         ],
+//                                       );
+//                                     },
+//                                   )
+//                                 ]),
+//                               ),
   Future<String> _buildScanner(
       BuildContext context, MobileScannerController? controller) async {
     // Use a completer to wait for the scanned result
