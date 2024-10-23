@@ -134,7 +134,19 @@ class JobHistoryDataSource extends DataGridSource {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
       return Container(
-        alignment: Alignment.center,
+        alignment: [
+          "FPO No",
+          "FPO Qty",
+          "Total Made Qty",
+          "Good Qty",
+          "Bad Qty",
+          "Trn Qty",
+          "Rack Qty",
+          "Made P %",
+          "Due Made P %"
+        ].contains(e.columnName)
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
         child: Text(
           e.value.toString(),
