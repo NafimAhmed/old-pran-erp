@@ -57,7 +57,9 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                 }
                 if (state is JobHistorySuccess) {
                   var jobHisDataSource = JobHistoryDataSource(
-                      jobHistoryData: state.jobHistoryList);
+                    jobHistoryData: state.jobHistoryList,
+                  );
+
                   chartData = state.jobHistoryList
                       .map(
                         (e) => _ChartData(e.jobOrderNo ?? "", e.madeP ?? 0),
@@ -68,8 +70,11 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      JobDetailsTableWidget(
-                        source: jobHisDataSource,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: JobDetailsTableWidget(
+                          source: jobHisDataSource,
+                        ),
                       ),
                       SfCircularChart(
                         title: ChartTitle(
