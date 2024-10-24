@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
@@ -58,11 +57,15 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<void> transferBatch(
-      String batchId, String itemId, String rackId) async {
+      {required String batchId,
+      required String itemId,
+      required String rackId,
+      required String rqty,
+      required String split}) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch?BATCHID=$batchId&itemid=$itemId&rackid=$rackId'));
+            '${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch_test?batchid=$batchId&itemid=$itemId&rqty=$rqty&rackid=$rackId&split_flag=$split'));
 
     http.StreamedResponse response = await request.send();
 
@@ -73,8 +76,8 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<TransferBatchDataResponse> getTransferBatchData() async {
-    var request = http.Request(
-        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch'));
+    var request = http.Request('GET',
+        Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch_test'));
 
     http.StreamedResponse response = await request.send();
 
@@ -93,17 +96,27 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<void> rackTransfer(int transactId) async {
+  Future<void> rackTransfer(
+    int transactId,
+  ) async {
+    // var request = http.Request(
+    //     'POST',
+    //     Uri.parse(
+    //         '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
+
+    // http.StreamedResponse response = await request.send();
+
+    // await decodeResponse(
+    //   response,
+    // );
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
+            '${appConfig.baseUrl}/ords/rpro/batch/racktrnf_test?racktrnid=$transactId'));
 
     http.StreamedResponse response = await request.send();
 
-    await decodeResponse(
-      response,
-    );
+    await decodeResponse(response);
   }
 
   @override

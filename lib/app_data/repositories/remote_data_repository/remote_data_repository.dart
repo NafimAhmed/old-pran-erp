@@ -15,10 +15,17 @@ abstract class RemoteDataRepository {
     String machine,
   );
   Future<TempBatchDataResponse> getTempBatchData();
-  Future<void> transferBatch(String batchId, String itemId, String rackId);
+  Future<void> transferBatch(
+      {required String batchId,
+      required String itemId,
+      required String rackId,
+      required String rqty,
+      required String split});
   Future<TransferBatchDataResponse> getTransferBatchData();
   Future<LovResponse> getLov();
 
-  Future<void> rackTransfer(int transactId);
+  Future<void> rackTransfer(
+    int transactId,
+  );
   Future<JobHistoryResponse> getJobHistory();
 }

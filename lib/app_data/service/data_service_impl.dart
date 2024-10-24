@@ -54,8 +54,18 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<void> transferBatch(
-      String batchId, String itemId, String rackId) async {
-    await remoteDataRepository.transferBatch(batchId, itemId, rackId);
+      {required String batchId,
+      required String itemId,
+      required String rackId,
+      required String rqty,
+      required String split}) async {
+    await remoteDataRepository.transferBatch(
+      batchId: batchId,
+      itemId: itemId,
+      rackId: rackId,
+      rqty: rqty,
+      split: split,
+    );
   }
 
   @override
@@ -71,7 +81,9 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> rackTransfer(int transactId) async {
+  Future<void> rackTransfer(
+    int transactId,
+  ) async {
     var response = await remoteDataRepository.rackTransfer(transactId);
   }
 

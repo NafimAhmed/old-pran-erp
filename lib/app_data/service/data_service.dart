@@ -15,9 +15,16 @@ abstract class DataService {
     String machine,
   );
   Future<List<TempBatchData>> getTempBatchData();
-  Future<void> transferBatch(String batchId, String itemId, String rackId);
+  Future<void> transferBatch(
+      {required String batchId,
+      required String itemId,
+      required String rackId,
+      required String rqty,
+      required String split});
   Future<List<TransferBatchData>> getTransferBatchData();
   Future<List<Lov>> getLov();
-  Future<void> rackTransfer(int transactId);
+  Future<void> rackTransfer(
+    int transactId,
+  );
   Future<List<JobHistory>> getJobHistory();
 }

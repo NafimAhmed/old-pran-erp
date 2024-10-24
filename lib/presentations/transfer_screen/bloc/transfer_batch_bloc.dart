@@ -9,9 +9,16 @@ final class TransferBatch extends TransferBatchEvent {
   final String batchId;
   final String itemId;
   final String rackId;
+  final String rqty;
+  final String split;
 
-  TransferBatch(
-      {required this.batchId, required this.itemId, required this.rackId});
+  TransferBatch({
+    required this.batchId,
+    required this.itemId,
+    required this.rackId,
+    required this.rqty,
+    required this.split,
+  });
 }
 
 @immutable
@@ -36,7 +43,12 @@ class TransferBatchBloc extends Bloc<TransferBatchEvent, TransferBatchState> {
       emit(TransferBatchLoading());
       try {
         var response = await _dataService.transferBatch(
-            event.batchId, event.itemId, event.rackId);
+          batchId: event.batchId,
+          itemId: event.itemId,
+          rackId: event.rackId,
+          rqty: event.rqty,
+          split: event.split,
+        );
         emit(TransferBatchSuccess());
       } catch (error) {
         emit(TransferBatchError(error: error));
