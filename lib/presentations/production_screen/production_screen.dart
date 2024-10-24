@@ -62,10 +62,11 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   FocusNode goodQtyFocusNode = FocusNode();
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
-
+  TextEditingController dropDownTextController = TextEditingController();
   String _locatorId = "";
   String _itemId = "";
   Lov? selectedLov;
+  List<Lov> lovList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
@@ -89,491 +90,550 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const CommonAppBar(appBartitle: "Production"),
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-        ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 5,
-            ),
-            Material(
-              elevation: 10,
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: appTheme.primary.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    const Flexible(
-                      child: Row(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 5,
+              ),
+              Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: appTheme.primary.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    children: [
+                      const Flexible(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.person_2,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(child: Text("Miraj Hossain Shawon"))
+                          ],
+                        ),
+                      ),
+                      Row(
                         children: [
-                          Icon(
-                            Icons.person_2,
+                          const Icon(
+                            Icons.calendar_today,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
-                          Flexible(child: Text("Miraj Hossain Shawon"))
+                          Text(
+                            DateTime.now().toFormatedString("dd-MMM-yyy"),
+                          )
                         ],
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              BlocListener<ProdQrBloc, ProdQrState>(
+                listener: (context, state) {
+                  if (state is ProdQrError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Unable to get locator Id",
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: appTheme.primary,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(
+                              20,
+                            ),
+                            bottomRight: Radius.circular(
+                              20,
+                            ),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Scan QR",
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    IconButton.filled(
+                      iconSize: 30,
+                      onPressed: () async {
+                        var data = await _buildScanner(context, controller);
+
+                        context.read<ProdQrBloc>().add(
+                              ProdQrDataGet(
+                                qrData: data,
+                              ),
+                            );
+                      },
+                      icon: Icon(
+                        Icons.qr_code_scanner_rounded,
+                        color: appTheme.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              BlocBuilder<ProdQrBloc, ProdQrState>(
+                buildWhen: (previous, current) => previous != current,
+                builder: (context, state) {
+                  if (state is ProdQrLoaded) {
+                    _locatorId = state.batchId;
+                    _itemId = state.itemId;
+                    return Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          color: appTheme.primary.withOpacity(
+                            0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Batch Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                state.batchId,
+                                style: textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Item Id",
+                                style: textTheme.bodyMedium,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                state.itemId,
+                                style: textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Form(
+                key: fromkey,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
                     ),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.calendar_today,
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: appTheme.primary,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(
+                                  20,
+                                ),
+                                bottomRight: Radius.circular(
+                                  20,
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Good Qty",
+                                style: textTheme.bodyMedium!.copyWith(
+                                  color: appTheme.white,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          DateTime.now().toFormatedString("dd-MMM-yyy"),
-                        )
+                        Expanded(
+                          child: CommonTextFieldWidget(
+                            focusNode: goodQtyFocusNode,
+                            textAlign: TextAlign.center,
+                            controller: goodQtyTextController,
+                            keyboardType: TextInputType.phone,
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.primary,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            labelText: "",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please Enter Good Quantity";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              var goodQty =
+                                  value.isEmpty ? 0 : int.parse(value);
+                              var badQty = badQtyTextController.text.isEmpty
+                                  ? 0
+                                  : int.parse(badQtyTextController.text);
+                              quantityTextController.text =
+                                  (goodQty + badQty).toString();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: appTheme.primary,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(
+                                  20,
+                                ),
+                                bottomRight: Radius.circular(
+                                  20,
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Bad Qty",
+                                style: textTheme.bodyMedium!.copyWith(
+                                  color: appTheme.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: CommonTextFieldWidget(
+                            focusNode: badQtyFocusNode,
+                            textAlign: TextAlign.center,
+                            controller: badQtyTextController,
+                            keyboardType: TextInputType.phone,
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.primary,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            labelText: "",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please Enter Bad Quantity";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              var badQty = value.isEmpty ? 0 : int.parse(value);
+                              var goodQty = goodQtyTextController.text.isEmpty
+                                  ? 0
+                                  : int.parse(goodQtyTextController.text);
+                              quantityTextController.text =
+                                  (goodQty + badQty).toString();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: appTheme.primary,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(
+                                  20,
+                                ),
+                                bottomRight: Radius.circular(
+                                  20,
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Quantity",
+                                style: textTheme.bodyMedium!.copyWith(
+                                  color: appTheme.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: CommonTextFieldWidget(
+                            readOnly: true,
+                            focusNode: quantityFocusNode,
+                            textAlign: TextAlign.center,
+                            controller: quantityTextController,
+                            keyboardType: TextInputType.phone,
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.primary,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            labelText: "",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please Enter Quantity";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        // CommonDropdownButton<Lov>(
+                        //         hintText: "Select Machine",
+                        //         items: state is LovLoaded ? state.lovList : [],
+                        //         value:
+                        //             state is LovLoaded ? state.selectedLov : null,
+                        //         onChanged: (value) {
+                        //           context
+                        //               .read<LovBloc>()
+                        //               .add(LovChanged(selectedLov: value));
+                        //         },
+                        //         validator: (value) {
+                        //           if (value == null) {
+                        //             return "Please Select Machine";
+                        //           }
+                        //           return null;
+                        //         },
+                        //       ),
+                        // Expanded(
+                        //   child: ,
+                        // ),
+                        Expanded(
+                          child: BlocBuilder<LovBloc, LovState>(
+                            builder: (context, state) {
+                              if (state is LovLoaded) {
+                                selectedLov = state.selectedLov;
+                                lovList = state.lovList;
+                              }
+                              return DropdownMenu(
+                                menuHeight: 250,
+                                expandedInsets: EdgeInsets.zero,
+                                enableSearch: true,
+                                requestFocusOnTap: true,
+
+                                menuStyle:
+                                    MenuStyle(alignment: Alignment.topCenter),
+                                // enableFilter: true,
+                                controller: dropDownTextController,
+                                hintText: "Select Machine",
+                                inputDecorationTheme: InputDecorationTheme(
+                                  hintStyle: textTheme.bodySmall!.copyWith(
+                                    color: appTheme.primary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                textStyle: textTheme.bodySmall!.copyWith(
+                                  color: appTheme.primary,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                onSelected: (value) {
+                                  context
+                                      .read<LovBloc>()
+                                      .add(LovChanged(selectedLov: value));
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                dropdownMenuEntries: lovList.map(
+                                  (e) {
+                                    return DropdownMenuEntry(
+                                      value: e,
+                                      label: e.toString(),
+                                    );
+                                  },
+                                ).toList(),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 40,
+                        ),
+                        BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
+                          listener: (context, state) {
+                            if (state is ProdQrInfoSuccess) {
+                              quantityTextController.clear();
+                              goodQtyTextController.clear();
+                              badQtyTextController.clear();
+                              context.read<ProdQrBloc>().add(ProdQrDataReset());
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                    "Successfully Added..",
+                                  ),
+                                  backgroundColor: appTheme.primary,
+                                ),
+                              );
+                              context
+                                  .read<TempBatchDataBloc>()
+                                  .add(TempBatchDataGet());
+                            }
+                            if (state is ProdQrInfoError) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Couldn't save the data",
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is ProdQrInfoSuccess) {}
+                            return ElevatedButton(
+                              onPressed: () {
+                                if (fromkey.currentState!.validate()) {
+                                  if (int.parse(quantityTextController.text) !=
+                                      int.parse(goodQtyTextController.text) +
+                                          int.parse(
+                                              badQtyTextController.text)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Quantity Mismatch",
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  if (selectedLov == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Please Select MAchine",
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  if (_itemId.isEmpty || _locatorId.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Please Scan QR Code",
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  context.read<ProdQrInfoBloc>().add(
+                                        ProdQrInfoSend(
+                                          itemId: _itemId,
+                                          batchId: _locatorId,
+                                          qty: quantityTextController.text,
+                                          goodQty: goodQtyTextController.text,
+                                          badQty: badQtyTextController.text,
+                                          machine:
+                                              selectedLov?.machineName ?? "",
+                                        ),
+                                      );
+                                }
+                              },
+                              child: Text(
+                                state is ProdQrInfoLoading ? "Saving" : "Save",
+                                style: textTheme.bodyMedium!.copyWith(
+                                  color: appTheme.white,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            BlocListener<ProdQrBloc, ProdQrState>(
-              listener: (context, state) {
-                if (state is ProdQrError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Unable to get locator Id",
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(
-                            20,
-                          ),
-                          bottomRight: Radius.circular(
-                            20,
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Scan QR",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  IconButton.filled(
-                    iconSize: 30,
-                    onPressed: () async {
-                      var data = await _buildScanner(context, controller);
-
-                      context.read<ProdQrBloc>().add(
-                            ProdQrDataGet(
-                              qrData: data,
-                            ),
-                          );
-                    },
-                    icon: Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: appTheme.white,
-                    ),
-                  ),
-                ],
+              const SizedBox(
+                height: 10,
               ),
-            ),
-            BlocBuilder<ProdQrBloc, ProdQrState>(
-              buildWhen: (previous, current) => previous != current,
-              builder: (context, state) {
-                if (state is ProdQrLoaded) {
-                  _locatorId = state.batchId;
-                  _itemId = state.itemId;
-                  return Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(
-                          0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Batch Id",
-                              style: textTheme.bodyMedium,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              state.batchId,
-                              style: textTheme.bodyMedium,
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Item Id",
-                              style: textTheme.bodyMedium,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              state.itemId,
-                              style: textTheme.bodyMedium,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return Container();
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Form(
-              key: fromkey,
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(
-                                20,
-                              ),
-                              bottomRight: Radius.circular(
-                                20,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Good Qty",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CommonTextFieldWidget(
-                          focusNode: goodQtyFocusNode,
-                          textAlign: TextAlign.center,
-                          controller: goodQtyTextController,
-                          keyboardType: TextInputType.phone,
-                          style: textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.primary,
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          labelText: "",
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please Enter Good Quantity";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            var goodQty = value.isEmpty ? 0 : int.parse(value);
-                            var badQty = badQtyTextController.text.isEmpty
-                                ? 0
-                                : int.parse(badQtyTextController.text);
-                            quantityTextController.text =
-                                (goodQty + badQty).toString();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(
-                                20,
-                              ),
-                              bottomRight: Radius.circular(
-                                20,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Bad Qty",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CommonTextFieldWidget(
-                          focusNode: badQtyFocusNode,
-                          textAlign: TextAlign.center,
-                          controller: badQtyTextController,
-                          keyboardType: TextInputType.phone,
-                          style: textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.primary,
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          labelText: "",
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please Enter Bad Quantity";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            var badQty = value.isEmpty ? 0 : int.parse(value);
-                            var goodQty = goodQtyTextController.text.isEmpty
-                                ? 0
-                                : int.parse(goodQtyTextController.text);
-                            quantityTextController.text =
-                                (goodQty + badQty).toString();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(
-                                20,
-                              ),
-                              bottomRight: Radius.circular(
-                                20,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Quantity",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CommonTextFieldWidget(
-                          readOnly: true,
-                          focusNode: quantityFocusNode,
-                          textAlign: TextAlign.center,
-                          controller: quantityTextController,
-                          keyboardType: TextInputType.phone,
-                          style: textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.primary,
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          labelText: "",
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please Enter Quantity";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {},
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: BlocBuilder<LovBloc, LovState>(
-                          builder: (context, state) {
-                            if (state is LovLoaded) {
-                              selectedLov = state.selectedLov;
-                            }
-                            return CommonDropdownButton<Lov>(
-                              hintText: "Select Machine",
-                              items: state is LovLoaded ? state.lovList : [],
-                              value:
-                                  state is LovLoaded ? state.selectedLov : null,
-                              onChanged: (value) {
-                                context
-                                    .read<LovBloc>()
-                                    .add(LovChanged(selectedLov: value));
-                              },
-                              validator: (value) {
-                                if (value == null) {
-                                  return "Please Select Machine";
-                                }
-                                return null;
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      BlocConsumer<ProdQrInfoBloc, ProdQrInfoState>(
-                        listener: (context, state) {
-                          if (state is ProdQrInfoSuccess) {
-                            quantityTextController.clear();
-                            goodQtyTextController.clear();
-                            badQtyTextController.clear();
-                            context.read<ProdQrBloc>().add(ProdQrDataReset());
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  "Successfully Added..",
-                                ),
-                                backgroundColor: appTheme.primary,
-                              ),
-                            );
-                            context
-                                .read<TempBatchDataBloc>()
-                                .add(TempBatchDataGet());
-                          }
-                          if (state is ProdQrInfoError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Couldn't save the data",
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state is ProdQrInfoSuccess) {}
-                          return ElevatedButton(
-                            onPressed: () {
-                              if (fromkey.currentState!.validate()) {
-                                if (int.parse(quantityTextController.text) !=
-                                    int.parse(goodQtyTextController.text) +
-                                        int.parse(badQtyTextController.text)) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        "Quantity Mismatch",
-                                      ),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                  return;
-                                }
-                                if (_itemId.isEmpty || _locatorId.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        "Please Scan QR Code",
-                                      ),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                  return;
-                                }
-                                context.read<ProdQrInfoBloc>().add(
-                                      ProdQrInfoSend(
-                                        itemId: _itemId,
-                                        batchId: _locatorId,
-                                        qty: quantityTextController.text,
-                                        goodQty: goodQtyTextController.text,
-                                        badQty: badQtyTextController.text,
-                                        machine: selectedLov?.machineName ?? "",
-                                      ),
-                                    );
-                              }
-                            },
-                            child: Text(
-                              state is ProdQrInfoLoading ? "Saving" : "Save",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: BlocBuilder<TempBatchDataBloc, TempBatchDataState>(
+              BlocBuilder<TempBatchDataBloc, TempBatchDataState>(
                 builder: (context, state) {
                   if (state is TempBatchDataLoading) {
                     return const Center(
@@ -589,8 +649,11 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         tempBatchData: state.tempBatchDataList);
                     tempBatchDataSource.addColumnGroup(ColumnGroup(
                         name: "Organization", sortGroupRows: false));
-                    return ProdTableWidget(
-                      source: tempBatchDataSource,
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: ProdTableWidget(
+                        source: tempBatchDataSource,
+                      ),
                     );
                     // return ListView.separated(
                     //   itemBuilder: (context, index) {
@@ -713,77 +776,16 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                   return Container();
                 },
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-// SingleChildScrollView(
-//                                 scrollDirection: Axis.horizontal,
-//                                 child: DataTable(
 
-//                                   columns: const [
-//                                   // Set the name of the column
-//                                   DataColumn(
-//                                     label: Text('Batch No'),
-//                                   ),
-//                                   DataColumn(
-//                                     label: Text('Item Code'),
-//                                   ),
-//                                   DataColumn(
-//                                     label: Text('Item Name'),
-//                                   ),
-//                                   DataColumn(
-//                                     numeric: true,
-//                                     label: Text('Original Qty'),
-//                                   ),
-//                                   DataColumn(
-//                                     numeric: true,
-//                                     label: Text('Total Qty'),
-//                                   ),
-//                                 ], rows: [
-//                                   ...List.generate(
-//                                     groupedList.entries
-//                                         .elementAt(index)
-//                                         .value
-//                                         .length,
-//                                     (indx) {
-//                                       TempBatchData tempBatchData = groupedList
-//                                           .entries
-//                                           .elementAt(index)
-//                                           .value[indx];
-//                                       return DataRow(
-//                                         cells: [
-//                                           DataCell(
-//                                             Text(tempBatchData.batchNo ?? ""),
-//                                           ),
-//                                           DataCell(
-//                                             Text(tempBatchData.itemCode ?? ""),
-//                                           ),
-//                                           DataCell(
-//                                             Text(tempBatchData.itemName ?? ""),
-//                                           ),
-//                                           DataCell(
-//                                             Text(
-//                                               tempBatchData.originalQty
-//                                                   .toString(),
-//                                             ),
-//                                           ),
-//                                           DataCell(
-//                                             Text(
-//                                               tempBatchData.totalQty.toString(),
-//                                             ),
-//                                           ),
-//                                         ],
-//                                       );
-//                                     },
-//                                   )
-//                                 ]),
-//                               ),
   Future<String> _buildScanner(
       BuildContext context, MobileScannerController? controller) async {
     // Use a completer to wait for the scanned result
