@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfer_batch_bloc.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfered_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/rack_qr_cubit.dart';
+
+class SplitQtyDialog extends StatelessWidget {
+  SplitQtyDialog({
+    super.key,
+    required this.blocContext,
+    required this.batchId,
+    required this.itemId,
+    required this.rackId,
+  });
+  final BuildContext blocContext;
+  final String batchId;
+  final String itemId;
+  final String rackId;
+  final TextEditingController splitQtyTextController = TextEditingController();
+  final FocusNode splitQtyFocusNode = FocusNode();
+  final GlobalKey<FormState> fromKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: BlocProvider.of<TransferBatchBloc>(blocContext),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<ItemQrCubit>(blocContext),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<RackQrCubit>(blocContext),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<TransferedBatchDataBloc>(blocContext),
+        ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: appTheme.primary,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(
+                        20,
+                      ),
+                      bottomRight: Radius.circular(
+                        20,
+                      ),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Split Quantity",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Form(
+              key: fromKey,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CommonTextFieldWidget(
+                      focusNode: splitQtyFocusNode,
+                      textAlign: TextAlign.center,
+                      controller: splitQtyTextController,
+                      keyboardType: TextInputType.phone,
+                      style: textTheme.bodySmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: appTheme.primary,
+                      ),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      labelText: "",
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Split Quantity";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            BlocConsumer<TransferBatchBloc, TransferBatchState>(
+              listener: (context, state) {
+                if (state is TransferBatchSuccess) {
+                  splitQtyTextController.clear();
+                  context.pop();
+                }
+              },
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (fromKey.currentState!.validate()) {
+                      blocContext.read<TransferBatchBloc>().add(
+                            TransferBatch(
+                              batchId: batchId,
+                              itemId: itemId,
+                              rackId: rackId,
+                              rqty: splitQtyTextController.text,
+                              split: "1",
+                            ),
+                          );
+                    }
+                  },
+                  child: Text(
+                    state is TransferBatchLoading ? "Saving..." : "Save",
+                    style: textTheme.bodySmall!.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
