@@ -74,8 +74,11 @@ class TempBatchData {
   final String? batchNo;
   final String? itemCode;
   final String? itemName;
-  final num? originalQty;
+  final int? originalQty;
   final int? totalQty;
+  final String? jobOrderNo;
+  final String? batchStatus;
+  final int? flagStatus;
 
   TempBatchData({
     this.organizationCode,
@@ -85,6 +88,9 @@ class TempBatchData {
     this.itemName,
     this.originalQty,
     this.totalQty,
+    this.jobOrderNo,
+    this.batchStatus,
+    this.flagStatus,
   });
 
   TempBatchData copyWith({
@@ -93,8 +99,11 @@ class TempBatchData {
     String? batchNo,
     String? itemCode,
     String? itemName,
-    double? originalQty,
+    int? originalQty,
     int? totalQty,
+    String? jobOrderNo,
+    String? batchStatus,
+    int? flagStatus,
   }) =>
       TempBatchData(
         organizationCode: organizationCode ?? this.organizationCode,
@@ -104,6 +113,9 @@ class TempBatchData {
         itemName: itemName ?? this.itemName,
         originalQty: originalQty ?? this.originalQty,
         totalQty: totalQty ?? this.totalQty,
+        jobOrderNo: jobOrderNo ?? this.jobOrderNo,
+        batchStatus: batchStatus ?? this.batchStatus,
+        flagStatus: flagStatus ?? this.flagStatus,
       );
 
   factory TempBatchData.fromJson(String str) =>
@@ -117,8 +129,11 @@ class TempBatchData {
         batchNo: json["batch_no"],
         itemCode: json["item_code"],
         itemName: json["item_name"],
-        originalQty: json["original_qty"]?.toDouble(),
+        originalQty: json["original_qty"],
         totalQty: json["total_qty"],
+        jobOrderNo: json["job_order_no"],
+        batchStatus: json["batch_status"],
+        flagStatus: json["flag_status"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -129,15 +144,21 @@ class TempBatchData {
         "item_name": itemName,
         "original_qty": originalQty,
         "total_qty": totalQty,
+        "job_order_no": jobOrderNo,
+        "batch_status": batchStatus,
+        "flag_status": flagStatus,
       };
   Map<String, dynamic> toTabMap() => {
-        // "organization_code": organizationCode,
+        "Organization": organizationCode,
         // "organization_name": organizationName,
         "Batch No": batchNo,
         "Item Code": itemCode,
         "Item Name": itemName,
         "Original Qty": originalQty,
         "Total Qty": totalQty,
+        "Job Order No": jobOrderNo,
+        "Batch Status": batchStatus,
+        "Flag Status": flagStatus,
       };
 }
 

@@ -1,11 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-
-import 'package:pran_rfl_erp/presentations/transfer_details_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ProdTableWidget extends StatelessWidget {
@@ -15,11 +10,14 @@ class ProdTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SfDataGrid(
       source: source,
-      frozenRowsCount: 0,
+      // frozenRowsCount: 2,
+      allowExpandCollapseGroup: true,
+
       gridLinesVisibility: GridLinesVisibility.both,
       headerGridLinesVisibility: GridLinesVisibility.both,
       columnWidthMode: ColumnWidthMode.fitByCellValue,
       shrinkWrapRows: true,
+      // verticalScrollPhysics: const NeverScrollableScrollPhysics(),
       columns: <GridColumn>[
         ...List.generate(
           source._tempBatchData.first.getCells().length,
@@ -27,6 +25,9 @@ class ProdTableWidget extends StatelessWidget {
             return GridColumn(
               columnName:
                   source._tempBatchData.first.getCells()[index].columnName,
+              visible:
+                  source._tempBatchData.first.getCells()[index].columnName !=
+                      "Flag Status",
               label: Container(
                 color: appTheme.primary,
                 alignment: Alignment.center,
@@ -75,18 +76,39 @@ class TempBatchDataSource<T> extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    Color getConditionalRowBackgroundColor() {
+      final int flag = row.getCells()[8].value;
+      if (flag == 1) {
+        return Colors.red[300]!;
+      }
+
+      return Colors.transparent;
+    }
+
     return DataGridRowAdapter(
+        color: getConditionalRowBackgroundColor(),
         cells: row.getCells().map<Widget>((e) {
-      return Container(
-        alignment: ["Total Qty", "Original Qty", "Batch No", "Item Code"]
-                .contains(e.columnName)
-            ? Alignment.centerRight
-            : Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          e.value.toString(),
+          return Container(
+            alignment: ["Total Qty", "Original Qty", "Batch No", "Item Code"]
+                    .contains(e.columnName)
+                ? Alignment.centerRight
+                : Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              e.value.toString(),
+            ),
+          );
+        }).toList());
+  }
+
+  @override
+  Widget? buildGroupCaptionCellWidget(
+      RowColumnIndex rowColumnIndex, String summaryValue) {
+    return Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 15,
         ),
-      );
-    }).toList());
+        child: Text(summaryValue));
   }
 }

@@ -19,6 +19,7 @@ import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_info_b
 import 'package:pran_rfl_erp/presentations/production_screen/bloc/temp_batch_data_bloc.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/prod_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ProductionScreen extends StatelessWidget {
   const ProductionScreen({super.key});
@@ -580,70 +581,134 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     );
                   }
                   if (state is TempBatchDataSuccess) {
-                    var groupedList = groupBy(
-                      state.tempBatchDataList,
-                      (p0) => p0.organizationCode,
+                    // var groupedList = groupBy(
+                    //   state.tempBatchDataList,
+                    //   (p0) => p0.organizationCode,
+                    // );
+                    var tempBatchDataSource = TempBatchDataSource(
+                        tempBatchData: state.tempBatchDataList);
+                    tempBatchDataSource.addColumnGroup(ColumnGroup(
+                        name: "Organization", sortGroupRows: false));
+                    return ProdTableWidget(
+                      source: tempBatchDataSource,
                     );
-                    return ListView.separated(
-                      itemBuilder: (context, index) {
-                        var tempBatchDataSource = TempBatchDataSource(
-                            tempBatchData:
-                                groupedList.entries.elementAt(index).value);
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: appTheme.primary.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                color: appTheme.primary,
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "ORG No:",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.white,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      groupedList.keys.elementAt(index) ?? "",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.white,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 1,
-                                  vertical: 1,
-                                ),
-                                child: SizedBox(
-                                  height: 250,
-                                  child: ProdTableWidget(
-                                    source: tempBatchDataSource,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
-                        );
-                      },
-                      itemCount: groupedList.length,
-                    );
+                    // return ListView.separated(
+                    //   itemBuilder: (context, index) {
+                    //     var tempBatchDataSource = TempBatchDataSource(
+                    //         tempBatchData:
+                    //             groupedList.entries.elementAt(index).value);
+                    //     return Container(
+                    //       decoration: BoxDecoration(
+                    //         color: appTheme.primary.withOpacity(0.4),
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //       child: Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Container(
+                    //             color: appTheme.primary,
+                    //             padding: const EdgeInsets.all(8.0),
+                    //             child: Row(
+                    //               mainAxisAlignment: MainAxisAlignment.center,
+                    //               children: [
+                    //                 Text(
+                    //                   "ORG No:",
+                    //                   style: textTheme.bodyMedium!.copyWith(
+                    //                     color: appTheme.white,
+                    //                   ),
+                    //                 ),
+                    //                 const SizedBox(
+                    //                   width: 10,
+                    //                 ),
+                    //                 Text(
+                    //                   groupedList.keys.elementAt(index) ?? "",
+                    //                   style: textTheme.bodyMedium!.copyWith(
+                    //                     color: appTheme.white,
+                    //                   ),
+                    //                 )
+                    //               ],
+                    //             ),
+                    //           ),
+                    //           SingleChildScrollView(
+                    //             scrollDirection: Axis.horizontal,
+                    //             child: DataTable(columns: const [
+                    //               // Set the name of the column
+                    //               DataColumn(
+                    //                 label: Text('Batch No'),
+                    //               ),
+                    //               DataColumn(
+                    //                 label: Text('Item Code'),
+                    //               ),
+                    //               DataColumn(
+                    //                 label: Text('Item Name'),
+                    //               ),
+                    //               DataColumn(
+                    //                 numeric: true,
+                    //                 label: Text('Original Qty'),
+                    //               ),
+                    //               DataColumn(
+                    //                 numeric: true,
+                    //                 label: Text('Total Qty'),
+                    //               ),
+                    //             ], rows: [
+                    //               ...List.generate(
+                    //                 groupedList.entries
+                    //                     .elementAt(index)
+                    //                     .value
+                    //                     .length,
+                    //                 (indx) {
+                    //                   TempBatchData tempBatchData = groupedList
+                    //                       .entries
+                    //                       .elementAt(index)
+                    //                       .value[indx];
+                    //                   return DataRow(
+                    //                     cells: [
+                    //                       DataCell(
+                    //                         Text(tempBatchData.batchNo ?? ""),
+                    //                       ),
+                    //                       DataCell(
+                    //                         Text(tempBatchData.itemCode ?? ""),
+                    //                       ),
+                    //                       DataCell(
+                    //                         Text(tempBatchData.itemName ?? ""),
+                    //                       ),
+                    //                       DataCell(
+                    //                         Text(
+                    //                           tempBatchData.originalQty
+                    //                               .toString(),
+                    //                         ),
+                    //                       ),
+                    //                       DataCell(
+                    //                         Text(
+                    //                           tempBatchData.totalQty.toString(),
+                    //                         ),
+                    //                       ),
+                    //                     ],
+                    //                   );
+                    //                 },
+                    //               )
+                    //             ]),
+                    //           ),
+                    //           // Padding(
+                    //           //   padding: const EdgeInsets.symmetric(
+                    //           //     horizontal: 1,
+                    //           //     vertical: 1,
+                    //           //   ),
+                    //           //   child: ProdTableWidget(
+                    //           //     source: tempBatchDataSource,
+                    //           //   ),
+                    //           // )
+                    //         ],
+                    //       ),
+                    //     );
+                    //   },
+                    //   separatorBuilder: (context, index) {
+                    //     return const SizedBox(
+                    //       height: 10,
+                    //     );
+                    //   },
+                    //   itemCount: groupedList.length,
+                    // );
                   }
                   return Container();
                 },
