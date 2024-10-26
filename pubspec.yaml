@@ -28,6 +28,8 @@ dependencies:
   syncfusion_flutter_datagrid: ^27.1.53
   syncfusion_flutter_charts: ^27.1.53
   syncfusion_flutter_core: ^27.1.53
+  sqflite: ^2.4.0
+  path: ^1.9.0
 
 
 dev_dependencies:

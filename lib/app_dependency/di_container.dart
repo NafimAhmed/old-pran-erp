@@ -1,11 +1,13 @@
 import 'package:get_it/get_it.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository_impl.dart';
+import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_database_service.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository_impl.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service_impl.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
+import 'package:sqflite/sqflite.dart';
 
 GetIt getIt = GetIt.instance;
 
@@ -38,14 +40,17 @@ abstract class DIContainer {
 //     getIt.registerLazySingleton<LocalDataSource>(
 //       () => LocalDataSourceImpl(database: db),
 //     );
-
+    getIt.registerLazySingleton<LocalDatabase>(
+      () => LocalDatabase.instance,
+    );
     getIt.registerLazySingleton<RemoteDataRepository>(
       () => RemoteDataRepositoryImpl(
         appConfig: getIt<AppConfig>(),
       ),
     );
+    Database localdatabase = await getIt<LocalDatabase>().database;
     getIt.registerLazySingleton<LocalDataRepository>(
-      () => LocalDataRepositoryImpl(),
+      () => LocalDataRepositoryImpl(localDatabase: localdatabase),
     );
 
     // getIt.registerLazySingleton<ConnectivityService>(
