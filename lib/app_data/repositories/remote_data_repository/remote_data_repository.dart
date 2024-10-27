@@ -6,7 +6,7 @@ import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart
 
 abstract class RemoteDataRepository {
   Future<EmployeResponse> getEmplist();
-  Future<bool> sendProdQrInfo(
+  Future<void> sendProdQrInfo(
     String itemId,
     String batchId,
     String qty,

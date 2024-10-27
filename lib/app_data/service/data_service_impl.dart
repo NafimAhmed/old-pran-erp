@@ -24,7 +24,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<bool> sendProdQrInfo(
+  Future<void> sendProdQrInfo(
     String itemId,
     String batchId,
     String qty,
@@ -32,7 +32,7 @@ class DataServiceImpl implements DataService {
     String badQty,
     String machine,
   ) async {
-    var response = await remoteDataRepository.sendProdQrInfo(
+    await remoteDataRepository.sendProdQrInfo(
       itemId,
       batchId,
       qty,
@@ -40,10 +40,6 @@ class DataServiceImpl implements DataService {
       badQty,
       machine,
     );
-    if (!response) {
-      throw const ApiDataException("Unable to save the data");
-    }
-    return response;
   }
 
   @override

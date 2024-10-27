@@ -26,7 +26,7 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<bool> sendProdQrInfo(
+  Future<void> sendProdQrInfo(
     String itemId,
     String batchId,
     String qty,
@@ -41,7 +41,7 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
 
-    return response.statusCode == 200 ? true : false;
+    await decodeResponse(response);
   }
 
   @override
@@ -76,8 +76,8 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<TransferBatchDataResponse> getTransferBatchData() async {
-    var request = http.Request('GET',
-        Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch_test'));
+    var request = http.Request(
+        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch'));
 
     http.StreamedResponse response = await request.send();
 
