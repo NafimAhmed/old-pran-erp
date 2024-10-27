@@ -4,8 +4,10 @@ import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/presentations/transfer_details_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/transfer_details_screen/widgets/job_details_table_widget.dart';
+import 'package:pran_rfl_erp/presentations/transfer_details_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TransferDetailsScreen extends StatelessWidget {
@@ -74,6 +76,39 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                         height: MediaQuery.of(context).size.height * 0.6,
                         child: JobDetailsTableWidget(
                           source: jobHisDataSource,
+                          onCellTap: (details) {
+                            // log(
+                            //   source._jobHisData[details.rowColumnIndex.rowIndex - 1]
+                            //       .getCells()
+                            //       .elementAt(details.rowColumnIndex.columnIndex)
+                            //       .value
+                            //       .toString(),
+                            // );
+                            if (details.rowColumnIndex.columnIndex == 0) {
+                              AppModal.showCustomModal(
+                                context,
+                                content: JobOrderDetailsDialog(
+                                  jobOrderNo: jobHisDataSource
+                                      .rows[details.rowColumnIndex.rowIndex - 1]
+                                      .getCells()
+                                      .elementAt(
+                                          details.rowColumnIndex.columnIndex)
+                                      .value
+                                      .toString(),
+                                  itemName: jobHisDataSource
+                                      .rows[details.rowColumnIndex.rowIndex - 1]
+                                      .getCells()
+                                      .elementAt(1)
+                                      .value
+                                      .toString(),
+                                  cells: jobHisDataSource
+                                      .rows[details.rowColumnIndex.rowIndex - 1]
+                                      .getCells()
+                                      .sublist(2),
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
                       SfCircularChart(

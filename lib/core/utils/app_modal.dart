@@ -5,12 +5,15 @@ class AppModal {
       {String? title, Widget? content}) {
     return showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (context) => Dialog(
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
-          ),
+        alignment: Alignment.center,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
         ),
         child: content,
       ),

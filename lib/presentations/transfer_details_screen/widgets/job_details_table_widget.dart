@@ -1,15 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-
-import 'package:pran_rfl_erp/presentations/transfer_details_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class JobDetailsTableWidget extends StatelessWidget {
-  const JobDetailsTableWidget({super.key, required this.source});
+  const JobDetailsTableWidget(
+      {super.key, required this.source, this.onCellTap});
   final JobHistoryDataSource source;
+  final void Function(DataGridCellTapDetails)? onCellTap;
   @override
   Widget build(BuildContext context) {
     return SfDataGrid(
@@ -19,43 +18,7 @@ class JobDetailsTableWidget extends StatelessWidget {
       headerGridLinesVisibility: GridLinesVisibility.both,
       columnWidthMode: ColumnWidthMode.fitByCellValue,
       shrinkWrapRows: true,
-      onCellTap: (details) {
-        log(
-          source._jobHisData[details.rowColumnIndex.rowIndex - 1]
-              .getCells()
-              .elementAt(details.rowColumnIndex.columnIndex)
-              .value
-              .toString(),
-        );
-        if (details.rowColumnIndex.columnIndex == 0) {
-          showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (context) {
-              return Dialog(
-                alignment: Alignment.center,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                insetPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                child: JobOrderDetailsDialog(
-                  jobOrderNo: source
-                      ._jobHisData[details.rowColumnIndex.rowIndex - 1]
-                      .getCells()
-                      .elementAt(details.rowColumnIndex.columnIndex)
-                      .value
-                      .toString(),
-                  cells: source._jobHisData[details.rowColumnIndex.rowIndex - 1]
-                      .getCells(),
-                ),
-              );
-            },
-          );
-        }
-      },
+      onCellTap: onCellTap,
       columns: <GridColumn>[
         ...List.generate(
           source._jobHisData.first.getCells().length,
@@ -149,7 +112,9 @@ class JobHistoryDataSource extends DataGridSource {
             : Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          e.value.toString(),
+          ["Plan Start Date", "Plan Cmplt Date"].contains(e.columnName)
+              ? DateTime.parse(e.value).toFormatedString("dd-MM-yyy")
+              : e.value.toString(),
           textAlign: TextAlign.center,
         ),
       );
