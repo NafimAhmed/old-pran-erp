@@ -26,7 +26,11 @@ sealed class TransferBatchState {}
 
 final class TransferBatchInitial extends TransferBatchState {}
 
-final class TransferBatchLoading extends TransferBatchState {}
+final class TransferBatchLoading extends TransferBatchState {
+  final String splitFlag;
+
+  TransferBatchLoading({required this.splitFlag});
+}
 
 final class TransferBatchSuccess extends TransferBatchState {}
 
@@ -40,7 +44,7 @@ class TransferBatchBloc extends Bloc<TransferBatchEvent, TransferBatchState> {
   final DataService _dataService;
   TransferBatchBloc(this._dataService) : super(TransferBatchInitial()) {
     on<TransferBatch>((event, emit) async {
-      emit(TransferBatchLoading());
+      emit(TransferBatchLoading(splitFlag: event.split));
       try {
         var response = await _dataService.transferBatch(
           batchId: event.batchId,
