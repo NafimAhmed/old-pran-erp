@@ -44,7 +44,7 @@ class ProdQrInfoBloc extends Bloc<ProdQrInfoEvent, ProdQrInfoState> {
     on<ProdQrInfoSend>((event, emit) async {
       emit(ProdQrInfoLoading());
       try {
-        var response = await _dataService.sendProdQrInfo(
+        await _dataService.sendProdQrInfo(
           event.itemId,
           event.batchId,
           event.qty,

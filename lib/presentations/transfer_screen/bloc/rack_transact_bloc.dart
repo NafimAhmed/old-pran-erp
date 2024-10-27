@@ -8,7 +8,9 @@ sealed class RackTransactEvent {}
 final class RackTransact extends RackTransactEvent {
   final int transactId;
 
-  RackTransact({required this.transactId});
+  RackTransact({
+    required this.transactId,
+  });
 }
 
 @immutable
@@ -19,7 +21,9 @@ final class RackTransactInitial extends RackTransactState {}
 final class RackTransactLoading extends RackTransactState {
   final int transactId;
 
-  RackTransactLoading({required this.transactId});
+  RackTransactLoading({
+    required this.transactId,
+  });
 }
 
 final class RackTransactSuccess extends RackTransactState {}
