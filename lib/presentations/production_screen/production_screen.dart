@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
+
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
@@ -552,9 +551,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             }
                             if (state is ProdQrInfoError) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    "Couldn't save the data",
+                                    state.error.toString(),
                                   ),
                                   backgroundColor: Colors.red,
                                 ),

@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -394,9 +393,9 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                     }
                     if (state is TransferBatchError) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            "Failed",
+                            state.error.toString(),
                           ),
                           backgroundColor: Colors.red,
                         ),
