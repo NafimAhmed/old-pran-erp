@@ -18,7 +18,8 @@ class AppNavigation {
 
   static final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: ModulesDashboardScreen.routePath,
+    // initialLocation: ModulesDashboardScreen.routePath,
+    initialLocation: LoginScreen.routePath,
     debugLogDiagnostics: true,
     routes: [
       GoRoute(

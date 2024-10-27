@@ -1,3 +1,4 @@
+import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
@@ -87,5 +88,21 @@ class DataServiceImpl implements DataService {
   Future<List<JobHistory>> getJobHistory() async {
     var response = await remoteDataRepository.getJobHistory();
     return response.items ?? [];
+  }
+
+  @override
+  Future<void> tranferDelete({required int trnsfid}) async {
+    await remoteDataRepository.tranferDelete(trnsfid: trnsfid);
+  }
+
+  @override
+  Future<List<MenuItem>> authenticate(
+      {required String userid, required String passw}) async {
+    var response =
+        await remoteDataRepository.authenticate(userid: userid, passw: passw);
+    if (response.statusCode == 200) {
+      return response.menuItems ?? [];
+    }
+    throw ApiDataException(response.errmsg);
   }
 }

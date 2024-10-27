@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
 sealed class LoginEvent {}
@@ -27,17 +28,16 @@ final class LoginError extends LoginState {
 }
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+  final DataService _dataService;
+  LoginBloc(this._dataService) : super(LoginInitial()) {
     on<Login>((event, emit) async {
       emit(LoginLoading());
       try {
-        await Future.delayed(
-          const Duration(seconds: 1),
-          () {
-            emit(LoginSuccess());
-            // emit(LoginError(error: ""));
-          },
+        var response = await _dataService.authenticate(
+          userid: event.staffId.toString(),
+          passw: event.password,
         );
+        emit(LoginSuccess());
       } catch (e) {
         emit(LoginError(error: e));
       }

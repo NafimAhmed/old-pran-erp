@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
@@ -99,24 +100,24 @@ class RemoteDataRepositoryImpl
   Future<void> rackTransfer(
     int transactId,
   ) async {
-    // var request = http.Request(
-    //     'POST',
-    //     Uri.parse(
-    //         '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
-
-    // http.StreamedResponse response = await request.send();
-
-    // await decodeResponse(
-    //   response,
-    // );
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/racktrnf_test?racktrnid=$transactId'));
+            '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
 
     http.StreamedResponse response = await request.send();
 
-    await decodeResponse(response);
+    await decodeResponse(
+      response,
+    );
+    // var request = http.Request(
+    //     'POST',
+    //     Uri.parse(
+    //         '${appConfig.baseUrl}/ords/rpro/batch/racktrnf_test?racktrnid=$transactId'));
+
+    // http.StreamedResponse response = await request.send();
+
+    // await decodeResponse(response);
   }
 
   @override
@@ -127,5 +128,31 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
 
     return await decodeResponse(response, decoder: JobHistoryResponse.fromJson);
+  }
+
+  @override
+  Future<void> tranferDelete({required int trnsfid}) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/trnfdel?trnsfid=$trnsfid'));
+
+    http.StreamedResponse response = await request.send();
+
+    await decodeResponse(response);
+  }
+
+  @override
+  Future<AuthenticationResponse> authenticate(
+      {required String userid, required String passw}) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/login?userid=$userid&passw=$passw'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response,
+        decoder: AuthenticationResponse.fromJson);
   }
 }
