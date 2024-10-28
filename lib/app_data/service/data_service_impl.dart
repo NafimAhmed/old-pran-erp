@@ -9,6 +9,10 @@ import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
 
+import '../../core/exceptions/custom_exception.dart';
+import '../entities/user_menu_item_response.dart';
+import '../models/user_info_model.dart';
+
 class DataServiceImpl implements DataService {
   final LocalDataRepository localDataRepository;
   final RemoteDataRepository remoteDataRepository;
@@ -96,13 +100,41 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<MenuItem>> authenticate(
+  Future<UserInfo> authenticate(
       {required String userid, required String passw}) async {
     var response =
         await remoteDataRepository.authenticate(userid: userid, passw: passw);
     if (response.statusCode == 200) {
-      return response.menuItems ?? [];
+      return response.userInfo!.first;
     }
     throw ApiDataException(response.errmsg);
+  }
+
+  @override
+  Future<void> saveUserToLocal({
+    required UserInfoModel userInfoModel,
+  }) async {
+    try {
+      await localDataRepository.saveUserToLocal(userInfoModel: userInfoModel);
+    } catch (e) {
+      throw const CustomException("Failed To Save User Information");
+    }
+  }
+
+  @override
+  Future<List<UserMenuItem>> getUserMenu({
+    required String userid,
+  }) async {
+    var response = await remoteDataRepository.getUserMenu(userid: userid);
+    if (response.statusCode == 200) {
+      return response.userMenuItems ?? [];
+    }
+    throw ApiDataException(response.errmsg);
+  }
+
+  @override
+  Future<UserInfoModel?> getLoggedUser() async {
+    var response = await localDataRepository.getLoggedUser();
+    return response;
   }
 }

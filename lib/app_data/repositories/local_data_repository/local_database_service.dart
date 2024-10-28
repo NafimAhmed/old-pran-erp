@@ -25,10 +25,13 @@ class LocalDatabase {
       version: _dbVersion,
       onCreate: (db, version) async {
         await db.execute('''
-      CREATE TABLE user (
+      CREATE TABLE userInfo (
       id               INTEGER PRIMARY KEY AUTOINCREMENT,
-      staffId          INTEGER NOT NULL,
-      userName        TEXT NOT NULL
+      userId          TEXT NOT NULL,
+      userName        TEXT NOT NULL,
+      mobileNo        TEXT NOT NULL,
+      userDesg        TEXT NOT NULL,
+      userDept       TEXT NOT NULL
       )
       ''');
       },

@@ -9,6 +9,8 @@ import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decode
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
 
+import '../../entities/user_menu_item_response.dart';
+
 class RemoteDataRepositoryImpl
     with DecoderServiceMixin
     implements RemoteDataRepository {
@@ -154,5 +156,15 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse(response,
         decoder: AuthenticationResponse.fromJson);
+  }
+  @override
+  Future<UserMenuItemResponse> getUserMenu(
+      {required String userid,}) async {
+    var request = http.Request('POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/usermenu?userid=$userid'));
+
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse<UserMenuItemResponse>(response,decoder:UserMenuItemResponse.fromJson );
   }
 }

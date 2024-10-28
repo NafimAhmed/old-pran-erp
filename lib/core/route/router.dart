@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/presentations/production_screen/production_screen.dart';
 import 'package:pran_rfl_erp/presentations/transfer_details_screen/transfer_details_screen.dart';
 import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
@@ -19,7 +20,7 @@ class AppNavigation {
   static final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     // initialLocation: ModulesDashboardScreen.routePath,
-    initialLocation: LoginScreen.routePath,
+    initialLocation: SplashScreen.routePath,
     debugLogDiagnostics: true,
     routes: [
       GoRoute(
@@ -43,7 +44,10 @@ class AppNavigation {
         path: ModulesDashboardScreen.routePath,
         name: ModulesDashboardScreen.routeName,
         builder: (context, state) {
-          return const ModulesDashboardScreen();
+          // var extra = state.extra as Map<String, dynamic>;
+          return ModulesDashboardScreen(
+              // menuItems: extra["menuItems"] as List<MenuItem>,
+              );
         },
         routes: [
           GoRoute(
@@ -51,6 +55,8 @@ class AppNavigation {
             name: OpmScreen.routeName,
             builder: (context, state) {
               return const OpmScreen();
+
+              ///opm
             },
             routes: [
               GoRoute(

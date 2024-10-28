@@ -5,6 +5,9 @@ import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 
+import '../entities/user_menu_item_response.dart';
+import '../models/user_info_model.dart';
+
 abstract class DataService {
   Future<List<Employee>> getEmplist();
   Future<void> sendProdQrInfo(
@@ -29,6 +32,14 @@ abstract class DataService {
   );
   Future<List<JobHistory>> getJobHistory();
   Future<void> tranferDelete({required int trnsfid});
-  Future<List<MenuItem>> authenticate(
+  Future<UserInfo> authenticate(
       {required String userid, required String passw});
+  Future<void> saveUserToLocal({
+    required UserInfoModel userInfoModel,
+  });
+  Future<List<UserMenuItem>> getUserMenu({
+    required String userid,
+  });
+
+  Future<UserInfoModel?> getLoggedUser();
 }

@@ -1,16 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter2.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
+
+import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter2.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
-import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
-import 'package:pran_rfl_erp/presentations/opm_screen/opm_screen.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/user_menu_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 
 class ModulesDashboardScreen extends StatelessWidget {
-  const ModulesDashboardScreen({super.key});
-  static const String routePath = "/modules-dashboard-screen";
-  static const String routeName = "modules-dashboard-screen";
+  const ModulesDashboardScreen({
+    super.key,
+  });
+  static const String routePath = "/dashboard-screen";
+  static const String routeName = "dashboard-screen";
+
   @override
   Widget build(BuildContext context) {
     return const DashboardScreenBody();
@@ -18,13 +24,23 @@ class ModulesDashboardScreen extends StatelessWidget {
 }
 
 class DashboardScreenBody extends StatefulWidget {
-  const DashboardScreenBody({super.key});
+  const DashboardScreenBody({
+    super.key,
+  });
 
   @override
   State<DashboardScreenBody> createState() => _DashboardScreenBodyState();
 }
 
 class _DashboardScreenBodyState extends State<DashboardScreenBody> {
+  Map<String, List<String>> groupedModule = {};
+  @override
+  void initState() {
+    var loggedUser = context.read<LoggedUserInfoCubit>().state;
+    context.read<UserMenuBloc>().add(UserMenuGet(userId: loggedUser!.userId!));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,17 +93,26 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Miraj Hossain Shawon",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
+                        BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
+                          buildWhen: (previous, current) => previous != current,
+                          builder: (context, state) {
+                            return Text(
+                              state != null ? state.userName ?? "" : "",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            );
+                          },
                         ),
-                        Text(
-                          "ID: 494605",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
+                        BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
+                          builder: (context, state) {
+                            return Text(
+                              "ID: ${state != null ? state.userId ?? "" : ""}",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            );
+                          },
                         )
                       ],
                     ),
@@ -98,42 +123,33 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                 height: 15,
               ),
               Expanded(
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                    mainAxisExtent: 130,
-                  ),
-                  children: [
-                    ModuleWidget(
-                      icon: ImageConstant.process,
-                      title: "OPM",
-                      onTap: () {
-                        context.pushNamed(OpmScreen.routeName);
-                      },
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.pushNamed(InventoryManagementScreen.routeName);
-                      },
-                      child: Visibility(
-                        visible: true,
-                        child: ModuleWidget(
-                          icon: ImageConstant.inventory,
-                          title: "Inventory Management",
+                child: BlocBuilder<UserMenuBloc, UserMenuState>(
+                  builder: (context, state) {
+                    if (state is UserMenuSuccess) {
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 15,
+                          mainAxisExtent: 130,
                         ),
-                      ),
-                    ),
-                    ModuleWidget(
-                      icon: ImageConstant.cargo,
-                      title: "Purchase Order",
-                    ),
-                    ModuleWidget(
-                      icon: ImageConstant.orderManagement,
-                      title: "Order Management",
-                    ),
-                  ],
+                        itemCount: state.menuItems.length,
+                        itemBuilder: (context, index) {
+                          return ModuleWidget(
+                            icon: ImageConstant.process,
+                            title:
+                                state.menuItems.elementAt(index).moduleName ??
+                                    "",
+                            onTap: () {
+                              setState(() {});
+                            },
+                          );
+                        },
+                      );
+                    }
+                    return Container();
+                  },
                 ),
               ),
             ],

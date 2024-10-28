@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/bloc/login_bloc.dart';
 
@@ -165,13 +166,17 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                         listener: (context, state) {
                           if (state is LoginSuccess) {
                             context.pushReplacementNamed(
-                              ModulesDashboardScreen.routeName,
-                            );
+                                ModulesDashboardScreen.routeName,
+                                extra: {
+                                  // "menuItems": state.menuItems,
+                                });
+                            context.read<LoggedUserInfoCubit>().setLoggedUser(
+                                userInfoModel: state.userInfoModel);
                           }
                           if (state is LoginError) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               CustomSnackBar.errorSnackber(
-                                message: "Login Failed",
+                                message: state.error.toString(),
                               ),
                             );
                           }

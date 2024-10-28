@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
+import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
+import 'package:pran_rfl_erp/presentations/production_screen/production_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -24,22 +29,29 @@ class SplashScreenBody extends StatefulWidget {
 class _SplashScreenBodyState extends State<SplashScreenBody> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 4), () {
-      context.pushReplacementNamed(LoginScreen.routeName);
-    });
+    context.read<LoggedUserInfoCubit>().checkLoggedUser();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Image(
-          image: AssetImage(
-            ImageConstant.companylogoImg,
+    return BlocListener<LoggedUserInfoCubit, UserInfoModel?>(
+      listener: (context, state) {
+        if (state != null) {
+          context.pushReplacementNamed(ModulesDashboardScreen.routeName);
+        } else {
+          context.pushReplacementNamed(LoginScreen.routeName);
+        }
+      },
+      child: Scaffold(
+        body: Center(
+          child: Image(
+            image: AssetImage(
+              ImageConstant.companylogoImg,
+            ),
+            height: 150,
+            width: 150,
           ),
-          height: 150,
-          width: 150,
         ),
       ),
     );

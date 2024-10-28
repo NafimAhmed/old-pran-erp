@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
@@ -19,7 +20,11 @@ final class LoginInitial extends LoginState {}
 
 final class LoginLoading extends LoginState {}
 
-final class LoginSuccess extends LoginState {}
+final class LoginSuccess extends LoginState {
+  final UserInfoModel userInfoModel;
+
+  LoginSuccess({required this.userInfoModel});
+}
 
 final class LoginError extends LoginState {
   final Object error;
@@ -37,7 +42,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           userid: event.staffId.toString(),
           passw: event.password,
         );
-        emit(LoginSuccess());
+        var user = UserInfoModel(
+          userId: response.userId!,
+          userName: response.userName!,
+          mobileNo: response.mobileNo!,
+          userDesg: response.userDesg!,
+          userDept: response.userDept!,
+        );
+        await _dataService.saveUserToLocal(
+          userInfoModel: user,
+        );
+        emit(
+          LoginSuccess(
+            userInfoModel: user,
+          ),
+        );
       } catch (e) {
         emit(LoginError(error: e));
       }
