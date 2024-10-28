@@ -8,6 +8,12 @@ sealed class TransferedBatchDataEvent {}
 
 final class TransferBatchDataGet extends TransferedBatchDataEvent {}
 
+final class TransferBatchDataDelete extends TransferedBatchDataEvent {
+  final int trnsfid;
+
+  TransferBatchDataDelete({required this.trnsfid});
+}
+
 @immutable
 sealed class TransferedBatchDataState {}
 
@@ -37,6 +43,16 @@ class TransferedBatchDataBloc
       try {
         var response = await _dataService.getTransferBatchData();
         emit(TransferedBatchDataSuccess(transferBatchDataList: response));
+      } catch (error) {
+        emit(TransferedBatchDataError(error: error));
+      }
+    });
+    on<TransferBatchDataDelete>((event, emit) async {
+      emit(TransferedBatchDataLoading());
+      try {
+        await _dataService.tranferDelete(trnsfid: event.trnsfid);
+        var batchData = await _dataService.getTransferBatchData();
+        emit(TransferedBatchDataSuccess(transferBatchDataList: batchData));
       } catch (error) {
         emit(TransferedBatchDataError(error: error));
       }

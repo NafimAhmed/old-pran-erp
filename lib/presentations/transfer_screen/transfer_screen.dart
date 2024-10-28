@@ -515,7 +515,17 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                         backgroundColor: const Color.fromARGB(
                                             255, 151, 14, 5),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        context
+                                            .read<TransferedBatchDataBloc>()
+                                            .add(
+                                              TransferBatchDataDelete(
+                                                trnsfid: transferBatchData
+                                                        .transactId ??
+                                                    0,
+                                              ),
+                                            );
+                                      },
                                       icon: Icon(
                                         Icons.delete,
                                         color: appTheme.white,
