@@ -9,6 +9,12 @@ import '../entities/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
 
 abstract class DataService {
+  Future<void> saveUserToLocal({
+    required UserInfoModel userInfoModel,
+  });
+  Future<void> clearUserFrmLocal();
+  Future<UserInfoModel?> getLoggedUser();
+
   Future<List<Employee>> getEmplist();
   Future<void> sendProdQrInfo(
     String itemId,
@@ -34,12 +40,8 @@ abstract class DataService {
   Future<void> tranferDelete({required int trnsfid});
   Future<UserInfo> authenticate(
       {required String userid, required String passw});
-  Future<void> saveUserToLocal({
-    required UserInfoModel userInfoModel,
-  });
+
   Future<List<UserMenuItem>> getUserMenu({
     required String userid,
   });
-
-  Future<UserInfoModel?> getLoggedUser();
 }

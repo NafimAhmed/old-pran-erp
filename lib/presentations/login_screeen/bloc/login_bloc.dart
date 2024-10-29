@@ -13,6 +13,8 @@ final class Login extends LoginEvent {
   Login({required this.staffId, required this.password});
 }
 
+final class Logout extends LoginEvent {}
+
 @immutable
 sealed class LoginState {}
 
@@ -57,6 +59,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             userInfoModel: user,
           ),
         );
+      } catch (e) {
+        emit(LoginError(error: e));
+      }
+    });
+    on<Logout>((event, emit) async {
+      emit(LoginLoading());
+      try {
+        await _dataService.clearUserFrmLocal();
+        emit(LoginInitial());
       } catch (e) {
         emit(LoginError(error: e));
       }

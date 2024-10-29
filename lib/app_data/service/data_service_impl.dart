@@ -137,4 +137,9 @@ class DataServiceImpl implements DataService {
     var response = await localDataRepository.getLoggedUser();
     return response;
   }
+
+  @override
+  Future<void> clearUserFrmLocal() async {
+    await localDataRepository.clearUserFrmLocal();
+  }
 }

@@ -32,4 +32,11 @@ class LocalDataRepositoryImpl implements LocalDataRepository {
       return null;
     }
   }
+
+  @override
+  Future<void> clearUserFrmLocal() async {
+    await localDatabase.delete("userInfo", where: 'id = ?', whereArgs: [1]);
+    await localDatabase
+        .execute("DELETE FROM sqlite_sequence WHERE name = 'userInfo'");
+  }
 }
