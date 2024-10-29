@@ -7,7 +7,7 @@ import 'package:pran_rfl_erp/core/utils/image_constant.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
-import 'package:pran_rfl_erp/presentations/production_screen/production_screen.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_1_screen/opm_c_1_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

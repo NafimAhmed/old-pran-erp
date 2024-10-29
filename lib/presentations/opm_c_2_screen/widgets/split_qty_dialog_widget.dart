@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfer_batch_bloc.dart';
-import 'package:pran_rfl_erp/presentations/transfer_screen/bloc/transfered_batch_data_bloc.dart';
-import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/transfer_screen/cubit/rack_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_2_screen/bloc/transfer_batch_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_2_screen/bloc/transfered_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_2_screen/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_2_screen/cubit/rack_qr_cubit.dart';
 
 class SplitQtyDialog extends StatelessWidget {
   SplitQtyDialog({

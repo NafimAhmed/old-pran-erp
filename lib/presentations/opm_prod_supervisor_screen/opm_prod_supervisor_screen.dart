@@ -6,8 +6,8 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
 class OpmProdSupervisorScreen extends StatelessWidget {
   const OpmProdSupervisorScreen({super.key});
-  static const String routeName = "prod-supervisor/batch-details";
-  static const String routePath = "prod-supervisor/batch-details";
+  static const String routeName = "batch-details";
+  static const String routePath = "/batch-details";
   @override
   Widget build(BuildContext context) {
     return const OpmProdSupervisorScreenBody();

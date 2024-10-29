@@ -5,15 +5,15 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
-import 'package:pran_rfl_erp/presentations/transfer_details_screen/bloc/job_history_bloc.dart';
-import 'package:pran_rfl_erp/presentations/transfer_details_screen/widgets/job_details_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/transfer_details_screen/widgets/job_order_details_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_3_screen/bloc/job_history_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_3_screen/widgets/job_details_table_widget.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_3_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TransferDetailsScreen extends StatelessWidget {
   const TransferDetailsScreen({super.key});
-  static const String routeName = "prod-supervisor/transfer-details-screen";
-  static const String routePath = "prod-supervisor/transfer-details-screen";
+  static const String routeName = "transfer-details-screen";
+  static const String routePath = "/transfer-details-screen";
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

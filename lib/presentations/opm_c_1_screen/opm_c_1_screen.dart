@@ -12,18 +12,18 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/presentations/production_screen/bloc/lov_bloc.dart';
-import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_bloc.dart';
-import 'package:pran_rfl_erp/presentations/production_screen/bloc/prod_qr_info_bloc.dart';
-import 'package:pran_rfl_erp/presentations/production_screen/bloc/temp_batch_data_bloc.dart';
-import 'package:pran_rfl_erp/presentations/production_screen/prod_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/transfer_screen/transfer_screen.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_1_screen/bloc/lov_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_1_screen/bloc/prod_qr_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_1_screen/bloc/prod_qr_info_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_1_screen/bloc/temp_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_1_screen/prod_table_widget.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_2_screen/opm_c_2_screen.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class ProductionScreen extends StatelessWidget {
-  const ProductionScreen({super.key});
-  static const String routeName = "prod-supervisor/production-screen";
-  static const String routePath = "prod-supervisor/production-screen";
+class OpmC1Screen extends StatelessWidget {
+  const OpmC1Screen({super.key});
+  static const String routeName = "OPM-C-1-SCREEN";
+  static const String routePath = "/OPM-C-1-SCREEN";
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

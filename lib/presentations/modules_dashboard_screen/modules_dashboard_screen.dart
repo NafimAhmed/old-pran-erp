@@ -2,13 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter2.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_menu_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/login_screeen/bloc/login_bloc.dart';
+import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
+import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
+import 'package:pran_rfl_erp/presentations/opm_c_2_screen/widgets/split_qty_dialog_widget.dart';
 
 class ModulesDashboardScreen extends StatelessWidget {
   const ModulesDashboardScreen({
@@ -19,7 +25,10 @@ class ModulesDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DashboardScreenBody();
+    return BlocProvider(
+      create: (context) => LoginBloc(getService()),
+      child: const DashboardScreenBody(),
+    );
   }
 }
 
@@ -90,33 +99,64 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                     width: 10,
                   ),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
-                          buildWhen: (previous, current) => previous != current,
-                          builder: (context, state) {
-                            return Text(
-                              state != null ? state.userName ?? "" : "",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            );
-                          },
-                        ),
-                        BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
-                          builder: (context, state) {
-                            return Text(
-                              "ID: ${state != null ? state.userId ?? "" : ""}",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
-                            );
-                          },
-                        )
-                      ],
+                    child: BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  state != null ? state.userName ?? "" : "",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                  ),
+                                ),
+                                Text(
+                                  "ID: ${state != null ? state.userId ?? "" : ""}",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            BlocConsumer<LoginBloc, LoginState>(
+                              listener: (context, state) {
+                                if (state is LoginInitial) {
+                                  context.pushReplacementNamed(
+                                      LoginScreen.routeName);
+                                }
+                              },
+                              builder: (context, state) {
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom().copyWith(
+                                    padding: const WidgetStatePropertyAll(
+                                        EdgeInsets.zero),
+                                    backgroundColor:
+                                        const WidgetStatePropertyAll(
+                                      Color.fromARGB(255, 151, 21, 11),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    context.read<LoginBloc>().add(Logout());
+                                  },
+                                  child: Text(
+                                    state is LoginLoading
+                                        ? "Logging Out.."
+                                        : "Logout",
+                                    style: textTheme.bodyMedium!.copyWith(
+                                      color: appTheme.white,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(
@@ -142,7 +182,17 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                                 state.menuItems.elementAt(index).moduleName ??
                                     "",
                             onTap: () {
-                              setState(() {});
+                              if (state.menuItems
+                                  .elementAt(index)
+                                  .moduleName!
+                                  .isNotEmpty) {
+                                context.pushNamed(
+                                  ModuleScreen.routeName,
+                                  extra: state.menuItems
+                                      .elementAt(index)
+                                      .moduleName,
+                                );
+                              }
                             },
                           );
                         },
