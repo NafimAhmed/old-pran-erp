@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+
+import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 
 class OpmC1Screen extends StatelessWidget {
   const OpmC1Screen({super.key});
@@ -58,7 +63,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const CommonAppBar(appBartitle: "ProductionCopy"),
+      appBar: const CommonAppBar(appBartitle: "Production Copy"),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -116,9 +121,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               Row(
                 children: [
                   Expanded(
-                    child: CommonDropdownButton(
-                      hintText: "Select Org",
-                      onChanged: (value) {},
+                    child: BlocBuilder<UserOrgBloc, UserOrgState>(
+                      builder: (context, state) {
+                        return CommonDropdownButton<UserOrg>(
+                          hintText: "Select Org",
+                          items: state is UserOrgSuccess ? state.userOrg : [],
+                          onChanged: (value) {},
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(
@@ -135,24 +145,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: CommonDropdownButton(
-                      hintText: "Select Batch",
-                      onChanged: (value) {},
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: CommonDropdownButton(
-                      hintText: "Select Item",
-                      onChanged: (value) {},
-                    ),
-                  ),
-                ],
+              CommonDropdownButton(
+                hintText: "Select Batch",
+                onChanged: (value) {},
+              ),
+              const SizedBox(
+                width: 10,
               ),
               Form(
                 key: fromkey,

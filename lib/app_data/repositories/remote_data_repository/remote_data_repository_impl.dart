@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
@@ -172,5 +173,20 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse<UserMenuItemResponse>(response,
         decoder: UserMenuItemResponse.fromJson);
+  }
+
+  @override
+  Future<UserOrgsResponse> getUserOrg({
+    required String userid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userorgs?userid=$userid'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse<UserOrgsResponse>(response,
+        decoder: UserOrgsResponse.fromJson);
   }
 }

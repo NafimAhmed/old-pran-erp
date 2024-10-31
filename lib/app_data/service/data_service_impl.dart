@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
@@ -141,5 +142,13 @@ class DataServiceImpl implements DataService {
   @override
   Future<void> clearUserFrmLocal() async {
     await localDataRepository.clearUserFrmLocal();
+  }
+
+  @override
+  Future<List<UserOrg>> getUserOrg({
+    required String userid,
+  }) async {
+    var response = await remoteDataRepository.getUserOrg(userid: userid);
+    return response.userOrgs ?? [];
   }
 }

@@ -12,6 +12,7 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/bloc/login_bloc.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 
 class ModulesDashboardScreen extends StatelessWidget {
   const ModulesDashboardScreen({
@@ -44,6 +45,8 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
   void initState() {
     var loggedUser = context.read<LoggedUserInfoCubit>().state;
     context.read<UserMenuBloc>().add(UserMenuGet(userId: loggedUser!.userId!));
+
+    context.read<UserOrgBloc>().add(UserOrgGet(userId: loggedUser!.userId!));
     super.initState();
   }
 
