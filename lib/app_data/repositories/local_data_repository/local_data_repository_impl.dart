@@ -1,7 +1,6 @@
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../entities/authentication_response.dart';
 import '../../models/user_info_model.dart';
 
 class LocalDataRepositoryImpl implements LocalDataRepository {

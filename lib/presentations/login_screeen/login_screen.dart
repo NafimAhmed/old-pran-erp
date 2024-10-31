@@ -146,7 +146,7 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                             CommonTextFieldWidget(
                               focusNode: passwordFocusNode,
                               controller: passwordTextController,
-                              keyboardType: TextInputType.phone,
+                              keyboardType: TextInputType.text,
                               obscureText: true,
                               labelText: "Password",
                               validator: (value) {
