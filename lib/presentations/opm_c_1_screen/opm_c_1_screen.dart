@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -64,8 +64,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController dropDownTextController = TextEditingController();
   String _locatorId = "";
   String _itemId = "";
-  Lov? selectedLov;
-  List<Lov> lovList = [];
+  Machine? selectedLov;
+  List<Machine> lovList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
@@ -491,8 +491,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 enableSearch: true,
                                 requestFocusOnTap: true,
 
-                                menuStyle:
-                                    MenuStyle(alignment: Alignment.topCenter),
+                                menuStyle: const MenuStyle(
+                                    alignment: Alignment.topCenter),
                                 // enableFilter: true,
                                 controller: dropDownTextController,
                                 hintText: "Select Machine",

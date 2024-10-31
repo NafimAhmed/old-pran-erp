@@ -5,8 +5,7 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_menu_bloc.dart';
-
-import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
+import 'package:pran_rfl_erp/presentations/generate_qr_screen/generate_qr_screen.dart';
 
 class ModuleScreen extends StatelessWidget {
   const ModuleScreen({
@@ -92,6 +91,13 @@ class _OpmScreenBodyState extends State<OpmScreenBody> {
                                 ),
                               ),
                               children: <Widget>[
+                                OPMSubModuleWidget(
+                                  title: "Generate Qr",
+                                  onTap: () {
+                                    context
+                                        .pushNamed(GenerateQrScreen.routeName);
+                                  },
+                                ),
                                 ...List.generate(
                                     pMenuItem?.userCmenuItems?.length ?? 0,
                                     (index) {
