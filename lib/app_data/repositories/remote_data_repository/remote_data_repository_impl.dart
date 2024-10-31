@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
@@ -89,13 +89,14 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<LovResponse> getLov() async {
+  Future<MachineListResponse> getLov() async {
     var request = http.Request(
         'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/qrinfo'));
 
     http.StreamedResponse response = await request.send();
 
-    return await decodeResponse(response, decoder: LovResponse.fromJson);
+    return await decodeResponse(response,
+        decoder: MachineListResponse.fromJson);
   }
 
   @override
@@ -157,14 +158,19 @@ class RemoteDataRepositoryImpl
     return await decodeResponse(response,
         decoder: AuthenticationResponse.fromJson);
   }
-  @override
-  Future<UserMenuItemResponse> getUserMenu(
-      {required String userid,}) async {
-    var request = http.Request('POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/usermenu?userid=$userid'));
 
+  @override
+  Future<UserMenuItemResponse> getUserMenu({
+    required String userid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/usermenu?userid=$userid'));
 
     http.StreamedResponse response = await request.send();
 
-    return await decodeResponse<UserMenuItemResponse>(response,decoder:UserMenuItemResponse.fromJson );
+    return await decodeResponse<UserMenuItemResponse>(response,
+        decoder: UserMenuItemResponse.fromJson);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 
@@ -25,7 +25,7 @@ abstract class RemoteDataRepository {
       required String rqty,
       required String split});
   Future<TransferBatchDataResponse> getTransferBatchData();
-  Future<LovResponse> getLov();
+  Future<MachineListResponse> getLov();
 
   Future<void> rackTransfer(
     int transactId,
@@ -34,6 +34,7 @@ abstract class RemoteDataRepository {
   Future<void> tranferDelete({required int trnsfid});
   Future<AuthenticationResponse> authenticate(
       {required String userid, required String passw});
-  Future<UserMenuItemResponse> getUserMenu(
-      {required String userid,});
+  Future<UserMenuItemResponse> getUserMenu({
+    required String userid,
+  });
 }

@@ -1,7 +1,7 @@
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
@@ -76,7 +76,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<Lov>> getLov() async {
+  Future<List<Machine>> getLov() async {
     var response = await remoteDataRepository.getLov();
     return response.items ?? [];
   }
