@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/entities/lov_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
@@ -9,7 +9,7 @@ sealed class LovEvent {}
 final class LovGet extends LovEvent {}
 
 final class LovChanged extends LovEvent {
-  final Lov? selectedLov;
+  final Machine? selectedLov;
 
   LovChanged({required this.selectedLov});
 }
@@ -22,8 +22,8 @@ final class LovInitial extends LovState {}
 final class LovLoading extends LovState {}
 
 final class LovLoaded extends LovState {
-  final List<Lov> lovList;
-  final Lov? selectedLov;
+  final List<Machine> lovList;
+  final Machine? selectedLov;
 
   LovLoaded({required this.lovList, required this.selectedLov});
 }
@@ -36,8 +36,8 @@ final class LovError extends LovState {
 
 class LovBloc extends Bloc<LovEvent, LovState> {
   final DataService _dataService;
-  List<Lov> _lovList = [];
-  Lov? _selectedLov;
+  List<Machine> _lovList = [];
+  Machine? _selectedLov;
   LovBloc(this._dataService) : super(LovInitial()) {
     on<LovGet>((event, emit) async {
       emit(LovLoading());
