@@ -45,8 +45,7 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
   void initState() {
     var loggedUser = context.read<LoggedUserInfoCubit>().state;
     context.read<UserMenuBloc>().add(UserMenuGet(userId: loggedUser!.userId!));
-
-    context.read<UserOrgBloc>().add(UserOrgGet(userId: loggedUser!.userId!));
+    context.read<UserOrgBloc>().add(UserOrgGet(userId: loggedUser.userId!));
     super.initState();
   }
 

@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 
 import '../entities/user_menu_item_response.dart';
@@ -46,6 +47,9 @@ abstract class DataService {
     required String userid,
   });
   Future<List<UserOrg>> getUserOrg({
+    required String userid,
+  });
+  Future<UserBasicDataResponse> getUserBasicData({
     required String userid,
   });
 }

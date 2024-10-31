@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
@@ -11,8 +12,10 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/user_basic_data_bloc.dart';
 
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 
 class OpmC1Screen extends StatelessWidget {
   const OpmC1Screen({super.key});
@@ -20,7 +23,10 @@ class OpmC1Screen extends StatelessWidget {
   static const String routePath = "/OPM-C-1-SCREEN";
   @override
   Widget build(BuildContext context) {
-    return const ProductionScreenBody();
+    return BlocProvider(
+      create: (context) => UserBasicDataBloc(getService()),
+      child: const ProductionScreenBody(),
+    );
   }
 }
 
@@ -44,6 +50,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
+    var loggedUser = context.read<LoggedUserInfoCubit>().state;
+    context
+        .read<UserBasicDataBloc>()
+        .add(UserBasicDataGet(userId: loggedUser!.userId!));
     super.initState();
   }
 
@@ -135,9 +145,16 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     width: 10,
                   ),
                   Expanded(
-                    child: CommonDropdownButton(
-                      hintText: "Select Machine",
-                      onChanged: (value) {},
+                    child: BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
+                      builder: (context, state) {
+                        return CommonDropdownButton<UserMachine>(
+                          hintText: "Select Machine",
+                          items: state is UserBasicDataSuccess
+                              ? state.userBasicData.userMachineData
+                              : [],
+                          onChanged: (value) {},
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -145,9 +162,16 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               const SizedBox(
                 height: 10,
               ),
-              CommonDropdownButton(
-                hintText: "Select Batch",
-                onChanged: (value) {},
+              BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
+                builder: (context, state) {
+                  return CommonDropdownButton<UserBatch>(
+                    hintText: "Select Batch",
+                    items: state is UserBasicDataSuccess
+                        ? state.userBasicData.userBatchData
+                        : [],
+                    onChanged: (value) {},
+                  );
+                },
               ),
               const SizedBox(
                 width: 10,
