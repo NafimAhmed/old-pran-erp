@@ -1,86 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
-class CommonDropDownWidget<T> extends StatelessWidget {
-  const CommonDropDownWidget({
+class CommonDropdownButton<T> extends StatelessWidget {
+  const CommonDropdownButton({
     super.key,
-    this.hintText,
+    required this.hintText,
     this.items,
-    required this.onChanged,
     this.value,
+    required this.onChanged,
+    this.validator,
   });
-  final String? hintText;
-  final List<DropdownMenuItem<T>>? items;
+  final String hintText;
+  final List<T>? items;
   final T? value;
-  final void Function(T?)? onChanged;
+  final void Function(T? value) onChanged;
+  final String? Function(T? value)? validator;
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(5),
-      child: ButtonTheme(
-        alignedDropdown: true,
-        child: DropdownButtonFormField<T>(
-          value: value,
-          selectedItemBuilder: (_) {
-            return items!.map<Widget>(
-              (e) {
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Batch Details No-${e.value.toString()}",
-                    style: textTheme.bodyMedium!.copyWith(
-                      color: appTheme.primary,
-                    ),
-                  ),
-                );
-              },
-            ).toList();
-          },
-          decoration: InputDecoration(
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: appTheme.primary,
-                width: 2.0,
-              ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: appTheme.primary,
-                width: 2.0,
-              ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
-            ),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: appTheme.primary,
-                width: 2.0,
-              ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
-            ),
-          ),
-          hint: Text(hintText ?? "Select"),
-          style: textTheme.bodySmall!.copyWith(
-            color: appTheme.primary,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-          isExpanded: true,
-          menuMaxHeight: 250,
-          items: items,
-          onChanged: onChanged,
+    return DropdownButtonFormField<T>(
+      value: value,
+      isExpanded: true,
+      padding: EdgeInsets.zero,
+      menuMaxHeight: 250,
+      hint: Text(
+        hintText,
+        style: textTheme.bodyMedium!.copyWith(
+          color: appTheme.primary,
+          fontWeight: FontWeight.bold,
         ),
       ),
+      style: textTheme.bodyMedium!.copyWith(
+        overflow: TextOverflow.ellipsis,
+        color: appTheme.primary,
+        fontWeight: FontWeight.bold,
+      ),
+      items: items?.map(
+        (e) {
+          return DropdownMenuItem(
+            value: e,
+            child: Text(e.toString()),
+          );
+        },
+      ).toList(),
+      onChanged: onChanged,
+      validator: validator,
     );
   }
 }
