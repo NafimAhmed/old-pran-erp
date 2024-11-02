@@ -14,11 +14,11 @@ import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
 
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_2_screen/cubit/selected_org_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_org_cubit.dart';
 
 class OpmC2Screen extends StatelessWidget {
   const OpmC2Screen({super.key});

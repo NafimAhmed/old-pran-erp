@@ -12,12 +12,12 @@ import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_1_screen/bloc/lov_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_1_screen/bloc/prod_qr_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_1_screen/bloc/prod_qr_info_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_1_screen/bloc/temp_batch_data_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_1_screen/widgets/prod_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/lov_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/prod_qr_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/prod_qr_info_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/temp_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/widgets/prod_table_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class OpmC1Screen extends StatelessWidget {

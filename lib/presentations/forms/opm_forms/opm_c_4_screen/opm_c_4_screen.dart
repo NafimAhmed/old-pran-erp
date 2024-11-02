@@ -6,9 +6,9 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class OpmC4Screen extends StatelessWidget {

@@ -10,13 +10,13 @@ import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/bloc/rack_transact_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/bloc/transfer_batch_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/bloc/transfered_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/rack_transact_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfer_batch_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfered_batch_data_bloc.dart';
 
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/widgets/split_qty_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/widgets/split_qty_dialog_widget.dart';
 
 class OpmC3Screen extends StatelessWidget {
   const OpmC3Screen({super.key});

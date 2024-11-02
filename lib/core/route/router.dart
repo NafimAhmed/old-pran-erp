@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/presentations/generate_qr_screen/generate_qr_screen.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_1_screen/opm_c_1_screen.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_2_screen/opm_c_2_screen.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/opm_c_4_screen.dart';
-import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_1_screen/om_c_1_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_2_screen/om_c_2_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_3_screen/om_c_3_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/opm_c_1_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/opm_c_2_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/opm_c_4_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
@@ -96,6 +100,38 @@ class AppNavigation {
         name: OpmC4Screen.routeName,
         builder: (context, state) {
           return const OpmC4Screen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: OmC1Screen.routePath,
+        name: OmC1Screen.routeName,
+        builder: (context, state) {
+          return const OmC1Screen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: OmC2Screen.routePath,
+        name: OmC2Screen.routeName,
+        builder: (context, state) {
+          return const OmC2Screen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: OmC3Screen.routePath,
+        name: OmC3Screen.routeName,
+        builder: (context, state) {
+          return const OmC3Screen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: InvC1Screen.routePath,
+        name: InvC1Screen.routeName,
+        builder: (context, state) {
+          return const InvC1Screen();
         },
       ),
       GoRoute(
