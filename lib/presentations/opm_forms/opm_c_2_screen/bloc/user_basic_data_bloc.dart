@@ -8,8 +8,11 @@ sealed class UserBasicDataEvent {}
 
 final class UserBasicDataGet extends UserBasicDataEvent {
   final String userId;
-
-  UserBasicDataGet({required this.userId});
+  final String orgid;
+  UserBasicDataGet({
+    required this.userId,
+    required this.orgid,
+  });
 }
 
 @immutable
@@ -37,8 +40,10 @@ class UserBasicDataBloc extends Bloc<UserBasicDataEvent, UserBasicDataState> {
     on<UserBasicDataGet>((event, emit) async {
       emit(UserBasicDataLoading());
       try {
-        var response =
-            await _dataService.getUserBasicData(userid: event.userId);
+        var response = await _dataService.getUserBasicData(
+          userid: event.userId,
+          orgid: event.orgid,
+        );
         emit(
           UserBasicDataSuccess(
             userBasicData: response,

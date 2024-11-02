@@ -61,7 +61,7 @@ class _OpmProdSupervisorScreenBodyState
                   width: 10,
                 ),
                 Expanded(
-                  child: CommonDropDownWidget(
+                  child: CommonDropdownButton(
                     hintText: "Select Batch Details No",
                     value: _selectedItem,
                     items: items
@@ -82,7 +82,7 @@ class _OpmProdSupervisorScreenBodyState
                         .toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedItem = value;
+                        // _selectedItem = value;
                       });
                     },
                   ),

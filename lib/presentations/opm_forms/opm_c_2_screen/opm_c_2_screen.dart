@@ -9,22 +9,31 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/global_blocs/bloc/user_basic_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
 
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_2_screen/cubit/selected_org_cubit.dart';
 
-class OpmC1Screen extends StatelessWidget {
-  const OpmC1Screen({super.key});
-  static const String routeName = "OPM-C-1-SCREEN";
-  static const String routePath = "/OPM-C-1-SCREEN";
+class OpmC2Screen extends StatelessWidget {
+  const OpmC2Screen({super.key});
+  static const String routeName = "OPM-C-2-SCREEN";
+  static const String routePath = "/OPM-C-2-SCREEN";
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserBasicDataBloc(getService()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => UserBasicDataBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => SelectedOrgCubit(),
+        ),
+      ],
       child: const ProductionScreenBody(),
     );
   }
@@ -50,10 +59,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
-    var loggedUser = context.read<LoggedUserInfoCubit>().state;
-    context
-        .read<UserBasicDataBloc>()
-        .add(UserBasicDataGet(userId: loggedUser!.userId!));
     super.initState();
   }
 
@@ -73,7 +78,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const CommonAppBar(appBartitle: "Production Copy"),
+      appBar: const CommonAppBar(appBartitle: "D-Production"),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -136,7 +141,19 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         return CommonDropdownButton<UserOrg>(
                           hintText: "Select Org",
                           items: state is UserOrgSuccess ? state.userOrg : [],
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            var loggedUser =
+                                context.read<LoggedUserInfoCubit>().state;
+                            context.read<UserBasicDataBloc>().add(
+                                  UserBasicDataGet(
+                                    userId: loggedUser!.userId!,
+                                    orgid: value!.organizationId!.toString(),
+                                  ),
+                                );
+                            context
+                                .read<SelectedOrgCubit>()
+                                .setOrg(userOrg: value);
+                          },
                         );
                       },
                     ),
@@ -406,51 +423,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CommonDropdownButton<T> extends StatelessWidget {
-  const CommonDropdownButton({
-    super.key,
-    required this.hintText,
-    this.items,
-    this.value,
-    required this.onChanged,
-    this.validator,
-  });
-  final String hintText;
-  final List<T>? items;
-  final T? value;
-  final void Function(T? value) onChanged;
-  final String? Function(T? value)? validator;
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<T>(
-      value: value,
-      isExpanded: true,
-      menuMaxHeight: 250,
-      hint: Text(
-        hintText,
-        style: textTheme.bodyMedium!.copyWith(
-          color: appTheme.primary,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      style: textTheme.bodyMedium!.copyWith(
-        color: appTheme.primary,
-        fontWeight: FontWeight.bold,
-      ),
-      items: items?.map(
-        (e) {
-          return DropdownMenuItem(
-            value: e,
-            child: Text(e.toString()),
-          );
-        },
-      ).toList(),
-      onChanged: onChanged,
-      validator: validator,
     );
   }
 }

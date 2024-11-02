@@ -5,15 +5,15 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
-import 'package:pran_rfl_erp/presentations/opm_c_3_screen/bloc/job_history_bloc.dart';
-import 'package:pran_rfl_erp/presentations/opm_c_3_screen/widgets/job_details_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/opm_c_3_screen/widgets/job_order_details_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
+import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
+import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class OpmC3Screen extends StatelessWidget {
-  const OpmC3Screen({super.key});
-  static const String routeName = "OPM-C-3-SCREEN";
-  static const String routePath = "/OPM-C-3-SCREEN";
+class OpmC4Screen extends StatelessWidget {
+  const OpmC4Screen({super.key});
+  static const String routeName = "OPM-C-4-SCREEN";
+  static const String routePath = "/OPM-C-4-SCREEN";
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -45,7 +45,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Transfer Details"),
+      appBar: const CommonAppBar(appBartitle: "Transfer Report"),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
