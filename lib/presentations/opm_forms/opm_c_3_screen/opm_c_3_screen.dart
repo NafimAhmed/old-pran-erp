@@ -1,17 +1,14 @@
-import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
-
-import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/bloc/rack_transact_bloc.dart';
 import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/bloc/transfer_batch_bloc.dart';
 import 'package:pran_rfl_erp/presentations/opm_forms/opm_c_3_screen/bloc/transfered_batch_data_bloc.dart';
@@ -181,7 +178,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                   ),
                   IconButton.filled(
                     onPressed: () async {
-                      var data = await _buildScanner(context, controller);
+                      var data = await buildScanner(context, controller);
 
                       // context.read<QrCodeBloc>().add(
                       //       QrCodeDataGet(
@@ -292,7 +289,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                   IconButton.filled(
                     onPressed: () async {
                       try {
-                        var data = await _buildScanner(context, controller);
+                        var data = await buildScanner(context, controller);
                         context
                             .read<RackQrCubit>()
                             .setrackData(rackQrData: data);
@@ -723,75 +720,9 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
           rackId: rackId,
         ));
   }
-
-  Future<String> _buildScanner(
-      BuildContext context, MobileScannerController? controller) async {
-    // Use a completer to wait for the scanned result
-    final completer = Completer<String>();
-
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return Dialog(
-          alignment: Alignment.center,
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              5.0,
-            ),
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.45,
-            width: MediaQuery.of(context).size.width * 0.45,
-            padding: const EdgeInsets.all(10.0),
-            child: QrScannerWidget(
-              controller: controller,
-              onDetect: (barcodes) {
-                final String detectedData = barcodes.barcodes.isNotEmpty
-                    ? barcodes.barcodes.first.rawValue ?? 'No data found'
-                    : 'No data found';
-
-                // Complete the completer with the detected data
-                completer.complete(detectedData);
-
-                // Close the dialog
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-        );
-      },
-    );
-
-    // Await the completion of the completer and return the result
-    return completer.future;
-  }
 }
 
-class QrScannerWidget extends StatelessWidget {
-  const QrScannerWidget({
-    super.key,
-    required this.controller,
-    required this.onDetect,
-    this.errorBuilder,
-  });
 
-  final MobileScannerController? controller;
-  final void Function(BarcodeCapture)? onDetect;
-  final Widget Function(BuildContext context, MobileScannerException exception,
-      Widget? widget)? errorBuilder;
-  @override
-  Widget build(BuildContext context) {
-    return MobileScanner(
-      controller: controller,
-      onDetect: onDetect,
-      errorBuilder: errorBuilder,
-    );
-  }
-}
 
 // class DeleteReviewDialog extends StatelessWidget {
 //   const DeleteReviewDialog({
