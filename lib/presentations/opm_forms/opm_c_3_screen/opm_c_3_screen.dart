@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
@@ -147,51 +148,19 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
               const SizedBox(
                 height: 15,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(
-                            20,
-                          ),
-                          bottomRight: Radius.circular(
-                            20,
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Item QR",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconButton.filled(
-                    onPressed: () async {
-                      var data = await buildScanner(context, controller);
+              ReadOrWidget(
+                qrType: "Item QR",
+                onPressed: () async {
+                  var data = await buildScanner(context, controller);
 
-                      // context.read<QrCodeBloc>().add(
-                      //       QrCodeDataGet(
-                      //           sourceQrData: data, destinationQrData: ""),
-                      //     );
-                      context.read<ItemQrCubit>().setItemData(itemQrData: data);
-                    },
-                    icon: Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: appTheme.white,
-                    ),
-                  ),
-                ],
+                  // context.read<QrCodeBloc>().add(
+                  //       QrCodeDataGet(
+                  //           sourceQrData: data, destinationQrData: ""),
+                  //     );
+                  if (context.mounted) {
+                    context.read<ItemQrCubit>().setItemData(itemQrData: data);
+                  }
+                },
               ),
               const SizedBox(
                 width: 10,
@@ -257,52 +226,18 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
               const SizedBox(
                 height: 15,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(
-                            20,
-                          ),
-                          bottomRight: Radius.circular(
-                            20,
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Rack QR",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconButton.filled(
-                    onPressed: () async {
-                      try {
-                        var data = await buildScanner(context, controller);
-                        context
-                            .read<RackQrCubit>()
-                            .setrackData(rackQrData: data);
-                      } catch (e) {
-                        log('Error');
-                      }
-                    },
-                    icon: Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: appTheme.white,
-                    ),
-                  ),
-                ],
+              ReadOrWidget(
+                qrType: "Rack QR",
+                onPressed: () async {
+                  try {
+                    var data = await buildScanner(context, controller);
+                    if (context.mounted) {
+                      context.read<RackQrCubit>().setrackData(rackQrData: data);
+                    }
+                  } catch (e) {
+                    log('Error');
+                  }
+                },
               ),
               BlocBuilder<RackQrCubit, RackQrState>(
                 builder: (context, state) {
@@ -721,6 +656,8 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
         ));
   }
 }
+
+
 
 
 

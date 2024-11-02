@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -115,52 +116,18 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     );
                   }
                 },
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: appTheme.primary,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(
-                              20,
+                child: ReadOrWidget(
+                  qrType: "Scan QR",
+                  onPressed: () async {
+                    var data = await buildScanner(context, controller);
+                    if (context.mounted) {
+                      context.read<ProdQrBloc>().add(
+                            ProdQrDataGet(
+                              qrData: data,
                             ),
-                            bottomRight: Radius.circular(
-                              20,
-                            ),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Scan QR",
-                            style: textTheme.bodyMedium!.copyWith(
-                              color: appTheme.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    IconButton.filled(
-                      iconSize: 30,
-                      onPressed: () async {
-                        var data = await buildScanner(context, controller);
-
-                        context.read<ProdQrBloc>().add(
-                              ProdQrDataGet(
-                                qrData: data,
-                              ),
-                            );
-                      },
-                      icon: Icon(
-                        Icons.qr_code_scanner_rounded,
-                        color: appTheme.white,
-                      ),
-                    ),
-                  ],
+                          );
+                    }
+                  },
                 ),
               ),
               BlocBuilder<ProdQrBloc, ProdQrState>(
