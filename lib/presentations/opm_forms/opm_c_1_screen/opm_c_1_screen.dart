@@ -9,6 +9,7 @@ import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -99,47 +100,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               const SizedBox(
                 height: 5,
               ),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: appTheme.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    children: [
-                      const Flexible(
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person_2,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Flexible(child: Text("Miraj Hossain Shawon"))
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.calendar_today,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            DateTime.now().toFormatedString("dd-MMM-yyy"),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const UserDetailsWidget(),
               const SizedBox(
                 height: 15,
               ),
