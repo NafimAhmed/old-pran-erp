@@ -194,11 +194,12 @@ class RemoteDataRepositoryImpl
   @override
   Future<UserBasicDataResponse> getUserBasicData({
     required String userid,
+    required String orgid,
   }) async {
     var request = http.Request(
       'POST',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/batch/userbasicdata?userid=$userid'),
+          '${appConfig.baseUrl}/ords/rpro/batch/userbasicdata?userid=$userid&orgid=$orgid'),
     );
 
     http.StreamedResponse response = await request.send();

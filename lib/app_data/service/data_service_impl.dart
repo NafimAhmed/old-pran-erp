@@ -159,8 +159,12 @@ class DataServiceImpl implements DataService {
   @override
   Future<UserBasicDataResponse> getUserBasicData({
     required String userid,
+    required String orgid,
   }) async {
-    var response = await remoteDataRepository.getUserBasicData(userid: userid);
+    var response = await remoteDataRepository.getUserBasicData(
+      userid: userid,
+      orgid: orgid,
+    );
     if (response.statusCode == 200) {
       return response;
     }

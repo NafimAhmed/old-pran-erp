@@ -6,7 +6,6 @@ import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
-import 'package:pran_rfl_erp/global_blocs/bloc/user_basic_data_bloc.dart';
 
 import '../../entities/user_menu_item_response.dart';
 
@@ -45,5 +44,6 @@ abstract class RemoteDataRepository {
   });
   Future<UserBasicDataResponse> getUserBasicData({
     required String userid,
+    required String orgid,
   });
 }

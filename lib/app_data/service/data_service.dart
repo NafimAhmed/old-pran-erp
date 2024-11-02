@@ -51,5 +51,6 @@ abstract class DataService {
   });
   Future<UserBasicDataResponse> getUserBasicData({
     required String userid,
+    required String orgid,
   });
 }
