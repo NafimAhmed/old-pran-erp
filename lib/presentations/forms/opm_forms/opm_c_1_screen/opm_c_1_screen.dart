@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
-
-import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
-
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
-
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
@@ -38,8 +35,7 @@ class OpmC1Screen extends StatelessWidget {
           create: (context) => ProdQrInfoBloc(getService()),
         ),
         BlocProvider(
-          create: (context) =>
-              TempBatchDataBloc(getService())..add(TempBatchDataGet()),
+          create: (context) => TempBatchDataBloc(getService()),
         ),
         BlocProvider(
           create: (context) => UserMachineBloc(getService()),
@@ -67,14 +63,18 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController dropDownTextController = TextEditingController();
   String _locatorId = "";
   String _itemId = "";
+  UserInfoModel? loggedUser;
   UserMachine? selectedMachine;
   List<UserMachine> userMachineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
-    var loggedUser = context.read<LoggedUserInfoCubit>().state;
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<UserMachineBloc>().add(
           UserMachineGet(userId: loggedUser!.userId!),
+        );
+    context.read<TempBatchDataBloc>().add(
+          TempBatchDataGet(userId: loggedUser!.userId!),
         );
     super.initState();
   }
@@ -484,9 +484,11 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   backgroundColor: appTheme.primary,
                                 ),
                               );
-                              context
-                                  .read<TempBatchDataBloc>()
-                                  .add(TempBatchDataGet());
+                              context.read<TempBatchDataBloc>().add(
+                                    TempBatchDataGet(
+                                      userId: loggedUser!.userId!,
+                                    ),
+                                  );
                             }
                             if (state is ProdQrInfoError) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -580,10 +582,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     );
                   }
                   if (state is TempBatchDataSuccess) {
-                    // var groupedList = groupBy(
-                    //   state.tempBatchDataList,
-                    //   (p0) => p0.organizationCode,
-                    // );
                     var tempBatchDataSource = TempBatchDataSource(
                         tempBatchData: state.tempBatchDataList);
                     tempBatchDataSource.addColumnGroup(ColumnGroup(
@@ -594,123 +592,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         source: tempBatchDataSource,
                       ),
                     );
-                    // return ListView.separated(
-                    //   itemBuilder: (context, index) {
-                    //     var tempBatchDataSource = TempBatchDataSource(
-                    //         tempBatchData:
-                    //             groupedList.entries.elementAt(index).value);
-                    //     return Container(
-                    //       decoration: BoxDecoration(
-                    //         color: appTheme.primary.withOpacity(0.4),
-                    //         borderRadius: BorderRadius.circular(10),
-                    //       ),
-                    //       child: Column(
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //         children: [
-                    //           Container(
-                    //             color: appTheme.primary,
-                    //             padding: const EdgeInsets.all(8.0),
-                    //             child: Row(
-                    //               mainAxisAlignment: MainAxisAlignment.center,
-                    //               children: [
-                    //                 Text(
-                    //                   "ORG No:",
-                    //                   style: textTheme.bodyMedium!.copyWith(
-                    //                     color: appTheme.white,
-                    //                   ),
-                    //                 ),
-                    //                 const SizedBox(
-                    //                   width: 10,
-                    //                 ),
-                    //                 Text(
-                    //                   groupedList.keys.elementAt(index) ?? "",
-                    //                   style: textTheme.bodyMedium!.copyWith(
-                    //                     color: appTheme.white,
-                    //                   ),
-                    //                 )
-                    //               ],
-                    //             ),
-                    //           ),
-                    //           SingleChildScrollView(
-                    //             scrollDirection: Axis.horizontal,
-                    //             child: DataTable(columns: const [
-                    //               // Set the name of the column
-                    //               DataColumn(
-                    //                 label: Text('Batch No'),
-                    //               ),
-                    //               DataColumn(
-                    //                 label: Text('Item Code'),
-                    //               ),
-                    //               DataColumn(
-                    //                 label: Text('Item Name'),
-                    //               ),
-                    //               DataColumn(
-                    //                 numeric: true,
-                    //                 label: Text('Original Qty'),
-                    //               ),
-                    //               DataColumn(
-                    //                 numeric: true,
-                    //                 label: Text('Total Qty'),
-                    //               ),
-                    //             ], rows: [
-                    //               ...List.generate(
-                    //                 groupedList.entries
-                    //                     .elementAt(index)
-                    //                     .value
-                    //                     .length,
-                    //                 (indx) {
-                    //                   TempBatchData tempBatchData = groupedList
-                    //                       .entries
-                    //                       .elementAt(index)
-                    //                       .value[indx];
-                    //                   return DataRow(
-                    //                     cells: [
-                    //                       DataCell(
-                    //                         Text(tempBatchData.batchNo ?? ""),
-                    //                       ),
-                    //                       DataCell(
-                    //                         Text(tempBatchData.itemCode ?? ""),
-                    //                       ),
-                    //                       DataCell(
-                    //                         Text(tempBatchData.itemName ?? ""),
-                    //                       ),
-                    //                       DataCell(
-                    //                         Text(
-                    //                           tempBatchData.originalQty
-                    //                               .toString(),
-                    //                         ),
-                    //                       ),
-                    //                       DataCell(
-                    //                         Text(
-                    //                           tempBatchData.totalQty.toString(),
-                    //                         ),
-                    //                       ),
-                    //                     ],
-                    //                   );
-                    //                 },
-                    //               )
-                    //             ]),
-                    //           ),
-                    //           // Padding(
-                    //           //   padding: const EdgeInsets.symmetric(
-                    //           //     horizontal: 1,
-                    //           //     vertical: 1,
-                    //           //   ),
-                    //           //   child: ProdTableWidget(
-                    //           //     source: tempBatchDataSource,
-                    //           //   ),
-                    //           // )
-                    //         ],
-                    //       ),
-                    //     );
-                    //   },
-                    //   separatorBuilder: (context, index) {
-                    //     return const SizedBox(
-                    //       height: 10,
-                    //     );
-                    //   },
-                    //   itemCount: groupedList.length,
-                    // );
                   }
                   return Container();
                 },
