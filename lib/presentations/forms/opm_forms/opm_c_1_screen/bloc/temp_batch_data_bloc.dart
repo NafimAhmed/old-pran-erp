@@ -6,7 +6,11 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 @immutable
 sealed class TempBatchDataEvent {}
 
-final class TempBatchDataGet extends TempBatchDataEvent {}
+final class TempBatchDataGet extends TempBatchDataEvent {
+  final String userId;
+
+  TempBatchDataGet({required this.userId});
+}
 
 @immutable
 sealed class TempBatchDataState {}
