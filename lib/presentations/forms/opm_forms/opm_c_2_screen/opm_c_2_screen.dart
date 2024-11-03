@@ -114,6 +114,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 .read<SelectedOrgCubit>()
                                 .setOrg(userOrg: value);
                           },
+                          validator: (value) {
+                            if (value == null) {
+                              return "Please Select Org";
+                            }
+                            return null;
+                          },
                         );
                       },
                     ),
@@ -130,6 +136,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               ? state.userBasicData.userMachineData
                               : [],
                           onChanged: (value) {},
+                          validator: (value) {
+                            if (value == null) {
+                              return "Please Select Mahine";
+                            }
+                            return null;
+                          },
                         );
                       },
                     ),
@@ -147,6 +159,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         ? state.userBasicData.userBatchData
                         : [],
                     onChanged: (value) {},
+                    validator: (value) {
+                      if (value == null) {
+                        return "Please Select Batch";
+                      }
+                      return null;
+                    },
                   );
                 },
               ),
