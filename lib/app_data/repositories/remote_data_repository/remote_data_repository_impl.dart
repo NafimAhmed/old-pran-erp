@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
@@ -91,14 +91,16 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<MachineListResponse> getLov() async {
+  Future<UserMachineResponse> getUserMachine({required String userId}) async {
     var request = http.Request(
-        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/qrinfo'));
+        'Post',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/usermachine?userid=$userId'));
 
     http.StreamedResponse response = await request.send();
 
     return await decodeResponse(response,
-        decoder: MachineListResponse.fromJson);
+        decoder: UserMachineResponse.fromJson);
   }
 
   @override
@@ -205,5 +207,24 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return decodeResponse<UserBasicDataResponse>(response,
         decoder: UserBasicDataResponse.fromJson);
+  }
+
+  @override
+  Future<void> interOrgTransfer({
+    required String userid,
+    required String trackid,
+    required String itemid,
+    required String rqty,
+    required String batchid,
+  }) async {
+    var request = http.Request(
+      'POST',
+      Uri.parse(
+          '${appConfig.baseUrl}/ords/rpro/batch/interorgtrns?userid=$userid&trackid=$trackid&itemid=$itemid&rqty=$rqty&batchid=$batchid'),
+    );
+
+    http.StreamedResponse response = await request.send();
+
+    await decodeResponse(response);
   }
 }

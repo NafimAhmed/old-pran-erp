@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 
-import 'package:pran_rfl_erp/app_data/entities/machine_list_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/lov_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/user_machine_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/prod_qr_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/prod_qr_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/temp_batch_data_bloc.dart';
@@ -39,7 +42,7 @@ class OpmC1Screen extends StatelessWidget {
               TempBatchDataBloc(getService())..add(TempBatchDataGet()),
         ),
         BlocProvider(
-          create: (context) => LovBloc(getService())..add(LovGet()),
+          create: (context) => UserMachineBloc(getService()),
         ),
       ],
       child: const ProductionScreenBody(),
@@ -64,11 +67,15 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController dropDownTextController = TextEditingController();
   String _locatorId = "";
   String _itemId = "";
-  Machine? selectedLov;
-  List<Machine> lovList = [];
+  UserMachine? selectedMachine;
+  List<UserMachine> userMachineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   @override
   void initState() {
+    var loggedUser = context.read<LoggedUserInfoCubit>().state;
+    context.read<UserMachineBloc>().add(
+          UserMachineGet(userId: loggedUser!.userId!),
+        );
     super.initState();
   }
 
@@ -384,75 +391,81 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        // CommonDropdownButton<Lov>(
-                        //         hintText: "Select Machine",
-                        //         items: state is LovLoaded ? state.lovList : [],
-                        //         value:
-                        //             state is LovLoaded ? state.selectedLov : null,
-                        //         onChanged: (value) {
-                        //           context
-                        //               .read<LovBloc>()
-                        //               .add(LovChanged(selectedLov: value));
-                        //         },
-                        //         validator: (value) {
-                        //           if (value == null) {
-                        //             return "Please Select Machine";
-                        //           }
-                        //           return null;
-                        //         },
-                        //       ),
-                        // Expanded(
-                        //   child: ,
-                        // ),
                         Expanded(
-                          child: BlocBuilder<LovBloc, LovState>(
+                          child: BlocBuilder<UserMachineBloc, UserMachineState>(
                             builder: (context, state) {
-                              if (state is LovLoaded) {
-                                selectedLov = state.selectedLov;
-                                lovList = state.lovList;
+                              if (state is UserMachineLoaded) {
+                                selectedMachine = state.selectedmachine;
+                                userMachineList = state.userMachineList;
                               }
-                              return DropdownMenu(
-                                menuHeight: 250,
-                                expandedInsets: EdgeInsets.zero,
-                                enableSearch: true,
-                                requestFocusOnTap: true,
-
-                                menuStyle: const MenuStyle(
-                                    alignment: Alignment.topCenter),
-                                // enableFilter: true,
-                                controller: dropDownTextController,
+                              return CommonDropdownButton<UserMachine>(
                                 hintText: "Select Machine",
-                                inputDecorationTheme: InputDecorationTheme(
-                                  hintStyle: textTheme.bodySmall!.copyWith(
-                                    color: appTheme.primary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                textStyle: textTheme.bodySmall!.copyWith(
-                                  color: appTheme.primary,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                onSelected: (value) {
+                                items: userMachineList,
+                                value: selectedMachine,
+                                onChanged: (value) {
                                   context
-                                      .read<LovBloc>()
-                                      .add(LovChanged(selectedLov: value));
-                                  FocusManager.instance.primaryFocus?.unfocus();
+                                      .read<UserMachineBloc>()
+                                      .add(MachineSelected(selectedLov: value));
                                 },
-                                dropdownMenuEntries: lovList.map(
-                                  (e) {
-                                    return DropdownMenuEntry(
-                                      value: e,
-                                      label: e.toString(),
-                                    );
-                                  },
-                                ).toList(),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return "Please Select Machine";
+                                  }
+                                  return null;
+                                },
                               );
                             },
                           ),
                         ),
+                        // Expanded(
+                        //   child: BlocBuilder<UserMachineBloc, UserMachineState>(
+                        //     builder: (context, state) {
+                        //       if (state is UserMachineLoaded) {
+                        //         selectedMachine = state.selectedmachine;
+                        //         userMachineList = state.userMachineList;
+                        //       }
+                        //       return DropdownMenu(
+                        //         menuHeight: 250,
+                        //         expandedInsets: EdgeInsets.zero,
+                        //         enableSearch: true,
+                        //         requestFocusOnTap: true,
+
+                        //         menuStyle: const MenuStyle(
+                        //             alignment: Alignment.topCenter),
+                        //         // enableFilter: true,
+                        //         controller: dropDownTextController,
+                        //         hintText: "Select Machine",
+                        //         inputDecorationTheme: InputDecorationTheme(
+                        //           hintStyle: textTheme.bodySmall!.copyWith(
+                        //             color: appTheme.primary,
+                        //             fontSize: 15,
+                        //             fontWeight: FontWeight.bold,
+                        //           ),
+                        //         ),
+
+                        //         textStyle: textTheme.bodySmall!.copyWith(
+                        //           color: appTheme.primary,
+                        //           fontSize: 15,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //         onSelected: (value) {
+                        //           context
+                        //               .read<UserMachineBloc>()
+                        //               .add(MachineSelected(selectedLov: value));
+                        //           FocusManager.instance.primaryFocus?.unfocus();
+                        //         },
+                        //         dropdownMenuEntries: userMachineList.map(
+                        //           (e) {
+                        //             return DropdownMenuEntry(
+                        //               value: e,
+                        //               label: e.toString(),
+                        //             );
+                        //           },
+                        //         ).toList(),
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
                         const SizedBox(
                           width: 40,
                         ),
@@ -505,7 +518,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                     );
                                     return;
                                   }
-                                  if (selectedLov == null) {
+                                  if (selectedMachine == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
@@ -536,7 +549,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                           goodQty: goodQtyTextController.text,
                                           badQty: badQtyTextController.text,
                                           machine:
-                                              selectedLov?.machineName ?? "",
+                                              selectedMachine?.machineName ??
+                                                  "",
                                         ),
                                       );
                                 }
@@ -708,51 +722,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CommonDropdownButton<T> extends StatelessWidget {
-  const CommonDropdownButton({
-    super.key,
-    required this.hintText,
-    this.items,
-    this.value,
-    required this.onChanged,
-    this.validator,
-  });
-  final String hintText;
-  final List<T>? items;
-  final T? value;
-  final void Function(T?) onChanged;
-  final String? Function(T?)? validator;
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<T>(
-      value: value,
-      isExpanded: true,
-      menuMaxHeight: 250,
-      hint: Text(
-        hintText,
-        style: textTheme.bodyMedium!.copyWith(
-          color: appTheme.primary,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      style: textTheme.bodyMedium!.copyWith(
-        color: appTheme.primary,
-        fontWeight: FontWeight.bold,
-      ),
-      items: items?.map(
-        (e) {
-          return DropdownMenuItem(
-            value: e,
-            child: Text(e.toString()),
-          );
-        },
-      ).toList(),
-      onChanged: onChanged,
-      validator: validator,
     );
   }
 }
