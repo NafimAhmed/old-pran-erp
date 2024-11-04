@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -13,6 +12,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart'
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/bloc/user_qr_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
 
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
@@ -32,6 +32,9 @@ class OpmC2Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SelectedOrgCubit(),
+        ),
+        BlocProvider(
+          create: (context) => UserQrSaveBloc(getService()),
         ),
       ],
       child: const ProductionScreenBody(),

@@ -1,7 +1,6 @@
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
@@ -185,6 +184,29 @@ class DataServiceImpl implements DataService {
       itemid: itemid,
       rqty: rqty,
       batchid: batchid,
+    );
+  }
+
+  @override
+  Future<void> userQrSave({
+    required String userid,
+    required String itemid,
+    required String machine,
+    required String batchid,
+    required String orgid,
+    required String goodQty,
+    required String badQty,
+    required String qty,
+  }) async {
+    await remoteDataRepository.userQrSave(
+      userid: userid,
+      itemid: itemid,
+      machine: machine,
+      batchid: batchid,
+      orgid: orgid,
+      goodQty: goodQty,
+      badQty: badQty,
+      qty: qty,
     );
   }
 }

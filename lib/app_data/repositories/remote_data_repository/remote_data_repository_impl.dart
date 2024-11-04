@@ -227,4 +227,25 @@ class RemoteDataRepositoryImpl
 
     await decodeResponse(response);
   }
+
+  @override
+  Future<void> userQrSave({
+    required String userid,
+    required String itemid,
+    required String machine,
+    required String batchid,
+    required String orgid,
+    required String goodQty,
+    required String badQty,
+    required String qty,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?machine=$machine&userid=$userid&orgid=$orgid&batchid=$batchid&itemid=$itemid&bad_qty=$badQty&good_qty=$goodQty&qty=$qty'));
+
+    http.StreamedResponse response = await request.send();
+
+    await decodeResponse(response);
+  }
 }

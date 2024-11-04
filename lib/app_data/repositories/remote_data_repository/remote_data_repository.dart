@@ -54,4 +54,14 @@ abstract class RemoteDataRepository {
     required String rqty,
     required String batchid,
   });
+  Future<void> userQrSave({
+    required String userid,
+    required String itemid,
+    required String machine,
+    required String batchid,
+    required String orgid,
+    required String goodQty,
+    required String badQty,
+    required String qty,
+  });
 }
