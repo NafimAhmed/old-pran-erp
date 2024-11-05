@@ -66,6 +66,9 @@ class UserBasicDataResponse {
 class UserBatch {
   final String? organizationCode;
   final String? organizationName;
+  final int? batchId;
+  final int? inventoryItemId;
+  final int? materialDetailId;
   final String? batchNo;
   final String? itemCode;
   final String? itemName;
@@ -78,6 +81,9 @@ class UserBatch {
   UserBatch({
     this.organizationCode,
     this.organizationName,
+    this.batchId,
+    this.inventoryItemId,
+    this.materialDetailId,
     this.batchNo,
     this.itemCode,
     this.itemName,
@@ -91,6 +97,9 @@ class UserBatch {
   UserBatch copyWith({
     String? organizationCode,
     String? organizationName,
+    final int? batchId,
+    final int? inventoryItemId,
+    final int? materialDetailId,
     String? batchNo,
     String? itemCode,
     String? itemName,
@@ -103,6 +112,9 @@ class UserBatch {
       UserBatch(
         organizationCode: organizationCode ?? this.organizationCode,
         organizationName: organizationName ?? this.organizationName,
+        batchId: batchId ?? this.batchId,
+        inventoryItemId: inventoryItemId ?? this.inventoryItemId,
+        materialDetailId: materialDetailId ?? this.materialDetailId,
         batchNo: batchNo ?? this.batchNo,
         itemCode: itemCode ?? this.itemCode,
         itemName: itemName ?? this.itemName,
@@ -118,12 +130,15 @@ class UserBatch {
   String toJson() => json.encode(toMap());
   @override
   String toString() {
-    return "$organizationCode-$batchNo-$itemCode-$itemName";
+    return "No:-$batchNo-$itemCode-$itemName";
   }
 
   factory UserBatch.fromMap(Map<String, dynamic> json) => UserBatch(
         organizationCode: json["ORGANIZATION_CODE"],
         organizationName: json["ORGANIZATION_NAME"],
+        batchId: json["batch_id"],
+        inventoryItemId: json["inventory_item_id"],
+        materialDetailId: json["material_detail_id"],
         batchNo: json["BATCH_NO"],
         itemCode: json["ITEM_CODE"],
         itemName: json["ITEM_NAME"],
@@ -137,6 +152,9 @@ class UserBatch {
   Map<String, dynamic> toMap() => {
         "ORGANIZATION_CODE": organizationCode,
         "ORGANIZATION_NAME": organizationName,
+        "batch_id": batchId,
+        "inventory_item_id": inventoryItemId,
+        "material_detail_id": materialDetailId,
         "BATCH_NO": batchNo,
         "ITEM_CODE": itemCode,
         "ITEM_NAME": itemName,
