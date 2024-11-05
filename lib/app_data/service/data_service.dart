@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 
 import '../entities/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
@@ -71,5 +72,10 @@ abstract class DataService {
     required String goodQty,
     required String badQty,
     required String qty,
+  });
+
+  Future<List<UserBatchQrData>> getUserQrPrintData({
+    required String userid,
+    required String orgid,
   });
 }

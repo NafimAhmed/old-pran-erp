@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
@@ -213,5 +214,20 @@ class DataServiceImpl implements DataService {
       return response.batchQrData ?? [];
     }
     throw ApiDataException(response.errorMessage);
+  }
+
+  @override
+  Future<List<UserBatchQrData>> getUserQrPrintData({
+    required String userid,
+    required String orgid,
+  }) async {
+    var response = await remoteDataRepository.getUserQrPrintData(
+      userid: userid,
+      orgid: orgid,
+    );
+    if (response.statusCode == 200) {
+      return response.userBatchData ?? [];
+    }
+    throw const ApiDataException("Unable To Get Data");
   }
 }

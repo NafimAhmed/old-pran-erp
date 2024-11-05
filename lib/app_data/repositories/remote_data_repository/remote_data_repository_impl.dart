@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
@@ -249,5 +250,20 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse(response,
         decoder: BatchQrDataResponse.fromJson);
+  }
+
+  @override
+  Future<UserQrPrintResponse> getUserQrPrintData({
+    required String userid,
+    required String orgid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userqrprint?userid=$userid&orgid=$orgid'));
+
+    http.StreamedResponse response = await request.send();
+
+    return decodeResponse(response, decoder: UserQrPrintResponse.fromJson);
   }
 }

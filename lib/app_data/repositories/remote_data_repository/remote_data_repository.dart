@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 
 import '../../entities/user_menu_item_response.dart';
 
@@ -64,5 +65,9 @@ abstract class RemoteDataRepository {
     required String goodQty,
     required String badQty,
     required String qty,
+  });
+  Future<UserQrPrintResponse> getUserQrPrintData({
+    required String userid,
+    required String orgid,
   });
 }
