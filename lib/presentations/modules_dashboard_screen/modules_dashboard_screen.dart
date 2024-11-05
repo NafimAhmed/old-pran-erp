@@ -130,8 +130,16 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                               builder: (context, state) {
                                 return ElevatedButton(
                                   style: ElevatedButton.styleFrom().copyWith(
-                                    padding: const WidgetStatePropertyAll(
-                                        EdgeInsets.zero),
+                                    padding: const WidgetStatePropertyAll<
+                                        EdgeInsetsGeometry>(
+                                      EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 10,
+                                      ),
+                                    ),
+                                    minimumSize: WidgetStateProperty.all<Size>(
+                                      const Size(80, 30),
+                                    ),
                                     backgroundColor:
                                         const WidgetStatePropertyAll(
                                       Color.fromARGB(255, 151, 21, 11),

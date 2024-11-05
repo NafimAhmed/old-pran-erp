@@ -17,34 +17,34 @@ class ModuleScreen extends StatelessWidget {
   static const String routeName = "module-screen";
   @override
   Widget build(BuildContext context) {
-    return OpmScreenBody(
+    return ModuleScreenBody(
       moduleName: moduleName,
     );
   }
 }
 
-class OpmScreenBody extends StatefulWidget {
-  const OpmScreenBody({
+class ModuleScreenBody extends StatefulWidget {
+  const ModuleScreenBody({
     super.key,
     required this.moduleName,
   });
   final String moduleName;
   @override
-  State<OpmScreenBody> createState() => _OpmScreenBodyState();
+  State<ModuleScreenBody> createState() => _ModuleScreenBodyState();
 }
 
-class _OpmScreenBodyState extends State<OpmScreenBody> {
+class _ModuleScreenBodyState extends State<ModuleScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.moduleName),
+      resizeToAvoidBottomInset: false,
       body: CustomPaint(
         painter: CustomShapePainter(),
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
           ),
-          height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
