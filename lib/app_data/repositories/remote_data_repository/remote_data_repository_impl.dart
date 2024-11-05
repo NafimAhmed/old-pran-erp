@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
@@ -229,7 +230,7 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<void> userQrSave({
+  Future<BatchQrDataResponse> userQrSave({
     required String userid,
     required String itemid,
     required String machine,
@@ -242,10 +243,11 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?machine=$machine&userid=$userid&orgid=$orgid&batchid=$batchid&itemid=$itemid&bad_qty=$badQty&good_qty=$goodQty&qty=$qty'));
+            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty'));
 
     http.StreamedResponse response = await request.send();
 
-    await decodeResponse(response);
+    return await decodeResponse(response,
+        decoder: BatchQrDataResponse.fromJson);
   }
 }

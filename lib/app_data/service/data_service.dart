@@ -1,4 +1,5 @@
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
@@ -61,7 +62,7 @@ abstract class DataService {
     required String batchid,
   });
 
-  Future<void> userQrSave({
+  Future<List<BatchQrData>> userQrSave({
     required String userid,
     required String itemid,
     required String machine,

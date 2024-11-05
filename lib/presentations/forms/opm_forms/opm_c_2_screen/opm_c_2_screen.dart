@@ -9,6 +9,7 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -17,6 +18,8 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/u
 
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_batch_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_machine_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_org_cubit.dart';
 
 class OpmC2Screen extends StatelessWidget {
@@ -32,6 +35,12 @@ class OpmC2Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SelectedOrgCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SelectedMachineCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SelectedBatchCubit(),
         ),
         BlocProvider(
           create: (context) => UserQrSaveBloc(getService()),
@@ -79,328 +88,414 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: const CommonAppBar(appBartitle: "D-Production"),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 5,
-              ),
-              const UserDetailsWidget(),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: BlocBuilder<UserOrgBloc, UserOrgState>(
-                      builder: (context, state) {
-                        return CommonDropdownButton<UserOrg>(
-                          hintText: "Select Org",
-                          items: state is UserOrgSuccess ? state.userOrg : [],
-                          onChanged: (value) {
-                            var loggedUser =
-                                context.read<LoggedUserInfoCubit>().state;
-                            context.read<UserBasicDataBloc>().add(
-                                  UserBasicDataGet(
-                                    userId: loggedUser!.userId!,
-                                    orgid: value!.organizationId!.toString(),
-                                  ),
-                                );
-                            context
-                                .read<SelectedOrgCubit>()
-                                .setOrg(userOrg: value);
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return "Please Select Org";
-                            }
-                            return null;
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
-                      builder: (context, state) {
-                        return CommonDropdownButton<UserMachine>(
-                          hintText: "Select Machine",
-                          items: state is UserBasicDataSuccess
-                              ? state.userBasicData.userMachineData
-                              : [],
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value == null) {
-                              return "Please Select Mahine";
-                            }
-                            return null;
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
-                builder: (context, state) {
-                  return CommonDropdownButton<UserBatch>(
-                    hintText: "Select Batch",
-                    items: state is UserBasicDataSuccess
-                        ? state.userBasicData.userBatchData
-                        : [],
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value == null) {
-                        return "Please Select Batch";
-                      }
-                      return null;
-                    },
-                  );
-                },
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Form(
-                key: fromkey,
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  20,
-                                ),
-                                bottomRight: Radius.circular(
-                                  20,
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Good Qty",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            focusNode: goodQtyFocusNode,
-                            textAlign: TextAlign.center,
-                            controller: goodQtyTextController,
-                            keyboardType: TextInputType.phone,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.primary,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            labelText: "",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please Enter Good Quantity";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              var goodQty =
-                                  value.isEmpty ? 0 : int.parse(value);
-                              var badQty = badQtyTextController.text.isEmpty
-                                  ? 0
-                                  : int.parse(badQtyTextController.text);
-                              quantityTextController.text =
-                                  (goodQty + badQty).toString();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  20,
-                                ),
-                                bottomRight: Radius.circular(
-                                  20,
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Bad Qty",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            focusNode: badQtyFocusNode,
-                            textAlign: TextAlign.center,
-                            controller: badQtyTextController,
-                            keyboardType: TextInputType.phone,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.primary,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            labelText: "",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please Enter Bad Quantity";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              var badQty = value.isEmpty ? 0 : int.parse(value);
-                              var goodQty = goodQtyTextController.text.isEmpty
-                                  ? 0
-                                  : int.parse(goodQtyTextController.text);
-                              quantityTextController.text =
-                                  (goodQty + badQty).toString();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  20,
-                                ),
-                                bottomRight: Radius.circular(
-                                  20,
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Quantity",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            readOnly: true,
-                            focusNode: quantityFocusNode,
-                            textAlign: TextAlign.center,
-                            controller: quantityTextController,
-                            keyboardType: TextInputType.phone,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.primary,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            labelText: "",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please Enter Quantity";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {},
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
+    return BlocListener<UserQrSaveBloc, UserQrSaveState>(
+      listener: (context, state) {
+        if (state is UserQrSaveSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            CustomSnackBar.successSnackber(
+              message: "Successfully Added..",
+            ),
+          );
+        }
+        if (state is UserQrSaveError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            CustomSnackBar.errorSnackber(
+              message: state.error.toString(),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: const CommonAppBar(appBartitle: "D-Production"),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 5,
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  "Save",
-                  style: textTheme.bodyMedium!.copyWith(
-                    color: appTheme.white,
-                  ),
-                ),
-              ),
-              Container(
-                height: 100,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: appTheme.secondary,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton.filled(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.qr_code,
-                        color: appTheme.white,
+                const UserDetailsWidget(),
+                Form(
+                  key: fromkey,
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 15,
                       ),
-                    ),
-                  ],
+                      Row(
+                        children: [
+                          Expanded(
+                            child: BlocBuilder<UserOrgBloc, UserOrgState>(
+                              builder: (context, state) {
+                                return CommonDropdownButton<UserOrg>(
+                                  hintText: "Select Org",
+                                  items: state is UserOrgSuccess
+                                      ? state.userOrg
+                                      : [],
+                                  onChanged: (value) {
+                                    var loggedUser = context
+                                        .read<LoggedUserInfoCubit>()
+                                        .state;
+                                    context.read<UserBasicDataBloc>().add(
+                                          UserBasicDataGet(
+                                            userId: loggedUser!.userId!,
+                                            orgid: value!.organizationId!
+                                                .toString(),
+                                          ),
+                                        );
+                                    context
+                                        .read<SelectedOrgCubit>()
+                                        .setOrg(userOrg: value);
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Please Select Org";
+                                    }
+                                    return null;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: BlocBuilder<UserBasicDataBloc,
+                                UserBasicDataState>(
+                              builder: (context, state) {
+                                return CommonDropdownButton<UserMachine>(
+                                  hintText: "Select Machine",
+                                  items: state is UserBasicDataSuccess
+                                      ? state.userBasicData.userMachineData
+                                      : [],
+                                  value: context
+                                      .read<SelectedMachineCubit>()
+                                      .state,
+                                  onChanged: (value) {
+                                    context
+                                        .read<SelectedMachineCubit>()
+                                        .setMachine(selectedMachine: value!);
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Please Select Mahine";
+                                    }
+                                    return null;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
+                        builder: (context, state) {
+                          return CommonDropdownButton<UserBatch>(
+                            hintText: "Select Batch",
+                            items: state is UserBasicDataSuccess
+                                ? state.userBasicData.userBatchData
+                                : [],
+                            value: context.read<SelectedBatchCubit>().state,
+                            onChanged: (value) {
+                              context
+                                  .read<SelectedBatchCubit>()
+                                  .setBatch(selectedBatch: value!);
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return "Please Select Batch";
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: appTheme.primary,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                    20,
+                                  ),
+                                  bottomRight: Radius.circular(
+                                    20,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Good Qty",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CommonTextFieldWidget(
+                              focusNode: goodQtyFocusNode,
+                              textAlign: TextAlign.center,
+                              controller: goodQtyTextController,
+                              keyboardType: TextInputType.phone,
+                              style: textTheme.bodySmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: appTheme.primary,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              labelText: "",
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Good Quantity";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                var goodQty =
+                                    value.isEmpty ? 0 : int.parse(value);
+                                var badQty = badQtyTextController.text.isEmpty
+                                    ? 0
+                                    : int.parse(badQtyTextController.text);
+                                quantityTextController.text =
+                                    (goodQty + badQty).toString();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: appTheme.primary,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                    20,
+                                  ),
+                                  bottomRight: Radius.circular(
+                                    20,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Bad Qty",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CommonTextFieldWidget(
+                              focusNode: badQtyFocusNode,
+                              textAlign: TextAlign.center,
+                              controller: badQtyTextController,
+                              keyboardType: TextInputType.phone,
+                              style: textTheme.bodySmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: appTheme.primary,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              labelText: "",
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Bad Quantity";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                var badQty =
+                                    value.isEmpty ? 0 : int.parse(value);
+                                var goodQty = goodQtyTextController.text.isEmpty
+                                    ? 0
+                                    : int.parse(goodQtyTextController.text);
+                                quantityTextController.text =
+                                    (goodQty + badQty).toString();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: appTheme.primary,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                    20,
+                                  ),
+                                  bottomRight: Radius.circular(
+                                    20,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Quantity",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CommonTextFieldWidget(
+                              readOnly: true,
+                              focusNode: quantityFocusNode,
+                              textAlign: TextAlign.center,
+                              controller: quantityTextController,
+                              keyboardType: TextInputType.phone,
+                              style: textTheme.bodySmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: appTheme.primary,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              labelText: "",
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Quantity";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {},
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
+                BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: state is UserQrSaveLoading
+                          ? () {}
+                          : () {
+                              if (fromkey.currentState!.validate()) {
+                                var loggedUser =
+                                    context.read<LoggedUserInfoCubit>().state;
+                                var selectedOrg =
+                                    context.read<SelectedOrgCubit>().state;
+                                var selectedMachine =
+                                    context.read<SelectedMachineCubit>().state;
+                                var selectedBatch =
+                                    context.read<SelectedBatchCubit>().state;
+                                context.read<UserQrSaveBloc>().add(
+                                      UserQrSave(
+                                          userid: loggedUser!.userId!,
+                                          itemid: selectedBatch!.inventoryItemId
+                                              .toString(),
+                                          machine:
+                                              selectedMachine!.machineName!,
+                                          batchid:
+                                              selectedBatch.batchId.toString(),
+                                          orgid: selectedOrg!.organizationId
+                                              .toString(),
+                                          goodQty: goodQtyTextController.text,
+                                          badQty: badQtyTextController.text,
+                                          qty: quantityTextController.text),
+                                    );
+                              }
+                            },
+                      child: Text(
+                        state is UserQrSaveLoading ? "Saving.." : "Save",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.white,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 200,
+                  child: BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
+                    builder: (context, state) {
+                      if (state is UserQrSaveSuccess) {
+                        return ListView.separated(
+                          itemCount: state.batchQrDataList.length,
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 10,
+                          ),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: 100,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: appTheme.secondary,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  IconButton.filled(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.qr_code,
+                                      color: appTheme.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

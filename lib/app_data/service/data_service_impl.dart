@@ -1,4 +1,5 @@
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
@@ -188,7 +189,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> userQrSave({
+  Future<List<BatchQrData>> userQrSave({
     required String userid,
     required String itemid,
     required String machine,
@@ -198,7 +199,7 @@ class DataServiceImpl implements DataService {
     required String badQty,
     required String qty,
   }) async {
-    await remoteDataRepository.userQrSave(
+    var response = await remoteDataRepository.userQrSave(
       userid: userid,
       itemid: itemid,
       machine: machine,
@@ -208,5 +209,9 @@ class DataServiceImpl implements DataService {
       badQty: badQty,
       qty: qty,
     );
+    if (response.statusCode == 200) {
+      return response.batchQrData ?? [];
+    }
+    throw ApiDataException(response.errorMessage);
   }
 }

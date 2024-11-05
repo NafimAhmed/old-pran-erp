@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
@@ -33,7 +34,11 @@ final class UserQrSaveInitial extends UserQrSaveState {}
 
 final class UserQrSaveLoading extends UserQrSaveState {}
 
-final class UserQrSaveSuccess extends UserQrSaveState {}
+final class UserQrSaveSuccess extends UserQrSaveState {
+  final List<BatchQrData> batchQrDataList;
+
+  UserQrSaveSuccess({required this.batchQrDataList});
+}
 
 final class UserQrSaveError extends UserQrSaveState {
   final Object error;
@@ -47,7 +52,7 @@ class UserQrSaveBloc extends Bloc<UserQrSaveEvent, UserQrSaveState> {
     on<UserQrSave>((event, emit) async {
       emit(UserQrSaveLoading());
       try {
-        await _dataService.userQrSave(
+        var response = await _dataService.userQrSave(
           userid: event.userid,
           itemid: event.itemid,
           machine: event.machine,
@@ -57,6 +62,7 @@ class UserQrSaveBloc extends Bloc<UserQrSaveEvent, UserQrSaveState> {
           badQty: event.badQty,
           qty: event.qty,
         );
+        emit(UserQrSaveSuccess(batchQrDataList: response));
       } catch (e) {
         emit(UserQrSaveError(error: e));
       }
