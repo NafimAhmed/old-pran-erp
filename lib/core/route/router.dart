@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pran_rfl_erp/presentations/generate_qr_screen/generate_qr_screen.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_1_screen/om_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_2_screen/om_c_2_screen.dart';
@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dash
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
+import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 import 'package:pran_rfl_erp/presentations/splash_screen/splash_screen.dart';
 
@@ -144,10 +145,12 @@ class AppNavigation {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: GenerateQrScreen.routePath,
-        name: GenerateQrScreen.routeName,
+        path: PrintQrScreen.routePath,
+        name: PrintQrScreen.routeName,
         builder: (context, state) {
-          return const GenerateQrScreen();
+          return PrintQrScreen(
+            userBatchQrData: state.extra as UserBatchQrData,
+          );
         },
       ),
     ],

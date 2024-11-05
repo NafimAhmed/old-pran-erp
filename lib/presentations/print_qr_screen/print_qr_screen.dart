@@ -6,52 +6,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pdfrx/pdfrx.dart' as pdfview;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/pdf_service.dart';
 
-import 'package:pran_rfl_erp/presentations/generate_qr_screen/cubit/qr_generate_cubit.dart';
+import 'package:pran_rfl_erp/presentations/print_qr_screen/cubit/qr_generate_cubit.dart';
 import 'package:printing/printing.dart';
 
-import 'package:pdf/pdf.dart';
-
-class GenerateQrScreen extends StatefulWidget {
-  const GenerateQrScreen({super.key});
-  static const String routePath = "/generateQr-screen";
-  static const String routeName = "generateQr-screen";
-  @override
-  State<GenerateQrScreen> createState() => _GenerateQrScreenState();
-}
-
-class _GenerateQrScreenState extends State<GenerateQrScreen> {
+class PrintQrScreen extends StatelessWidget {
+  const PrintQrScreen({super.key, required this.userBatchQrData});
+  static const String routePath = "/printQr-screen";
+  static const String routeName = "printQr-screen";
+  final UserBatchQrData userBatchQrData;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => QrGenerateCubit(),
-      child: const GenerateQrScreenBody(),
+      child: PrintQrScreenBody(
+        userBatchQrData: userBatchQrData,
+      ),
     );
   }
 }
 
-class GenerateQrScreenBody extends StatefulWidget {
-  const GenerateQrScreenBody({super.key});
-
+class PrintQrScreenBody extends StatefulWidget {
+  const PrintQrScreenBody({super.key, required this.userBatchQrData});
+  final UserBatchQrData userBatchQrData;
   @override
-  State<GenerateQrScreenBody> createState() => _GenerateQrScreenBodyState();
+  State<PrintQrScreenBody> createState() => _PrintQrScreenBodyState();
 }
 
-class _GenerateQrScreenBodyState extends State<GenerateQrScreenBody> {
+class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
   @override
   void initState() {
-    context.read<QrGenerateCubit>().setNewData("Miraj");
+    context.read<QrGenerateCubit>().generateQr(widget.userBatchQrData);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Generate Qr Code"),
+      appBar: const CommonAppBar(appBartitle: "Print Qr Code"),
       body: Column(
         children: [
           BlocBuilder<QrGenerateCubit, Uint8List?>(
@@ -80,7 +77,9 @@ class _GenerateQrScreenBodyState extends State<GenerateQrScreenBody> {
                   ),
                 );
               }
-              return Container();
+              return Container(
+                height: 190,
+              );
             },
           ),
           ElevatedButton(
@@ -112,7 +111,8 @@ class _GenerateQrScreenBodyState extends State<GenerateQrScreenBody> {
                   // dynamicLayout: true,
                   // forceCustomPrintPaper: true,
                   // usePrinterSettings: true,
-                  onLayout: (format) => PdfService.createQrPdf(),
+                  onLayout: (format) =>
+                      PdfService.createBatchQrPdf(widget.userBatchQrData),
                 );
                 log(status.toString());
               } catch (e) {

@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 
 class PdfService {
-  static Future<Uint8List> createQrPdf() async {
+  static Future<Uint8List> createBatchQrPdf(
+      UserBatchQrData userBatchQrData) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -19,7 +21,7 @@ class PdfService {
         ),
         build: (pw.Context context) {
           return pw.Container(
-            color: PdfColors.amber,
+            // color: PdfColors.amber,
             padding: const pw.EdgeInsets.only(
               right: 7,
               left: 5,
@@ -60,7 +62,7 @@ class PdfService {
                           children: [
                             buildQrDetails(
                               lable: "ORG",
-                              value: "PBO-RIP-Plas Export",
+                              value: userBatchQrData.organizationCode ?? "",
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -70,8 +72,7 @@ class PdfService {
                             ),
                             buildQrDetails(
                               lable: "Item",
-                              value:
-                                  "620256 Storage Container Square Lid367 ml Lid367 ml Lid367 ml Purple",
+                              value: userBatchQrData.itemName ?? "",
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -80,8 +81,8 @@ class PdfService {
                               endIndent: 0,
                             ),
                             buildQrDetails(
-                              lable: "Order Info",
-                              value: "Test Order Info",
+                              lable: "Batch No",
+                              value: userBatchQrData.batchNo ?? "",
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -90,8 +91,8 @@ class PdfService {
                               endIndent: 0,
                             ),
                             buildQrDetails(
-                              lable: "Prod Qty",
-                              value: "12345466555555555",
+                              lable: "Total Qty",
+                              value: userBatchQrData.totalQty.toString(),
                             )
                           ],
                         ),
@@ -103,8 +104,7 @@ class PdfService {
                       barcode: pw.Barcode.qrCode(),
                       width: 80,
                       height: 80,
-                      data:
-                          "This is the test data to print qr code for batch data automation all these things are to test this print..",
+                      data: userBatchQrData.toJson(),
                     ),
                     // pw.Expanded(
                     //   flex: 1,
