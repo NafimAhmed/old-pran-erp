@@ -106,7 +106,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               const SizedBox(
                 height: 5,
               ),
-              const UserDetailsWidget(),
+              // const UserDetailsWidget(),
               const SizedBox(
                 height: 15,
               ),
@@ -603,6 +603,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           ),
         ),
       ),
+      bottomSheet: const UserDetailsWidget(),
     );
   }
 }

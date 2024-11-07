@@ -10,6 +10,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: true,
+      elevation: 5,
+      shadowColor: Colors.grey,
+      surfaceTintColor: Colors.transparent,
       title: Text(
         appBartitle,
         textAlign: TextAlign.center,
@@ -67,26 +70,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       backgroundColor: appTheme.white,
-      // actions: [
-      //   Container(
-      //     height: 44,
-      //     width: 44,
-      //     margin: const EdgeInsets.only(right: 15),
-      //     padding: const EdgeInsets.all(8.0),
-      //     decoration: BoxDecoration(
-      //       color: const Color.fromRGBO(75, 134, 208, 0.09),
-      //       borderRadius: BorderRadius.circular(10.0),
-      //     ),
-      //     child: Center(
-      //       child: Image.asset(
-      //         ImageConstant.filterlistImg,
-      //       ),
-      //     ),
-      //   )
-      // ],
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(70.0);
+  Size get preferredSize => const Size.fromHeight(50.0);
 }

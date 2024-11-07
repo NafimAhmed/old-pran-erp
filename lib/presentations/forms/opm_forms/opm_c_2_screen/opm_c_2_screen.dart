@@ -147,7 +147,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                 const SizedBox(
                   height: 5,
                 ),
-                const UserDetailsWidget(),
+                // const UserDetailsWidget(),
                 Form(
                   key: fromkey,
                   child: Column(
@@ -763,6 +763,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             ),
           ),
         ),
+        bottomSheet: const UserDetailsWidget(),
       ),
     );
   }

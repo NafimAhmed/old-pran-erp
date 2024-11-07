@@ -73,7 +73,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const UserDetailsWidget(),
+                      // const UserDetailsWidget(),
                       const SizedBox(
                         height: 10,
                       ),
@@ -190,6 +190,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
           ),
         ),
       ),
+      bottomSheet: const UserDetailsWidget(),
     );
   }
 }
