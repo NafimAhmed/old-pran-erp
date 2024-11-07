@@ -72,8 +72,8 @@ class UserBatch {
   final String? batchNo;
   final String? itemCode;
   final String? itemName;
-  final int? originalQty;
-  final int? totalQty;
+  final num? originalQty;
+  final num? totalQty;
   final String? jobOrderNo;
   final String? batchStatus;
   final int? flagStatus;
@@ -103,8 +103,8 @@ class UserBatch {
     String? batchNo,
     String? itemCode,
     String? itemName,
-    int? originalQty,
-    int? totalQty,
+    num? originalQty,
+    num? totalQty,
     String? jobOrderNo,
     String? batchStatus,
     int? flagStatus,
@@ -130,7 +130,7 @@ class UserBatch {
   String toJson() => json.encode(toMap());
   @override
   String toString() {
-    return "No:-$batchNo-$itemCode-$itemName";
+    return "$batchNo-$itemCode-$itemName";
   }
 
   factory UserBatch.fromMap(Map<String, dynamic> json) => UserBatch(

@@ -74,8 +74,8 @@ class TempBatchData {
   final String? batchNo;
   final String? itemCode;
   final String? itemName;
-  final int? originalQty;
-  final int? totalQty;
+  final num? originalQty;
+  final num? totalQty;
   final String? jobOrderNo;
   final String? batchStatus;
   final int? flagStatus;
@@ -99,8 +99,8 @@ class TempBatchData {
     String? batchNo,
     String? itemCode,
     String? itemName,
-    int? originalQty,
-    int? totalQty,
+    num? originalQty,
+    num? totalQty,
     String? jobOrderNo,
     String? batchStatus,
     int? flagStatus,

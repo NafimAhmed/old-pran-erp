@@ -103,6 +103,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               message: "Successfully Added..",
             ),
           );
+          quantityTextController.clear();
+          goodQtyTextController.clear();
+          badQtyTextController.clear();
           var selectedOrg = context.read<SelectedOrgCubit>().state;
           context.read<SelectedMachineCubit>().resetMachine();
           context.read<SelectedBatchCubit>().resetBatch();
@@ -255,7 +258,89 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         },
                       ),
                       const SizedBox(
-                        width: 10,
+                        height: 10,
+                      ),
+                      BlocBuilder<SelectedBatchCubit, UserBatch?>(
+                        builder: (context, state) {
+                          if (state != null) {
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: appTheme.primary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Ttl Qty :",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            state.totalQty.toString(),
+                                            textAlign: TextAlign.right,
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.white,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: appTheme.primary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Ori Qty: ",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            state.originalQty.toString(),
+                                            textAlign: TextAlign.right,
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.white,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Container();
+                        },
                       ),
                       const SizedBox(
                         height: 10,
@@ -295,7 +380,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               textAlign: TextAlign.center,
                               controller: goodQtyTextController,
                               keyboardType: TextInputType.phone,
-                              style: textTheme.bodySmall!.copyWith(
+                              style: textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: appTheme.primary,
                               ),
@@ -312,6 +397,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               onChanged: (value) {
                                 var goodQty =
                                     value.isEmpty ? 0 : int.parse(value);
+                                badQtyTextController.text = "0";
                                 var badQty = badQtyTextController.text.isEmpty
                                     ? 0
                                     : int.parse(badQtyTextController.text);
@@ -360,7 +446,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               textAlign: TextAlign.center,
                               controller: badQtyTextController,
                               keyboardType: TextInputType.phone,
-                              style: textTheme.bodySmall!.copyWith(
+                              style: textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: appTheme.primary,
                               ),
@@ -426,7 +512,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               textAlign: TextAlign.center,
                               controller: quantityTextController,
                               keyboardType: TextInputType.phone,
-                              style: textTheme.bodySmall!.copyWith(
+                              style: textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: appTheme.primary,
                               ),

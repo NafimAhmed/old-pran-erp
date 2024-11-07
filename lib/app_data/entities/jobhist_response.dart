@@ -77,11 +77,11 @@ class JobHistory {
   final String? planCmpltDate;
   final num? fpoQty;
   final String? dtlUm;
-  final int? totalMadeQty;
-  final int? goodQty;
-  final int? badQty;
-  final int? trnQty;
-  final int? rackQty;
+  final num? totalMadeQty;
+  final num? goodQty;
+  final num? badQty;
+  final num? trnQty;
+  final num? rackQty;
   final num? madeP;
   final num? dueMadeP;
 
@@ -110,13 +110,13 @@ class JobHistory {
     String? creationDate,
     String? planStartDate,
     String? planCmpltDate,
-    double? fpoQty,
+    num? fpoQty,
     String? dtlUm,
-    int? totalMadeQty,
-    int? goodQty,
-    int? badQty,
-    int? trnQty,
-    int? rackQty,
+    num? totalMadeQty,
+    num? goodQty,
+    num? badQty,
+    num? trnQty,
+    num? rackQty,
     double? madeP,
     double? dueMadeP,
   }) =>

@@ -77,8 +77,8 @@ class TransferBatchData {
   final String? itemCode;
   final int? inventoryItemId;
   final String? itemName;
-  final double? originalQty;
-  final int? totalQty;
+  final num? originalQty;
+  final num? totalQty;
   final String? rackOrg;
   final String? rackOrgName;
   final String? rackSubInv;
@@ -110,8 +110,8 @@ class TransferBatchData {
     String? itemCode,
     int? inventoryItemId,
     String? itemName,
-    double? originalQty,
-    int? totalQty,
+    num? originalQty,
+    num? totalQty,
     String? rackOrg,
     String? rackOrgName,
     String? rackSubInv,

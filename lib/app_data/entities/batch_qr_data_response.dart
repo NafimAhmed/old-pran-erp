@@ -57,7 +57,7 @@ class BatchQrData {
   final int? inventoryItemId;
   final int? batchId;
   final int? locatorId;
-  final int? goodQty;
+  final num? goodQty;
   final String? jobOrderNo;
   final String? createdDate;
   final String? locLocator;
@@ -78,7 +78,7 @@ class BatchQrData {
     int? inventoryItemId,
     int? batchId,
     int? locatorId,
-    int? goodQty,
+    num? goodQty,
     String? jobOrderNo,
     String? createdDate,
     String? locLocator,
