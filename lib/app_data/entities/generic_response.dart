@@ -1,24 +1,20 @@
 import 'dart:convert';
 
 class GenericResponse {
-  final bool? success;
-  final String? warning;
+  final int? statusCode;
   final String? message;
 
   GenericResponse({
-    this.success,
-    this.warning,
+    this.statusCode,
     this.message,
   });
 
   GenericResponse copyWith({
-    bool? success,
-    String? warning,
+    int? statusCode,
     String? message,
   }) =>
       GenericResponse(
-        success: success ?? this.success,
-        warning: warning ?? this.warning,
+        statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
       );
 
@@ -28,14 +24,12 @@ class GenericResponse {
   String toJson() => json.encode(toMap());
 
   factory GenericResponse.fromMap(Map<String, dynamic> json) => GenericResponse(
-        success: json["success"],
-        warning: json["warning"],
+        statusCode: json["status_code"],
         message: json["message"],
       );
 
   Map<String, dynamic> toMap() => {
-        "success": success,
-        "warning": warning,
+        "status_code": statusCode,
         "message": message,
       };
 }

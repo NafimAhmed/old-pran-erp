@@ -47,69 +47,61 @@ class UserQrPrintResponse {
 }
 
 class UserBatchQrData {
-  final String? organizationCode;
-  final String? organizationName;
-  final String? jobOrderNo;
-  final int? trnid;
-  final int? batchId;
+  final String? itemname;
+  final String? custname;
+  final String? buyername;
+  final String? custpo;
+  final String? lotno;
+  final int? goodQty;
+  final String? expdate;
+  final String? fpono;
+  final String? jobno;
+  final String? createdDate;
+  final String? locLocator;
   final String? batchNo;
-  final int? materialDetailId;
-  final int? inventoryItemId;
-  final String? itemCode;
-  final String? itemName;
-  final int? originalQty;
-  final int? totalQty;
-  final String? batchStatus;
-  final int? flagStatus;
 
   UserBatchQrData({
-    this.organizationCode,
-    this.organizationName,
-    this.jobOrderNo,
-    this.trnid,
-    this.batchId,
+    this.itemname,
+    this.custname,
+    this.buyername,
+    this.custpo,
+    this.lotno,
+    this.goodQty,
+    this.expdate,
+    this.fpono,
+    this.jobno,
+    this.createdDate,
+    this.locLocator,
     this.batchNo,
-    this.materialDetailId,
-    this.inventoryItemId,
-    this.itemCode,
-    this.itemName,
-    this.originalQty,
-    this.totalQty,
-    this.batchStatus,
-    this.flagStatus,
   });
 
   UserBatchQrData copyWith({
-    String? organizationCode,
-    String? organizationName,
-    String? jobOrderNo,
-    int? trnid,
-    int? batchId,
+    String? itemname,
+    String? custname,
+    String? buyername,
+    String? custpo,
+    String? lotno,
+    int? goodQty,
+    String? expdate,
+    String? fpono,
+    String? jobno,
+    String? createdDate,
+    String? locLocator,
     String? batchNo,
-    int? materialDetailId,
-    int? inventoryItemId,
-    String? itemCode,
-    String? itemName,
-    int? originalQty,
-    int? totalQty,
-    String? batchStatus,
-    int? flagStatus,
   }) =>
       UserBatchQrData(
-        organizationCode: organizationCode ?? this.organizationCode,
-        organizationName: organizationName ?? this.organizationName,
-        jobOrderNo: jobOrderNo ?? this.jobOrderNo,
-        trnid: trnid ?? this.trnid,
-        batchId: batchId ?? this.batchId,
+        itemname: itemname ?? this.itemname,
+        custname: custname ?? this.custname,
+        buyername: buyername ?? this.buyername,
+        custpo: custpo ?? this.custpo,
+        lotno: lotno ?? this.lotno,
+        goodQty: goodQty ?? this.goodQty,
+        expdate: expdate ?? this.expdate,
+        fpono: fpono ?? this.fpono,
+        jobno: jobno ?? this.jobno,
+        createdDate: createdDate ?? this.createdDate,
+        locLocator: locLocator ?? this.locLocator,
         batchNo: batchNo ?? this.batchNo,
-        materialDetailId: materialDetailId ?? this.materialDetailId,
-        inventoryItemId: inventoryItemId ?? this.inventoryItemId,
-        itemCode: itemCode ?? this.itemCode,
-        itemName: itemName ?? this.itemName,
-        originalQty: originalQty ?? this.originalQty,
-        totalQty: totalQty ?? this.totalQty,
-        batchStatus: batchStatus ?? this.batchStatus,
-        flagStatus: flagStatus ?? this.flagStatus,
       );
 
   factory UserBatchQrData.fromJson(String str) =>
@@ -118,36 +110,32 @@ class UserBatchQrData {
   String toJson() => json.encode(toMap());
 
   factory UserBatchQrData.fromMap(Map<String, dynamic> json) => UserBatchQrData(
-        organizationCode: json["ORGANIZATION_CODE"],
-        organizationName: json["ORGANIZATION_NAME"],
-        jobOrderNo: json["JOB_ORDER_NO"],
-        trnid: json["TRNID"],
-        batchId: json["batch_id"],
-        batchNo: json["BATCH_NO"],
-        materialDetailId: json["material_detail_id"],
-        inventoryItemId: json["inventory_item_id"],
-        itemCode: json["ITEM_CODE"],
-        itemName: json["ITEM_NAME"],
-        originalQty: json["ORIGINAL_QTY"],
-        totalQty: json["TOTAL_QTY"],
-        batchStatus: json["BATCH_STATUS"],
-        flagStatus: json["FLAG_STATUS"],
+        itemname: json["ITEMNAME"],
+        custname: json["CUSTNAME"],
+        buyername: json["BUYERNAME"],
+        custpo: json["CUSTPO"],
+        lotno: json["LOTNO"],
+        goodQty: json["GOOD_QTY"],
+        expdate: json["EXPDATE"],
+        fpono: json["FPONO"],
+        jobno: json["JOBNO"],
+        createdDate: json["CREATED_DATE"],
+        locLocator: json["LOC_LOCATOR"],
+        batchNo: json["BATCHNO"],
       );
 
   Map<String, dynamic> toMap() => {
-        "ORGANIZATION_CODE": organizationCode,
-        "ORGANIZATION_NAME": organizationName,
-        "JOB_ORDER_NO": jobOrderNo,
-        "TRNID": trnid,
-        "batch_id": batchId,
-        "BATCH_NO": batchNo,
-        "material_detail_id": materialDetailId,
-        "inventory_item_id": inventoryItemId,
-        "ITEM_CODE": itemCode,
-        "ITEM_NAME": itemName,
-        "ORIGINAL_QTY": originalQty,
-        "TOTAL_QTY": totalQty,
-        "BATCH_STATUS": batchStatus,
-        "FLAG_STATUS": flagStatus,
+        "ITEMNAME": itemname,
+        "CUSTNAME": custname,
+        "BUYERNAME": buyername,
+        "CUSTPO": custpo,
+        "LOTNO": lotno,
+        "GOOD_QTY": goodQty,
+        "EXPDATE": expdate,
+        "FPONO": fpono,
+        "JOBNO": jobno,
+        "CREATED_DATE": createdDate,
+        "LOC_LOCATOR": locLocator,
+        "BATCHNO": batchNo,
       };
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
@@ -44,6 +46,7 @@ class UserBasicDataBloc extends Bloc<UserBasicDataEvent, UserBasicDataState> {
           userid: event.userId,
           orgid: event.orgid,
         );
+
         emit(
           UserBasicDataSuccess(
             userBasicData: response,

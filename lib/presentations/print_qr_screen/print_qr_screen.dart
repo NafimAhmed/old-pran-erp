@@ -6,42 +6,74 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pdfrx/pdfrx.dart' as pdfview;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/pdf_service.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_print_bloc.dart';
+import 'package:pran_rfl_erp/presentations/print_qr_screen/bloc/prod_qr_print_status_bloc.dart';
 
 import 'package:pran_rfl_erp/presentations/print_qr_screen/cubit/qr_generate_cubit.dart';
 import 'package:printing/printing.dart';
 
 class PrintQrScreen extends StatelessWidget {
-  const PrintQrScreen({super.key, required this.userBatchQrData});
+  const PrintQrScreen(
+      {super.key,
+      required this.userBatchQrData,
+      required this.userQrPrintBlocCtx,
+      required this.userOrg});
   static const String routePath = "/printQr-screen";
   static const String routeName = "printQr-screen";
   final UserBatchQrData userBatchQrData;
+  final BuildContext userQrPrintBlocCtx;
+  final UserOrg userOrg;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => QrGenerateCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => QrGenerateCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ProdQrPrintStatusBloc(getService()),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<UserQrPrintBloc>(userQrPrintBlocCtx),
+        ),
+      ],
       child: PrintQrScreenBody(
         userBatchQrData: userBatchQrData,
+        userQrPrintBlocCtx: userQrPrintBlocCtx,
+        userOrg: userOrg,
       ),
     );
   }
 }
 
 class PrintQrScreenBody extends StatefulWidget {
-  const PrintQrScreenBody({super.key, required this.userBatchQrData});
+  const PrintQrScreenBody(
+      {super.key,
+      required this.userBatchQrData,
+      required this.userQrPrintBlocCtx,
+      required this.userOrg});
   final UserBatchQrData userBatchQrData;
+  final BuildContext userQrPrintBlocCtx;
+  final UserOrg userOrg;
   @override
   State<PrintQrScreenBody> createState() => _PrintQrScreenBodyState();
 }
 
 class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
+  late UserInfoModel loggedUser;
   @override
   void initState() {
     context.read<QrGenerateCubit>().generateQr(widget.userBatchQrData);
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
     super.initState();
   }
 
@@ -84,9 +116,6 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
           ),
           ElevatedButton(
             onPressed: () async {
-              // Capture the data from QrGenerateCubit before any async call
-              final qrData = context.read<QrGenerateCubit>().state;
-
               // Request permissions
               Map<Permission, PermissionStatus> statuses = await [
                 Permission.location,
@@ -94,7 +123,6 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                 Permission.bluetoothConnect,
                 Permission.bluetoothScan
               ].request();
-              // log(statuses.toString());
 
               // Use context to select the device after checking mounted state
               if (!context.mounted) return;
@@ -114,7 +142,20 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                   onLayout: (format) =>
                       PdfService.createBatchQrPdf(widget.userBatchQrData),
                 );
-                log(status.toString());
+                if (!context.mounted) return;
+                if (status) {
+                  context.read<ProdQrPrintStatusBloc>().add(
+                        ProdQrPrintStatusUpdate(
+                          trnlotno: widget.userBatchQrData.lotno!,
+                        ),
+                      );
+                  widget.userQrPrintBlocCtx.read<UserQrPrintBloc>().add(
+                        GetUserQrPrintData(
+                          userid: loggedUser.userId!,
+                          orgid: widget.userOrg.organizationId.toString(),
+                        ),
+                      );
+                }
               } catch (e) {
                 log("Not Printed Due to Exception");
               }

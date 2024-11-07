@@ -6,4 +6,8 @@ class SelectedBatchCubit extends Cubit<UserBatch?> {
   void setBatch({required UserBatch selectedBatch}) {
     emit(selectedBatch);
   }
+
+  void resetBatch() {
+    emit(null);
+  }
 }

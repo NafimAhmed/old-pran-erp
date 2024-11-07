@@ -6,4 +6,8 @@ class SelectedMachineCubit extends Cubit<UserMachine?> {
   void setMachine({required UserMachine selectedMachine}) {
     emit(selectedMachine);
   }
+
+  void resetMachine() {
+    emit(null);
+  }
 }

@@ -2,34 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
-
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
-
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_print_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
-
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_batch_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_machine_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_org_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 class OpmC2Screen extends StatelessWidget {
   const OpmC2Screen({super.key});
   static const String routeName = "OPM-C-2-SCREEN";
+
   static const String routePath = "/OPM-C-2-SCREEN";
   @override
   Widget build(BuildContext context) {
@@ -78,6 +74,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   List<UserMachine> machineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   late UserInfoModel loggedUser;
+
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -101,6 +98,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     return BlocListener<UserQrSaveBloc, UserQrSaveState>(
       listener: (context, state) {
         if (state is UserQrSaveSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            CustomSnackBar.successSnackber(
+              message: "Successfully Added..",
+            ),
+          );
+          var selectedOrg = context.read<SelectedOrgCubit>().state;
+          context.read<SelectedMachineCubit>().resetMachine();
+          context.read<SelectedBatchCubit>().resetBatch();
           context.read<UserBasicDataBloc>().add(
                 UserBasicDataGet(
                   userId: loggedUser.userId!,
@@ -111,11 +116,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       .toString(),
                 ),
               );
-          ScaffoldMessenger.of(context).showSnackBar(
-            CustomSnackBar.successSnackber(
-              message: "Successfully Added..",
-            ),
-          );
+          context.read<UserQrPrintBloc>().add(
+                GetUserQrPrintData(
+                  userid: loggedUser.userId!,
+                  orgid: selectedOrg!.organizationId.toString(),
+                ),
+              );
         }
         if (state is UserQrSaveError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -164,6 +170,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                                 .toString(),
                                           ),
                                         );
+                                    context
+                                        .read<SelectedMachineCubit>()
+                                        .resetMachine();
+                                    context
+                                        .read<SelectedBatchCubit>()
+                                        .resetBatch();
                                     context.read<UserBasicDataBloc>().add(
                                           UserBasicDataGet(
                                             userId: loggedUser.userId!,
@@ -198,7 +210,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ? state.userBasicData.userMachineData
                                       : [],
                                   value: context
-                                      .read<SelectedMachineCubit>()
+                                      .watch<SelectedMachineCubit>()
                                       .state,
                                   onChanged: (value) {
                                     context
@@ -227,7 +239,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             items: state is UserBasicDataSuccess
                                 ? state.userBasicData.userBatchData
                                 : [],
-                            value: context.read<SelectedBatchCubit>().state,
+                            value: context.watch<SelectedBatchCubit>().state,
                             onChanged: (value) {
                               context
                                   .read<SelectedBatchCubit>()
@@ -504,8 +516,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
+                                      Text(userBatchQrData.lotno ?? ""),
                                       ElevatedButton(
                                         style:
                                             ElevatedButton.styleFrom().copyWith(
@@ -526,9 +540,17 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                           ),
                                         ),
                                         onPressed: () {
+                                          UserOrg userOrg = context
+                                              .read<SelectedOrgCubit>()
+                                              .state!;
                                           context.pushNamed(
                                             PrintQrScreen.routeName,
-                                            extra: userBatchQrData,
+                                            extra: {
+                                              "userBatchQrData":
+                                                  userBatchQrData,
+                                              "userQrPrintBlocCtx": context,
+                                              "userOrg": userOrg
+                                            },
                                           );
                                         },
                                         child: Row(
@@ -563,29 +585,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          userBatchQrData.jobOrderNo ?? "",
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14,
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Batch No: ",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.white,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          userBatchQrData.batchNo ?? "",
+                                          userBatchQrData.jobno ?? "",
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 14,
                                             color: appTheme.white,
@@ -607,7 +607,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          userBatchQrData.itemName ?? "",
+                                          userBatchQrData.itemname ?? "",
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 14,
                                             color: appTheme.white,
@@ -621,7 +621,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Original Qty: ",
+                                        "Good Qty: ",
                                         style: textTheme.bodyMedium!.copyWith(
                                           fontSize: 14,
                                           color: appTheme.white,
@@ -629,8 +629,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          userBatchQrData.originalQty
-                                              .toString(),
+                                          userBatchQrData.goodQty.toString(),
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 14,
                                             color: appTheme.white,
@@ -644,7 +643,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total Qty: ",
+                                        "Locator: ",
                                         style: textTheme.bodyMedium!.copyWith(
                                           fontSize: 14,
                                           color: appTheme.white,
@@ -652,7 +651,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          userBatchQrData.totalQty.toString(),
+                                          userBatchQrData.locLocator.toString(),
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 14,
                                             color: appTheme.white,
@@ -670,7 +669,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       return Container();
                     },
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),

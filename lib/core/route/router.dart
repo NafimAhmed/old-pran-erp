@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_1_screen/om_c_1_screen.dart';
@@ -148,8 +149,12 @@ class AppNavigation {
         path: PrintQrScreen.routePath,
         name: PrintQrScreen.routeName,
         builder: (context, state) {
+          var map = state.extra as Map<String, dynamic>;
+
           return PrintQrScreen(
-            userBatchQrData: state.extra as UserBatchQrData,
+            userBatchQrData: map["userBatchQrData"] as UserBatchQrData,
+            userQrPrintBlocCtx: map["userQrPrintBlocCtx"] as BuildContext,
+            userOrg: map["userOrg"] as UserOrg,
           );
         },
       ),
