@@ -78,4 +78,8 @@ abstract class DataService {
     required String userid,
     required String orgid,
   });
+
+  Future<void> updateProdQrPrintStatus({
+    required String trnlotno,
+  });
 }

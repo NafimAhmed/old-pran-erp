@@ -230,4 +230,15 @@ class DataServiceImpl implements DataService {
     }
     throw const ApiDataException("Unable To Get Data");
   }
+
+  @override
+  Future<void> updateProdQrPrintStatus({
+    required String trnlotno,
+  }) async {
+    var response =
+        await remoteDataRepository.updateProdQrPrintStatus(trnlotno: trnlotno);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
 }
