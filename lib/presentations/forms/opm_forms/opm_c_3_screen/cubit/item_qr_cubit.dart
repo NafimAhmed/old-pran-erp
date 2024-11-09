@@ -23,8 +23,9 @@ class ItemQrCubit extends Cubit<ItemQrState> {
   ItemQrCubit() : super(ItemQrInitial());
   void setItemData({required String itemQrData}) {
     try {
-      var userBatchQrData = UserBatchQrData.fromJson(itemQrData);
-      // var list = itemQrData.split("\n");
+      var list = itemQrData.split("\n");
+      var userBatchQrData = UserBatchQrData.fromJson(list.last);
+
       // list.removeWhere(
       //   (element) => element == "",
       // );
