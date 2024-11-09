@@ -211,13 +211,13 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Customer: ",
-                                style: textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
+                              // Text(
+                              //   "Customer: ",
+                              //   style: textTheme.bodyMedium,
+                              // ),
+                              // const SizedBox(
+                              //   width: 10,
+                              // ),
                               Text(
                                 itemQrData?.custname ?? "",
                                 style: textTheme.bodyMedium,

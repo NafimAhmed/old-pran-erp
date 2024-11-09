@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
@@ -48,7 +48,7 @@ class InterOrgTransferBody extends StatefulWidget {
 
 class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
   MobileScannerController? controller = MobileScannerController();
-  List<String> itemQrData = [];
+  UserBatchQrData? itemQrData;
 
   List<String> rackQrData = [];
   @override
@@ -144,10 +144,10 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
               BlocBuilder<ItemQrCubit, ItemQrState>(
                 builder: (context, state) {
                   if (state is ItemQrInitial) {
-                    itemQrData.clear();
+                    itemQrData = null;
                   }
                   if (state is ItemQrDataLoaded) {
-                    itemQrData = state.itemQRDatalist;
+                    itemQrData = state.userBatchQrData;
                     return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -160,34 +160,22 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                       ),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Batch Id",
-                                style: textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                itemQrData[0],
-                                style: textTheme.bodyMedium,
-                              )
-                            ],
+                          Text(
+                            itemQrData?.itemname ?? "",
+                            style: textTheme.bodyMedium,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Item Id",
+                                "Buyer Name",
                                 style: textTheme.bodyMedium,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
                               Text(
-                                itemQrData[1],
+                                itemQrData?.buyername ?? "",
                                 style: textTheme.bodyMedium,
                               )
                             ],
@@ -268,12 +256,12 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
+                      if (itemQrData != null && rackQrData.isNotEmpty) {
                         var user = context.read<LoggedUserInfoCubit>().state;
                         _openSplitDialog(
                           context: context,
-                          batchId: itemQrData[0],
-                          itemId: itemQrData[1],
+                          batchId: itemQrData?.batchNo ?? "", //to be removed
+                          itemId: itemQrData?.itemname ?? "", // to be removed
                           rackId: rackQrData[0],
                           userid: user!.userId!,
                         );
@@ -297,15 +285,17 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
+                      if (itemQrData != null && rackQrData.isNotEmpty) {
                         var user = context.read<LoggedUserInfoCubit>().state;
                         context.read<InterOrgTransferBloc>().add(
                               InterOrgTransfer(
                                   userid: user!.userId!,
                                   trackid: rackQrData[0],
-                                  itemid: itemQrData[1],
                                   rqty: "0",
-                                  batchid: itemQrData[0],
+                                  batchid:
+                                      itemQrData?.batchNo ?? "", //to be removed
+                                  itemid: itemQrData?.itemname ??
+                                      "", // to be removed
                                   split: "0"),
                             );
                       }
