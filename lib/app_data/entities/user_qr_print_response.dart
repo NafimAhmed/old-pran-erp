@@ -52,7 +52,7 @@ class UserBatchQrData {
   final String? buyername;
   final String? custpo;
   final String? lotno;
-  final int? goodQty;
+  final num? goodQty;
   final String? expdate;
   final String? fpono;
   final String? jobno;
@@ -108,7 +108,7 @@ class UserBatchQrData {
       UserBatchQrData.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
-
+  String toQrJson() => json.encode(toQrMap());
   factory UserBatchQrData.fromMap(Map<String, dynamic> json) => UserBatchQrData(
         itemname: json["ITEMNAME"],
         custname: json["CUSTNAME"],
@@ -137,5 +137,11 @@ class UserBatchQrData {
         "CREATED_DATE": createdDate,
         "LOC_LOCATOR": locLocator,
         "BATCHNO": batchNo,
+      };
+  Map<String, dynamic> toQrMap() => {
+        "ITEMNAME": itemname,
+        "CUSTNAME": custname,
+        "LOTNO": lotno,
+        "GOOD_QTY": goodQty,
       };
 }

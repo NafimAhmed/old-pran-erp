@@ -61,6 +61,7 @@ class PdfService {
                           color: PdfColors.white,
                         ),
                         child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
                             buildQrDetails(
                               lable: "ItemName",
@@ -131,6 +132,8 @@ class PdfService {
                               endIndent: 0,
                             ),
                             pw.Row(
+                              mainAxisAlignment:
+                                  pw.MainAxisAlignment.spaceBetween,
                               children: [
                                 pw.Flexible(
                                   child: buildQrDetailsWLa(
@@ -145,11 +148,13 @@ class PdfService {
                                   endIndent: 0,
                                 ),
                                 pw.Flexible(
-                                  child: buildQrDetailsWLa(
-                                    lable: "Exp Date: ",
-                                    value: DateTime.parse(
-                                            userBatchQrData.expdate ?? "")
-                                        .toFormatedString("dd/MM/yyyy"),
+                                  child: pw.Text(
+                                    userBatchQrData.expdate ?? "",
+                                    textAlign: pw.TextAlign.right,
+                                    style: const pw.TextStyle(
+                                      fontSize: 8,
+                                      color: PdfColors.black,
+                                    ),
                                   ),
                                 )
                               ],
@@ -158,13 +163,14 @@ class PdfService {
                         ),
                       ),
                     ),
-                    pw.SizedBox(width: 8),
+                    pw.SizedBox(width: 5),
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
                       width: 85,
                       height: 85,
-                      data: userBatchQrData.toJson(),
+                      data:
+                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${userBatchQrData.custname}\n${userBatchQrData.createdDate}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}",
                     ),
                   ],
                 ),
@@ -201,7 +207,7 @@ pw.Widget buildQrDetails({required String lable, required String value}) {
         flex: 2,
         child: pw.Text(
           value,
-          textAlign: pw.TextAlign.right,
+          textAlign: pw.TextAlign.left,
           style: const pw.TextStyle(
             fontSize: 8,
             color: PdfColors.black,
@@ -234,7 +240,7 @@ pw.Widget buildQrDetailsWLa({required String lable, required String value}) {
         flex: 2,
         child: pw.Text(
           value,
-          textAlign: pw.TextAlign.right,
+          textAlign: pw.TextAlign.left,
           style: const pw.TextStyle(
             fontSize: 8,
             color: PdfColors.black,
