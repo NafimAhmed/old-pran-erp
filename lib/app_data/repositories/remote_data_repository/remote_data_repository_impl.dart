@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
@@ -316,5 +317,18 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
 
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<SystemModuleResponse> getSystemModule({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/sysmanager?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: SystemModuleResponse.fromJson);
   }
 }

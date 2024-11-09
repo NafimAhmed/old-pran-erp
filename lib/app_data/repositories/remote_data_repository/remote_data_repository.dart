@@ -3,12 +3,14 @@ import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/presentations/forms/system_administrator_forms/system_administration_c_1_screen/bloc/system_module_bloc.dart';
 
 import '../../entities/user_menu_item_response.dart';
 
@@ -79,5 +81,9 @@ abstract class RemoteDataRepository {
   });
   Future<GenericResponse> updateProdQrPrintStatus({
     required String trnlotno,
+  });
+
+  Future<SystemModuleResponse> getSystemModule({
+    required String userId,
   });
 }
