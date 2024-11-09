@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
@@ -345,191 +347,75 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: appTheme.primary,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    20,
-                                  ),
-                                  bottomRight: Radius.circular(
-                                    20,
-                                  ),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Good Qty",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: CommonTextFieldWidget(
-                              focusNode: goodQtyFocusNode,
-                              textAlign: TextAlign.center,
-                              controller: goodQtyTextController,
-                              keyboardType: TextInputType.phone,
-                              style: textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: appTheme.primary,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              labelText: "",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Good Quantity";
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                var goodQty =
-                                    value.isEmpty ? 0 : int.parse(value);
-                                badQtyTextController.text = "0";
-                                var badQty = badQtyTextController.text.isEmpty
-                                    ? 0
-                                    : int.parse(badQtyTextController.text);
-                                quantityTextController.text =
-                                    (goodQty + badQty).toString();
-                              },
-                            ),
-                          ),
+                      CommonLableWthTextField(
+                        lableName: "Good Qty",
+                        focusNode: goodQtyFocusNode,
+                        textController: goodQtyTextController,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
                         ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please Enter Good Quantity";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          var goodQty = value.isEmpty ? 0 : int.parse(value);
+                          badQtyTextController.text = "0";
+                          var badQty = badQtyTextController.text.isEmpty
+                              ? 0
+                              : int.parse(badQtyTextController.text);
+                          quantityTextController.text =
+                              (goodQty + badQty).toString();
+                        },
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: appTheme.primary,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    20,
-                                  ),
-                                  bottomRight: Radius.circular(
-                                    20,
-                                  ),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Bad Qty",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: CommonTextFieldWidget(
-                              focusNode: badQtyFocusNode,
-                              textAlign: TextAlign.center,
-                              controller: badQtyTextController,
-                              keyboardType: TextInputType.phone,
-                              style: textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: appTheme.primary,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              labelText: "",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Bad Quantity";
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                var badQty =
-                                    value.isEmpty ? 0 : int.parse(value);
-                                var goodQty = goodQtyTextController.text.isEmpty
-                                    ? 0
-                                    : int.parse(goodQtyTextController.text);
-                                quantityTextController.text =
-                                    (goodQty + badQty).toString();
-                              },
-                            ),
-                          ),
+                      CommonLableWthTextField(
+                        lableName: "Bad Qty",
+                        focusNode: badQtyFocusNode,
+                        textController: badQtyTextController,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
                         ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please Enter Bad Quantity";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          var badQty = value.isEmpty ? 0 : int.parse(value);
+                          var goodQty = goodQtyTextController.text.isEmpty
+                              ? 0
+                              : int.parse(goodQtyTextController.text);
+                          quantityTextController.text =
+                              (goodQty + badQty).toString();
+                        },
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: appTheme.primary,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    20,
-                                  ),
-                                  bottomRight: Radius.circular(
-                                    20,
-                                  ),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Quantity",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: CommonTextFieldWidget(
-                              readOnly: true,
-                              focusNode: quantityFocusNode,
-                              textAlign: TextAlign.center,
-                              controller: quantityTextController,
-                              keyboardType: TextInputType.phone,
-                              style: textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: appTheme.primary,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              labelText: "",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Quantity";
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {},
-                            ),
-                          ),
+                      CommonLableWthTextField(
+                        lableName: "Quantity",
+                        readOnly: true,
+                        focusNode: quantityFocusNode,
+                        textController: quantityTextController,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
                         ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please Enter Quantity";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {},
                       ),
                       const SizedBox(
                         height: 10,
@@ -589,165 +475,20 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           itemBuilder: (context, index) {
                             var userBatchQrData =
                                 state.userBatchQrDataList[index];
-                            return Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: appTheme.primary,
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(userBatchQrData.lotno ?? ""),
-                                      ElevatedButton(
-                                        style:
-                                            ElevatedButton.styleFrom().copyWith(
-                                          padding: const WidgetStatePropertyAll<
-                                              EdgeInsetsGeometry>(
-                                            EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 5,
-                                            ),
-                                          ),
-                                          minimumSize:
-                                              WidgetStateProperty.all<Size>(
-                                            const Size(80, 30),
-                                          ),
-                                          backgroundColor:
-                                              WidgetStatePropertyAll(
-                                            appTheme.tertiary,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          UserOrg userOrg = context
-                                              .read<SelectedOrgCubit>()
-                                              .state!;
-                                          context.pushNamed(
-                                            PrintQrScreen.routeName,
-                                            extra: {
-                                              "userBatchQrData":
-                                                  userBatchQrData,
-                                              "userQrPrintBlocCtx": context,
-                                              "userOrg": userOrg
-                                            },
-                                          );
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Print Qr",
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                fontSize: 14,
-                                                color: appTheme.white,
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.qr_code,
-                                              color: appTheme.white,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Job Order: ",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.white,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          userBatchQrData.jobno ?? "",
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14,
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Item: ",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.white,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          userBatchQrData.itemname ?? "",
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14,
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Good Qty: ",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.white,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          userBatchQrData.goodQty.toString(),
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14,
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Locator: ",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.white,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          userBatchQrData.locLocator.toString(),
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14,
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
+                            return UserQrPrintWidget(
+                              userBatchQrData: userBatchQrData,
+                              onPressed: () {
+                                UserOrg userOrg =
+                                    context.read<SelectedOrgCubit>().state!;
+                                context.pushNamed(
+                                  PrintQrScreen.routeName,
+                                  extra: {
+                                    "userBatchQrData": userBatchQrData,
+                                    "userQrPrintBlocCtx": context,
+                                    "userOrg": userOrg
+                                  },
+                                );
+                              },
                             );
                           },
                         );
@@ -763,8 +504,113 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             ),
           ),
         ),
-        bottomSheet: const UserDetailsWidget(),
+        bottomNavigationBar: const UserDetailsWidget(),
       ),
+    );
+  }
+}
+
+class UserQrPrintWidget extends StatelessWidget {
+  const UserQrPrintWidget(
+      {super.key, required this.userBatchQrData, this.onPressed});
+  final UserBatchQrData userBatchQrData;
+  final void Function()? onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: appTheme.primary,
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              // Text(userBatchQrData.lotno ?? ""),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom().copyWith(
+                  padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
+                    EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                  ),
+                  minimumSize: WidgetStateProperty.all<Size>(
+                    const Size(80, 30),
+                  ),
+                  backgroundColor: WidgetStatePropertyAll(
+                    appTheme.tertiary,
+                  ),
+                ),
+                onPressed: onPressed,
+                child: Row(
+                  children: [
+                    Text(
+                      "Print Qr",
+                      style: textTheme.bodyMedium!.copyWith(
+                        fontSize: 14,
+                        color: appTheme.white,
+                      ),
+                    ),
+                    Icon(
+                      Icons.qr_code,
+                      color: appTheme.white,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          _buildQrPrintDetail(
+            "Job Order: ",
+            userBatchQrData.jobno ?? "",
+          ),
+          _buildQrPrintDetail(
+            "Item: ",
+            userBatchQrData.itemname ?? "",
+          ),
+          _buildQrPrintDetail(
+            "Good Qty: ",
+            userBatchQrData.goodQty.toString(),
+          ),
+          _buildQrPrintDetail(
+            "Locator: ",
+            userBatchQrData.locLocator.toString(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQrPrintDetail(String title, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: textTheme.bodyMedium!.copyWith(
+            fontSize: 14,
+            color: appTheme.white,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: textTheme.bodyMedium!.copyWith(
+              fontSize: 14,
+              color: appTheme.white,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

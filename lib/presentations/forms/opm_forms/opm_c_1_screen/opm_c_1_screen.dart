@@ -5,7 +5,8 @@ import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
+
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
@@ -71,10 +72,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<UserMachineBloc>().add(
-          UserMachineGet(userId: loggedUser!.userId!),
+          UserMachineGet(userId: loggedUser!.userId),
         );
     context.read<TempBatchDataBloc>().add(
-          TempBatchDataGet(userId: loggedUser!.userId!),
+          TempBatchDataGet(userId: loggedUser!.userId),
         );
     super.initState();
   }
@@ -201,189 +202,69 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  20,
-                                ),
-                                bottomRight: Radius.circular(
-                                  20,
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Good Qty",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            focusNode: goodQtyFocusNode,
-                            textAlign: TextAlign.center,
-                            controller: goodQtyTextController,
-                            keyboardType: TextInputType.phone,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.primary,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            labelText: "",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please Enter Good Quantity";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              var goodQty =
-                                  value.isEmpty ? 0 : int.parse(value);
-                              var badQty = badQtyTextController.text.isEmpty
-                                  ? 0
-                                  : int.parse(badQtyTextController.text);
-                              quantityTextController.text =
-                                  (goodQty + badQty).toString();
-                            },
-                          ),
-                        ),
-                      ],
+                    CommonLableWthTextField(
+                      lableName: "Good Qty",
+                      focusNode: goodQtyFocusNode,
+                      textController: goodQtyTextController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {
+                        var goodQty = value.isEmpty ? 0 : int.parse(value);
+                        badQtyTextController.text = "0";
+                        var badQty = badQtyTextController.text.isEmpty
+                            ? 0
+                            : int.parse(badQtyTextController.text);
+                        quantityTextController.text =
+                            (goodQty + badQty).toString();
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Good Quantity";
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  20,
-                                ),
-                                bottomRight: Radius.circular(
-                                  20,
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Bad Qty",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            focusNode: badQtyFocusNode,
-                            textAlign: TextAlign.center,
-                            controller: badQtyTextController,
-                            keyboardType: TextInputType.phone,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.primary,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            labelText: "",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please Enter Bad Quantity";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              var badQty = value.isEmpty ? 0 : int.parse(value);
-                              var goodQty = goodQtyTextController.text.isEmpty
-                                  ? 0
-                                  : int.parse(goodQtyTextController.text);
-                              quantityTextController.text =
-                                  (goodQty + badQty).toString();
-                            },
-                          ),
-                        ),
-                      ],
+                    CommonLableWthTextField(
+                      lableName: "Bad Qty",
+                      focusNode: badQtyFocusNode,
+                      textController: badQtyTextController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Bad Quantity";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        var badQty = value.isEmpty ? 0 : int.parse(value);
+                        var goodQty = goodQtyTextController.text.isEmpty
+                            ? 0
+                            : int.parse(goodQtyTextController.text);
+                        quantityTextController.text =
+                            (goodQty + badQty).toString();
+                      },
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  20,
-                                ),
-                                bottomRight: Radius.circular(
-                                  20,
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Quantity",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            readOnly: true,
-                            focusNode: quantityFocusNode,
-                            textAlign: TextAlign.center,
-                            controller: quantityTextController,
-                            keyboardType: TextInputType.phone,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.primary,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            labelText: "",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please Enter Quantity";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {},
-                          ),
-                        ),
-                      ],
+                    CommonLableWthTextField(
+                      lableName: "Quantity",
+                      readOnly: true,
+                      focusNode: quantityFocusNode,
+                      textController: quantityTextController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Quantity";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {},
                     ),
                     const SizedBox(
                       height: 10,
@@ -486,7 +367,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               );
                               context.read<TempBatchDataBloc>().add(
                                     TempBatchDataGet(
-                                      userId: loggedUser!.userId!,
+                                      userId: loggedUser!.userId,
                                     ),
                                   );
                             }
