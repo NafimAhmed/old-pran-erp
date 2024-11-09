@@ -3,6 +3,7 @@ import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
@@ -85,5 +86,9 @@ abstract class RemoteDataRepository {
 
   Future<SystemModuleResponse> getSystemModule({
     required String userId,
+  });
+  Future<SystemMenuParentDataResponse> getSystemMenuParent({
+    required String userId,
+    required String moduleName,
   });
 }

@@ -2,6 +2,7 @@ import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
@@ -260,5 +261,18 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.sysModuleData ?? [];
+  }
+
+  @override
+  Future<List<SysMenuparentData>> getSystemMenuParent({
+    required String userId,
+    required String moduleName,
+  }) async {
+    var response = await remoteDataRepository.getSystemMenuParent(
+        userId: userId, moduleName: moduleName);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.sysMenuparentData ?? [];
   }
 }
