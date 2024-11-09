@@ -46,7 +46,6 @@ class CommonTextFieldWidget extends StatelessWidget {
           ),
       decoration: InputDecoration(
         labelText: labelText,
-        contentPadding: EdgeInsets.zero,
       ).applyDefaults(
         Theme.of(context).inputDecorationTheme,
       ),
