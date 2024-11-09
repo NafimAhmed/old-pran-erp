@@ -2,14 +2,19 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/rack_transact_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfer_batch_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfered_batch_data_bloc.dart';
@@ -36,8 +41,7 @@ class OpmC3Screen extends StatelessWidget {
           create: (context) => TransferBatchBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => TransferedBatchDataBloc(getService())
-            ..add(TransferBatchDataGet()),
+          create: (context) => TransferedBatchDataBloc(getService()),
         ),
         BlocProvider(
           create: (context) => RackTransactBloc(getService()),
@@ -58,9 +62,18 @@ class TransferScreenBody extends StatefulWidget {
 MobileScannerController? controller = MobileScannerController();
 
 class _TransferScreenBodyState extends State<TransferScreenBody> {
-  List<String> itemQrData = [];
+  UserBatchQrData? itemQrData;
 
   List<String> rackQrData = [];
+  late UserInfoModel loggedUser;
+  @override
+  void initState() {
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    context.read<TransferedBatchDataBloc>().add(
+          TransferBatchDataGet(userId: loggedUser.userId),
+        );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +92,11 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                     ),
                     backgroundColor: appTheme.primary),
               );
-              context
-                  .read<TransferedBatchDataBloc>()
-                  .add(TransferBatchDataGet());
+              context.read<TransferedBatchDataBloc>().add(
+                    TransferBatchDataGet(
+                      userId: loggedUser.userId,
+                    ),
+                  );
             }
             if (state is TransferBatchError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -98,9 +113,18 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
         BlocListener<RackTransactBloc, RackTransactState>(
           listener: (context, state) {
             if (state is RackTransactSuccess) {
-              context
-                  .read<TransferedBatchDataBloc>()
-                  .add(TransferBatchDataGet());
+              context.read<TransferedBatchDataBloc>().add(
+                    TransferBatchDataGet(
+                      userId: loggedUser.userId,
+                    ),
+                  );
+            }
+            if (state is RackTransactError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                CustomSnackBar.errorSnackber(
+                  message: state.error.toString(),
+                ),
+              );
             }
           },
         ),
@@ -144,7 +168,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
               const SizedBox(
                 height: 5,
               ),
-              const UserDetailsWidget(),
+              // const UserDetailsWidget(),
               const SizedBox(
                 height: 15,
               ),
@@ -152,11 +176,6 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                 qrType: "Item QR",
                 onPressed: () async {
                   var data = await buildScanner(context, controller);
-
-                  // context.read<QrCodeBloc>().add(
-                  //       QrCodeDataGet(
-                  //           sourceQrData: data, destinationQrData: ""),
-                  //     );
                   if (context.mounted) {
                     context.read<ItemQrCubit>().setItemData(itemQrData: data);
                   }
@@ -168,10 +187,10 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
               BlocBuilder<ItemQrCubit, ItemQrState>(
                 builder: (context, state) {
                   if (state is ItemQrInitial) {
-                    itemQrData.clear();
+                    itemQrData = null;
                   }
                   if (state is ItemQrDataLoaded) {
-                    itemQrData = state.itemQRDatalist;
+                    itemQrData = state.userBatchQrData;
                     return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -183,19 +202,24 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                         ),
                       ),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            itemQrData?.itemname ?? "",
+                            style: textTheme.bodyMedium,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Batch Id",
+                                "Customer: ",
                                 style: textTheme.bodyMedium,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
                               Text(
-                                itemQrData[0],
+                                itemQrData?.custname ?? "",
                                 style: textTheme.bodyMedium,
                               )
                             ],
@@ -203,16 +227,46 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Item Id",
-                                style: textTheme.bodyMedium,
+                              Flexible(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Lot: ",
+                                      style: textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        itemQrData?.lotno ?? "",
+                                        style: textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                itemQrData[1],
-                                style: textTheme.bodyMedium,
+                              Flexible(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Qty: ",
+                                      style: textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        itemQrData?.goodQty.toString() ?? "",
+                                        textAlign: TextAlign.right,
+                                        style: textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -289,11 +343,11 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
+                      if (itemQrData != null && rackQrData.isNotEmpty) {
                         _openSplitDialog(
                           context: context,
-                          batchId: itemQrData[0],
-                          itemId: itemQrData[1],
+                          pTrnid: itemQrData?.lotno ?? "",
+                          userid: loggedUser.userId,
                           rackId: rackQrData[0],
                         );
                       } else {
@@ -325,11 +379,11 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                     builder: (context, selectorstate) {
                       return ElevatedButton(
                         onPressed: () {
-                          if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
+                          if (itemQrData != null && rackQrData.isNotEmpty) {
                             context.read<TransferBatchBloc>().add(
                                   TransferBatch(
-                                    batchId: itemQrData[0],
-                                    itemId: itemQrData[1],
+                                    pTrnid: itemQrData?.lotno ?? "",
+                                    userid: loggedUser.userId,
                                     rackId: rackQrData[0],
                                     rqty: "0",
                                     split: "0",
@@ -346,31 +400,6 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                       );
                     },
                   )
-                  // BlocBuilder<TransferBatchBloc, TransferBatchState>(
-                  //   builder: (context, state) {
-                  //     return ElevatedButton(
-                  //       onPressed: () {
-                  //         if (itemQrData.isNotEmpty && rackQrData.isNotEmpty) {
-                  //           context.read<TransferBatchBloc>().add(
-                  //                 TransferBatch(
-                  //                   batchId: itemQrData[0],
-                  //                   itemId: itemQrData[1],
-                  //                   rackId: rackQrData[0],
-                  //                   rqty: "0",
-                  //                   split: "0",
-                  //                 ),
-                  //               );
-                  //         }
-                  //       },
-                  //       child: Text(
-                  //         state is TransferBatchLoading ? "Saving..." : "Save",
-                  //         style: textTheme.bodyMedium!.copyWith(
-                  //           color: appTheme.white,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
               const SizedBox(
@@ -416,6 +445,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                                 trnsfid: transferBatchData
                                                         .transactId ??
                                                     0,
+                                                userId: loggedUser.userId,
                                               ),
                                             );
                                       },
@@ -438,7 +468,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                           ),
                                           Flexible(
                                             child: Text(
-                                              transferBatchData.batchNo ?? "",
+                                              transferBatchData.batchno ?? "",
                                             ),
                                           ),
                                         ],
@@ -460,6 +490,8 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                                                               transferBatchData
                                                                       .transactId ??
                                                                   0,
+                                                          userId:
+                                                              loggedUser.userId,
                                                         ),
                                                       );
                                                 },
@@ -637,21 +669,22 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
             ],
           ),
         ),
+        bottomNavigationBar: const UserDetailsWidget(),
       ),
     );
   }
 
   void _openSplitDialog({
     required BuildContext context,
-    required String batchId,
-    required String itemId,
+    required String pTrnid,
+    required String userid,
     required String rackId,
   }) async {
     AppModal.showCustomModal(context,
         content: SplitQtyDialog(
           blocContext: context,
-          itemId: itemId,
-          batchId: batchId,
+          pTrnid: pTrnid,
+          userid: userid,
           rackId: rackId,
         ));
   }

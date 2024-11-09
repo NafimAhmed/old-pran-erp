@@ -7,9 +7,10 @@ sealed class RackTransactEvent {}
 
 final class RackTransact extends RackTransactEvent {
   final int transactId;
-
+  final String userId;
   RackTransact({
     required this.transactId,
+    required this.userId,
   });
 }
 
@@ -40,7 +41,10 @@ class RackTransactBloc extends Bloc<RackTransactEvent, RackTransactState> {
     on<RackTransact>((event, emit) async {
       emit(RackTransactLoading(transactId: event.transactId));
       try {
-        var response = await _dataService.rackTransfer(event.transactId);
+        var response = await _dataService.rackTransfer(
+          transactId: event.transactId,
+          userId: event.userId,
+        );
         emit(RackTransactSuccess());
       } catch (error) {
         emit(RackTransactError(error: error));

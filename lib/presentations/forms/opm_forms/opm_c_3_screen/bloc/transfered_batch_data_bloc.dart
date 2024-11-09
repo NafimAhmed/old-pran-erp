@@ -6,12 +6,16 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 @immutable
 sealed class TransferedBatchDataEvent {}
 
-final class TransferBatchDataGet extends TransferedBatchDataEvent {}
+final class TransferBatchDataGet extends TransferedBatchDataEvent {
+  final String userId;
+
+  TransferBatchDataGet({required this.userId});
+}
 
 final class TransferBatchDataDelete extends TransferedBatchDataEvent {
   final int trnsfid;
-
-  TransferBatchDataDelete({required this.trnsfid});
+  final String userId;
+  TransferBatchDataDelete({required this.trnsfid, required this.userId});
 }
 
 @immutable
@@ -41,7 +45,8 @@ class TransferedBatchDataBloc
     on<TransferBatchDataGet>((event, emit) async {
       emit(TransferedBatchDataLoading());
       try {
-        var response = await _dataService.getTransferBatchData();
+        var response =
+            await _dataService.getTransferBatchData(userId: event.userId);
         emit(TransferedBatchDataSuccess(transferBatchDataList: response));
       } catch (error) {
         emit(TransferedBatchDataError(error: error));
@@ -50,8 +55,12 @@ class TransferedBatchDataBloc
     on<TransferBatchDataDelete>((event, emit) async {
       emit(TransferedBatchDataLoading());
       try {
-        await _dataService.tranferDelete(trnsfid: event.trnsfid);
-        var batchData = await _dataService.getTransferBatchData();
+        await _dataService.tranferDelete(
+          trnsfid: event.trnsfid,
+          userId: event.userId,
+        );
+        var batchData =
+            await _dataService.getTransferBatchData(userId: event.userId);
         emit(TransferedBatchDataSuccess(transferBatchDataList: batchData));
       } catch (error) {
         emit(TransferedBatchDataError(error: error));

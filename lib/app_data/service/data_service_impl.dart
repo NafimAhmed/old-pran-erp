@@ -57,15 +57,16 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> transferBatch(
-      {required String batchId,
-      required String itemId,
-      required String rackId,
-      required String rqty,
-      required String split}) async {
+  Future<void> transferBatch({
+    required String pTrnid,
+    required String userid,
+    required String rackId,
+    required String rqty,
+    required String split,
+  }) async {
     await remoteDataRepository.transferBatch(
-      batchId: batchId,
-      itemId: itemId,
+      pTrnid: pTrnid,
+      userid: userid,
       rackId: rackId,
       rqty: rqty,
       split: split,
@@ -73,9 +74,11 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<TransferBatchData>> getTransferBatchData() async {
-    var response = await remoteDataRepository.getTransferBatchData();
-    return response.items ?? [];
+  Future<List<TransferBatchData>> getTransferBatchData(
+      {required String userId}) async {
+    var response =
+        await remoteDataRepository.getTransferBatchData(userId: userId);
+    return response.userBatchtrnData ?? [];
   }
 
   @override
@@ -85,10 +88,12 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> rackTransfer(
-    int transactId,
-  ) async {
-    var response = await remoteDataRepository.rackTransfer(transactId);
+  Future<void> rackTransfer({
+    required int transactId,
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.rackTransfer(
+        transactId: transactId, userId: userId);
   }
 
   @override
@@ -98,8 +103,11 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> tranferDelete({required int trnsfid}) async {
-    await remoteDataRepository.tranferDelete(trnsfid: trnsfid);
+  Future<void> tranferDelete({
+    required int trnsfid,
+    required String userId,
+  }) async {
+    await remoteDataRepository.tranferDelete(trnsfid: trnsfid, userId: userId);
   }
 
   @override

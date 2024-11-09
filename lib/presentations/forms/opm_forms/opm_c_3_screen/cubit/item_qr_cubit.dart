@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 
 @immutable
 sealed class ItemQrState {}
 
 final class ItemQrDataLoaded extends ItemQrState {
-  final List<String> itemQRDatalist;
+  final UserBatchQrData userBatchQrData;
 
-  ItemQrDataLoaded({required this.itemQRDatalist});
+  ItemQrDataLoaded({required this.userBatchQrData});
 }
 
 final class ItemQrDataError extends ItemQrState {
@@ -22,13 +23,14 @@ class ItemQrCubit extends Cubit<ItemQrState> {
   ItemQrCubit() : super(ItemQrInitial());
   void setItemData({required String itemQrData}) {
     try {
-      var list = itemQrData.split("\n");
-      list.removeWhere(
-        (element) => element == "",
-      );
-      var itemQRDatalist = list[0].split(",");
+      var userBatchQrData = UserBatchQrData.fromJson(itemQrData);
+      // var list = itemQrData.split("\n");
+      // list.removeWhere(
+      //   (element) => element == "",
+      // );
+      // var itemQRDatalist = list[0].split(",");
 
-      emit(ItemQrDataLoaded(itemQRDatalist: itemQRDatalist));
+      emit(ItemQrDataLoaded(userBatchQrData: userBatchQrData));
     } catch (error) {
       emit(ItemQrDataError(error: error));
     }

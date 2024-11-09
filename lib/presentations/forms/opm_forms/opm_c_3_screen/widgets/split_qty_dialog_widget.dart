@@ -13,13 +13,13 @@ class SplitQtyDialog extends StatelessWidget {
   SplitQtyDialog({
     super.key,
     required this.blocContext,
-    required this.batchId,
-    required this.itemId,
+    required this.pTrnid,
+    required this.userid,
     required this.rackId,
   });
   final BuildContext blocContext;
-  final String batchId;
-  final String itemId;
+  final String pTrnid;
+  final String userid;
   final String rackId;
   final TextEditingController splitQtyTextController = TextEditingController();
   final FocusNode splitQtyFocusNode = FocusNode();
@@ -109,8 +109,8 @@ class SplitQtyDialog extends StatelessWidget {
                       if (fromKey.currentState!.validate()) {
                         blocContext.read<TransferBatchBloc>().add(
                               TransferBatch(
-                                batchId: batchId,
-                                itemId: itemId,
+                                pTrnid: pTrnid,
+                                userid: userid,
                                 rackId: rackId,
                                 rqty: splitQtyTextController.text,
                                 split: "1",

@@ -6,19 +6,18 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 sealed class TransferBatchEvent {}
 
 final class TransferBatch extends TransferBatchEvent {
-  final String batchId;
-  final String itemId;
+  final String pTrnid;
+  final String userid;
   final String rackId;
   final String rqty;
   final String split;
 
-  TransferBatch({
-    required this.batchId,
-    required this.itemId,
-    required this.rackId,
-    required this.rqty,
-    required this.split,
-  });
+  TransferBatch(
+      {required this.pTrnid,
+      required this.userid,
+      required this.rackId,
+      required this.rqty,
+      required this.split});
 }
 
 @immutable
@@ -47,8 +46,8 @@ class TransferBatchBloc extends Bloc<TransferBatchEvent, TransferBatchState> {
       emit(TransferBatchLoading(splitFlag: event.split));
       try {
         var response = await _dataService.transferBatch(
-          batchId: event.batchId,
-          itemId: event.itemId,
+          pTrnid: event.pTrnid,
+          userid: event.userid,
           rackId: event.rackId,
           rqty: event.rqty,
           split: event.split,

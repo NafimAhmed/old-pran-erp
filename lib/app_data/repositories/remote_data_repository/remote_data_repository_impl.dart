@@ -63,17 +63,36 @@ class RemoteDataRepositoryImpl
         decoder: TempBatchDataResponse.fromJson);
   }
 
+  // @override
+  // Future<void> transferBatch(
+  //     {required String batchId,
+  //     required String itemId,
+  //     required String rackId,
+  //     required String rqty,
+  //     required String split}) async {
+  //   var request = http.Request(
+  //       'POST',
+  //       Uri.parse(
+  //           '${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch_test?batchid=$batchId&itemid=$itemId&rqty=$rqty&rackid=$rackId&split_flag=$split'));
+
+  //   http.StreamedResponse response = await request.send();
+
+  //   await decodeResponse(
+  //     response,
+  //   );
+  // }
   @override
-  Future<void> transferBatch(
-      {required String batchId,
-      required String itemId,
-      required String rackId,
-      required String rqty,
-      required String split}) async {
+  Future<void> transferBatch({
+    required String pTrnid,
+    required String userid,
+    required String rackId,
+    required String rqty,
+    required String split,
+  }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch_test?batchid=$batchId&itemid=$itemId&rqty=$rqty&rackid=$rackId&split_flag=$split'));
+            '${appConfig.baseUrl}/ords/rpro/batch/userbatchstock?rqty=$rqty&userid=$userid&p_trnid=$pTrnid&rackid=$rackId&split_flag=$split'));
 
     http.StreamedResponse response = await request.send();
 
@@ -83,10 +102,14 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<TransferBatchDataResponse> getTransferBatchData() async {
+  Future<TransferBatchDataResponse> getTransferBatchData(
+      {required String userId}) async {
+    // var request = http.Request(
+    //     'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch'));
     var request = http.Request(
-        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch'));
-
+        'GET',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userbatchstock?userid=$userId'));
     http.StreamedResponse response = await request.send();
 
     return await decodeResponse(response,
@@ -107,13 +130,19 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<void> rackTransfer(
-    int transactId,
-  ) async {
+  Future<void> rackTransfer({
+    required int transactId,
+    required String userId,
+  }) async {
+    // var request = http.Request(
+    //     'POST',
+    //     Uri.parse(
+    //         '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
+      'POST',
+      Uri.parse(
+          '${appConfig.baseUrl}/ords/rpro/batch/userstocksubinvtrns?trnid=$transactId&userid=$userId&split=0'),
+    );
 
     http.StreamedResponse response = await request.send();
 
@@ -141,11 +170,18 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<void> tranferDelete({required int trnsfid}) async {
+  Future<void> tranferDelete({
+    required int trnsfid,
+    required String userId,
+  }) async {
+    // var request = http.Request(
+    //     'POST',
+    //     Uri.parse(
+    //         '${appConfig.baseUrl}/ords/rpro/batch/trnfdel?trnsfid=$trnsfid'));
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/trnfdel?trnsfid=$trnsfid'));
+            '${appConfig.baseUrl}/ords/rpro/batch/userskttrnfdel?userid=$userId&trnsfid=$trnsfid'));
 
     http.StreamedResponse response = await request.send();
 

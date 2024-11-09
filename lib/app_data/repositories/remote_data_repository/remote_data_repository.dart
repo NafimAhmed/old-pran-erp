@@ -23,20 +23,26 @@ abstract class RemoteDataRepository {
     String machine,
   );
   Future<TempBatchDataResponse> getTempBatchData();
-  Future<void> transferBatch(
-      {required String batchId,
-      required String itemId,
-      required String rackId,
-      required String rqty,
-      required String split});
-  Future<TransferBatchDataResponse> getTransferBatchData();
+  Future<void> transferBatch({
+    required String pTrnid,
+    required String userid,
+    required String rackId,
+    required String rqty,
+    required String split,
+  });
+  Future<TransferBatchDataResponse> getTransferBatchData(
+      {required String userId});
   Future<UserMachineResponse> getUserMachine({required String userId});
 
-  Future<void> rackTransfer(
-    int transactId,
-  );
+  Future<void> rackTransfer({
+    required int transactId,
+    required String userId,
+  });
   Future<JobHistoryResponse> getJobHistory();
-  Future<void> tranferDelete({required int trnsfid});
+  Future<void> tranferDelete({
+    required int trnsfid,
+    required String userId,
+  });
   Future<AuthenticationResponse> authenticate(
       {required String userid, required String passw});
   Future<UserMenuItemResponse> getUserMenu({
