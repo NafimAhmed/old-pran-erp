@@ -1,10 +1,10 @@
 class UserInfoModel {
   final int? id;
-  final String? userId;
-  final String? userName;
-  final String? mobileNo;
-  final String? userDesg;
-  final String? userDept;
+  final String userId;
+  final String userName;
+  final String mobileNo;
+  final String userDesg;
+  final String userDept;
 
   UserInfoModel({
     this.id,
