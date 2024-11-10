@@ -14,6 +14,8 @@ class CommonLableWthTextField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.readOnly = false,
+    this.obscureText = false,
+    this.suffixIcon,
   });
   final String lableName;
   final FocusNode focusNode;
@@ -23,6 +25,8 @@ class CommonLableWthTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final bool readOnly;
+  final bool obscureText;
+  final Widget? suffixIcon;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -58,6 +62,8 @@ class CommonLableWthTextField extends StatelessWidget {
         Expanded(
           flex: 2,
           child: CommonTextFieldWidget(
+            suffixIcon: suffixIcon,
+            obscureText: obscureText,
             readOnly: readOnly,
             focusNode: focusNode,
             textAlign: TextAlign.center,

@@ -1,3 +1,4 @@
+import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
@@ -294,5 +295,14 @@ class DataServiceImpl implements DataService {
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
+  }
+
+  @override
+  Future<List<AppsUserData>> getAppsUser() async {
+    var response = await remoteDataRepository.getAppsUser();
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.appsUserData ?? [];
   }
 }

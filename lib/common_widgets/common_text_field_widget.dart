@@ -16,6 +16,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.onChanged,
     this.readOnly = false,
+    this.suffixIcon,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -28,6 +29,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   final TextAlign textAlign;
   final bool readOnly;
   final void Function(String value)? onChanged;
+  final Widget? suffixIcon;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -44,9 +46,8 @@ class CommonTextFieldWidget extends StatelessWidget {
           textTheme.bodyMedium!.copyWith(
             color: appTheme.primary,
           ),
-      decoration: InputDecoration(
-        labelText: labelText,
-      ).applyDefaults(
+      decoration: InputDecoration(labelText: labelText, suffixIcon: suffixIcon)
+          .applyDefaults(
         Theme.of(context).inputDecorationTheme,
       ),
       validator: validator,

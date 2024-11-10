@@ -11,6 +11,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/opm_c_
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/opm_c_4_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/sys_admin_c_1_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_screen/sys_admin_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
@@ -165,6 +166,14 @@ class AppNavigation {
         name: SysAdminC1Screen.routeName,
         builder: (context, state) {
           return const SysAdminC1Screen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: SysAdminC2Screen.routePath,
+        name: SysAdminC2Screen.routeName,
+        builder: (context, state) {
+          return const SysAdminC2Screen();
         },
       ),
     ],

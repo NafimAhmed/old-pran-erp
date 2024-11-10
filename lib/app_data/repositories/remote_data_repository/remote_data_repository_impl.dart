@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
@@ -349,6 +350,7 @@ class RemoteDataRepositoryImpl
         decoder: SystemMenuParentDataResponse.fromJson);
   }
 
+  @override
   Future<GenericResponse> sysCreateMenu({
     required String userId,
     required String pMenuName,
@@ -363,5 +365,15 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<AppsUserResponse> getAppsUser() async {
+    var request = http.Request(
+        'POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/sysadmin/appsuser'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response, decoder: AppsUserResponse.fromJson);
   }
 }

@@ -90,6 +90,13 @@ class _ModuleScreenBodyState extends State<ModuleScreenBody> {
                                 ),
                               ),
                               children: <Widget>[
+                                OPMSubModuleWidget(
+                                  title: "User Permission",
+                                  onTap: () {
+                                    context.pushNamed(
+                                        "SYSTEM-ADMINISTRATOR-C-2-SCREEN");
+                                  },
+                                ),
                                 ...List.generate(
                                     pMenuItem?.userCmenuItems?.length ?? 0,
                                     (index) {
