@@ -97,4 +97,12 @@ abstract class DataService {
     required String userId,
     required String moduleName,
   });
+
+  Future<void> sysCreateMenu({
+    required String userId,
+    required String pMenuName,
+    required String pMenuType,
+    required String pModule,
+    required String pParent,
+  });
 }

@@ -330,7 +330,8 @@ class RemoteDataRepositoryImpl
             '${appConfig.baseUrl}/ords/rpro/sysadmin/sysmanager?userid=$userId'));
 
     http.StreamedResponse response = await request.send();
-    return decodeResponse(response, decoder: SystemModuleResponse.fromJson);
+    return await decodeResponse(response,
+        decoder: SystemModuleResponse.fromJson);
   }
 
   @override
@@ -344,7 +345,23 @@ class RemoteDataRepositoryImpl
             '${appConfig.baseUrl}/ords/rpro/sysadmin/sysmenu?userid=$userId&modulename=$moduleName'));
 
     http.StreamedResponse response = await request.send();
-    return decodeResponse(response,
+    return await decodeResponse(response,
         decoder: SystemMenuParentDataResponse.fromJson);
+  }
+
+  Future<GenericResponse> sysCreateMenu({
+    required String userId,
+    required String pMenuName,
+    required String pMenuType,
+    required String pModule,
+    required String pParent,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/syscreatemenu?userid=$userId&P_menu_name=$pMenuName&P_menu_type=$pMenuType&P_module=$pModule&P_parent=$pParent'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

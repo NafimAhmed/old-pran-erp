@@ -275,4 +275,24 @@ class DataServiceImpl implements DataService {
     }
     return response.sysMenuparentData ?? [];
   }
+
+  @override
+  Future<void> sysCreateMenu({
+    required String userId,
+    required String pMenuName,
+    required String pMenuType,
+    required String pModule,
+    required String pParent,
+  }) async {
+    var response = await remoteDataRepository.sysCreateMenu(
+      userId: userId,
+      pMenuName: pMenuName,
+      pMenuType: pMenuType,
+      pModule: pModule,
+      pParent: pParent,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
 }

@@ -90,4 +90,11 @@ abstract class RemoteDataRepository {
     required String userId,
     required String moduleName,
   });
+  Future<GenericResponse> sysCreateMenu({
+    required String userId,
+    required String pMenuName,
+    required String pMenuType,
+    required String pModule,
+    required String pParent,
+  });
 }
