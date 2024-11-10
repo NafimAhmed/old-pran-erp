@@ -263,7 +263,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                           batchId: itemQrData?.batchNo ?? "", //to be removed
                           itemId: itemQrData?.itemname ?? "", // to be removed
                           rackId: rackQrData[0],
-                          userid: user!.userId!,
+                          userid: user!.userId,
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -289,7 +289,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                         var user = context.read<LoggedUserInfoCubit>().state;
                         context.read<InterOrgTransferBloc>().add(
                               InterOrgTransfer(
-                                  userid: user!.userId!,
+                                  userid: user!.userId,
                                   trackid: rackQrData[0],
                                   rqty: "0",
                                   batchid:

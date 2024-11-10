@@ -151,7 +151,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                       );
                   widget.userQrPrintBlocCtx.read<UserQrPrintBloc>().add(
                         GetUserQrPrintData(
-                          userid: loggedUser.userId!,
+                          userid: loggedUser.userId,
                           orgid: widget.userOrg.organizationId.toString(),
                         ),
                       );

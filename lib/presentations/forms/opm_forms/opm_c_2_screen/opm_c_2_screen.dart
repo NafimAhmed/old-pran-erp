@@ -113,7 +113,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           context.read<SelectedBatchCubit>().resetBatch();
           context.read<UserBasicDataBloc>().add(
                 UserBasicDataGet(
-                  userId: loggedUser.userId!,
+                  userId: loggedUser.userId,
                   orgid: context
                       .read<SelectedOrgCubit>()
                       .state!
@@ -123,7 +123,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               );
           context.read<UserQrPrintBloc>().add(
                 GetUserQrPrintData(
-                  userid: loggedUser.userId!,
+                  userid: loggedUser.userId,
                   orgid: selectedOrg!.organizationId.toString(),
                 ),
               );
@@ -170,7 +170,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   onChanged: (value) {
                                     context.read<UserQrPrintBloc>().add(
                                           GetUserQrPrintData(
-                                            userid: loggedUser.userId!,
+                                            userid: loggedUser.userId,
                                             orgid: value!.organizationId
                                                 .toString(),
                                           ),
@@ -183,7 +183,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                         .resetBatch();
                                     context.read<UserBasicDataBloc>().add(
                                           UserBasicDataGet(
-                                            userId: loggedUser.userId!,
+                                            userId: loggedUser.userId,
                                             orgid: value.organizationId!
                                                 .toString(),
                                           ),
@@ -438,7 +438,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                     context.read<SelectedBatchCubit>().state;
                                 context.read<UserQrSaveBloc>().add(
                                       UserQrSave(
-                                          userid: loggedUser.userId!,
+                                          userid: loggedUser.userId,
                                           itemid: selectedBatch!.inventoryItemId
                                               .toString(),
                                           machine:
