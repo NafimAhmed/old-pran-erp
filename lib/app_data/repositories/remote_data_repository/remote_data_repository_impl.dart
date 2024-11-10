@@ -376,4 +376,24 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse(response, decoder: AppsUserResponse.fromJson);
   }
+
+  @override
+  Future<GenericResponse> createUser({
+    required String newUserId,
+    required String newUserName,
+    required String userId,
+    required String passw,
+    required String appUser,
+    required String mobileNo,
+    required String desigName,
+    required String deptName,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/usercreation?newuserid=$newUserId&newusername=$newUserName&userid=$userId&passw=$passw&appuser=$appUser&mobileno=$mobileNo&designame=null&deptname=null'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
 }

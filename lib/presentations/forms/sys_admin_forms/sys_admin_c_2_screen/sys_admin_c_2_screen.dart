@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_screen/bloc/apps_user_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_screen/bloc/user_create_bloc.dart';
 
 class SysAdminC2Screen extends StatelessWidget {
   const SysAdminC2Screen({super.key});
@@ -24,6 +28,9 @@ class SysAdminC2Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<AppsUserData>(),
+        ),
+        BlocProvider(
+          create: (context) => UserCreateBloc(getService()),
         ),
       ],
       child: const SysAdminC2ScreenBody(),
@@ -52,12 +59,12 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   FocusNode mobileFocusNode = FocusNode();
   TextEditingController passTextController = TextEditingController();
   FocusNode passFocusNode = FocusNode();
-  // late UserInfoModel loggedUser;
+  late UserInfoModel loggedUser;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isObscureText = true;
   @override
   void initState() {
-    // loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<AppsUserBloc>().add(GetAppsUserEvent());
     super.initState();
   }
@@ -82,165 +89,213 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar(appBartitle: "User Creation"),
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-        ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  CommonLableWthTextField(
-                    lableName: "User Id",
-                    focusNode: userIdFocusNode,
-                    textController: userIdTextController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter User Id";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CommonLableWthTextField(
-                    lableName: "User Name",
-                    focusNode: userNameFocusNode,
-                    textController: userNameTextController,
-                    keyboardType: TextInputType.text,
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter User Name";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CommonLableWthTextField(
-                    lableName: "Mobile No",
-                    focusNode: mobileFocusNode,
-                    textController: mobileTextController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Mobile";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CommonLableWthTextField(
-                    lableName: "Password",
-                    obscureText: isObscureText,
-                    focusNode: passFocusNode,
-                    keyboardType: TextInputType.text,
-                    textController: passTextController,
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Password";
-                      }
-                      return null;
-                    },
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isObscureText = !isObscureText;
-                        });
+      body: BlocListener<UserCreateBloc, UserCreateState>(
+        listener: (context, state) {
+          if (state is UserCreateSuccess) {
+            userIdTextController.clear();
+            userNameTextController.clear();
+            mobileTextController.clear();
+            passTextController.clear();
+            context.read<VariableStateHandlerCubit<AppsUserData>>().reset();
+            appUserTextController.clear();
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.successSnackber(
+                message: "User Created Successfully",
+              ),
+            );
+          }
+          if (state is UserCreateError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.errorSnackber(
+                message: state.error.toString(),
+              ),
+            );
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    CommonLableWthTextField(
+                      lableName: "User Id",
+                      focusNode: userIdFocusNode,
+                      textController: userIdTextController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter User Id";
+                        }
+                        return null;
                       },
-                      child: Icon(
-                        color: appTheme.primary,
-                        isObscureText
-                            ? Icons.remove_red_eye_outlined
-                            : Icons.remove_red_eye,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CommonLableWthTextField(
+                      lableName: "User Name",
+                      focusNode: userNameFocusNode,
+                      textController: userNameTextController,
+                      keyboardType: TextInputType.text,
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter User Name";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CommonLableWthTextField(
+                      lableName: "Mobile No",
+                      focusNode: mobileFocusNode,
+                      textController: mobileTextController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Mobile";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CommonLableWthTextField(
+                      lableName: "Password",
+                      obscureText: isObscureText,
+                      focusNode: passFocusNode,
+                      keyboardType: TextInputType.text,
+                      textController: passTextController,
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Password";
+                        }
+                        return null;
+                      },
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isObscureText = !isObscureText;
+                          });
+                        },
+                        child: Icon(
+                          color: appTheme.primary,
+                          isObscureText
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.remove_red_eye,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: BlocBuilder<AppsUserBloc, AppsUserState>(
-                          builder: (context, state) {
-                            return CommonDropdownButton<AppsUserData>(
-                              hintText: "Select Apps User",
-                              items: state is AppsUserSuccess
-                                  ? state.appsDataList
-                                  : [],
-                              value: context
-                                  .watch<
-                                      VariableStateHandlerCubit<AppsUserData>>()
-                                  .state,
-                              onChanged: (value) {
-                                context
-                                    .read<
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: BlocBuilder<AppsUserBloc, AppsUserState>(
+                            builder: (context, state) {
+                              return CommonDropdownButton<AppsUserData>(
+                                hintText: "Select Apps User",
+                                items: state is AppsUserSuccess
+                                    ? state.appsDataList
+                                    : [],
+                                value: context
+                                    .watch<
                                         VariableStateHandlerCubit<
                                             AppsUserData>>()
-                                    .update(value!);
-                                appUserTextController.text =
-                                    value.description ?? "";
-                              },
-                              validator: (value) {
-                                if (value == null) {
-                                  return "Please Select Apps User";
-                                }
-                                return null;
-                              },
-                            );
-                          },
+                                    .state,
+                                onChanged: (value) {
+                                  context
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              AppsUserData>>()
+                                      .update(value!);
+                                  appUserTextController.text =
+                                      value.description ?? "";
+                                },
+                                validator: (value) {
+                                  if (value == null) {
+                                    return "Please Select Apps User";
+                                  }
+                                  return null;
+                                },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: CommonTextFieldWidget(
-                          readOnly: true,
-                          controller: appUserTextController,
-                          focusNode: appUserFocusNode,
-                          labelText: "Apps User Name",
+                        const SizedBox(
+                          width: 10,
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                "Save",
-                style: textTheme.bodyMedium!.copyWith(
-                  color: appTheme.white,
+                        Expanded(
+                          flex: 2,
+                          child: CommonTextFieldWidget(
+                            readOnly: true,
+                            controller: appUserTextController,
+                            focusNode: appUserFocusNode,
+                            labelText: "Apps User Name",
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 20,
+              ),
+              BlocBuilder<UserCreateBloc, UserCreateState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        var appUser = context
+                            .read<VariableStateHandlerCubit<AppsUserData>>()
+                            .state!;
+                        context.read<UserCreateBloc>().add(
+                              CreateUser(
+                                userId: loggedUser.userId,
+                                appUser: appUser.userId.toString(),
+                                deptName: "",
+                                desigName: "",
+                                mobileNo: mobileTextController.text,
+                                newUserId: userIdTextController.text,
+                                newUserName: userNameTextController.text,
+                                passw: passTextController.text,
+                              ),
+                            );
+                      }
+                    },
+                    child: Text(
+                      state is UserCreateLoading ? "Saving..." : "Save",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

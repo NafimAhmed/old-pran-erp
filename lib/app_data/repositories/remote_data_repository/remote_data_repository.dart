@@ -99,4 +99,14 @@ abstract class RemoteDataRepository {
     required String? pParent,
   });
   Future<AppsUserResponse> getAppsUser();
+  Future<GenericResponse> createUser({
+    required String newUserId,
+    required String newUserName,
+    required String userId,
+    required String passw,
+    required String appUser,
+    required String mobileNo,
+    required String desigName,
+    required String deptName,
+  });
 }

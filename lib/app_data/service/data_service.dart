@@ -108,4 +108,14 @@ abstract class DataService {
   });
 
   Future<List<AppsUserData>> getAppsUser();
+  Future<void> createUser({
+    required String newUserId,
+    required String newUserName,
+    required String userId,
+    required String passw,
+    required String appUser,
+    required String mobileNo,
+    required String desigName,
+    required String deptName,
+  });
 }

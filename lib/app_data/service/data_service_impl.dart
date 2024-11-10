@@ -305,4 +305,29 @@ class DataServiceImpl implements DataService {
     }
     return response.appsUserData ?? [];
   }
+
+  @override
+  Future<void> createUser({
+    required String newUserId,
+    required String newUserName,
+    required String userId,
+    required String passw,
+    required String appUser,
+    required String mobileNo,
+    required String desigName,
+    required String deptName,
+  }) async {
+    var response = await remoteDataRepository.createUser(
+        newUserId: newUserId,
+        newUserName: newUserName,
+        userId: userId,
+        passw: passw,
+        appUser: appUser,
+        mobileNo: mobileNo,
+        desigName: desigName,
+        deptName: deptName);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage ?? response.message);
+    }
+  }
 }
