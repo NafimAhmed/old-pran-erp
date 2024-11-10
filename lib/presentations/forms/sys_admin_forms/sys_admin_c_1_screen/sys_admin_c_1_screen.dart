@@ -44,7 +44,7 @@ class SysAdminC1Screen extends StatelessWidget {
           create: (context) => SelectedMenuTypeCubit(),
         ),
       ],
-      child: const SystemAdministrationC1ScreenBody(),
+      child: const SysAdminC1ScreenBody(),
     );
   }
 }
@@ -62,16 +62,14 @@ enum MenuType {
   }
 }
 
-class SystemAdministrationC1ScreenBody extends StatefulWidget {
-  const SystemAdministrationC1ScreenBody({super.key});
+class SysAdminC1ScreenBody extends StatefulWidget {
+  const SysAdminC1ScreenBody({super.key});
 
   @override
-  State<SystemAdministrationC1ScreenBody> createState() =>
-      _SystemAdministrationC1ScreenBodyState();
+  State<SysAdminC1ScreenBody> createState() => _SysAdminC1ScreenBodyState();
 }
 
-class _SystemAdministrationC1ScreenBodyState
-    extends State<SystemAdministrationC1ScreenBody> {
+class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
   TextEditingController menuNameTextController = TextEditingController();
   FocusNode menuNameFocusNode = FocusNode();
   late UserInfoModel loggedUser;

@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/system_administrator_forms/system_administration_c_1_screen/system_administration_c_1_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/sys_admin_c_1_screen.dart';
 
 class SelectedMenuTypeCubit extends Cubit<MenuType?> {
   SelectedMenuTypeCubit() : super(null);
