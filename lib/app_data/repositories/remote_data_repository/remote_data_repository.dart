@@ -95,6 +95,6 @@ abstract class RemoteDataRepository {
     required String pMenuName,
     required String pMenuType,
     required String pModule,
-    required String pParent,
+    required String? pParent,
   });
 }

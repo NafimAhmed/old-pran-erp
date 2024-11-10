@@ -11,7 +11,7 @@ final class CreateSysMenu extends SysMenuCreateEvent {
   final String pMenuName;
   final String pMenuType;
   final String pModule;
-  final String pParent;
+  final String? pParent;
 
   CreateSysMenu({
     required this.userId,
@@ -29,10 +29,7 @@ final class SysMenuCreateInitial extends SysMenuCreateState {}
 
 final class SysMenuCreateLoading extends SysMenuCreateState {}
 
-final class SysMenuCreateSuccess extends SysMenuCreateState {
-  final List<SysModuleData> sysModuleDataList;
-  SysMenuCreateSuccess({required this.sysModuleDataList});
-}
+final class SysMenuCreateSuccess extends SysMenuCreateState {}
 
 final class SysMenuCreateError extends SysMenuCreateState {
   final Object error;
@@ -46,8 +43,14 @@ class SysMenuCreateBloc extends Bloc<SysMenuCreateEvent, SysMenuCreateState> {
     on<CreateSysMenu>((event, emit) async {
       emit(SysMenuCreateLoading());
       try {
-        var response = await _dataService.getSystemModule(userId: event.userId);
-        emit(SysMenuCreateSuccess(sysModuleDataList: response));
+        var response = await _dataService.sysCreateMenu(
+          userId: event.userId,
+          pMenuName: event.pMenuName,
+          pMenuType: event.pMenuType,
+          pModule: event.pModule,
+          pParent: event.pParent,
+        );
+        emit(SysMenuCreateSuccess());
       } catch (e) {
         emit(SysMenuCreateError(error: e));
       }

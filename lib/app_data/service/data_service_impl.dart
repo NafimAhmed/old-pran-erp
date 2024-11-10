@@ -282,7 +282,7 @@ class DataServiceImpl implements DataService {
     required String pMenuName,
     required String pMenuType,
     required String pModule,
-    required String pParent,
+    required String? pParent,
   }) async {
     var response = await remoteDataRepository.sysCreateMenu(
       userId: userId,

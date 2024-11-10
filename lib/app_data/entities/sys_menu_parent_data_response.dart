@@ -47,9 +47,11 @@ class SystemMenuParentDataResponse {
 }
 
 class SysMenuparentData {
+  final int? parentId;
   final String? parentName;
 
   SysMenuparentData({
+    this.parentId,
     this.parentName,
   });
 
@@ -67,10 +69,12 @@ class SysMenuparentData {
 
   factory SysMenuparentData.fromMap(Map<String, dynamic> json) =>
       SysMenuparentData(
+        parentId: json["PARENT_ID"],
         parentName: json["PARENT_NAME"],
       );
 
   Map<String, dynamic> toMap() => {
+        "PARENT_ID": parentId,
         "PARENT_NAME": parentName,
       };
 

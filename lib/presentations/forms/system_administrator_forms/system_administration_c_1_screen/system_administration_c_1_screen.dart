@@ -111,6 +111,11 @@ class _SystemAdministrationC1ScreenBodyState
                 );
               }
               if (state is SysMenuCreateSuccess) {
+                context.read<SelectedModuleCubit>().resetModule();
+                context.read<SelectedMenuTypeCubit>().resetMenuType();
+                context.read<SelectedMenuPrntCubit>().resetMenuPrnt();
+                context.read<SystemMenuPrntBloc>().add(ResetSystemMenuPrnt());
+                menuNameTextController.clear();
                 ScaffoldMessenger.of(context).showSnackBar(
                   CustomSnackBar.successSnackber(
                     message: "Successfully Created..!",
@@ -178,6 +183,12 @@ class _SystemAdministrationC1ScreenBodyState
                         context
                             .read<SelectedMenuTypeCubit>()
                             .setSelectedMenuType(menuType: value!);
+
+                        context.read<SelectedModuleCubit>().resetModule();
+                        context.read<SelectedMenuPrntCubit>().resetMenuPrnt();
+                        context.read<SystemMenuPrntBloc>().add(
+                              ResetSystemMenuPrnt(),
+                            );
                       },
                       validator: (value) {
                         if (value == null) {
@@ -212,6 +223,9 @@ class _SystemAdministrationC1ScreenBodyState
                                       .read<LoggedUserInfoCubit>()
                                       .state!;
                                   if (selectedMenuType == MenuType.child) {
+                                    context
+                                        .read<SelectedMenuPrntCubit>()
+                                        .resetMenuPrnt();
                                     context.read<SystemMenuPrntBloc>().add(
                                           GetSystemMenuPrnt(
                                             userId: loggeduser.userId,
@@ -251,12 +265,12 @@ class _SystemAdministrationC1ScreenBodyState
                                       .setSelectedMenuPrnt(
                                           sysMenuparentData: value!);
                                 },
-                                validator: (value) {
-                                  if (value == null) {
-                                    return "Please Select Parent Module";
-                                  }
-                                  return null;
-                                },
+                                // validator: (value) {
+                                //   if (value == null) {
+                                //     return "Please Select Parent Module";
+                                //   }
+                                //   return null;
+                                // },
                               );
                             },
                           ),
@@ -288,7 +302,8 @@ class _SystemAdministrationC1ScreenBodyState
                                       pMenuName: menuNameTextController.text,
                                       pMenuType: selectedMenuType.value,
                                       pModule: selectedMod.moduleName ?? "",
-                                      pParent: selectedPmenu.parentName ?? "",
+                                      pParent:
+                                          selectedPmenu.parentId.toString(),
                                     ),
                                   );
                             }

@@ -12,6 +12,10 @@ final class GetSystemMenuPrnt extends SystemMenuPrntEvent {
   GetSystemMenuPrnt({required this.userId, required this.moduleName});
 }
 
+final class ResetSystemMenuPrnt extends SystemMenuPrntEvent {
+  ResetSystemMenuPrnt();
+}
+
 @immutable
 sealed class SystemMenuPrntState {}
 
@@ -43,6 +47,9 @@ class SystemMenuPrntBloc
       } catch (e) {
         emit(SystemMenuPrntError(error: e));
       }
+    });
+    on<ResetSystemMenuPrnt>((event, emit) async {
+      emit(SystemMenuPrntInitial());
     });
   }
 }
