@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-
 import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
@@ -18,7 +17,6 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/rack_transact_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfer_batch_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfered_batch_data_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/widgets/split_qty_dialog_widget.dart';
@@ -211,13 +209,6 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Text(
-                              //   "Customer: ",
-                              //   style: textTheme.bodyMedium,
-                              // ),
-                              // const SizedBox(
-                              //   width: 10,
-                              // ),
                               Text(
                                 itemQrData?.custname ?? "",
                                 style: textTheme.bodyMedium,
@@ -689,73 +680,3 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
         ));
   }
 }
-
-
-
-
-
-// class DeleteReviewDialog extends StatelessWidget {
-//   const DeleteReviewDialog({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: double.infinity,
-//       margin: const EdgeInsets.symmetric(horizontal: 5),
-//       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           GestureDetector(
-//             onTap: () {
-//               context.pop();
-//             },
-//             child: const Align(
-//               alignment: Alignment.topRight,
-//               child: Icon(
-//                 Icons.close,
-//               ),
-//             ),
-//           ),
-//           const SizedBox(height: 10),
-//           Text(
-//             "Are you sure you want to delete this review?",
-//             textAlign: TextAlign.center,
-//             style: textTheme.bodyMedium!.copyWith(
-//               fontWeight: FontWeight.bold,
-//               color: const Color.fromRGBO(30, 30, 30, 1),
-//             ),
-//           ),
-//           const SizedBox(height: 20),
-//           Container(
-//             width: 137,
-//             padding: const EdgeInsets.symmetric(
-//               horizontal: 10,
-//               vertical: 10,
-//             ),
-//             decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(
-//                 20,
-//               ),
-//               color: const Color.fromRGBO(196, 66, 23, 1),
-//             ),
-//             child: Center(
-//               child: Text(
-//                 "Delete",
-//                 style: textTheme.bodyMedium!.copyWith(
-//                   color: appTheme.white,
-//                   fontWeight: FontWeight.w700,
-//                   fontSize: 16,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
