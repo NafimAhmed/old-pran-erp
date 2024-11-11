@@ -13,14 +13,12 @@ import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart'
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_print_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_batch_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_machine_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/cubit/selected_org_cubit.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 class OpmC2Screen extends StatelessWidget {
@@ -36,13 +34,13 @@ class OpmC2Screen extends StatelessWidget {
           create: (context) => UserBasicDataBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => SelectedOrgCubit(),
+          create: (context) => VariableStateHandlerCubit<UserOrg>(),
         ),
         BlocProvider(
-          create: (context) => SelectedMachineCubit(),
+          create: (context) => VariableStateHandlerCubit<UserMachine>(),
         ),
         BlocProvider(
-          create: (context) => SelectedBatchCubit(),
+          create: (context) => VariableStateHandlerCubit<UserBatch>(),
         ),
         BlocProvider(
           create: (context) => UserQrSaveBloc(getService()),
@@ -107,14 +105,15 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           quantityTextController.clear();
           goodQtyTextController.clear();
           badQtyTextController.clear();
-          var selectedOrg = context.read<SelectedOrgCubit>().state;
-          context.read<SelectedMachineCubit>().resetMachine();
-          context.read<SelectedBatchCubit>().resetBatch();
+          var selectedOrg =
+              context.read<VariableStateHandlerCubit<UserOrg>>().state;
+          context.read<VariableStateHandlerCubit<UserMachine>>().reset();
+          context.read<VariableStateHandlerCubit<UserBatch>>().reset();
           context.read<UserBasicDataBloc>().add(
                 UserBasicDataGet(
                   userId: loggedUser.userId,
                   orgid: context
-                      .read<SelectedOrgCubit>()
+                      .read<VariableStateHandlerCubit<UserOrg>>()
                       .state!
                       .organizationId
                       .toString(),
@@ -175,11 +174,15 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                           ),
                                         );
                                     context
-                                        .read<SelectedMachineCubit>()
-                                        .resetMachine();
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserMachine>>()
+                                        .reset();
                                     context
-                                        .read<SelectedBatchCubit>()
-                                        .resetBatch();
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserBatch>>()
+                                        .reset();
                                     context.read<UserBasicDataBloc>().add(
                                           UserBasicDataGet(
                                             userId: loggedUser.userId,
@@ -188,8 +191,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                           ),
                                         );
                                     context
-                                        .read<SelectedOrgCubit>()
-                                        .setOrg(userOrg: value);
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserOrg>>()
+                                        .update(value);
                                   },
                                   validator: (value) {
                                     if (value == null) {
@@ -214,12 +219,16 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ? state.userBasicData.userMachineData
                                       : [],
                                   value: context
-                                      .watch<SelectedMachineCubit>()
+                                      .watch<
+                                          VariableStateHandlerCubit<
+                                              UserMachine>>()
                                       .state,
                                   onChanged: (value) {
                                     context
-                                        .read<SelectedMachineCubit>()
-                                        .setMachine(selectedMachine: value!);
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserMachine>>()
+                                        .update(value!);
                                   },
                                   validator: (value) {
                                     if (value == null) {
@@ -243,11 +252,13 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             items: state is UserBasicDataSuccess
                                 ? state.userBasicData.userBatchData
                                 : [],
-                            value: context.watch<SelectedBatchCubit>().state,
+                            value: context
+                                .watch<VariableStateHandlerCubit<UserBatch>>()
+                                .state,
                             onChanged: (value) {
                               context
-                                  .read<SelectedBatchCubit>()
-                                  .setBatch(selectedBatch: value!);
+                                  .read<VariableStateHandlerCubit<UserBatch>>()
+                                  .update(value!);
                             },
                             validator: (value) {
                               if (value == null) {
@@ -261,7 +272,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      BlocBuilder<SelectedBatchCubit, UserBatch?>(
+                      BlocBuilder<VariableStateHandlerCubit<UserBatch>,
+                          UserBatch?>(
                         builder: (context, state) {
                           if (state != null) {
                             return Row(
@@ -429,12 +441,18 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           ? () {}
                           : () {
                               if (fromkey.currentState!.validate()) {
-                                var selectedOrg =
-                                    context.read<SelectedOrgCubit>().state;
-                                var selectedMachine =
-                                    context.read<SelectedMachineCubit>().state;
-                                var selectedBatch =
-                                    context.read<SelectedBatchCubit>().state;
+                                var selectedOrg = context
+                                    .read<VariableStateHandlerCubit<UserOrg>>()
+                                    .state;
+                                var selectedMachine = context
+                                    .read<
+                                        VariableStateHandlerCubit<
+                                            UserMachine>>()
+                                    .state;
+                                var selectedBatch = context
+                                    .read<
+                                        VariableStateHandlerCubit<UserBatch>>()
+                                    .state;
                                 context.read<UserQrSaveBloc>().add(
                                       UserQrSave(
                                           userid: loggedUser.userId,
@@ -477,8 +495,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             return UserQrPrintWidget(
                               userBatchQrData: userBatchQrData,
                               onPressed: () {
-                                UserOrg userOrg =
-                                    context.read<SelectedOrgCubit>().state!;
+                                UserOrg userOrg = context
+                                    .read<VariableStateHandlerCubit<UserOrg>>()
+                                    .state!;
                                 context.pushNamed(
                                   PrintQrScreen.routeName,
                                   extra: {

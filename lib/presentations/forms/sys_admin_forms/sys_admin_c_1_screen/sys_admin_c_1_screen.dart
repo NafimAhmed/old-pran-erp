@@ -10,12 +10,10 @@ import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart'
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/bloc/system_menu_create_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/bloc/system_menu_parent_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/bloc/system_module_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/cubit/selected_menu_prnt_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/cubit/selected_menu_type_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/cubit/selected_module_cubit.dart';
 
 class SysAdminC1Screen extends StatelessWidget {
   const SysAdminC1Screen({super.key});
@@ -35,13 +33,13 @@ class SysAdminC1Screen extends StatelessWidget {
           create: (context) => SysMenuCreateBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => SelectedModuleCubit(),
+          create: (context) => VariableStateHandlerCubit<SysModuleData>(),
         ),
         BlocProvider(
-          create: (context) => SelectedMenuPrntCubit(),
+          create: (context) => VariableStateHandlerCubit<SysMenuparentData>(),
         ),
         BlocProvider(
-          create: (context) => SelectedMenuTypeCubit(),
+          create: (context) => VariableStateHandlerCubit<MenuType>(),
         ),
       ],
       child: const SysAdminC1ScreenBody(),
@@ -109,9 +107,13 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                 );
               }
               if (state is SysMenuCreateSuccess) {
-                context.read<SelectedModuleCubit>().resetModule();
-                context.read<SelectedMenuTypeCubit>().resetMenuType();
-                context.read<SelectedMenuPrntCubit>().resetMenuPrnt();
+                context
+                    .read<VariableStateHandlerCubit<SysModuleData>>()
+                    .reset();
+                context.read<VariableStateHandlerCubit<MenuType>>().reset();
+                context
+                    .read<VariableStateHandlerCubit<SysMenuparentData>>()
+                    .reset();
                 context.read<SystemMenuPrntBloc>().add(ResetSystemMenuPrnt());
                 menuNameTextController.clear();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -175,15 +177,22 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                     ),
                     CommonDropdownButton<MenuType>(
                       hintText: "Select Menu Type",
-                      value: context.watch<SelectedMenuTypeCubit>().state,
+                      value: context
+                          .watch<VariableStateHandlerCubit<MenuType>>()
+                          .state,
                       items: MenuType.values,
                       onChanged: (value) {
                         context
-                            .read<SelectedMenuTypeCubit>()
-                            .setSelectedMenuType(menuType: value!);
+                            .read<VariableStateHandlerCubit<MenuType>>()
+                            .update(value!);
 
-                        context.read<SelectedModuleCubit>().resetModule();
-                        context.read<SelectedMenuPrntCubit>().resetMenuPrnt();
+                        context
+                            .read<VariableStateHandlerCubit<SysModuleData>>()
+                            .reset();
+                        context
+                            .read<
+                                VariableStateHandlerCubit<SysMenuparentData>>()
+                            .reset();
                         context.read<SystemMenuPrntBloc>().add(
                               ResetSystemMenuPrnt(),
                             );
@@ -205,25 +214,33 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                             return Expanded(
                               child: CommonDropdownButton<SysModuleData>(
                                 hintText: "Select Module",
-                                value:
-                                    context.watch<SelectedModuleCubit>().state,
+                                value: context
+                                    .watch<
+                                        VariableStateHandlerCubit<
+                                            SysModuleData>>()
+                                    .state,
                                 items: state is SystemModuleSuccess
                                     ? state.sysModuleDataList
                                     : [],
                                 onChanged: (value) {
                                   context
-                                      .read<SelectedModuleCubit>()
-                                      .setSelectedModule(sysModuleData: value!);
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              SysModuleData>>()
+                                      .update(value!);
                                   var selectedMenuType = context
-                                      .read<SelectedMenuTypeCubit>()
+                                      .read<
+                                          VariableStateHandlerCubit<MenuType>>()
                                       .state;
                                   var loggeduser = context
                                       .read<LoggedUserInfoCubit>()
                                       .state!;
                                   if (selectedMenuType == MenuType.child) {
                                     context
-                                        .read<SelectedMenuPrntCubit>()
-                                        .resetMenuPrnt();
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                SysMenuparentData>>()
+                                        .reset();
                                     context.read<SystemMenuPrntBloc>().add(
                                           GetSystemMenuPrnt(
                                             userId: loggeduser.userId,
@@ -252,16 +269,19 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                               return CommonDropdownButton<SysMenuparentData>(
                                 hintText: "Select Parent Menu",
                                 value: context
-                                    .watch<SelectedMenuPrntCubit>()
+                                    .watch<
+                                        VariableStateHandlerCubit<
+                                            SysMenuparentData>>()
                                     .state,
                                 items: state is SystemMenuPrntSuccess
                                     ? state.sysMenuPrntDataList
                                     : [],
                                 onChanged: (value) {
                                   context
-                                      .read<SelectedMenuPrntCubit>()
-                                      .setSelectedMenuPrnt(
-                                          sysMenuparentData: value!);
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              SysMenuparentData>>()
+                                      .update(value!);
                                 },
                                 // validator: (value) {
                                 //   if (value == null) {
@@ -288,12 +308,19 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                         ? () {}
                         : () {
                             if (formKey.currentState!.validate()) {
-                              var selectedMenuType =
-                                  context.read<SelectedMenuTypeCubit>().state!;
-                              var selectedMod =
-                                  context.read<SelectedModuleCubit>().state!;
-                              var selectedPmenu =
-                                  context.read<SelectedMenuPrntCubit>().state!;
+                              var selectedMenuType = context
+                                  .read<VariableStateHandlerCubit<MenuType>>()
+                                  .state!;
+                              var selectedMod = context
+                                  .read<
+                                      VariableStateHandlerCubit<
+                                          SysModuleData>>()
+                                  .state!;
+                              var selectedPmenu = context
+                                  .read<
+                                      VariableStateHandlerCubit<
+                                          SysMenuparentData>>()
+                                  .state!;
                               context.read<SysMenuCreateBloc>().add(
                                     CreateSysMenu(
                                       userId: loggedUser.userId,
