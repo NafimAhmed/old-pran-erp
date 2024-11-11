@@ -30,6 +30,9 @@ class SysAdminC2Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<AppsUserData>(),
         ),
         BlocProvider(
+          create: (context) => VariableStateHandlerCubit<bool>(),
+        ),
+        BlocProvider(
           create: (context) => UserCreateBloc(getService()),
         ),
       ],
@@ -61,11 +64,12 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   FocusNode passFocusNode = FocusNode();
   late UserInfoModel loggedUser;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool isObscureText = true;
+
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<AppsUserBloc>().add(GetAppsUserEvent());
+    context.read<VariableStateHandlerCubit<bool>>().update(true);
     super.initState();
   }
 
@@ -177,7 +181,9 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                     ),
                     CommonLableWthTextField(
                       lableName: "Password",
-                      obscureText: isObscureText,
+                      obscureText: context
+                          .watch<VariableStateHandlerCubit<bool>>()
+                          .state!,
                       focusNode: passFocusNode,
                       keyboardType: TextInputType.text,
                       textController: passTextController,
@@ -190,13 +196,18 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                       },
                       suffixIcon: GestureDetector(
                         onTap: () {
-                          setState(() {
-                            isObscureText = !isObscureText;
-                          });
+                          var isObtext = context
+                              .read<VariableStateHandlerCubit<bool>>()
+                              .state!;
+                          context
+                              .read<VariableStateHandlerCubit<bool>>()
+                              .update(!isObtext);
                         },
                         child: Icon(
                           color: appTheme.primary,
-                          isObscureText
+                          context
+                                  .watch<VariableStateHandlerCubit<bool>>()
+                                  .state!
                               ? Icons.remove_red_eye_outlined
                               : Icons.remove_red_eye,
                         ),
