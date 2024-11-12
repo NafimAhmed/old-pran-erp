@@ -30,7 +30,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: appTheme.primary,
+            color: appTheme.tertiary,
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(40.0),
               bottomRight: Radius.circular(40.0),

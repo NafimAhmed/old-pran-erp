@@ -3,6 +3,8 @@ import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/qr_user_menu_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
@@ -328,6 +330,46 @@ class DataServiceImpl implements DataService {
         deptName: deptName);
     if (response.statusCode != 200) {
       throw ApiDataException(response.errorMessage ?? response.message);
+    }
+  }
+
+  @override
+  Future<List<QrUserData>> getQrUsers() async {
+    var response = await remoteDataRepository.getQrUsers();
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.userData ?? [];
+  }
+
+  @override
+  Future<List<QrUserMenu>> getQrUserMenu({
+    required String newUserId,
+    required String creatorId,
+  }) async {
+    var response = await remoteDataRepository.getQrUserMenu(
+      newUserId: newUserId,
+      creatorId: creatorId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.usersMenuData ?? [];
+  }
+
+  @override
+  Future<void> giveUserMenuPermission({
+    required String userId,
+    required String newUserId,
+    required String menuId,
+  }) async {
+    var response = await remoteDataRepository.giveUserMenuPermission(
+      userId: userId,
+      newUserId: newUserId,
+      menuId: menuId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
     }
   }
 }

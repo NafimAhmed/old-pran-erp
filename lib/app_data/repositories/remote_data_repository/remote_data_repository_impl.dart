@@ -5,6 +5,8 @@ import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/qr_user_menu_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
@@ -392,6 +394,43 @@ class RemoteDataRepositoryImpl
         'POST',
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/usercreation?newuserid=$newUserId&newusername=$newUserName&userid=$userId&passw=$passw&appuser=$appUser&mobileno=$mobileNo&designame=null&deptname=null'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<QrUserResponse> getQrUsers() async {
+    var request = http.Request(
+        'POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/sysadmin/qruser'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response, decoder: QrUserResponse.fromJson);
+  }
+
+  @override
+  Future<QrUserMenuResponse> getQrUserMenu(
+      {required String newUserId, required String creatorId}) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/qrmenu?newuserid=$newUserId&creatorid=$creatorId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: QrUserMenuResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> giveUserMenuPermission({
+    required String userId,
+    required String newUserId,
+    required String menuId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/menupermission?userid=$userId&newuserid=$newUserId&menu_id=$menuId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
