@@ -422,6 +422,21 @@ class RemoteDataRepositoryImpl
   }
 
   @override
+  Future<QrUserMenuResponse> getQrUserChildMenu({
+    required String newUserId,
+    required String creatorId,
+    required String routeName,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/qrchildmenu?newuserid=$newUserId&creatorid=$creatorId&routename=$routeName'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: QrUserMenuResponse.fromJson);
+  }
+
+  @override
   Future<GenericResponse> giveUserMenuPermission({
     required String userId,
     required String newUserId,

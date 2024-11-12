@@ -97,7 +97,7 @@ class DataServiceImpl implements DataService {
     required int transactId,
     required String userId,
   }) async {
-    var response = await remoteDataRepository.rackTransfer(
+    await remoteDataRepository.rackTransfer(
         transactId: transactId, userId: userId);
   }
 
@@ -355,6 +355,23 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.usersMenuData ?? [];
+  }
+
+  @override
+  Future<List<QrUserChildMenu>> getQrUserChildMenu({
+    required String newUserId,
+    required String creatorId,
+    required String routeName,
+  }) async {
+    var response = await remoteDataRepository.getQrUserChildMenu(
+      newUserId: newUserId,
+      creatorId: creatorId,
+      routeName: routeName,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.usersChildMenuData ?? [];
   }
 
   @override

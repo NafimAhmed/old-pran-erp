@@ -126,6 +126,11 @@ abstract class DataService {
     required String newUserId,
     required String creatorId,
   });
+  Future<List<QrUserChildMenu>> getQrUserChildMenu({
+    required String newUserId,
+    required String creatorId,
+    required String routeName,
+  });
   Future<void> giveUserMenuPermission({
     required String userId,
     required String newUserId,

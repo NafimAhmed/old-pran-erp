@@ -114,6 +114,11 @@ abstract class RemoteDataRepository {
   Future<QrUserResponse> getQrUsers();
   Future<QrUserMenuResponse> getQrUserMenu(
       {required String newUserId, required String creatorId});
+  Future<QrUserMenuResponse> getQrUserChildMenu({
+    required String newUserId,
+    required String creatorId,
+    required String routeName,
+  });
   Future<GenericResponse> giveUserMenuPermission({
     required String userId,
     required String newUserId,

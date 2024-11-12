@@ -79,7 +79,7 @@ mixin DecoderServiceMixin {
       default:
         var resBody = await response.stream.bytesToString();
         Map<String, dynamic> res = json.decode(resBody);
-        throw ApiDataException(res["Status"]);
+        throw ApiDataException(res["Status"] ?? "");
     }
   }
 }

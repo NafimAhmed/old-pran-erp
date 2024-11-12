@@ -12,6 +12,7 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/bloc/qr_user_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/bloc/qr_user_child_menu_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/bloc/qr_user_menu_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/bloc/qr_user_permission_bloc.dart';
 
@@ -33,7 +34,13 @@ class SysAdminC3Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<QrUserMenu>(),
         ),
         BlocProvider(
+          create: (context) => VariableStateHandlerCubit<QrUserChildMenu>(),
+        ),
+        BlocProvider(
           create: (context) => QrUserMenuBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => QrUserChildMenuBloc(getService()),
         ),
         BlocProvider(
           create: (context) => QrUserMenuPermissionBloc(getService()),
@@ -56,7 +63,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   TextEditingController userMobTextController = TextEditingController();
   TextEditingController userDeptTextController = TextEditingController();
   TextEditingController userDesgTextController = TextEditingController();
-  TextEditingController menuNameTextController = TextEditingController();
+
   late UserInfoModel loggedUser;
 
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
@@ -73,7 +80,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
     userMobTextController.dispose();
     userDeptTextController.dispose();
     userDesgTextController.dispose();
-    menuNameTextController.dispose();
+
     super.dispose();
   }
 
@@ -86,11 +93,12 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
           if (state is QrUserMenuPermissionSuccess) {
             context.read<VariableStateHandlerCubit<QrUserData>>().reset();
             context.read<VariableStateHandlerCubit<QrUserMenu>>().reset();
+            context.read<VariableStateHandlerCubit<QrUserChildMenu>>().reset();
             userNameTextController.clear();
             userMobTextController.clear();
             userDeptTextController.clear();
             userDesgTextController.clear();
-            menuNameTextController.clear();
+
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "Permission Given..!",
@@ -225,11 +233,19 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                 ? state.qrUserMenu
                                 : [],
                             onChanged: (value) {
+                              var selectedUser = context
+                                  .read<VariableStateHandlerCubit<QrUserData>>()
+                                  .state!;
                               context
                                   .read<VariableStateHandlerCubit<QrUserMenu>>()
                                   .update(value!);
-                              menuNameTextController.text =
-                                  value.menuName ?? "";
+                              context.read<QrUserChildMenuBloc>().add(
+                                    GetQrUserChildMenu(
+                                      newUserId: selectedUser.userId!,
+                                      creatorId: loggedUser.userId,
+                                      routeName: value.menuRoute ?? "",
+                                    ),
+                                  );
                             },
                             value: context
                                 .watch<VariableStateHandlerCubit<QrUserMenu>>()
@@ -248,13 +264,30 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                       width: 10,
                     ),
                     Expanded(
-                      child: CommonTextFieldWidget(
-                        controller: menuNameTextController,
-                        keyboardType: TextInputType.text,
-                        readOnly: true,
-                        labelText: "Menu Name",
+                      child: BlocBuilder<QrUserChildMenuBloc,
+                          QrUserChildMenuState>(
+                        builder: (context, state) {
+                          return CommonDropdownButton<QrUserChildMenu>(
+                            hintText: "Select Menu",
+                            items: state is QrUserChildMenuSuccess
+                                ? state.qrUserChildMenu
+                                : [],
+                            onChanged: (value) {
+                              context
+                                  .read<
+                                      VariableStateHandlerCubit<
+                                          QrUserChildMenu>>()
+                                  .update(value!);
+                            },
+                            value: context
+                                .watch<
+                                    VariableStateHandlerCubit<
+                                        QrUserChildMenu>>()
+                                .state,
+                          );
+                        },
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -272,11 +305,17 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                           var selectedMenu = context
                               .read<VariableStateHandlerCubit<QrUserMenu>>()
                               .state!;
+                          var selectedChildMenu = context
+                              .read<
+                                  VariableStateHandlerCubit<QrUserChildMenu>>()
+                              .state;
                           context.read<QrUserMenuPermissionBloc>().add(
                                 GetQrUserMenuPermission(
                                   userId: loggedUser.userId,
                                   newUserId: selectedUser.userId!,
-                                  menuId: selectedMenu.menuId.toString(),
+                                  menuId: selectedChildMenu == null
+                                      ? selectedMenu.menuId.toString()
+                                      : selectedChildMenu.menuId.toString(),
                                 ),
                               );
                         }

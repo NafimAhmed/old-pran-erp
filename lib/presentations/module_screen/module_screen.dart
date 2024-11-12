@@ -91,10 +91,17 @@ class _ModuleScreenBodyState extends State<ModuleScreenBody> {
                               ),
                               children: <Widget>[
                                 OPMSubModuleWidget(
-                                  title: "User Permission",
+                                  title: "User Create",
                                   onTap: () {
                                     context.pushNamed(
                                         "SYSTEM-ADMINISTRATOR-C-2-SCREEN");
+                                  },
+                                ),
+                                OPMSubModuleWidget(
+                                  title: "User Permission",
+                                  onTap: () {
+                                    context.pushNamed(
+                                        "SYSTEM-ADMINISTRATOR-C-3-SCREEN");
                                   },
                                 ),
                                 ...List.generate(
@@ -158,38 +165,3 @@ class OPMSubModuleWidget extends StatelessWidget {
     );
   }
 }
-
- // Card(
-                //   elevation: 10,
-                //   child: ExpansionTile(
-                //     title: Text(
-                //       "OPM Super User#",
-                //       style: textTheme.bodyLarge!.copyWith(
-                //         fontSize: 18,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //     collapsedShape: const ContinuousRectangleBorder(
-                //       borderRadius: BorderRadius.all(
-                //         Radius.circular(
-                //           10,
-                //         ),
-                //       ),
-                //     ),
-                //     shape: const ContinuousRectangleBorder(
-                //       borderRadius: BorderRadius.all(
-                //         Radius.circular(10),
-                //       ),
-                //     ),
-                //     children: <Widget>[
-                //       OPMSubModuleWidget(
-                //         title: "Formulas",
-                //         onTap: () {},
-                //       ),
-                //       OPMSubModuleWidget(
-                //         title: "Recipes",
-                //         onTap: () {},
-                //       ),
-                //     ],
-                //   ),
-                // ),
