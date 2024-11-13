@@ -2,7 +2,6 @@ import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/qr_user_response.dart';
@@ -122,7 +121,7 @@ abstract class DataService {
     required String deptName,
   });
   Future<List<QrUserData>> getQrUsers();
-  Future<List<QrUserMenu>> getQrUserMenu({
+  Future<List<QrModuleData>> getQrUserMenu({
     required String newUserId,
     required String creatorId,
   });

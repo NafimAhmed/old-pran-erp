@@ -343,7 +343,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<QrUserMenu>> getQrUserMenu({
+  Future<List<QrModuleData>> getQrUserMenu({
     required String newUserId,
     required String creatorId,
   }) async {

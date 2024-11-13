@@ -31,7 +31,7 @@ class SysAdminC3Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<QrUserData>(),
         ),
         BlocProvider(
-          create: (context) => VariableStateHandlerCubit<QrUserMenu>(),
+          create: (context) => VariableStateHandlerCubit<QrModuleData>(),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<QrUserChildMenu>(),
@@ -92,7 +92,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
         listener: (context, state) {
           if (state is QrUserMenuPermissionSuccess) {
             context.read<VariableStateHandlerCubit<QrUserData>>().reset();
-            context.read<VariableStateHandlerCubit<QrUserMenu>>().reset();
+            context.read<VariableStateHandlerCubit<QrModuleData>>().reset();
             context.read<VariableStateHandlerCubit<QrUserChildMenu>>().reset();
             userNameTextController.clear();
             userMobTextController.clear();
@@ -136,6 +136,9 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                         context
                             .read<VariableStateHandlerCubit<QrUserData>>()
                             .update(value!);
+                        context
+                            .read<VariableStateHandlerCubit<QrModuleData>>()
+                            .reset();
                         userNameTextController.text = value.userName ?? "";
                         userMobTextController.text = "";
                         userDeptTextController.text = "";
@@ -168,6 +171,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                             children: [
                               Expanded(
                                 child: CommonTextFieldWidget(
+                                  enabled: false,
                                   controller: userNameTextController,
                                   keyboardType: TextInputType.text,
                                   readOnly: true,
@@ -179,6 +183,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                               ),
                               Expanded(
                                 child: CommonTextFieldWidget(
+                                  enabled: false,
                                   controller: userMobTextController,
                                   keyboardType: TextInputType.text,
                                   readOnly: true,
@@ -194,6 +199,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                             children: [
                               Expanded(
                                 child: CommonTextFieldWidget(
+                                  enabled: false,
                                   controller: userDeptTextController,
                                   keyboardType: TextInputType.text,
                                   readOnly: true,
@@ -205,6 +211,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                               ),
                               Expanded(
                                 child: CommonTextFieldWidget(
+                                  enabled: false,
                                   controller: userDesgTextController,
                                   keyboardType: TextInputType.text,
                                   readOnly: true,
@@ -227,8 +234,8 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                     Expanded(
                       child: BlocBuilder<QrUserMenuBloc, QrUserMenuState>(
                         builder: (context, state) {
-                          return CommonDropdownButton<QrUserMenu>(
-                            hintText: "Select Menu",
+                          return CommonDropdownButton<QrModuleData>(
+                            hintText: "Select Module",
                             items: state is QrUserMenuSuccess
                                 ? state.qrUserMenu
                                 : [],
@@ -237,22 +244,24 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                   .read<VariableStateHandlerCubit<QrUserData>>()
                                   .state!;
                               context
-                                  .read<VariableStateHandlerCubit<QrUserMenu>>()
+                                  .read<
+                                      VariableStateHandlerCubit<QrModuleData>>()
                                   .update(value!);
                               context.read<QrUserChildMenuBloc>().add(
                                     GetQrUserChildMenu(
                                       newUserId: selectedUser.userId!,
                                       creatorId: loggedUser.userId,
-                                      routeName: value.menuRoute ?? "",
+                                      routeName: value.moduleName ?? "",
                                     ),
                                   );
                             },
                             value: context
-                                .watch<VariableStateHandlerCubit<QrUserMenu>>()
+                                .watch<
+                                    VariableStateHandlerCubit<QrModuleData>>()
                                 .state,
                             validator: (value) {
                               if (value == null) {
-                                return "Please Select Menu";
+                                return "Please Select Module";
                               }
                               return null;
                             },
@@ -279,6 +288,12 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                           QrUserChildMenu>>()
                                   .update(value!);
                             },
+                            validator: (value) {
+                              if (value == null) {
+                                return "Please Select Menu";
+                              }
+                              return null;
+                            },
                             value: context
                                 .watch<
                                     VariableStateHandlerCubit<
@@ -302,20 +317,16 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                           var selectedUser = context
                               .read<VariableStateHandlerCubit<QrUserData>>()
                               .state!;
-                          var selectedMenu = context
-                              .read<VariableStateHandlerCubit<QrUserMenu>>()
-                              .state!;
+
                           var selectedChildMenu = context
                               .read<
                                   VariableStateHandlerCubit<QrUserChildMenu>>()
-                              .state;
+                              .state!;
                           context.read<QrUserMenuPermissionBloc>().add(
                                 GetQrUserMenuPermission(
                                   userId: loggedUser.userId,
                                   newUserId: selectedUser.userId!,
-                                  menuId: selectedChildMenu == null
-                                      ? selectedMenu.menuId.toString()
-                                      : selectedChildMenu.menuId.toString(),
+                                  menuId: selectedChildMenu.menuId.toString(),
                                 ),
                               );
                         }

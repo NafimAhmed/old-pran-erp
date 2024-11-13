@@ -415,7 +415,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/sysadmin/qrmenu?newuserid=$newUserId&creatorid=$creatorId'));
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/qrmodule?newuserid=$newUserId&creatorid=$creatorId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: QrUserMenuResponse.fromJson);

@@ -21,7 +21,7 @@ final class QrUserMenuInitial extends QrUserMenuState {}
 final class QrUserMenuLoading extends QrUserMenuState {}
 
 final class QrUserMenuSuccess extends QrUserMenuState {
-  final List<QrUserMenu> qrUserMenu;
+  final List<QrModuleData> qrUserMenu;
 
   QrUserMenuSuccess({required this.qrUserMenu});
 }

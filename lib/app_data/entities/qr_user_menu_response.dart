@@ -3,7 +3,7 @@ import 'dart:convert';
 class QrUserMenuResponse {
   final int? statusCode;
   final String? message;
-  final List<QrUserMenu>? usersMenuData;
+  final List<QrModuleData>? usersMenuData;
   final List<QrUserChildMenu>? usersChildMenuData;
   QrUserMenuResponse({
     this.statusCode,
@@ -15,7 +15,7 @@ class QrUserMenuResponse {
   QrUserMenuResponse copyWith({
     int? statusCode,
     String? message,
-    List<QrUserMenu>? usersMenuData,
+    List<QrModuleData>? usersMenuData,
     List<QrUserChildMenu>? usersChildMenuData,
   }) =>
       QrUserMenuResponse(
@@ -34,10 +34,10 @@ class QrUserMenuResponse {
       QrUserMenuResponse(
         statusCode: json["status_code"],
         message: json["message"],
-        usersMenuData: json["users_menu_data"] == null
+        usersMenuData: json["module_data"] == null
             ? []
-            : List<QrUserMenu>.from(
-                json["users_menu_data"]!.map((x) => QrUserMenu.fromMap(x))),
+            : List<QrModuleData>.from(
+                json["module_data"]!.map((x) => QrModuleData.fromMap(x))),
         usersChildMenuData: json["users_child_menu_data"] == null
             ? []
             : List<QrUserChildMenu>.from(json["users_child_menu_data"]!
@@ -47,7 +47,7 @@ class QrUserMenuResponse {
   Map<String, dynamic> toMap() => {
         "status_code": statusCode,
         "message": message,
-        "users_menu_data": usersMenuData == null
+        "module_data": usersMenuData == null
             ? []
             : List<dynamic>.from(usersMenuData!.map((x) => x.toMap())),
         "users_child_menu_data": usersChildMenuData == null
@@ -56,54 +56,36 @@ class QrUserMenuResponse {
       };
 }
 
-class QrUserMenu {
-  final int? menuId;
-  final String? menuName;
-  final String? menuType;
-  final String? menuRoute;
+class QrModuleData {
+  final String? moduleName;
 
-  QrUserMenu({
-    this.menuId,
-    this.menuName,
-    this.menuType,
-    this.menuRoute,
+  QrModuleData({
+    this.moduleName,
   });
 
-  QrUserMenu copyWith({
-    int? menuId,
-    String? menuName,
-    String? menuType,
-    String? menuRoute,
+  QrModuleData copyWith({
+    String? moduleName,
   }) =>
-      QrUserMenu(
-        menuId: menuId ?? this.menuId,
-        menuName: menuName ?? this.menuName,
-        menuType: menuType ?? this.menuType,
-        menuRoute: menuRoute ?? this.menuRoute,
+      QrModuleData(
+        moduleName: moduleName ?? this.moduleName,
       );
 
-  factory QrUserMenu.fromJson(String str) =>
-      QrUserMenu.fromMap(json.decode(str));
+  factory QrModuleData.fromJson(String str) =>
+      QrModuleData.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory QrUserMenu.fromMap(Map<String, dynamic> json) => QrUserMenu(
-        menuId: json["MENU_ID"],
-        menuName: json["MENU_NAME"],
-        menuType: json["MENU_TYPE"],
-        menuRoute: json["MENU_ROUTE"],
+  factory QrModuleData.fromMap(Map<String, dynamic> json) => QrModuleData(
+        moduleName: json["MODULE_NAME"],
       );
 
   Map<String, dynamic> toMap() => {
-        "MENU_ID": menuId,
-        "MENU_NAME": menuName,
-        "MENU_TYPE": menuType,
-        "MENU_ROUTE": menuRoute,
+        "MODULE_NAME": moduleName,
       };
 
   @override
   String toString() {
-    return menuRoute ?? "";
+    return moduleName ?? "";
   }
 }
 
