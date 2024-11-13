@@ -17,6 +17,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.onChanged,
     this.readOnly = false,
     this.suffixIcon,
+    this.enabled,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -30,9 +31,11 @@ class CommonTextFieldWidget extends StatelessWidget {
   final bool readOnly;
   final void Function(String value)? onChanged;
   final Widget? suffixIcon;
+  final bool? enabled;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: enabled,
       readOnly: readOnly,
       focusNode: focusNode,
       controller: controller,
