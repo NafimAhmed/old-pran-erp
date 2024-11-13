@@ -129,7 +129,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
               const SizedBox(
                 height: 10,
               ),
-              ReadOrWidget(
+              ReadQrWidget(
                 qrType: "Item QR",
                 onPressed: () async {
                   var data = await buildScanner(context, controller);
@@ -159,6 +159,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                         ),
                       ),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             itemQrData?.itemname ?? "",
@@ -168,15 +169,54 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Buyer Name",
+                                itemQrData?.custname ?? "",
                                 style: textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Lot: ",
+                                      style: textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        itemQrData?.lotno ?? "",
+                                        style: textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                itemQrData?.buyername ?? "",
-                                style: textTheme.bodyMedium,
+                              Flexible(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Qty: ",
+                                      style: textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        itemQrData?.goodQty.toString() ?? "",
+                                        textAlign: TextAlign.right,
+                                        style: textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -190,16 +230,12 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
               const SizedBox(
                 height: 10,
               ),
-              ReadOrWidget(
+              ReadQrWidget(
                 qrType: "Rack QR",
                 onPressed: () async {
-                  try {
-                    var data = await buildScanner(context, controller);
-                    if (context.mounted) {
-                      context.read<RackQrCubit>().setrackData(rackQrData: data);
-                    }
-                  } catch (e) {
-                    log('Error');
+                  var data = await buildScanner(context, controller);
+                  if (context.mounted) {
+                    context.read<RackQrCubit>().setrackData(rackQrData: data);
                   }
                 },
               ),

@@ -170,7 +170,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
               const SizedBox(
                 height: 15,
               ),
-              ReadOrWidget(
+              ReadQrWidget(
                 qrType: "Item QR",
                 onPressed: () async {
                   var data = await buildScanner(context, controller);
@@ -271,7 +271,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
               const SizedBox(
                 height: 15,
               ),
-              ReadOrWidget(
+              ReadQrWidget(
                 qrType: "Rack QR",
                 onPressed: () async {
                   try {

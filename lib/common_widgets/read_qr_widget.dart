@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
-class ReadOrWidget extends StatelessWidget {
-  const ReadOrWidget({
+class ReadQrWidget extends StatelessWidget {
+  const ReadQrWidget({
     super.key,
     required this.qrType,
     required this.onPressed,

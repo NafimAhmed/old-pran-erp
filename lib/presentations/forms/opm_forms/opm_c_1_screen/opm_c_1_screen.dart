@@ -123,7 +123,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     );
                   }
                 },
-                child: ReadOrWidget(
+                child: ReadQrWidget(
                   qrType: "Scan QR",
                   onPressed: () async {
                     var data = await buildScanner(context, controller);
