@@ -125,7 +125,6 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
               const SizedBox(
                 height: 10,
               ),
-              const UserDetailsWidget(),
               const SizedBox(
                 height: 10,
               ),
@@ -348,6 +347,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
             ],
           ),
         ),
+        bottomNavigationBar: const UserDetailsWidget(),
       ),
     );
   }

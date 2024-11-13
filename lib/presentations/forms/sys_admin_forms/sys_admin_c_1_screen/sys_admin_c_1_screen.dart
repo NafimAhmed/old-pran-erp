@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
@@ -356,6 +357,7 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
           ),
         ),
       ),
+      bottomNavigationBar: const UserDetailsWidget(),
     );
   }
 }
