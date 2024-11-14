@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -19,6 +18,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/u
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/widgets/user_qr_print_widget.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 class OpmC2Screen extends StatelessWidget {
@@ -524,111 +524,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
         ),
         bottomNavigationBar: const UserDetailsWidget(),
       ),
-    );
-  }
-}
-
-class UserQrPrintWidget extends StatelessWidget {
-  const UserQrPrintWidget(
-      {super.key, required this.userBatchQrData, this.onPressed});
-  final UserBatchQrData userBatchQrData;
-  final void Function()? onPressed;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 5,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: appTheme.primary,
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // Text(userBatchQrData.lotno ?? ""),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom().copyWith(
-                  padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
-                    EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                  ),
-                  minimumSize: WidgetStateProperty.all<Size>(
-                    const Size(80, 30),
-                  ),
-                  backgroundColor: WidgetStatePropertyAll(
-                    appTheme.tertiary,
-                  ),
-                ),
-                onPressed: onPressed,
-                child: Row(
-                  children: [
-                    Text(
-                      "Print Qr",
-                      style: textTheme.bodyMedium!.copyWith(
-                        fontSize: 14,
-                        color: appTheme.white,
-                      ),
-                    ),
-                    Icon(
-                      Icons.qr_code,
-                      color: appTheme.white,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          _buildQrPrintDetail(
-            "Job Order: ",
-            userBatchQrData.jobno ?? "",
-          ),
-          _buildQrPrintDetail(
-            "Item: ",
-            userBatchQrData.itemname ?? "",
-          ),
-          _buildQrPrintDetail(
-            "Good Qty: ",
-            userBatchQrData.goodQty.toString(),
-          ),
-          _buildQrPrintDetail(
-            "Locator: ",
-            userBatchQrData.locLocator.toString(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQrPrintDetail(String title, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: textTheme.bodyMedium!.copyWith(
-            fontSize: 14,
-            color: appTheme.white,
-          ),
-        ),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.right,
-            style: textTheme.bodyMedium!.copyWith(
-              fontSize: 14,
-              color: appTheme.white,
-            ),
-          ),
-        )
-      ],
     );
   }
 }
