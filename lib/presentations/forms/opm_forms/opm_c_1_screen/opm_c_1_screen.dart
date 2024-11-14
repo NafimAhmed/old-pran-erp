@@ -297,55 +297,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             },
                           ),
                         ),
-                        // Expanded(
-                        //   child: BlocBuilder<UserMachineBloc, UserMachineState>(
-                        //     builder: (context, state) {
-                        //       if (state is UserMachineLoaded) {
-                        //         selectedMachine = state.selectedmachine;
-                        //         userMachineList = state.userMachineList;
-                        //       }
-                        //       return DropdownMenu(
-                        //         menuHeight: 250,
-                        //         expandedInsets: EdgeInsets.zero,
-                        //         enableSearch: true,
-                        //         requestFocusOnTap: true,
-
-                        //         menuStyle: const MenuStyle(
-                        //             alignment: Alignment.topCenter),
-                        //         // enableFilter: true,
-                        //         controller: dropDownTextController,
-                        //         hintText: "Select Machine",
-                        //         inputDecorationTheme: InputDecorationTheme(
-                        //           hintStyle: textTheme.bodySmall!.copyWith(
-                        //             color: appTheme.primary,
-                        //             fontSize: 15,
-                        //             fontWeight: FontWeight.bold,
-                        //           ),
-                        //         ),
-
-                        //         textStyle: textTheme.bodySmall!.copyWith(
-                        //           color: appTheme.primary,
-                        //           fontSize: 15,
-                        //           fontWeight: FontWeight.bold,
-                        //         ),
-                        //         onSelected: (value) {
-                        //           context
-                        //               .read<UserMachineBloc>()
-                        //               .add(MachineSelected(selectedLov: value));
-                        //           FocusManager.instance.primaryFocus?.unfocus();
-                        //         },
-                        //         dropdownMenuEntries: userMachineList.map(
-                        //           (e) {
-                        //             return DropdownMenuEntry(
-                        //               value: e,
-                        //               label: e.toString(),
-                        //             );
-                        //           },
-                        //         ).toList(),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                         const SizedBox(
                           width: 40,
                         ),

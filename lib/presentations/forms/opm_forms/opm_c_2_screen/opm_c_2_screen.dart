@@ -245,27 +245,83 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
+                      // BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
+                      //   builder: (context, state) {
+                      //     return CommonDropdownButton<UserBatch>(
+                      //       hintText: "Select Batch",
+                      //       items: state is UserBasicDataSuccess
+                      //           ? state.userBasicData.userBatchData
+                      //           : [],
+                      //       value: context
+                      //           .watch<VariableStateHandlerCubit<UserBatch>>()
+                      //           .state,
+                      //       onChanged: (value) {
+                      //         context
+                      //             .read<VariableStateHandlerCubit<UserBatch>>()
+                      //             .update(value!);
+                      //       },
+                      //       validator: (value) {
+                      //         if (value == null) {
+                      //           return "Please Select Batch";
+                      //         }
+                      //         return null;
+                      //       },
+                      //     );
+                      //   },
+                      // ),
                       BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
                         builder: (context, state) {
-                          return CommonDropdownButton<UserBatch>(
-                            hintText: "Select Batch",
-                            items: state is UserBasicDataSuccess
+                          return DropdownMenu<UserBatch>(
+                            menuHeight: 250,
+                            expandedInsets: EdgeInsets.zero,
+                            enableSearch: true,
+                            requestFocusOnTap: true,
+                            enabled: state is UserBasicDataSuccess
                                 ? state.userBasicData.userBatchData
-                                : [],
-                            value: context
-                                .watch<VariableStateHandlerCubit<UserBatch>>()
-                                .state,
-                            onChanged: (value) {
+                                        ?.isNotEmpty ??
+                                    false
+                                : false,
+                            // enableFilter: true,
+                            controller: dropDownTextController,
+                            hintText: "Select Machine",
+                            inputDecorationTheme: InputDecorationTheme(
+                              hintStyle: textTheme.bodySmall!.copyWith(
+                                color: appTheme.primary,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            textStyle: textTheme.bodySmall!.copyWith(
+                              color: appTheme.primary,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            onSelected: (value) {
                               context
                                   .read<VariableStateHandlerCubit<UserBatch>>()
                                   .update(value!);
+                              FocusManager.instance.primaryFocus?.unfocus();
                             },
-                            validator: (value) {
-                              if (value == null) {
-                                return "Please Select Batch";
-                              }
-                              return null;
-                            },
+
+                            dropdownMenuEntries: state is UserBasicDataSuccess
+                                ? state.userBasicData.userBatchData!.map(
+                                    (e) {
+                                      return DropdownMenuEntry(
+                                        value: e,
+                                        label: e.toString(),
+                                        labelWidget: Text(
+                                          e.toString(),
+                                          style: textTheme.bodySmall!.copyWith(
+                                            color: appTheme.primary,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ).toList()
+                                : [],
                           );
                         },
                       ),
@@ -441,6 +497,19 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           ? () {}
                           : () {
                               if (fromkey.currentState!.validate()) {
+                                if (context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserBatch>>()
+                                        .state ==
+                                    null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CustomSnackBar.errorSnackber(
+                                      message: "Please Select Batch",
+                                    ),
+                                  );
+                                  return;
+                                }
                                 var selectedOrg = context
                                     .read<VariableStateHandlerCubit<UserOrg>>()
                                     .state;
