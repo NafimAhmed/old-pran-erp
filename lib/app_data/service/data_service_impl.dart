@@ -3,6 +3,7 @@ import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
@@ -188,17 +189,15 @@ class DataServiceImpl implements DataService {
   @override
   Future<void> interOrgTransfer({
     required String userid,
-    required String trackid,
-    required String itemid,
-    required String rqty,
-    required String batchid,
+    required String itemlotno,
+    required String torackid,
+    required String tqty,
   }) async {
     await remoteDataRepository.interOrgTransfer(
       userid: userid,
-      trackid: trackid,
-      itemid: itemid,
-      rqty: rqty,
-      batchid: batchid,
+      itemlotno: itemlotno,
+      torackid: torackid,
+      tqty: tqty,
     );
   }
 
@@ -388,5 +387,18 @@ class DataServiceImpl implements DataService {
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
+  }
+
+  @override
+  Future<List<LotTrnData>> getLotTrnData({
+    required String userId,
+    required String racklocator,
+  }) async {
+    var response = await remoteDataRepository.getLotTrnData(
+        userId: userId, racklocator: racklocator);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.lotTrnData ?? [];
   }
 }

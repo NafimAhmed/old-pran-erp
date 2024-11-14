@@ -96,37 +96,37 @@ class InterOrgSplitQtyDialog extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              BlocSelector<InterOrgTransferBloc, InterOrgTransferState, String>(
-                selector: (state) {
-                  return state is InterOrgTransferLoading
-                      ? state.splitFlag == "1"
-                          ? "Saving.."
-                          : "Save"
-                      : "Save";
-                },
-                builder: (context, selectedState) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      if (fromKey.currentState!.validate()) {
-                        blocContext.read<InterOrgTransferBloc>().add(
-                            InterOrgTransfer(
-                                userid: userid,
-                                trackid: rackId,
-                                itemid: itemId,
-                                rqty: splitQtyTextController.text,
-                                batchid: batchId,
-                                split: "1"));
-                      }
-                    },
-                    child: Text(
-                      selectedState,
-                      style: textTheme.bodySmall!.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  );
-                },
-              ),
+              // BlocSelector<InterOrgTransferBloc, InterOrgTransferState, String>(
+              //   selector: (state) {
+              //     return state is InterOrgTransferLoading
+              //         ? state.splitFlag == "1"
+              //             ? "Saving.."
+              //             : "Save"
+              //         : "Save";
+              //   },
+              //   builder: (context, selectedState) {
+              //     return ElevatedButton(
+              //       onPressed: () {
+              //         // if (fromKey.currentState!.validate()) {
+              //         //   blocContext.read<InterOrgTransferBloc>().add(
+              //         //       InterOrgTransfer(
+              //         //           userid: userid,
+              //         //           trackid: rackId,
+              //         //           itemid: itemId,
+              //         //           rqty: splitQtyTextController.text,
+              //         //           batchid: batchId,
+              //         //           split: "1"));
+              //         // }
+              //       },
+              //       child: Text(
+              //         selectedState,
+              //         style: textTheme.bodySmall!.copyWith(
+              //           color: Colors.white,
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // ),
             ],
           ),
         ),

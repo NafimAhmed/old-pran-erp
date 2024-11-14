@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
@@ -256,15 +257,14 @@ class RemoteDataRepositoryImpl
   @override
   Future<void> interOrgTransfer({
     required String userid,
-    required String trackid,
-    required String itemid,
-    required String rqty,
-    required String batchid,
+    required String itemlotno,
+    required String torackid,
+    required String tqty,
   }) async {
     var request = http.Request(
       'POST',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/batch/interorgtrns?userid=$userid&trackid=$trackid&itemid=$itemid&rqty=$rqty&batchid=$batchid'),
+          '${appConfig.baseUrl}/ords/rpro/invtran/IOTapi?userid=$userid&itemlotno=$itemlotno&torackid=$torackid&tqty=$tqty'),
     );
 
     http.StreamedResponse response = await request.send();
@@ -449,5 +449,19 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<LotTrnResponse> getLotTrnData({
+    required String userId,
+    required String racklocator,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/invtran/IOTstkdata?userid=$userId&racklocator=$racklocator'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: LotTrnResponse.fromJson);
   }
 }

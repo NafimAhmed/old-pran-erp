@@ -7,19 +7,15 @@ sealed class InterOrgTranferEvent {}
 
 final class InterOrgTransfer extends InterOrgTranferEvent {
   final String userid;
-  final String trackid;
-  final String itemid;
-  final String rqty;
-  final String batchid;
-  final String split;
+  final String itemlotno;
+  final String torackid;
+  final String tqty;
 
   InterOrgTransfer({
     required this.userid,
-    required this.trackid,
-    required this.itemid,
-    required this.rqty,
-    required this.batchid,
-    required this.split,
+    required this.itemlotno,
+    required this.torackid,
+    required this.tqty,
   });
 }
 
@@ -28,11 +24,7 @@ sealed class InterOrgTransferState {}
 
 final class InterOrgTransferInitial extends InterOrgTransferState {}
 
-final class InterOrgTransferLoading extends InterOrgTransferState {
-  final String splitFlag;
-
-  InterOrgTransferLoading({required this.splitFlag});
-}
+final class InterOrgTransferLoading extends InterOrgTransferState {}
 
 final class InterOrgTransferSuccess extends InterOrgTransferState {}
 
@@ -47,15 +39,13 @@ class InterOrgTransferBloc
   final DataService _dataService;
   InterOrgTransferBloc(this._dataService) : super(InterOrgTransferInitial()) {
     on<InterOrgTransfer>((event, emit) async {
-      emit(InterOrgTransferLoading(splitFlag: event.split));
+      emit(InterOrgTransferLoading());
       try {
         await _dataService.interOrgTransfer(
-          userid: event.userid,
-          trackid: event.trackid,
-          itemid: event.itemid,
-          rqty: event.rqty,
-          batchid: event.batchid,
-        );
+            userid: event.userid,
+            itemlotno: event.itemlotno,
+            torackid: event.torackid,
+            tqty: event.tqty);
         emit(InterOrgTransferSuccess());
       } catch (error) {
         emit(InterOrgTransferError(error: error));

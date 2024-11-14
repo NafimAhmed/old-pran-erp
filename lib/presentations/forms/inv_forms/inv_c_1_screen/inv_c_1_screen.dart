@@ -1,8 +1,10 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
@@ -11,10 +13,13 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/bloc/lot_trn_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/inter_org_transfer_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inter_org_split_qty_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/widgets/inter_org_split_qty_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/widgets/lot_trn_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class InvC1Screen extends StatelessWidget {
   const InvC1Screen({super.key});
@@ -26,6 +31,9 @@ class InvC1Screen extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => InterOrgTransferBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => LotTrnBloc(getService()),
         ),
         BlocProvider(
           create: (context) => ItemQrCubit(),
@@ -49,42 +57,48 @@ class InterOrgTransferBody extends StatefulWidget {
 class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
   MobileScannerController? controller = MobileScannerController();
   UserBatchQrData? itemQrData;
-
   List<String> rackQrData = [];
+  late UserInfoModel loggedUser;
+  @override
+  void initState() {
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    super.initState();
+  }
+
+  final DataGridController _dataGridController = DataGridController();
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        // BlocListener<TransferBatchBloc, TransferBatchState>(
-        //   listener: (context, state) {
-        //     if (state is TransferBatchSuccess) {
-        //       context.read<ItemQrCubit>().resetItemData();
-        //       context.read<RackQrCubit>().resetRackData();
+        BlocListener<InterOrgTransferBloc, InterOrgTransferState>(
+          listener: (context, state) {
+            if (state is InterOrgTransferSuccess) {
+              context.read<ItemQrCubit>().resetItemData();
+              context.read<RackQrCubit>().resetRackData();
 
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //             content: const Text(
-        //               "Successfully Added...",
-        //             ),
-        //             backgroundColor: appTheme.primary),
-        //       );
-        //       context
-        //           .read<TransferedBatchDataBloc>()
-        //           .add(TransferBatchDataGet());
-        //     }
-        //     if (state is TransferBatchError) {
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //           content: Text(
-        //             state.error.toString(),
-        //           ),
-        //           backgroundColor: Colors.red,
-        //         ),
-        //       );
-        //     }
-        //   },
-        // ),
-
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: const Text(
+                      "Successfully Added...",
+                    ),
+                    backgroundColor: appTheme.primary),
+              );
+              // context
+              //     .read<TransferedBatchDataBloc>()
+              //     .add(TransferBatchDataGet());
+            }
+            if (state is InterOrgTransferError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.error.toString(),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+        ),
         BlocListener<ItemQrCubit, ItemQrState>(
           listener: (context, state) {
             if (state is ItemQrDataError) {
@@ -140,13 +154,26 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
               const SizedBox(
                 height: 10,
               ),
-              BlocBuilder<ItemQrCubit, ItemQrState>(
+              BlocConsumer<ItemQrCubit, ItemQrState>(
+                listener: (context, state) {
+                  if (state is ItemQrInitial) {
+                    context.read<LotTrnBloc>().add(
+                          RestLotTrnData(),
+                        );
+                  }
+                },
                 builder: (context, state) {
                   if (state is ItemQrInitial) {
                     itemQrData = null;
                   }
                   if (state is ItemQrDataLoaded) {
                     itemQrData = state.userBatchQrData;
+                    context.read<LotTrnBloc>().add(
+                          GetLotTrnData(
+                            userId: loggedUser.userId,
+                            racklocator: itemQrData?.lotno ?? "",
+                          ),
+                        );
                     return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -226,6 +253,23 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                   return Container();
                 },
               ),
+              BlocBuilder<LotTrnBloc, LotTrnState>(
+                builder: (context, state) {
+                  if (state is LotTrnSuccess) {
+                    var lotTrnDataSource = LotTrnDataSource(
+                      lotTrnData: state.lotTrnDataList,
+                    );
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: LotTrnTableWidget(
+                        dataGridController: _dataGridController,
+                        source: lotTrnDataSource,
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -287,52 +331,52 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                 height: 10,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     if (itemQrData != null && rackQrData.isNotEmpty) {
+                  //       var user = context.read<LoggedUserInfoCubit>().state;
+                  //       _openSplitDialog(
+                  //         context: context,
+                  //         batchId: itemQrData?.batchNo ?? "", //to be removed
+                  //         itemId: itemQrData?.itemname ?? "", // to be removed
+                  //         rackId: rackQrData[0],
+                  //         userid: user!.userId,
+                  //       );
+                  //     } else {
+                  //       ScaffoldMessenger.of(context).showSnackBar(
+                  //         const SnackBar(
+                  //           content: Text(
+                  //             "Please Scan Both Qr Code",
+                  //           ),
+                  //           backgroundColor: Colors.red,
+                  //         ),
+                  //       );
+                  //     }
+                  //   },
+                  //   child: Text(
+                  //     "Split Qty",
+                  //     style: textTheme.bodyMedium!.copyWith(
+                  //       color: appTheme.white,
+                  //     ),
+                  //   ),
+                  // ),
                   ElevatedButton(
                     onPressed: () {
                       if (itemQrData != null && rackQrData.isNotEmpty) {
-                        var user = context.read<LoggedUserInfoCubit>().state;
-                        _openSplitDialog(
-                          context: context,
-                          batchId: itemQrData?.batchNo ?? "", //to be removed
-                          itemId: itemQrData?.itemname ?? "", // to be removed
-                          rackId: rackQrData[0],
-                          userid: user!.userId,
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Please Scan Both Qr Code",
-                            ),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(
-                      "Split Qty",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.white,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (itemQrData != null && rackQrData.isNotEmpty) {
-                        var user = context.read<LoggedUserInfoCubit>().state;
-                        context.read<InterOrgTransferBloc>().add(
-                              InterOrgTransfer(
-                                  userid: user!.userId,
-                                  trackid: rackQrData[0],
-                                  rqty: "0",
-                                  batchid:
-                                      itemQrData?.batchNo ?? "", //to be removed
-                                  itemid: itemQrData?.itemname ??
-                                      "", // to be removed
-                                  split: "0"),
-                            );
+                        log(_dataGridController.selectedRow
+                                ?.getCells()
+                                .toString() ??
+                            "");
+                        // context.read<InterOrgTransferBloc>().add(
+                        //       InterOrgTransfer(
+                        //         userid: loggedUser.userId,
+                        //         itemlotno: itemQrData?.lotno ?? "",
+                        //         torackid: rackQrData[0],
+                        //         tqty: itemQrData?.goodQty.toString() ?? "",
+                        //       ),
+                        //     );
                       }
                     },
                     child: Text(
