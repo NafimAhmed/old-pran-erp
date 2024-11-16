@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
@@ -496,5 +497,20 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse(response,
         decoder: BatchCompDataResponse.fromJson);
+  }
+
+  @override
+  Future<RcvInvOrgTrnDataResponse> getRcvInvOrgTrnData({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/invtran/RcvIOTData?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response,
+        decoder: RcvInvOrgTrnDataResponse.fromJson);
   }
 }

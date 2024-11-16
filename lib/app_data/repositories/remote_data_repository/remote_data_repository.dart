@@ -18,6 +18,7 @@ import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 
+import '../../models/rcv_inv_org_trn_data_response.dart';
 import '../../models/user_menu_item_response.dart';
 
 abstract class RemoteDataRepository {
@@ -136,6 +137,9 @@ abstract class RemoteDataRepository {
     required String userId,
   });
   Future<BatchCompDataResponse> getBatchCompData({
+    required String userId,
+  });
+  Future<RcvInvOrgTrnDataResponse> getRcvInvOrgTrnData({
     required String userId,
   });
 }

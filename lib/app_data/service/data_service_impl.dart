@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
@@ -426,5 +427,17 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.batchCompData ?? [];
+  }
+
+  @override
+  Future<List<RcvIotData>> getRcvInvOrgTrnData({
+    required String userId,
+  }) async {
+    var response =
+        await remoteDataRepository.getRcvInvOrgTrnData(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.rcvIotData ?? [];
   }
 }
