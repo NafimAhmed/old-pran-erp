@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 
 class UserMachineResponse {
   final int? statusCode;
