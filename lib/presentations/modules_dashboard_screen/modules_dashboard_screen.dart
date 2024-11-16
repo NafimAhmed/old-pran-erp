@@ -41,9 +41,10 @@ class DashboardScreenBody extends StatefulWidget {
 
 class _DashboardScreenBodyState extends State<DashboardScreenBody> {
   Map<String, List<String>> groupedModule = {};
+  late UserInfoModel loggedUser;
   @override
   void initState() {
-    var loggedUser = context.read<LoggedUserInfoCubit>().state;
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<UserMenuBloc>().add(UserMenuGet(userId: loggedUser!.userId));
     context.read<UserOrgBloc>().add(UserOrgGet(userId: loggedUser.userId));
     super.initState();
@@ -51,165 +52,178 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomPaint(
-        painter: CustomShapePainter2(),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 10,
-          ),
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).viewPadding.top,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 80,
-                    width: 80,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: appTheme.white,
-                        width: 2,
-                      ),
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage(
-                          ImageConstant.malePlaceholder,
+    return RefreshIndicator(
+      onRefresh: () async {
+        context
+            .read<UserMenuBloc>()
+            .add(UserMenuGet(userId: loggedUser.userId));
+      },
+      child: Scaffold(
+        body: CustomPaint(
+          painter: CustomShapePainter2(),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 10,
+            ),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).viewPadding.top,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 80,
+                      width: 80,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.white,
+                          width: 2,
                         ),
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage(
+                            ImageConstant.malePlaceholder,
+                          ),
+                        ),
+                        shape: BoxShape.circle,
                       ),
-                      shape: BoxShape.circle,
+                      // child: ClipRRect(
+                      //   borderRadius: BorderRadius.circular(80),
+                      //   child: Image.asset(
+                      //     fit: BoxFit.fill,
+                      //     ImageConstant.malePlaceholder,
+                      //   ),
+                      // ),
                     ),
-                    // child: ClipRRect(
-                    //   borderRadius: BorderRadius.circular(80),
-                    //   child: Image.asset(
-                    //     fit: BoxFit.fill,
-                    //     ImageConstant.malePlaceholder,
-                    //   ),
-                    // ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
-                      builder: (context, state) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  state != null ? state.userName ?? "" : "",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.white,
-                                  ),
-                                ),
-                                Text(
-                                  "ID: ${state != null ? state.userId ?? "" : ""}",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            BlocConsumer<LoginBloc, LoginState>(
-                              listener: (context, state) {
-                                if (state is LoginInitial) {
-                                  context.pushReplacementNamed(
-                                      LoginScreen.routeName);
-                                }
-                              },
-                              builder: (context, state) {
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom().copyWith(
-                                    padding: const WidgetStatePropertyAll<
-                                        EdgeInsetsGeometry>(
-                                      EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 10,
-                                      ),
-                                    ),
-                                    minimumSize: WidgetStateProperty.all<Size>(
-                                      const Size(80, 30),
-                                    ),
-                                    backgroundColor:
-                                        const WidgetStatePropertyAll(
-                                      Color.fromARGB(255, 151, 21, 11),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    context.read<LoginBloc>().add(Logout());
-                                  },
-                                  child: Text(
-                                    state is LoginLoading
-                                        ? "Logging Out.."
-                                        : "Logout",
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
+                        builder: (context, state) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    state != null ? state.userName : "",
                                     style: textTheme.bodyMedium!.copyWith(
                                       color: appTheme.white,
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: BlocBuilder<UserMenuBloc, UserMenuState>(
-                  builder: (context, state) {
-                    if (state is UserMenuSuccess) {
-                      return GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 15,
-                          mainAxisSpacing: 15,
-                          mainAxisExtent: 130,
-                        ),
-                        itemCount: state.menuItems.length,
-                        itemBuilder: (context, index) {
-                          return ModuleWidget(
-                            icon: ImageConstant.process,
-                            title:
-                                state.menuItems.elementAt(index).moduleName ??
-                                    "",
-                            onTap: () {
-                              if (state.menuItems
-                                  .elementAt(index)
-                                  .moduleName!
-                                  .isNotEmpty) {
-                                context.pushNamed(
-                                  ModuleScreen.routeName,
-                                  extra: state.menuItems
-                                      .elementAt(index)
-                                      .moduleName,
-                                );
-                              }
-                            },
+                                  Text(
+                                    "ID: ${state != null ? state.userId : ""}",
+                                    style: textTheme.bodyMedium!.copyWith(
+                                      color: appTheme.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              BlocConsumer<LoginBloc, LoginState>(
+                                listener: (context, state) {
+                                  if (state is LoginInitial) {
+                                    context.pushReplacementNamed(
+                                        LoginScreen.routeName);
+                                  }
+                                },
+                                builder: (context, state) {
+                                  return ElevatedButton(
+                                    style: ElevatedButton.styleFrom().copyWith(
+                                      padding: const WidgetStatePropertyAll<
+                                          EdgeInsetsGeometry>(
+                                        EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 10,
+                                        ),
+                                      ),
+                                      minimumSize:
+                                          WidgetStateProperty.all<Size>(
+                                        const Size(80, 30),
+                                      ),
+                                      backgroundColor:
+                                          const WidgetStatePropertyAll(
+                                        Color.fromARGB(255, 151, 21, 11),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      context.read<LoginBloc>().add(Logout());
+                                    },
+                                    child: Text(
+                                      state is LoginLoading
+                                          ? "Logging Out.."
+                                          : "Logout",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.white,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           );
                         },
-                      );
-                    }
-                    return Container();
-                  },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 15,
+                ),
+                Expanded(
+                  child: BlocBuilder<UserMenuBloc, UserMenuState>(
+                    builder: (context, state) {
+                      if (state is UserMenuLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is UserMenuSuccess) {
+                        return GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 15,
+                            mainAxisExtent: 130,
+                          ),
+                          itemCount: state.menuItems.length,
+                          itemBuilder: (context, index) {
+                            return ModuleWidget(
+                              icon: ImageConstant.process,
+                              title:
+                                  state.menuItems.elementAt(index).moduleName ??
+                                      "",
+                              onTap: () {
+                                if (state.menuItems
+                                    .elementAt(index)
+                                    .moduleName!
+                                    .isNotEmpty) {
+                                  context.pushNamed(
+                                    ModuleScreen.routeName,
+                                    extra: state.menuItems
+                                        .elementAt(index)
+                                        .moduleName,
+                                  );
+                                }
+                              },
+                            );
+                          },
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
