@@ -1,5 +1,6 @@
 import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
@@ -139,5 +140,8 @@ abstract class DataService {
   Future<List<LotTrnData>> getLotTrnData({
     required String userId,
     required String racklocator,
+  });
+  Future<List<BatchCloseData>> getBatchCloseData({
+    required String userId,
   });
 }

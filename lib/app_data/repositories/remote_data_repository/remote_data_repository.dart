@@ -1,5 +1,6 @@
 import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
@@ -129,5 +130,8 @@ abstract class RemoteDataRepository {
   Future<LotTrnResponse> getLotTrnData({
     required String userId,
     required String racklocator,
+  });
+  Future<BatchCloseDataResponse> getBatchCloseData({
+    required String userId,
   });
 }

@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/entities/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
@@ -464,5 +465,20 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: LotTrnResponse.fromJson);
+  }
+
+  @override
+  Future<BatchCloseDataResponse> getBatchCloseData({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchCloseData?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response,
+        decoder: BatchCloseDataResponse.fromJson);
   }
 }
