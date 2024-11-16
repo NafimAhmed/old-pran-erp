@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart'
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/user_menu_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/bloc/qr_user_bloc.dart';
@@ -99,12 +100,17 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
             userMobTextController.clear();
             userDeptTextController.clear();
             userDesgTextController.clear();
-
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "Permission Given..!",
               ),
             );
+
+            context.read<UserMenuBloc>().add(
+                  UserMenuGet(
+                    userId: loggedUser.userId,
+                  ),
+                );
           }
           if (state is QrUserMenuPermissionError) {
             ScaffoldMessenger.of(context).showSnackBar(
