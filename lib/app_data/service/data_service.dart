@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
@@ -150,6 +151,9 @@ abstract class DataService {
     required String userId,
   });
   Future<List<RcvIotData>> getRcvInvOrgTrnData({
+    required String userId,
+  });
+  Future<List<IotTrnData>> getIotTrnData({
     required String userId,
   });
 }

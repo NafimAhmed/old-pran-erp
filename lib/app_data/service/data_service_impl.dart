@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
@@ -439,5 +440,16 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.rcvIotData ?? [];
+  }
+
+  @override
+  Future<List<IotTrnData>> getIotTrnData({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getIotTrnData(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.iotTrnData ?? [];
   }
 }

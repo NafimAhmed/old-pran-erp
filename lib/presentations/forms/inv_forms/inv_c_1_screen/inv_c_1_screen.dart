@@ -13,7 +13,8 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/bloc/lot_trn_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/iot_trn_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/lot_trn_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/inter_org_transfer_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/widgets/inter_org_split_qty_dialog_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/widgets/lot_trn_table_widget.dart';
@@ -41,6 +42,9 @@ class InvC1Screen extends StatelessWidget {
         BlocProvider(
           create: (context) => RackQrCubit(),
         ),
+        BlocProvider(
+          create: (context) => IotTrnDataBloc(getService()),
+        ),
       ],
       child: const InterOrgTransferBody(),
     );
@@ -59,9 +63,15 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
   UserBatchQrData? itemQrData;
   List<String> rackQrData = [];
   late UserInfoModel loggedUser;
+
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    context.read<IotTrnDataBloc>().add(
+          GetIotTrnData(
+            userId: loggedUser.userId,
+          ),
+        );
     super.initState();
   }
 
@@ -391,6 +401,100 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Expanded(
+                child: BlocBuilder<IotTrnDataBloc, IotTrnDataState>(
+                  builder: (context, state) {
+                    if (state is IotTrnDataLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is IotTrnDataSuccess) {
+                      return ListView.separated(
+                        itemBuilder: (context, index) {
+                          var data = state.iotTrnDataList[index];
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: appTheme.primary,
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      "Transfer",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  data.joborder ?? "",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  data.itemName ?? "",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  data.racklocator ?? "",
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  data.trnqty.toString(),
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 10,
+                        ),
+                        itemCount: state.iotTrnDataList.length,
+                      );
+                    }
+                    return Container();
+                  },
+                ),
               )
             ],
           ),
