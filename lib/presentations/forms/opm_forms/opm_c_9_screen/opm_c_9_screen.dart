@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
-class OpmC10Screen extends StatelessWidget {
-  const OpmC10Screen({super.key});
-  static const String routeName = "OPM-C-10-SCREEN";
-  static const String routePath = "/opm_c_10_screen";
+class OpmC9Screen extends StatelessWidget {
+  const OpmC9Screen({super.key});
+  static const String routeName = "OPM-C-9-SCREEN";
+  static const String routePath = "/opm_c_9_screen";
   @override
   Widget build(BuildContext context) {
-    return const OpmC10ScreenBody();
+    return const OpmC9ScreenBody();
   }
 }
 
-class OpmC10ScreenBody extends StatelessWidget {
-  const OpmC10ScreenBody({super.key});
+class OpmC9ScreenBody extends StatelessWidget {
+  const OpmC9ScreenBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Batch Close"),
+      appBar: const CommonAppBar(appBartitle: "Batch Completion"),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
