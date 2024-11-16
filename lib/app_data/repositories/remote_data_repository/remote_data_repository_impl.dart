@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -480,5 +481,20 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse(response,
         decoder: BatchCloseDataResponse.fromJson);
+  }
+
+  @override
+  Future<BatchCompDataResponse> getBatchCompData({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchCompleteData?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+
+    return await decodeResponse(response,
+        decoder: BatchCompDataResponse.fromJson);
   }
 }

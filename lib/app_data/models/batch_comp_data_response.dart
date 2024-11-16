@@ -1,69 +1,67 @@
 import 'dart:convert';
 
-class BatchCloseDataResponse {
+class BatchCompDataResponse {
   final int? statusCode;
   final String? message;
-  final List<BatchCloseData>? batchCloseData;
+  final List<BatchCompData>? batchCompData;
 
-  BatchCloseDataResponse({
+  BatchCompDataResponse({
     this.statusCode,
     this.message,
-    this.batchCloseData,
+    this.batchCompData,
   });
 
-  BatchCloseDataResponse copyWith({
+  BatchCompDataResponse copyWith({
     int? statusCode,
     String? message,
-    List<BatchCloseData>? iotTrnData,
+    List<BatchCompData>? batchCompData,
   }) =>
-      BatchCloseDataResponse(
+      BatchCompDataResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
-        batchCloseData: iotTrnData ?? this.batchCloseData,
+        batchCompData: batchCompData ?? this.batchCompData,
       );
 
-  factory BatchCloseDataResponse.fromJson(String str) =>
-      BatchCloseDataResponse.fromMap(json.decode(str));
+  factory BatchCompDataResponse.fromJson(String str) =>
+      BatchCompDataResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory BatchCloseDataResponse.fromMap(Map<String, dynamic> json) =>
-      BatchCloseDataResponse(
+  factory BatchCompDataResponse.fromMap(Map<String, dynamic> json) =>
+      BatchCompDataResponse(
         statusCode: json["status_code"],
         message: json["message"],
-        batchCloseData: json["Batch_Close_data"] == null
+        batchCompData: json["Batch_Comp_data"] == null
             ? []
-            : List<BatchCloseData>.from(json["Batch_Close_data"]!
-                .map((x) => BatchCloseData.fromMap(x))),
+            : List<BatchCompData>.from(
+                json["Batch_Comp_data"]!.map((x) => BatchCompData.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
         "status_code": statusCode,
         "message": message,
-        "Batch_Close_data": batchCloseData == null
+        "Batch_Comp_data": batchCompData == null
             ? []
-            : List<dynamic>.from(batchCloseData!.map((x) => x.toMap())),
+            : List<dynamic>.from(batchCompData!.map((x) => x.toMap())),
       };
 }
 
-class BatchCloseData {
+class BatchCompData {
   final String? batchNo;
   final int? batchId;
-  final int? trnid;
   final String? itemCode;
   final String? itemName;
   final String? lotno;
-  final num? trnqty;
+  final int? trnqty;
   final String? subinventory;
   final int? rackLocatorId;
   final String? joborder;
   final String? racklocator;
-  final num? actualQty;
+  final int? actualQty;
 
-  BatchCloseData({
+  BatchCompData({
     this.batchNo,
     this.batchId,
-    this.trnid,
     this.itemCode,
     this.itemName,
     this.lotno,
@@ -75,10 +73,9 @@ class BatchCloseData {
     this.actualQty,
   });
 
-  BatchCloseData copyWith({
+  BatchCompData copyWith({
     String? batchNo,
     int? batchId,
-    int? trnid,
     String? itemCode,
     String? itemName,
     String? lotno,
@@ -89,10 +86,9 @@ class BatchCloseData {
     String? racklocator,
     int? actualQty,
   }) =>
-      BatchCloseData(
+      BatchCompData(
         batchNo: batchNo ?? this.batchNo,
         batchId: batchId ?? this.batchId,
-        trnid: trnid ?? this.trnid,
         itemCode: itemCode ?? this.itemCode,
         itemName: itemName ?? this.itemName,
         lotno: lotno ?? this.lotno,
@@ -104,15 +100,14 @@ class BatchCloseData {
         actualQty: actualQty ?? this.actualQty,
       );
 
-  factory BatchCloseData.fromJson(String str) =>
-      BatchCloseData.fromMap(json.decode(str));
+  factory BatchCompData.fromJson(String str) =>
+      BatchCompData.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory BatchCloseData.fromMap(Map<String, dynamic> json) => BatchCloseData(
+  factory BatchCompData.fromMap(Map<String, dynamic> json) => BatchCompData(
         batchNo: json["BATCH_NO"],
         batchId: json["BATCH_ID"],
-        trnid: json["TRNID"],
         itemCode: json["ITEM_CODE"],
         itemName: json["ITEM_NAME"],
         lotno: json["LOTNO"],
@@ -127,7 +122,6 @@ class BatchCloseData {
   Map<String, dynamic> toMap() => {
         "BATCH_NO": batchNo,
         "BATCH_ID": batchId,
-        "TRNID": trnid,
         "ITEM_CODE": itemCode,
         "ITEM_NAME": itemName,
         "LOTNO": lotno,
