@@ -72,6 +72,7 @@ abstract class DataService {
     required String itemlotno,
     required String torackid,
     required String tqty,
+    required String trnid,
   });
 
   Future<List<BatchQrData>> userQrSave({

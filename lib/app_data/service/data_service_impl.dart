@@ -192,12 +192,14 @@ class DataServiceImpl implements DataService {
     required String itemlotno,
     required String torackid,
     required String tqty,
+    required String trnid,
   }) async {
     await remoteDataRepository.interOrgTransfer(
       userid: userid,
       itemlotno: itemlotno,
       torackid: torackid,
       tqty: tqty,
+      trnid: trnid,
     );
   }
 

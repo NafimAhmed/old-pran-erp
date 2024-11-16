@@ -67,6 +67,7 @@ abstract class RemoteDataRepository {
     required String itemlotno,
     required String torackid,
     required String tqty,
+    required String trnid,
   });
   Future<BatchQrDataResponse> userQrSave({
     required String userid,

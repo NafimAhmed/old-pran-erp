@@ -260,11 +260,12 @@ class RemoteDataRepositoryImpl
     required String itemlotno,
     required String torackid,
     required String tqty,
+    required String trnid,
   }) async {
     var request = http.Request(
       'POST',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/invtran/IOTapi?userid=$userid&itemlotno=$itemlotno&torackid=$torackid&tqty=$tqty'),
+          '${appConfig.baseUrl}/ords/rpro/invtran/IOTapi?userid=$userid&itemlotno=$itemlotno&torackid=$torackid&tqty=$tqty&trnid=$trnid'),
     );
 
     http.StreamedResponse response = await request.send();

@@ -254,6 +254,9 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                 },
               ),
               BlocBuilder<LotTrnBloc, LotTrnState>(
+                buildWhen: (previous, current) => current is LotTrnSuccess
+                    ? current.lotTrnDataList.isNotEmpty
+                    : false,
                 builder: (context, state) {
                   if (state is LotTrnSuccess) {
                     var lotTrnDataSource = LotTrnDataSource(
@@ -364,19 +367,20 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                   // ),
                   ElevatedButton(
                     onPressed: () {
-                      if (itemQrData != null && rackQrData.isNotEmpty) {
-                        log(_dataGridController.selectedRow
-                                ?.getCells()
-                                .toString() ??
-                            "");
-                        // context.read<InterOrgTransferBloc>().add(
-                        //       InterOrgTransfer(
-                        //         userid: loggedUser.userId,
-                        //         itemlotno: itemQrData?.lotno ?? "",
-                        //         torackid: rackQrData[0],
-                        //         tqty: itemQrData?.goodQty.toString() ?? "",
-                        //       ),
-                        //     );
+                      if (itemQrData != null &&
+                          rackQrData.isNotEmpty &&
+                          _dataGridController.selectedRow != null) {
+                        var cells = _dataGridController.selectedRow!.getCells();
+
+                        context.read<InterOrgTransferBloc>().add(
+                              InterOrgTransfer(
+                                userid: loggedUser.userId,
+                                trnid: cells[1].value.toString(),
+                                itemlotno: cells[4].value.toString(),
+                                torackid: rackQrData[0],
+                                tqty: cells[5].value.toString(),
+                              ),
+                            );
                       }
                     },
                     child: Text(
