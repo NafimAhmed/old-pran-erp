@@ -111,6 +111,14 @@ class AppNavigation {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
+        path: OpmC10Screen.routePath,
+        name: OpmC10Screen.routeName,
+        builder: (context, state) {
+          return const OpmC10Screen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: OmC1Screen.routePath,
         name: OmC1Screen.routeName,
         builder: (context, state) {
