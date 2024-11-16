@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

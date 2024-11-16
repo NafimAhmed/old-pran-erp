@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';

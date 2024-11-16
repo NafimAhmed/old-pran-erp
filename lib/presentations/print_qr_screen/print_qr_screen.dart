@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pdfrx/pdfrx.dart' as pdfview;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_2_screen/inv_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_1_screen/om_c_1_screen.dart';

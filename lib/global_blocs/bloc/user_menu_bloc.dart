@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_menu_item_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_menu_item_response.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 sealed class UserMenuEvent {}

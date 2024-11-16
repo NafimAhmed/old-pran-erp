@@ -1,23 +1,23 @@
-import 'package:pran_rfl_erp/app_data/entities/apps_user_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/authentication_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/batch_close_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/batch_qr_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/employee_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/generic_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/lot_trn_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/qr_user_menu_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/qr_user_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/sys_menu_parent_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/system_module_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_machine_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/transfer_batch_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_basic_data_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_org_response.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
+import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
+import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
+import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
+import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 
-import '../../entities/user_menu_item_response.dart';
+import '../../models/user_menu_item_response.dart';
 
 abstract class RemoteDataRepository {
   Future<EmployeResponse> getEmplist();

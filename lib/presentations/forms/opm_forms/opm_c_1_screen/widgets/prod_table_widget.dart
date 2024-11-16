@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/entities/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 

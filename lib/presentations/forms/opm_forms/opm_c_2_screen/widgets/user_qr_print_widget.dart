@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/entities/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
 class UserQrPrintWidget extends StatelessWidget {
