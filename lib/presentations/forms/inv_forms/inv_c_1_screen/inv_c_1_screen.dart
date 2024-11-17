@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -93,9 +91,11 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                     ),
                     backgroundColor: appTheme.primary),
               );
-              // context
-              //     .read<TransferedBatchDataBloc>()
-              //     .add(TransferBatchDataGet());
+              context.read<IotTrnDataBloc>().add(
+                    GetIotTrnData(
+                      userId: loggedUser.userId,
+                    ),
+                  );
             }
             if (state is InterOrgTransferError) {
               ScaffoldMessenger.of(context).showSnackBar(
