@@ -14,12 +14,12 @@ class BatchCloseDataResponse {
   BatchCloseDataResponse copyWith({
     int? statusCode,
     String? message,
-    List<BatchCloseData>? iotTrnData,
+    List<BatchCloseData>? batchCloseData,
   }) =>
       BatchCloseDataResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
-        batchCloseData: iotTrnData ?? this.batchCloseData,
+        batchCloseData: batchCloseData ?? batchCloseData,
       );
 
   factory BatchCloseDataResponse.fromJson(String str) =>
