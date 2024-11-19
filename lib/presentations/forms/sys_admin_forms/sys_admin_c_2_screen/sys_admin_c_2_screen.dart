@@ -7,7 +7,7 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -65,7 +65,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   FocusNode passFocusNode = FocusNode();
   late UserInfoModel loggedUser;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  TextEditingController dropDownTextController = TextEditingController();
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -222,40 +222,102 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         Expanded(
                           child: BlocBuilder<AppsUserBloc, AppsUserState>(
                             builder: (context, state) {
-                              return CommonDropdownButton<AppsUserData>(
-                                hintText: "Select Apps User",
-                                items: state is AppsUserSuccess
-                                    ? state.appsDataList
-                                    : [],
-                                value: context
-                                    .watch<
-                                        VariableStateHandlerCubit<
-                                            AppsUserData>>()
-                                    .state,
-                                onChanged: (value) {
+                              return DropdownMenu<AppsUserData>(
+                                menuHeight: 250,
+                                expandedInsets: EdgeInsets.zero,
+                                enableSearch: true,
+                                requestFocusOnTap: true,
+                                enabled: state is AppsUserSuccess
+                                    ? state.appsDataList.isNotEmpty
+                                        ? true
+                                        : false
+                                    : false,
+                                // enableFilter: true,
+                                controller: dropDownTextController,
+                                hintText: "Select User",
+                                inputDecorationTheme: InputDecorationTheme(
+                                  hintStyle: textTheme.bodySmall!.copyWith(
+                                    color: appTheme.primary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                textStyle: textTheme.bodySmall!.copyWith(
+                                  color: appTheme.primary,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                onSelected: (value) {
                                   context
                                       .read<
                                           VariableStateHandlerCubit<
                                               AppsUserData>>()
                                       .update(value!);
-                                  appUserTextController.text =
-                                      value.description ?? "";
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                 },
-                                validator: (value) {
-                                  if (value == null) {
-                                    return "Please Select Apps User";
-                                  }
-                                  return null;
-                                },
+
+                                dropdownMenuEntries: state is AppsUserSuccess
+                                    ? state.appsDataList.map(
+                                        (e) {
+                                          return DropdownMenuEntry(
+                                            value: e,
+                                            label: e.toString(),
+                                            labelWidget: Text(
+                                              e.toString(),
+                                              style:
+                                                  textTheme.bodySmall!.copyWith(
+                                                color: appTheme.primary,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).toList()
+                                    : [],
                               );
                             },
                           ),
                         ),
+
+                        // Expanded(
+                        //   child: BlocBuilder<AppsUserBloc, AppsUserState>(
+                        //     builder: (context, state) {
+                        //       return CommonDropdownButton<AppsUserData>(
+                        //         hintText: "Select Apps User",
+                        //         items: state is AppsUserSuccess
+                        //             ? state.appsDataList
+                        //             : [],
+                        //         value: context
+                        //             .watch<
+                        //                 VariableStateHandlerCubit<
+                        //                     AppsUserData>>()
+                        //             .state,
+                        //         onChanged: (value) {
+                        //           context
+                        //               .read<
+                        //                   VariableStateHandlerCubit<
+                        //                       AppsUserData>>()
+                        //               .update(value!);
+                        //           appUserTextController.text =
+                        //               value.description ?? "";
+                        //         },
+                        //         validator: (value) {
+                        //           if (value == null) {
+                        //             return "Please Select Apps User";
+                        //           }
+                        //           return null;
+                        //         },
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
                         const SizedBox(
                           width: 10,
                         ),
                         Expanded(
-                          flex: 2,
+                          // flex: 2,
                           child: CommonTextFieldWidget(
                             readOnly: true,
                             controller: appUserTextController,
@@ -278,7 +340,11 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                 builder: (context, state) {
                   return ElevatedButton(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
+                      var selectedAppsUser = context
+                          .read<VariableStateHandlerCubit<AppsUserData>>()
+                          .state;
+                      if (formKey.currentState!.validate() &&
+                          selectedAppsUser != null) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         var appUser = context
                             .read<VariableStateHandlerCubit<AppsUserData>>()
