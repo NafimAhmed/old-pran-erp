@@ -15,17 +15,35 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
   final Function(T? value)? onSelected;
   final List<T> dropdownMenuEntries;
   final String? hintText;
+
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<T>(
       menuHeight: 250,
       expandedInsets: EdgeInsets.zero,
-      enableSearch: true,
+      enableSearch: false,
       requestFocusOnTap: true,
       enabled: enabled,
-      // enableFilter: true,
+      enableFilter: true,
       controller: controller,
       hintText: hintText,
+      filterCallback: (entries, filter) {
+        try {
+          final String trimmedFilter = filter.trim().toLowerCase();
+          if (trimmedFilter.isEmpty) {
+            return entries;
+          }
+          List<DropdownMenuEntry<T>> fentries = entries
+              .where(
+                (DropdownMenuEntry<T> entry) =>
+                    entry.label.toLowerCase().contains(trimmedFilter),
+              )
+              .toList();
+          return fentries.isEmpty ? [] : fentries;
+        } catch (e) {
+          return entries;
+        }
+      },
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: textTheme.bodySmall!.copyWith(
           color: appTheme.primary,
@@ -33,14 +51,12 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-
       textStyle: textTheme.bodySmall!.copyWith(
         color: appTheme.primary,
         fontSize: 15,
         fontWeight: FontWeight.bold,
       ),
       onSelected: onSelected,
-
       dropdownMenuEntries: dropdownMenuEntries.map(
         (e) {
           return DropdownMenuEntry(
