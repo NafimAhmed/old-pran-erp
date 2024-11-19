@@ -283,7 +283,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 : false,
                             // enableFilter: true,
                             controller: dropDownTextController,
-                            hintText: "Select Machine",
+                            hintText: "Select Batch",
                             inputDecorationTheme: InputDecorationTheme(
                               hintStyle: textTheme.bodySmall!.copyWith(
                                 color: appTheme.primary,

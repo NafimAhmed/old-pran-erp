@@ -10,7 +10,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_10_screen/bloc/
 class OpmC10Screen extends StatelessWidget {
   const OpmC10Screen({super.key});
   static const String routeName = "OPM-C-10-SCREEN";
-  static const String routePath = "/opm_c_10_screen";
+  static const String routePath = "/OPM-C-10-SCREEN";
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
