@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
@@ -222,11 +223,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         Expanded(
                           child: BlocBuilder<AppsUserBloc, AppsUserState>(
                             builder: (context, state) {
-                              return DropdownMenu<AppsUserData>(
-                                menuHeight: 250,
-                                expandedInsets: EdgeInsets.zero,
-                                enableSearch: true,
-                                requestFocusOnTap: true,
+                              return CommonDropDownMenuWidget<AppsUserData>(
                                 enabled: state is AppsUserSuccess
                                     ? state.appsDataList.isNotEmpty
                                         ? true
@@ -235,19 +232,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                 // enableFilter: true,
                                 controller: dropDownTextController,
                                 hintText: "Select User",
-                                inputDecorationTheme: InputDecorationTheme(
-                                  hintStyle: textTheme.bodySmall!.copyWith(
-                                    color: appTheme.primary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
 
-                                textStyle: textTheme.bodySmall!.copyWith(
-                                  color: appTheme.primary,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
                                 onSelected: (value) {
                                   context
                                       .read<
@@ -258,23 +243,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                 },
 
                                 dropdownMenuEntries: state is AppsUserSuccess
-                                    ? state.appsDataList.map(
-                                        (e) {
-                                          return DropdownMenuEntry(
-                                            value: e,
-                                            label: e.toString(),
-                                            labelWidget: Text(
-                                              e.toString(),
-                                              style:
-                                                  textTheme.bodySmall!.copyWith(
-                                                color: appTheme.primary,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ).toList()
+                                    ? state.appsDataList
                                     : [],
                               );
                             },

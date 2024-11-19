@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
@@ -61,12 +62,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
   TextEditingController dropDownTextController = TextEditingController();
+
   String _locatorId = "";
   String _itemId = "";
   UserInfoModel? loggedUser;
   UserMachine? selectedMachine;
   List<UserMachine> userMachineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
+
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -87,7 +90,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     quantityFocusNode.dispose();
     goodQtyFocusNode.dispose();
     badQtyFocusNode.dispose();
-
+    dropDownTextController.dispose();
     super.dispose();
   }
 
@@ -278,20 +281,16 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 selectedMachine = state.selectedmachine;
                                 userMachineList = state.userMachineList;
                               }
-                              return CommonDropdownButton<UserMachine>(
+                              return CommonDropDownMenuWidget(
+                                enabled: userMachineList.isNotEmpty,
                                 hintText: "Select Machine",
-                                items: userMachineList,
-                                value: selectedMachine,
-                                onChanged: (value) {
+                                controller: dropDownTextController,
+                                dropdownMenuEntries: userMachineList,
+                                onSelected: (value) {
                                   context
                                       .read<UserMachineBloc>()
                                       .add(MachineSelected(selectedLov: value));
-                                },
-                                validator: (value) {
-                                  if (value == null) {
-                                    return "Please Select Machine";
-                                  }
-                                  return null;
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                 },
                               );
                             },
@@ -355,7 +354,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
-                                          "Please Select MAchine",
+                                          "Please Select Machine",
                                         ),
                                         backgroundColor: Colors.red,
                                       ),

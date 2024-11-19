@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
@@ -68,8 +69,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   FocusNode goodQtyFocusNode = FocusNode();
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
-  TextEditingController dropDownTextController = TextEditingController();
-
+  TextEditingController batchDropDownTextController = TextEditingController();
+  TextEditingController machineDropDownTextController = TextEditingController();
   List<UserMachine> machineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   late UserInfoModel loggedUser;
@@ -88,7 +89,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     quantityFocusNode.dispose();
     goodQtyFocusNode.dispose();
     badQtyFocusNode.dispose();
-
+    batchDropDownTextController.dispose();
+    machineDropDownTextController.dispose();
     super.dispose();
   }
 
@@ -213,28 +215,27 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             child: BlocBuilder<UserBasicDataBloc,
                                 UserBasicDataState>(
                               builder: (context, state) {
-                                return CommonDropdownButton<UserMachine>(
-                                  hintText: "Select Machine",
-                                  items: state is UserBasicDataSuccess
+                                return CommonDropDownMenuWidget<UserMachine>(
+                                  enabled: state is UserBasicDataSuccess
                                       ? state.userBasicData.userMachineData
+                                              ?.isNotEmpty ??
+                                          false
+                                      : false,
+                                  hintText: "Select Machine",
+                                  controller: machineDropDownTextController,
+                                  dropdownMenuEntries: state
+                                          is UserBasicDataSuccess
+                                      ? state.userBasicData.userMachineData ??
+                                          []
                                       : [],
-                                  value: context
-                                      .watch<
-                                          VariableStateHandlerCubit<
-                                              UserMachine>>()
-                                      .state,
-                                  onChanged: (value) {
+                                  onSelected: (value) {
                                     context
                                         .read<
                                             VariableStateHandlerCubit<
                                                 UserMachine>>()
                                         .update(value!);
-                                  },
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "Please Select Mahine";
-                                    }
-                                    return null;
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   },
                                 );
                               },
@@ -245,82 +246,24 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      // BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
-                      //   builder: (context, state) {
-                      //     return CommonDropdownButton<UserBatch>(
-                      //       hintText: "Select Batch",
-                      //       items: state is UserBasicDataSuccess
-                      //           ? state.userBasicData.userBatchData
-                      //           : [],
-                      //       value: context
-                      //           .watch<VariableStateHandlerCubit<UserBatch>>()
-                      //           .state,
-                      //       onChanged: (value) {
-                      //         context
-                      //             .read<VariableStateHandlerCubit<UserBatch>>()
-                      //             .update(value!);
-                      //       },
-                      //       validator: (value) {
-                      //         if (value == null) {
-                      //           return "Please Select Batch";
-                      //         }
-                      //         return null;
-                      //       },
-                      //     );
-                      //   },
-                      // ),
                       BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
                         builder: (context, state) {
-                          return DropdownMenu<UserBatch>(
-                            menuHeight: 250,
-                            expandedInsets: EdgeInsets.zero,
-                            enableSearch: true,
-                            requestFocusOnTap: true,
+                          return CommonDropDownMenuWidget<UserBatch>(
                             enabled: state is UserBasicDataSuccess
                                 ? state.userBasicData.userBatchData
                                         ?.isNotEmpty ??
                                     false
                                 : false,
-                            // enableFilter: true,
-                            controller: dropDownTextController,
+                            controller: batchDropDownTextController,
                             hintText: "Select Batch",
-                            inputDecorationTheme: InputDecorationTheme(
-                              hintStyle: textTheme.bodySmall!.copyWith(
-                                color: appTheme.primary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-
-                            textStyle: textTheme.bodySmall!.copyWith(
-                              color: appTheme.primary,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
                             onSelected: (value) {
                               context
                                   .read<VariableStateHandlerCubit<UserBatch>>()
                                   .update(value!);
                               FocusManager.instance.primaryFocus?.unfocus();
                             },
-
                             dropdownMenuEntries: state is UserBasicDataSuccess
-                                ? state.userBasicData.userBatchData!.map(
-                                    (e) {
-                                      return DropdownMenuEntry(
-                                        value: e,
-                                        label: e.toString(),
-                                        labelWidget: Text(
-                                          e.toString(),
-                                          style: textTheme.bodySmall!.copyWith(
-                                            color: appTheme.primary,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ).toList()
+                                ? state.userBasicData.userBatchData ?? []
                                 : [],
                           );
                         },
@@ -506,6 +449,19 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     CustomSnackBar.errorSnackber(
                                       message: "Please Select Batch",
+                                    ),
+                                  );
+                                  return;
+                                }
+                                if (context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserMachine>>()
+                                        .state ==
+                                    null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CustomSnackBar.errorSnackber(
+                                      message: "Please Select Machine",
                                     ),
                                   );
                                   return;
