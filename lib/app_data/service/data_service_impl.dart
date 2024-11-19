@@ -1,3 +1,4 @@
+import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
@@ -451,5 +452,14 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.iotTrnData ?? [];
+  }
+
+  @override
+  Future<List<JobOrderData>> getJobOrderSumHistory() async {
+    var response = await remoteDataRepository.getJobOrderSumHistory();
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.jobOrderData ?? [];
   }
 }

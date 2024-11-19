@@ -1,3 +1,4 @@
+import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
@@ -156,4 +157,5 @@ abstract class DataService {
   Future<List<IotTrnData>> getIotTrnData({
     required String userId,
   });
+  Future<List<JobOrderData>> getJobOrderSumHistory();
 }
