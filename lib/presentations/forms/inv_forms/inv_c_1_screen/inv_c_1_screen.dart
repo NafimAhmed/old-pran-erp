@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -8,17 +9,16 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/iot_trn_data_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/lot_trn_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/inter_org_transfer_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/widgets/inter_org_split_qty_dialog_widget.dart';
-import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/widgets/lot_trn_table_widget.dart';
+
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class InvC1Screen extends StatelessWidget {
   const InvC1Screen({super.key});
@@ -42,6 +42,9 @@ class InvC1Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => IotTrnDataBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => VariableStateHandlerCubit<LotTrnData>(),
         ),
       ],
       child: const InterOrgTransferBody(),
@@ -73,7 +76,6 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
     super.initState();
   }
 
-  final DataGridController _dataGridController = DataGridController();
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -146,9 +148,6 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
           ),
           child: Column(
             children: [
-              const SizedBox(
-                height: 10,
-              ),
               const SizedBox(
                 height: 10,
               ),
@@ -263,233 +262,59 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                   return Container();
                 },
               ),
-              BlocBuilder<LotTrnBloc, LotTrnState>(
-                buildWhen: (previous, current) => current is LotTrnSuccess
-                    ? current.lotTrnDataList.isNotEmpty
-                    : false,
-                builder: (context, state) {
-                  if (state is LotTrnSuccess) {
-                    var lotTrnDataSource = LotTrnDataSource(
-                      lotTrnData: state.lotTrnDataList,
-                    );
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      child: LotTrnTableWidget(
-                        dataGridController: _dataGridController,
-                        source: lotTrnDataSource,
-                      ),
-                    );
-                  }
-                  return Container();
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ReadQrWidget(
-                qrType: "Rack QR",
-                onPressed: () async {
-                  var data = await buildScanner(context, controller);
-                  if (context.mounted) {
-                    context.read<RackQrCubit>().setrackData(rackQrData: data);
-                  }
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              BlocBuilder<RackQrCubit, RackQrState>(
-                builder: (context, state) {
-                  if (state is RackQrInitial) {
-                    rackQrData.clear();
-                  }
-                  if (state is RackQrDataLoaded) {
-                    rackQrData = state.rackQRDatalist;
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(
-                          0.2,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Rack Id",
-                                style: textTheme.bodyMedium,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                rackQrData[0],
-                                style: textTheme.bodyMedium,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return Container();
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     if (itemQrData != null && rackQrData.isNotEmpty) {
-                  //       var user = context.read<LoggedUserInfoCubit>().state;
-                  //       _openSplitDialog(
-                  //         context: context,
-                  //         batchId: itemQrData?.batchNo ?? "", //to be removed
-                  //         itemId: itemQrData?.itemname ?? "", // to be removed
-                  //         rackId: rackQrData[0],
-                  //         userid: user!.userId,
-                  //       );
-                  //     } else {
-                  //       ScaffoldMessenger.of(context).showSnackBar(
-                  //         const SnackBar(
-                  //           content: Text(
-                  //             "Please Scan Both Qr Code",
-                  //           ),
-                  //           backgroundColor: Colors.red,
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  //   child: Text(
-                  //     "Split Qty",
-                  //     style: textTheme.bodyMedium!.copyWith(
-                  //       color: appTheme.white,
-                  //     ),
-                  //   ),
-                  // ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (itemQrData != null &&
-                          rackQrData.isNotEmpty &&
-                          _dataGridController.selectedRow != null) {
-                        var cells = _dataGridController.selectedRow!.getCells();
-
-                        context.read<InterOrgTransferBloc>().add(
-                              InterOrgTransfer(
-                                userid: loggedUser.userId,
-                                trnid: cells[1].value.toString(),
-                                itemlotno: cells[4].value.toString(),
-                                torackid: rackQrData[0],
-                                tqty: cells[5].value.toString(),
-                              ),
-                            );
-                      }
-                    },
-                    child: Text(
-                      "Save",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(
                 height: 15,
               ),
               Expanded(
-                child: BlocBuilder<IotTrnDataBloc, IotTrnDataState>(
+                child: BlocBuilder<LotTrnBloc, LotTrnState>(
                   builder: (context, state) {
-                    if (state is IotTrnDataLoading) {
+                    if (state is LotTrnLoading) {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
-                    if (state is IotTrnDataSuccess) {
+                    if (state is LotTrnSuccess) {
                       return ListView.separated(
                         itemBuilder: (context, index) {
-                          var data = state.iotTrnDataList[index];
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: appTheme.primary,
-                                  width: 3,
-                                ),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Transfer",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  data.joborder ?? "",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.primary,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  data.itemName ?? "",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.primary,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  data.racklocator ?? "",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.primary,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  data.trnqty.toString(),
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          var data = state.lotTrnDataList[index];
+                          var selectedData = context
+                              .watch<VariableStateHandlerCubit<LotTrnData>>()
+                              .state;
+                          return BlocBuilder<RackQrCubit, RackQrState>(
+                            builder: (context, state) {
+                              if (state is RackQrDataLoaded) {
+                                rackQrData = state.rackQRDatalist;
+                              }
+                              return IotTrnWidget(
+                                loggedUser: loggedUser,
+                                iotTrnData: data,
+                                selectedRack: selectedData != null
+                                    ? selectedData.trnid == data.trnid
+                                        ? rackQrData[0]
+                                        : null
+                                    : null,
+                                onQrPressed: () async {
+                                  var qrData =
+                                      await buildScanner(context, controller);
+                                  if (context.mounted) {
+                                    context
+                                        .read<RackQrCubit>()
+                                        .setrackData(rackQrData: qrData);
+                                    context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                LotTrnData>>()
+                                        .update(data);
+                                  }
+                                },
+                              );
+                            },
                           );
                         },
                         separatorBuilder: (context, index) => const SizedBox(
                           height: 10,
                         ),
-                        itemCount: state.iotTrnDataList.length,
+                        itemCount: state.lotTrnDataList.length,
                       );
                     }
                     return Container();
@@ -504,20 +329,149 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
     );
   }
 
-  void _openSplitDialog({
-    required BuildContext context,
-    required String batchId,
-    required String itemId,
-    required String rackId,
-    required String userid,
-  }) async {
-    AppModal.showCustomModal(context,
-        content: InterOrgSplitQtyDialog(
-          blocContext: context,
-          itemId: itemId,
-          batchId: batchId,
-          rackId: rackId,
-          userid: userid,
-        ));
+  // void _openSplitDialog({
+  //   required BuildContext context,
+  //   required String batchId,
+  //   required String itemId,
+  //   required String rackId,
+  //   required String userid,
+  // }) async {
+  //   AppModal.showCustomModal(context,
+  //       content: InterOrgSplitQtyDialog(
+  //         blocContext: context,
+  //         itemId: itemId,
+  //         batchId: batchId,
+  //         rackId: rackId,
+  //         userid: userid,
+  //       ));
+  // }
+}
+
+class IotTrnWidget extends StatefulWidget {
+  const IotTrnWidget({
+    super.key,
+    required this.iotTrnData,
+    this.selectedRack,
+    this.onQrPressed,
+    this.onTrnsPressed,
+    required this.loggedUser,
+  });
+  final LotTrnData iotTrnData;
+  final String? selectedRack;
+  final UserInfoModel loggedUser;
+  final void Function()? onQrPressed;
+  final void Function()? onTrnsPressed;
+  @override
+  State<IotTrnWidget> createState() => _IotTrnWidgetState();
+}
+
+class _IotTrnWidgetState extends State<IotTrnWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(10),
+          bottomRight: Radius.circular(10),
+        ),
+        border: Border(
+          bottom: BorderSide(
+            color: appTheme.primary,
+            width: 3,
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton.filled(
+                onPressed: widget.onQrPressed,
+                icon: Icon(
+                  Icons.qr_code_scanner_rounded,
+                  color: appTheme.white,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                widget.selectedRack ?? "",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              BlocBuilder<InterOrgTransferBloc, InterOrgTransferState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      context.read<InterOrgTransferBloc>().add(
+                            InterOrgTransfer(
+                              userid: widget.loggedUser.userId,
+                              trnid: widget.iotTrnData.trnid.toString(),
+                              itemlotno: widget.iotTrnData.lotno.toString(),
+                              torackid: widget.selectedRack!,
+                              tqty: widget.iotTrnData.rackQty.toString(),
+                            ),
+                          );
+                    },
+                    child: Text(
+                      state is InterOrgTransferLoading
+                          ? "Transfering.."
+                          : "Transfer",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          Text(
+            widget.iotTrnData.itemName.toString(),
+            style: textTheme.bodyMedium!.copyWith(
+              color: appTheme.primary,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            widget.iotTrnData.joborder.toString(),
+            style: textTheme.bodyMedium!.copyWith(
+              color: appTheme.primary,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            widget.iotTrnData.batchNo.toString(),
+            style: textTheme.bodyMedium!.copyWith(
+              color: appTheme.primary,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            widget.iotTrnData.racklocator.toString(),
+            style: textTheme.bodyMedium!.copyWith(
+              color: appTheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
