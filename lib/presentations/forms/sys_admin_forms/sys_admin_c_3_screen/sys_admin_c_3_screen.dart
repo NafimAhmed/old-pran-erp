@@ -19,9 +19,10 @@ import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_s
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/bloc/qr_user_permission_bloc.dart';
 
 class SysAdminC3Screen extends StatelessWidget {
-  const SysAdminC3Screen({super.key});
+  const SysAdminC3Screen({super.key, required this.fromName});
   static const String routeName = "SYSTEM-ADMINISTRATOR-C-3-SCREEN";
   static const String routePath = "/SYSTEM-ADMINISTRATOR-C-3-SCREEN";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -48,14 +49,16 @@ class SysAdminC3Screen extends StatelessWidget {
           create: (context) => QrUserMenuPermissionBloc(getService()),
         ),
       ],
-      child: const SysAdminC3ScreenBody(),
+      child: SysAdminC3ScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class SysAdminC3ScreenBody extends StatefulWidget {
-  const SysAdminC3ScreenBody({super.key});
-
+  const SysAdminC3ScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<SysAdminC3ScreenBody> createState() => _SysAdminC3ScreenBodyState();
 }
@@ -89,7 +92,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "User Permission"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: BlocListener<QrUserMenuPermissionBloc, QrUserMenuPermissionState>(
         listener: (context, state) {
           if (state is QrUserMenuPermissionSuccess) {

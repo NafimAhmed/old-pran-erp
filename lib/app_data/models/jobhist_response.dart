@@ -180,6 +180,7 @@ class JobHistory {
       };
   Map<String, dynamic> toMapForTab() => {
         "Job Order No": jobOrderNo,
+        "Made P %": "$madeP %",
         "Item": item,
         "FPO No": fpoNo,
         // "Creation Date": creationDate,
@@ -192,7 +193,6 @@ class JobHistory {
         "Bad Qty": badQty,
         "Trn Qty": trnQty,
         "Rack Qty": rackQty,
-        "Made P %": "$madeP %",
         "Due Made P %": "$dueMadeP %",
       };
 }

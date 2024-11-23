@@ -23,10 +23,11 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/widget
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 class OpmC2Screen extends StatelessWidget {
-  const OpmC2Screen({super.key});
+  const OpmC2Screen({super.key, required this.fromName});
   static const String routeName = "OPM-C-2-SCREEN";
 
   static const String routePath = "/OPM-C-2-SCREEN";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -50,14 +51,16 @@ class OpmC2Screen extends StatelessWidget {
           create: (context) => UserQrPrintBloc(getService()),
         )
       ],
-      child: const ProductionScreenBody(),
+      child: ProductionScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class ProductionScreenBody extends StatefulWidget {
-  const ProductionScreenBody({super.key});
-
+  const ProductionScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<ProductionScreenBody> createState() => _ProductionScreenBodyState();
 }
@@ -138,7 +141,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: const CommonAppBar(appBartitle: "D-Production"),
+        appBar: CommonAppBar(appBartitle: widget.fromName),
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.symmetric(

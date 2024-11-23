@@ -8,14 +8,17 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_15_screen/widge
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class OpmC15Screen extends StatelessWidget {
-  const OpmC15Screen({super.key});
+  const OpmC15Screen({super.key, required this.fromName});
   static const String routeName = "OPM-C-15-SCREEN";
   static const String routePath = "/OPM-C-15-SCREEN";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => JobOrderHistoryBloc(getService()),
-      child: const OpmC15ScreenBody(),
+      child: OpmC15ScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
@@ -28,8 +31,8 @@ class _ChartData {
 }
 
 class OpmC15ScreenBody extends StatefulWidget {
-  const OpmC15ScreenBody({super.key});
-
+  const OpmC15ScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<OpmC15ScreenBody> createState() => _OpmC15ScreenBodyState();
 }
@@ -48,7 +51,7 @@ class _OpmC15ScreenBodyState extends State<OpmC15ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Job Order Stock Summary"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: Center(
         child: SingleChildScrollView(
           child: Container(

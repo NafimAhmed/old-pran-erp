@@ -85,7 +85,9 @@ class AppNavigation {
         path: OpmC1Screen.routePath,
         name: OpmC1Screen.routeName,
         builder: (context, state) {
-          return const OpmC1Screen();
+          return OpmC1Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -93,7 +95,9 @@ class AppNavigation {
         path: OpmC2Screen.routePath,
         name: OpmC2Screen.routeName,
         builder: (context, state) {
-          return const OpmC2Screen();
+          return OpmC2Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -101,7 +105,9 @@ class AppNavigation {
         path: OpmC3Screen.routePath,
         name: OpmC3Screen.routeName,
         builder: (context, state) {
-          return const OpmC3Screen();
+          return OpmC3Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -109,7 +115,9 @@ class AppNavigation {
         path: OpmC4Screen.routePath,
         name: OpmC4Screen.routeName,
         builder: (context, state) {
-          return const OpmC4Screen();
+          return OpmC4Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -117,7 +125,9 @@ class AppNavigation {
         path: OpmC8Screen.routePath,
         name: OpmC8Screen.routeName,
         builder: (context, state) {
-          return const OpmC8Screen();
+          return OpmC8Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -125,7 +135,9 @@ class AppNavigation {
         path: OpmC9Screen.routePath,
         name: OpmC9Screen.routeName,
         builder: (context, state) {
-          return const OpmC9Screen();
+          return OpmC9Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -133,7 +145,9 @@ class AppNavigation {
         path: OpmC10Screen.routePath,
         name: OpmC10Screen.routeName,
         builder: (context, state) {
-          return const OpmC10Screen();
+          return OpmC10Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -141,7 +155,9 @@ class AppNavigation {
         path: OpmC15Screen.routePath,
         name: OpmC15Screen.routeName,
         builder: (context, state) {
-          return const OpmC15Screen();
+          return OpmC15Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -149,7 +165,9 @@ class AppNavigation {
         path: OmC1Screen.routePath,
         name: OmC1Screen.routeName,
         builder: (context, state) {
-          return const OmC1Screen();
+          return OmC1Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -157,7 +175,9 @@ class AppNavigation {
         path: OmC2Screen.routePath,
         name: OmC2Screen.routeName,
         builder: (context, state) {
-          return const OmC2Screen();
+          return OmC2Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -165,7 +185,9 @@ class AppNavigation {
         path: OmC3Screen.routePath,
         name: OmC3Screen.routeName,
         builder: (context, state) {
-          return const OmC3Screen();
+          return OmC3Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -173,7 +195,9 @@ class AppNavigation {
         path: InvC1Screen.routePath,
         name: InvC1Screen.routeName,
         builder: (context, state) {
-          return const InvC1Screen();
+          return InvC1Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -181,7 +205,9 @@ class AppNavigation {
         path: InvC2Screen.routePath,
         name: InvC2Screen.routeName,
         builder: (context, state) {
-          return const InvC2Screen();
+          return InvC2Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -211,7 +237,9 @@ class AppNavigation {
         path: SysAdminC1Screen.routePath,
         name: SysAdminC1Screen.routeName,
         builder: (context, state) {
-          return const SysAdminC1Screen();
+          return SysAdminC1Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -219,7 +247,9 @@ class AppNavigation {
         path: SysAdminC2Screen.routePath,
         name: SysAdminC2Screen.routeName,
         builder: (context, state) {
-          return const SysAdminC2Screen();
+          return SysAdminC2Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
       GoRoute(
@@ -227,7 +257,9 @@ class AppNavigation {
         path: SysAdminC3Screen.routePath,
         name: SysAdminC3Screen.routeName,
         builder: (context, state) {
-          return const SysAdminC3Screen();
+          return SysAdminC3Screen(
+            fromName: state.extra as String,
+          );
         },
       ),
     ],

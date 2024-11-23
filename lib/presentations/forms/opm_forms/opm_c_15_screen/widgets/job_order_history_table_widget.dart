@@ -19,7 +19,9 @@ class JobOrderHisTabWidget extends StatelessWidget {
       onCellTap: onCellTap,
       columns: <GridColumn>[
         ...List.generate(
-          source._jobOrderHisData.first.getCells().length,
+          source._jobOrderHisData.isNotEmpty
+              ? source._jobOrderHisData.first.getCells().length
+              : 0,
           (index) {
             return GridColumn(
               columnName:

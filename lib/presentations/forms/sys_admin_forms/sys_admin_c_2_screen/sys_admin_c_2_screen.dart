@@ -18,9 +18,10 @@ import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_s
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_screen/bloc/user_create_bloc.dart';
 
 class SysAdminC2Screen extends StatelessWidget {
-  const SysAdminC2Screen({super.key});
+  const SysAdminC2Screen({super.key, required this.fromName});
   static const String routeName = "SYSTEM-ADMINISTRATOR-C-2-SCREEN";
   static const String routePath = "/SYSTEM-ADMINISTRATOR-C-2-SCREEN";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -38,14 +39,16 @@ class SysAdminC2Screen extends StatelessWidget {
           create: (context) => UserCreateBloc(getService()),
         ),
       ],
-      child: const SysAdminC2ScreenBody(),
+      child: SysAdminC2ScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class SysAdminC2ScreenBody extends StatefulWidget {
-  const SysAdminC2ScreenBody({super.key});
-
+  const SysAdminC2ScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<SysAdminC2ScreenBody> createState() => _SysAdminC2ScreenBodyState();
 }
@@ -94,7 +97,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "User Creation"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: BlocListener<UserCreateBloc, UserCreateState>(
         listener: (context, state) {
           if (state is UserCreateSuccess) {

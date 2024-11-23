@@ -16,9 +16,10 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 
 class InvC2Screen extends StatelessWidget {
-  const InvC2Screen({super.key});
+  const InvC2Screen({super.key, required this.fromName});
   static const String routeName = "INV-C-2-SCREEN";
   static const String routePath = "/INV-C-2-SCREEN";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -36,14 +37,16 @@ class InvC2Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<RcvIotData>(),
         ),
       ],
-      child: const InvC2ScreenBody(),
+      child: InvC2ScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class InvC2ScreenBody extends StatefulWidget {
-  const InvC2ScreenBody({super.key});
-
+  const InvC2ScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<InvC2ScreenBody> createState() => _InvC2ScreenBodyState();
 }
@@ -66,7 +69,7 @@ class _InvC2ScreenBodyState extends State<InvC2ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Receiving Transactions"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(

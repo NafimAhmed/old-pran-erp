@@ -17,9 +17,11 @@ import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_s
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/bloc/system_module_bloc.dart';
 
 class SysAdminC1Screen extends StatelessWidget {
-  const SysAdminC1Screen({super.key});
+  const SysAdminC1Screen({super.key, required this.fromName});
   static const String routeName = "SYSTEM-ADMINISTRATOR-C-1-SCREEN";
   static const String routePath = "/SYSTEM-ADMINISTRATOR-C-1-SCREEN";
+  final String fromName;
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -43,7 +45,9 @@ class SysAdminC1Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<MenuType>(),
         ),
       ],
-      child: const SysAdminC1ScreenBody(),
+      child: SysAdminC1ScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
@@ -62,8 +66,8 @@ enum MenuType {
 }
 
 class SysAdminC1ScreenBody extends StatefulWidget {
-  const SysAdminC1ScreenBody({super.key});
-
+  const SysAdminC1ScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<SysAdminC1ScreenBody> createState() => _SysAdminC1ScreenBodyState();
 }
@@ -95,7 +99,7 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Create Menu"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: MultiBlocListener(
         listeners: [
           BlocListener<SysMenuCreateBloc, SysMenuCreateState>(

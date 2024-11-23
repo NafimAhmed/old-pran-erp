@@ -3,22 +3,30 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 
 class OpmC8Screen extends StatelessWidget {
-  const OpmC8Screen({super.key});
+  const OpmC8Screen({super.key, required this.fromName});
   static const String routeName = "OPM-C-8-SCREEN";
   static const String routePath = "/opm_c_8_screen";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
-    return const OpmC8ScreenBody();
+    return OpmC8ScreenBody(
+      fromName: fromName,
+    );
   }
 }
 
-class OpmC8ScreenBody extends StatelessWidget {
-  const OpmC8ScreenBody({super.key});
+class OpmC8ScreenBody extends StatefulWidget {
+  const OpmC8ScreenBody({super.key, required this.fromName});
+  final String fromName;
+  @override
+  State<OpmC8ScreenBody> createState() => _OpmC8ScreenBodyState();
+}
 
+class _OpmC8ScreenBodyState extends State<OpmC8ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Batch Release"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(

@@ -21,9 +21,11 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
 
 class InvC1Screen extends StatelessWidget {
-  const InvC1Screen({super.key});
+  const InvC1Screen({super.key, required this.fromName});
   static const String routeName = "INV-C-1-SCREEN";
   static const String routePath = "/INV-C-1-SCREEN";
+
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -47,14 +49,16 @@ class InvC1Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<LotTrnData>(),
         ),
       ],
-      child: const InterOrgTransferBody(),
+      child: InterOrgTransferBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class InterOrgTransferBody extends StatefulWidget {
-  const InterOrgTransferBody({super.key});
-
+  const InterOrgTransferBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<InterOrgTransferBody> createState() => _InterOrgTransferBodyState();
 }
@@ -141,7 +145,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
         ),
       ],
       child: Scaffold(
-        appBar: const CommonAppBar(appBartitle: "Inter Org Transfer"),
+        appBar: CommonAppBar(appBartitle: widget.fromName),
         body: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,

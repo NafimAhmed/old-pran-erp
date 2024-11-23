@@ -21,7 +21,9 @@ class JobDetailsTableWidget extends StatelessWidget {
       onCellTap: onCellTap,
       columns: <GridColumn>[
         ...List.generate(
-          source._jobHisData.first.getCells().length,
+          source._jobHisData.isNotEmpty
+              ? source._jobHisData.first.getCells().length
+              : 0,
           (index) {
             return GridColumn(
               columnName: source._jobHisData.first.getCells()[index].columnName,
@@ -61,27 +63,6 @@ class JobHistoryDataSource extends DataGridSource {
               );
             },
           )
-          // DataGridCell<String>(
-          //     columnName: 'job_order_no', value: e.jobOrderNo),
-          // DataGridCell<String>(columnName: 'fpo_no', value: e.fpoNo),
-          // DataGridCell<String>(columnName: 'item', value: e.item),
-          // DataGridCell<String>(
-          //     columnName: 'creation_date', value: e.creationDate),
-          // DataGridCell<String>(
-          //     columnName: 'plan_start_date', value: e.planStartDate),
-          // DataGridCell<String>(
-          //     columnName: 'plan_cmplt_date', value: e.planCmpltDate),
-          // DataGridCell<num>(columnName: 'fpo_qty', value: e.fpoQty),
-          // DataGridCell<String>(columnName: 'dtl_um', value: e.dtlUm),
-          // DataGridCell<num>(
-          //     columnName: 'total_made_qty', value: e.totalMadeQty),
-          // DataGridCell<num>(columnName: 'good_qty', value: e.goodQty),
-          // DataGridCell<num>(columnName: 'bad_qty', value: e.badQty),
-          // DataGridCell<num>(columnName: 'trn_qty', value: e.trnQty),
-          // DataGridCell<num>(columnName: 'rack_qty', value: e.rackQty),
-          // DataGridCell<String>(columnName: 'made_p', value: "${e.madeP}%"),
-          // DataGridCell<String>(
-          //     columnName: 'due_made_p', value: "${e.dueMadeP}%"),
         ],
       );
     }).toList();

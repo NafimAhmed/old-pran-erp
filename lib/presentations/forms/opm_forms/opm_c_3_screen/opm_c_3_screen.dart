@@ -22,9 +22,10 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/widgets/split_qty_dialog_widget.dart';
 
 class OpmC3Screen extends StatelessWidget {
-  const OpmC3Screen({super.key});
+  const OpmC3Screen({super.key, required this.fromName});
   static const String routeName = "OPM-C-3-SCREEN";
   static const String routePath = "/OPM-C-3-SCREEN";
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -45,14 +46,16 @@ class OpmC3Screen extends StatelessWidget {
           create: (context) => RackTransactBloc(getService()),
         ),
       ],
-      child: const TransferScreenBody(),
+      child: TransferScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class TransferScreenBody extends StatefulWidget {
-  const TransferScreenBody({super.key});
-
+  const TransferScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<TransferScreenBody> createState() => _TransferScreenBodyState();
 }
@@ -156,7 +159,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
         ),
       ],
       child: Scaffold(
-        appBar: const CommonAppBar(appBartitle: "Transfer"),
+        appBar: CommonAppBar(appBartitle: widget.fromName),
         body: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 15,

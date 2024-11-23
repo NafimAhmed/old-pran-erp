@@ -7,7 +7,6 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -22,9 +21,11 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class OpmC1Screen extends StatelessWidget {
-  const OpmC1Screen({super.key});
+  const OpmC1Screen({super.key, required this.fromName});
   static const String routeName = "OPM-C-1-SCREEN";
   static const String routePath = "/OPM-C-1-SCREEN";
+
+  final String fromName;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -42,14 +43,16 @@ class OpmC1Screen extends StatelessWidget {
           create: (context) => UserMachineBloc(getService()),
         ),
       ],
-      child: const ProductionScreenBody(),
+      child: ProductionScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
 
 class ProductionScreenBody extends StatefulWidget {
-  const ProductionScreenBody({super.key});
-
+  const ProductionScreenBody({super.key, required this.fromName});
+  final String fromName;
   @override
   State<ProductionScreenBody> createState() => _ProductionScreenBodyState();
 }
@@ -98,7 +101,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const CommonAppBar(appBartitle: "Production"),
+      appBar: CommonAppBar(appBartitle: widget.fromName),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(

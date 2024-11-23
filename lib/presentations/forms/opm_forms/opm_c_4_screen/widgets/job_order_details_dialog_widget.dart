@@ -109,43 +109,26 @@ class JobOrderDetailsDialog extends StatelessWidget {
             height: 10,
           ),
           Container(
-            padding: const EdgeInsets.only(right: 5),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 5,
+            ),
             decoration: BoxDecoration(
                 color: appTheme.primary.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10)),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: appTheme.primary,
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Item Name",
-                        textAlign: TextAlign.left,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.white,
-                            ),
-                      ),
-                    ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    itemName,
+                    textAlign: TextAlign.right,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  Expanded(
-                    child: Text(
-                      itemName,
-                      textAlign: TextAlign.right,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
             ),
           ),
           const SizedBox(height: 20),

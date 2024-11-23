@@ -98,7 +98,8 @@ class _ModuleScreenBodyState extends State<ModuleScreenBody> {
                                   return OPMSubModuleWidget(
                                     title: cMenuItem?.menuName ?? "",
                                     onTap: () {
-                                      context.pushNamed(cMenuItem!.linkAddrs!);
+                                      context.pushNamed(cMenuItem!.linkAddrs!,
+                                          extra: cMenuItem.menuName ?? "");
                                     },
                                   );
                                 })
