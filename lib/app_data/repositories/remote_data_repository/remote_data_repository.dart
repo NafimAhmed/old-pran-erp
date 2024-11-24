@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
@@ -109,7 +110,7 @@ abstract class RemoteDataRepository {
     required String? pParent,
   });
   Future<AppsUserResponse> getAppsUser();
-  Future<GenericResponse> createUser({
+  Future<UserCreateResponse> createUser({
     required String newUserId,
     required String newUserName,
     required String userId,

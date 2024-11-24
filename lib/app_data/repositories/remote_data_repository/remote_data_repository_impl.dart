@@ -16,6 +16,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
@@ -387,7 +388,7 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<GenericResponse> createUser({
+  Future<UserCreateResponse> createUser({
     required String newUserId,
     required String newUserName,
     required String userId,
@@ -403,7 +404,7 @@ class RemoteDataRepositoryImpl
             '${appConfig.baseUrl}/ords/rpro/sysadmin/usercreation?newuserid=$newUserId&newusername=$newUserName&userid=$userId&passw=$passw&appuser=$appUser&mobileno=$mobileNo&designame=null&deptname=null'));
 
     http.StreamedResponse response = await request.send();
-    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+    return await decodeResponse(response, decoder: UserCreateResponse.fromJson);
   }
 
   @override

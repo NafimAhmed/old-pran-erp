@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
@@ -33,7 +34,11 @@ final class UserCreateInitial extends UserCreateState {}
 
 final class UserCreateLoading extends UserCreateState {}
 
-final class UserCreateSuccess extends UserCreateState {}
+final class UserCreateSuccess extends UserCreateState {
+  final List<NewUserInfo> createdUserList;
+
+  UserCreateSuccess({required this.createdUserList});
+}
 
 final class UserCreateError extends UserCreateState {
   final Object error;
@@ -47,7 +52,7 @@ class UserCreateBloc extends Bloc<UserCreateEvent, UserCreateState> {
     on<CreateUser>((event, emit) async {
       emit(UserCreateLoading());
       try {
-        await _dataService.createUser(
+        var response = await _dataService.createUser(
           appUser: event.appUser,
           userId: event.userId,
           newUserId: event.newUserId,
@@ -57,7 +62,7 @@ class UserCreateBloc extends Bloc<UserCreateEvent, UserCreateState> {
           mobileNo: event.mobileNo,
           passw: event.passw,
         );
-        emit(UserCreateSuccess());
+        emit(UserCreateSuccess(createdUserList: response));
       } catch (e) {
         emit(UserCreateError(error: e));
       }

@@ -47,7 +47,8 @@ class SysAdminC2Screen extends StatelessWidget {
 }
 
 class SysAdminC2ScreenBody extends StatefulWidget {
-  const SysAdminC2ScreenBody({super.key, required this.fromName});
+  const SysAdminC2ScreenBody(
+      {super.key, required this.fromName}); //user creation
   final String fromName;
   @override
   State<SysAdminC2ScreenBody> createState() => _SysAdminC2ScreenBodyState();
@@ -107,6 +108,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
             passTextController.clear();
             context.read<VariableStateHandlerCubit<AppsUserData>>().reset();
             appUserTextController.clear();
+            dropDownTextController.clear();
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "User Created Successfully",
@@ -242,6 +244,8 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                           VariableStateHandlerCubit<
                                               AppsUserData>>()
                                       .update(value!);
+                                  appUserTextController.text =
+                                      value.description ?? "";
                                   FocusManager.instance.primaryFocus?.unfocus();
                                 },
 
@@ -252,39 +256,6 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                             },
                           ),
                         ),
-
-                        // Expanded(
-                        //   child: BlocBuilder<AppsUserBloc, AppsUserState>(
-                        //     builder: (context, state) {
-                        //       return CommonDropdownButton<AppsUserData>(
-                        //         hintText: "Select Apps User",
-                        //         items: state is AppsUserSuccess
-                        //             ? state.appsDataList
-                        //             : [],
-                        //         value: context
-                        //             .watch<
-                        //                 VariableStateHandlerCubit<
-                        //                     AppsUserData>>()
-                        //             .state,
-                        //         onChanged: (value) {
-                        //           context
-                        //               .read<
-                        //                   VariableStateHandlerCubit<
-                        //                       AppsUserData>>()
-                        //               .update(value!);
-                        //           appUserTextController.text =
-                        //               value.description ?? "";
-                        //         },
-                        //         validator: (value) {
-                        //           if (value == null) {
-                        //             return "Please Select Apps User";
-                        //           }
-                        //           return null;
-                        //         },
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -344,6 +315,115 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                   );
                 },
               ),
+              Expanded(
+                child: BlocBuilder<UserCreateBloc, UserCreateState>(
+                  builder: (context, state) {
+                    if (state is UserCreateSuccess) {
+                      return ListView.separated(
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: appTheme.primary,
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "User ID",
+                                      style: textTheme.bodyMedium!,
+                                    ),
+                                    Text(
+                                      state.createdUserList[index].userId ?? "",
+                                      style: textTheme.bodySmall!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "User Name",
+                                      style: textTheme.bodyMedium!,
+                                    ),
+                                    Text(
+                                      state.createdUserList[index].userName ??
+                                          "",
+                                      style: textTheme.bodySmall!,
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Apps User ID",
+                                      style: textTheme.bodyMedium!,
+                                    ),
+                                    Text(
+                                      state.createdUserList[index].appUserId ??
+                                          "",
+                                      style: textTheme.bodySmall!,
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Mobile No",
+                                      style: textTheme.bodyMedium!,
+                                    ),
+                                    Text(
+                                      state.createdUserList[index].mobileNo ??
+                                          "",
+                                      style: textTheme.bodySmall!,
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 10,
+                        ),
+                        itemCount: state.createdUserList.length,
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+              )
             ],
           ),
         ),

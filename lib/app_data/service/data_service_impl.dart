@@ -16,6 +16,7 @@ import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
@@ -315,7 +316,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> createUser({
+  Future<List<NewUserInfo>> createUser({
     required String newUserId,
     required String newUserName,
     required String userId,
@@ -335,8 +336,9 @@ class DataServiceImpl implements DataService {
         desigName: desigName,
         deptName: deptName);
     if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage ?? response.message);
+      throw ApiDataException(response.message);
     }
+    return response.newUserInfo ?? [];
   }
 
   @override
