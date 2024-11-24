@@ -141,7 +141,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CommonAppBar(appBartitle: widget.fromName),
+        appBar: CommonAppBar(appBartitle: widget.fromName), //D-Prod screen
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.symmetric(
@@ -278,61 +278,24 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           UserBatch?>(
                         builder: (context, state) {
                           if (state != null) {
-                            return Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: appTheme.primary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 7,
+                              ),
+                              decoration: BoxDecoration(
+                                color: appTheme.primary,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "Ttl Qty :",
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            state.totalQty.toString(),
-                                            textAlign: TextAlign.right,
-                                            style:
-                                                textTheme.bodyMedium!.copyWith(
-                                              color: appTheme.white,
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: appTheme.primary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Ori Qty: ",
+                                          "B Qty: ",
                                           style: textTheme.bodyMedium!.copyWith(
                                             color: appTheme.white,
                                           ),
@@ -350,8 +313,62 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "M Qty :",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            state.totalQty.toString(),
+                                            textAlign: TextAlign.right,
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.white,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "P Qty :",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${(state.originalQty ?? 0) - (state.totalQty ?? 0)}",
+                                            textAlign: TextAlign.right,
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.white,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           }
                           return Container();

@@ -34,7 +34,10 @@ class CommonLableWthTextField extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 5,
+              vertical: 5,
+            ),
             decoration: BoxDecoration(
               color: appTheme.primary,
               borderRadius: const BorderRadius.only(

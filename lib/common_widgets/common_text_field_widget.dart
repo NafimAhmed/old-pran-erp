@@ -32,6 +32,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   final void Function(String value)? onChanged;
   final Widget? suffixIcon;
   final bool? enabled;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -49,8 +50,11 @@ class CommonTextFieldWidget extends StatelessWidget {
           textTheme.bodyMedium!.copyWith(
             color: appTheme.primary,
           ),
-      decoration: InputDecoration(labelText: labelText, suffixIcon: suffixIcon)
-          .applyDefaults(
+      decoration: InputDecoration(
+        labelText: labelText,
+        suffixIcon: suffixIcon,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+      ).applyDefaults(
         Theme.of(context).inputDecorationTheme,
       ),
       validator: validator,
