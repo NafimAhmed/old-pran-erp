@@ -42,7 +42,7 @@ class SysMenuCreateBloc extends Bloc<SysMenuCreateEvent, SysMenuCreateState> {
     on<CreateSysMenu>((event, emit) async {
       emit(SysMenuCreateLoading());
       try {
-        var response = await _dataService.sysCreateMenu(
+        await _dataService.sysCreateMenu(
           userId: event.userId,
           pMenuName: event.pMenuName,
           pMenuType: event.pMenuType,

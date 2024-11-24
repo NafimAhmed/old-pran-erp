@@ -92,7 +92,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(appBartitle: widget.fromName),
+      appBar: CommonAppBar(appBartitle: widget.fromName), //User Permission
       body: BlocListener<QrUserMenuPermissionBloc, QrUserMenuPermissionState>(
         listener: (context, state) {
           if (state is QrUserMenuPermissionSuccess) {

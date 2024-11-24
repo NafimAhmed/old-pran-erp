@@ -48,7 +48,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(appBartitle: widget.fromName),
+      appBar: CommonAppBar(appBartitle: widget.fromName), //job report
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -110,7 +110,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                                   itemName: jobHisDataSource
                                       .rows[details.rowColumnIndex.rowIndex - 1]
                                       .getCells()
-                                      .elementAt(1)
+                                      .elementAt(2)
                                       .value
                                       .toString(),
                                   cells: jobHisDataSource

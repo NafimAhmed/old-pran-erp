@@ -41,7 +41,7 @@ class RackTransactBloc extends Bloc<RackTransactEvent, RackTransactState> {
     on<RackTransact>((event, emit) async {
       emit(RackTransactLoading(transactId: event.transactId));
       try {
-        var response = await _dataService.rackTransfer(
+        await _dataService.rackTransfer(
           transactId: event.transactId,
           userId: event.userId,
         );

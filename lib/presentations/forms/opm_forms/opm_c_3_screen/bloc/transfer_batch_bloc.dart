@@ -45,7 +45,7 @@ class TransferBatchBloc extends Bloc<TransferBatchEvent, TransferBatchState> {
     on<TransferBatch>((event, emit) async {
       emit(TransferBatchLoading(splitFlag: event.split));
       try {
-        var response = await _dataService.transferBatch(
+        await _dataService.transferBatch(
           pTrnid: event.pTrnid,
           userid: event.userid,
           rackId: event.rackId,
