@@ -86,6 +86,6 @@ class AppsUserData {
       };
   @override
   String toString() {
-    return userName ?? "";
+    return "${userName ?? ""} - ${description ?? ""}";
   }
 }
