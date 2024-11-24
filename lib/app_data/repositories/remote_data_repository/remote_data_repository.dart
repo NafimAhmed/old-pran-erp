@@ -9,6 +9,7 @@ import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
+import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
@@ -19,6 +20,7 @@ import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_5_screen/bloc/org_access_bloc.dart';
 
 import '../../models/rcv_inv_org_trn_data_response.dart';
 import '../../models/user_menu_item_response.dart';
@@ -148,4 +150,10 @@ abstract class RemoteDataRepository {
     required String userId,
   });
   Future<JobOrderSumHistoryResponse> getJobOrderSumHistory();
+  Future<OrgsResponse> getOrgs();
+  Future<GenericResponse> giveOrgAccess({
+    required String newUserId,
+    required String userId,
+    required String orgId,
+  });
 }

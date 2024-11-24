@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
+import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -158,4 +159,10 @@ abstract class DataService {
     required String userId,
   });
   Future<List<JobOrderData>> getJobOrderSumHistory();
+  Future<List<UserOrg>> getOrgs();
+  Future<void> giveOrgAccess({
+    required String newUserId,
+    required String userId,
+    required String orgId,
+  });
 }

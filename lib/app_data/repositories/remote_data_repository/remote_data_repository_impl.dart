@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
+import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -537,5 +538,29 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
         decoder: JobOrderSumHistoryResponse.fromJson);
+  }
+
+  @override
+  Future<OrgsResponse> getOrgs() async {
+    var request = http.Request('POST',
+        Uri.parse('${appConfig.baseUrl}/ords/rpro/sysadmin/userAnOrgs'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: OrgsResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> giveOrgAccess({
+    required String newUserId,
+    required String userId,
+    required String orgId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/OrgAccessCreation?newuserid=$newUserId&userid=$userId&orgid=$orgId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

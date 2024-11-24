@@ -462,4 +462,26 @@ class DataServiceImpl implements DataService {
     }
     return response.jobOrderData ?? [];
   }
+
+  @override
+  Future<List<UserOrg>> getOrgs() async {
+    var response = await remoteDataRepository.getOrgs();
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.orgData ?? [];
+  }
+
+  @override
+  Future<void> giveOrgAccess({
+    required String newUserId,
+    required String userId,
+    required String orgId,
+  }) async {
+    var response = await remoteDataRepository.giveOrgAccess(
+        newUserId: newUserId, userId: userId, orgId: orgId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
 }
