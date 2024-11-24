@@ -91,6 +91,6 @@ class UserOrg {
       };
   @override
   String toString() {
-    return organizationCode ?? "";
+    return "${organizationCode ?? ""}- ${organizationName ?? ""}";
   }
 }
