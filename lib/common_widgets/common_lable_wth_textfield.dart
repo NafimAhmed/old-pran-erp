@@ -52,6 +52,7 @@ class CommonLableWthTextField extends StatelessWidget {
             child: Center(
               child: Text(
                 lableName,
+                textAlign: TextAlign.center,
                 style: textTheme.bodyMedium!.copyWith(
                   color: appTheme.white,
                 ),
