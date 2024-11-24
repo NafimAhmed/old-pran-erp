@@ -122,24 +122,6 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                                 return null;
                               },
                             ),
-                            // TextFormField(
-                            //   focusNode: staffIDFocusNode,
-                            //   controller: staffIDTextController,
-                            //   autocorrect: false,
-                            //   enableSuggestions: false,
-                            //   keyboardType: TextInputType.phone,
-                            //   inputFormatters: [
-                            //     FilteringTextInputFormatter.digitsOnly
-                            //   ],
-                            //   style: textTheme.bodyMedium!.copyWith(
-                            //     color: appTheme.primary,
-                            //   ),
-                            //   decoration: const InputDecoration(
-                            //     labelText: "Staff Id",
-                            //   ).applyDefaults(
-                            //     Theme.of(context).inputDecorationTheme,
-                            //   ),
-                            // ),
                             const SizedBox(
                               height: 25,
                             ),
