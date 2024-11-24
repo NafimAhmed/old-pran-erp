@@ -79,6 +79,6 @@ class QrUserData {
       };
   @override
   String toString() {
-    return userName ?? "";
+    return "${userId ?? ""} - ${userName ?? ""}";
   }
 }
