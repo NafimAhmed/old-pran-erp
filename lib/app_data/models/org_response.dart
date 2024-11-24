@@ -19,13 +19,13 @@ class OrgsResponse {
     int? statusCode,
     String? message,
     String? errmsg,
-    List<UserOrg>? userOrgs,
+    List<UserOrg>? orgData,
   }) =>
       OrgsResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
         errmsg: errmsg ?? this.errmsg,
-        orgData: userOrgs ?? this.orgData,
+        orgData: orgData ?? this.orgData,
       );
 
   factory OrgsResponse.fromJson(String str) =>
