@@ -18,6 +18,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.readOnly = false,
     this.suffixIcon,
     this.enabled,
+    this.textCapitalization = TextCapitalization.none,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -32,10 +33,11 @@ class CommonTextFieldWidget extends StatelessWidget {
   final void Function(String value)? onChanged;
   final Widget? suffixIcon;
   final bool? enabled;
-
+  final TextCapitalization textCapitalization;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textCapitalization: textCapitalization,
       enabled: enabled,
       readOnly: readOnly,
       focusNode: focusNode,
