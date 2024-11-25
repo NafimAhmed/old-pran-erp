@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
@@ -106,6 +107,9 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
           if (state is LocatorSuccess) {
             context.read<VariableStateHandlerCubit<UserOrg>>().reset();
             context.read<VariableStateHandlerCubit<SubInvData>>().reset();
+            context
+                .read<VariableStateHandlerCubit<List<String>>>()
+                .update(List<String>.filled(4, ""));
             orgController.clear();
             subInvController.clear();
             rowController.clear();
@@ -200,6 +204,9 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
                     Expanded(
                       child: CommonTextFieldWidget(
                         labelText: "Row",
+                        inputFormatters: [
+                          UpperCaseTextFormatter(),
+                        ],
                         focusNode: rowFocusNode,
                         controller: rowController,
                         onChanged: (value) {
@@ -230,6 +237,9 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
                     Expanded(
                       child: CommonTextFieldWidget(
                         labelText: "Rack",
+                        inputFormatters: [
+                          UpperCaseTextFormatter(),
+                        ],
                         focusNode: rackFocusNode,
                         controller: rackController,
                         onChanged: (value) {
@@ -261,6 +271,9 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
                 ),
                 CommonTextFieldWidget(
                   labelText: "Been",
+                  inputFormatters: [
+                    UpperCaseTextFormatter(),
+                  ],
                   focusNode: beenFocusNode,
                   controller: beenController,
                   onChanged: (value) {
@@ -290,6 +303,7 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
                 CommonTextFieldWidget(
                   readOnly: true,
                   labelText: "Description",
+                  keyboardType: TextInputType.text,
                   focusNode: descFocusNode,
                   controller: descController,
                 ),
@@ -353,6 +367,17 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
         ),
       ),
       bottomNavigationBar: const UserDetailsWidget(),
+    );
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
     );
   }
 }
