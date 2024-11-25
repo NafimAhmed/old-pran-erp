@@ -5,7 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -58,6 +58,8 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
   late UserInfoModel loggedUser;
 
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
+  TextEditingController userDropDownTextController = TextEditingController();
+  TextEditingController orgDropDownTextController = TextEditingController();
   @override
   void initState() {
     context.read<QrUserBloc>().add(GetQrUsers());
@@ -68,6 +70,8 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
 
   @override
   void dispose() {
+    userDropDownTextController.dispose();
+    orgDropDownTextController.dispose();
     super.dispose();
   }
 
@@ -80,6 +84,8 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
           if (state is OrgAccessSuccess) {
             context.read<VariableStateHandlerCubit<QrUserData>>().reset();
             context.read<VariableStateHandlerCubit<UserOrg>>().reset();
+            userDropDownTextController.clear();
+            orgDropDownTextController.clear();
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "Access Given Successfully",
@@ -100,22 +106,20 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                 ),
                 BlocBuilder<QrUserBloc, QrUserState>(
                   builder: (context, state) {
-                    return CommonDropdownButton<QrUserData>(
+                    return CommonDropDownMenuWidget<QrUserData>(
                       hintText: "Select User",
-                      items: state is QrUserSuccess ? state.qrUsers : [],
-                      value: context
-                          .watch<VariableStateHandlerCubit<QrUserData>>()
-                          .state,
-                      onChanged: (value) {
-                        context
-                            .read<VariableStateHandlerCubit<QrUserData>>()
-                            .update(value!);
-                      },
-                      validator: (value) {
-                        if (value == null) {
-                          return "Please Select Apps User";
+                      enabled: state is QrUserSuccess
+                          ? state.qrUsers.isNotEmpty
+                          : false,
+                      dropdownMenuEntries:
+                          state is QrUserSuccess ? state.qrUsers : [],
+                      controller: userDropDownTextController,
+                      onSelected: (value) {
+                        if (value != null) {
+                          context
+                              .read<VariableStateHandlerCubit<QrUserData>>()
+                              .update(value);
                         }
-                        return null;
                       },
                     );
                   },
@@ -125,22 +129,20 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                 ),
                 BlocBuilder<OrgBloc, OrgState>(
                   builder: (context, state) {
-                    return CommonDropdownButton<UserOrg>(
+                    return CommonDropDownMenuWidget<UserOrg>(
                       hintText: "Select Org",
-                      items: state is OrgSuccess ? state.userOrgList : [],
-                      value: context
-                          .watch<VariableStateHandlerCubit<UserOrg>>()
-                          .state,
-                      onChanged: (value) {
-                        context
-                            .read<VariableStateHandlerCubit<UserOrg>>()
-                            .update(value!);
-                      },
-                      validator: (value) {
-                        if (value == null) {
-                          return "Please Select Org";
+                      dropdownMenuEntries:
+                          state is OrgSuccess ? state.userOrgList : [],
+                      enabled: state is OrgSuccess
+                          ? state.userOrgList.isNotEmpty
+                          : false,
+                      controller: orgDropDownTextController,
+                      onSelected: (value) {
+                        if (value != null) {
+                          context
+                              .read<VariableStateHandlerCubit<UserOrg>>()
+                              .update(value);
                         }
-                        return null;
                       },
                     );
                   },
@@ -155,10 +157,27 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                         if (fromKey.currentState!.validate()) {
                           var newUserId = context
                               .read<VariableStateHandlerCubit<QrUserData>>()
-                              .state!;
+                              .state;
                           var orgId = context
                               .read<VariableStateHandlerCubit<UserOrg>>()
-                              .state!;
+                              .state;
+
+                          if (newUserId == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackBar.errorSnackber(
+                                message: "Please Select User",
+                              ),
+                            );
+                            return;
+                          }
+                          if (orgId == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackBar.errorSnackber(
+                                message: "Please Select Org",
+                              ),
+                            );
+                            return;
+                          }
                           context.read<OrgAccessBloc>().add(
                                 GiveOrgAccess(
                                   newUserId: newUserId.userId ?? "",

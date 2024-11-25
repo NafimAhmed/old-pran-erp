@@ -73,6 +73,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
   TextEditingController batchDropDownTextController = TextEditingController();
+  TextEditingController orgDropDownTextController = TextEditingController();
   TextEditingController machineDropDownTextController = TextEditingController();
   List<UserMachine> machineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
@@ -94,6 +95,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     badQtyFocusNode.dispose();
     batchDropDownTextController.dispose();
     machineDropDownTextController.dispose();
+    orgDropDownTextController.dispose();
     super.dispose();
   }
 
@@ -110,6 +112,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           quantityTextController.clear();
           goodQtyTextController.clear();
           badQtyTextController.clear();
+          batchDropDownTextController.clear();
+          machineDropDownTextController.clear();
+          orgDropDownTextController.clear();
           var selectedOrg =
               context.read<VariableStateHandlerCubit<UserOrg>>().state;
           context.read<VariableStateHandlerCubit<UserMachine>>().reset();
@@ -165,12 +170,16 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           Expanded(
                             child: BlocBuilder<UserOrgBloc, UserOrgState>(
                               builder: (context, state) {
-                                return CommonDropdownButton<UserOrg>(
+                                return CommonDropDownMenuWidget<UserOrg>(
                                   hintText: "Select Org",
-                                  items: state is UserOrgSuccess
+                                  enabled: state is UserOrgSuccess
+                                      ? state.userOrg.isNotEmpty
+                                      : false,
+                                  controller: orgDropDownTextController,
+                                  dropdownMenuEntries: state is UserOrgSuccess
                                       ? state.userOrg
                                       : [],
-                                  onChanged: (value) {
+                                  onSelected: (value) {
                                     context.read<UserQrPrintBloc>().add(
                                           GetUserQrPrintData(
                                             userid: loggedUser.userId,
@@ -200,12 +209,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                             VariableStateHandlerCubit<
                                                 UserOrg>>()
                                         .update(value);
-                                  },
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "Please Select Org";
-                                    }
-                                    return null;
                                   },
                                 );
                               },
@@ -460,6 +463,19 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           ? () {}
                           : () {
                               if (fromkey.currentState!.validate()) {
+                                if (context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserOrg>>()
+                                        .state ==
+                                    null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CustomSnackBar.errorSnackber(
+                                      message: "Please Select Org",
+                                    ),
+                                  );
+                                  return;
+                                }
                                 if (context
                                         .read<
                                             VariableStateHandlerCubit<

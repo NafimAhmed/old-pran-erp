@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
+import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
@@ -38,7 +39,14 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   List<JobHistory> jobHisory = <JobHistory>[];
 
   late TooltipBehavior _tooltip;
-  List<_ChartData> chartData = [];
+  // List<_ChartData> chartData = [];
+  final List<_ChartData> chartData = [
+    _ChartData("1", 35),
+    _ChartData("2", 23),
+    _ChartData("3", 34),
+    _ChartData("4", 25),
+    _ChartData("5", 40)
+  ];
   @override
   void initState() {
     _tooltip = TooltipBehavior(enable: true);
@@ -64,17 +72,17 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                   var jobHisDataSource = JobHistoryDataSource(
                     jobHistoryData: state.jobHistoryList,
                   );
-                  for (int i = 0; i < state.jobHistoryList.length; i++) {
-                    chartData.add(
-                      _ChartData(i, state.jobHistoryList[i].goodQty ?? 0),
-                    );
-                  }
+                  // for (int i = 0; i < state.jobHistoryList.length; i++) {
+                  //   chartData.add(
+                  //     _ChartData(i, state.jobHistoryList[i].goodQty ?? 0),
+                  //   );
+                  // }
                   // chartData = state.jobHistoryList
                   //     .map(
-                  //       (e) => _ChartData(
-                  //           int.parse(e.fpoNo ?? "0"), e.goodQty ?? 0),
+                  //       (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
                   //     )
                   //     .toList();
+
                   return Column(
                     children: [
                       const SizedBox(
@@ -127,12 +135,17 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                         zoomPanBehavior: ZoomPanBehavior(
                           enablePanning: true,
                         ),
-                        primaryXAxis: const NumericAxis(
+                        primaryYAxis: const NumericAxis(
+                          interval: 10000,
+                        ),
+                        primaryXAxis: CategoryAxis(
                           autoScrollingDelta: 15,
                           autoScrollingMode: AutoScrollingMode.start,
+                          labelRotation: 90,
+                          labelStyle: textTheme.bodySmall,
                         ),
-                        series: <CartesianSeries<_ChartData, int>>[
-                          ColumnSeries<_ChartData, int>(
+                        series: <CartesianSeries<_ChartData, String>>[
+                          ColumnSeries<_ChartData, String>(
                             dataSource: chartData,
                             xValueMapper: (_ChartData data, _) => data.x,
                             yValueMapper: (_ChartData data, _) => data.y,
@@ -161,6 +174,6 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
 class _ChartData {
   _ChartData(this.x, this.y);
 
-  final int x;
+  final String x;
   final num y;
 }

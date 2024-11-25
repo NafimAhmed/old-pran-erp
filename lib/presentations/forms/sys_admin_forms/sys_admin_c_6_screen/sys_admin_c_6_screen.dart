@@ -199,13 +199,19 @@ class _SysAdminC6ScreenBodyState extends State<SysAdminC6ScreenBody> {
                         return CommonDropDownMenuWidget<MachineInfo>(
                           hintText: "Select Machine",
                           controller: dropDownControler,
+                          enabled: state is MachineCreateSuccess
+                              ? state.machineInfoList.isNotEmpty
+                              : false,
                           dropdownMenuEntries: state is MachineCreateSuccess
                               ? state.machineInfoList
                               : [],
                           onSelected: (value) {
-                            context
-                                .read<VariableStateHandlerCubit<MachineInfo>>()
-                                .update(value!);
+                            if (value != null) {
+                              context
+                                  .read<
+                                      VariableStateHandlerCubit<MachineInfo>>()
+                                  .update(value);
+                            }
                           },
                         );
                       },
@@ -218,13 +224,18 @@ class _SysAdminC6ScreenBodyState extends State<SysAdminC6ScreenBody> {
                         return CommonDropDownMenuWidget<UserOrg>(
                           hintText: "Select Org",
                           controller: dropDown2Controler,
+                          enabled: state is MachineCreateSuccess
+                              ? state.orgInfoList.isNotEmpty
+                              : false,
                           dropdownMenuEntries: state is MachineCreateSuccess
                               ? state.orgInfoList
                               : [],
                           onSelected: (value) {
-                            context
-                                .read<VariableStateHandlerCubit<UserOrg>>()
-                                .update(value!);
+                            if (value != null) {
+                              context
+                                  .read<VariableStateHandlerCubit<UserOrg>>()
+                                  .update(value);
+                            }
                           },
                         );
                       },

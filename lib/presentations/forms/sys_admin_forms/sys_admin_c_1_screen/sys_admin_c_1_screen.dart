@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
@@ -74,6 +75,8 @@ class SysAdminC1ScreenBody extends StatefulWidget {
 
 class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
   TextEditingController menuNameTextController = TextEditingController();
+  TextEditingController moduleDropDownTextController = TextEditingController();
+  TextEditingController pMenuDropDownTextController = TextEditingController();
   FocusNode menuNameFocusNode = FocusNode();
   late UserInfoModel loggedUser;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -92,14 +95,15 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
   void dispose() {
     menuNameTextController.dispose();
     menuNameFocusNode.dispose();
-
+    moduleDropDownTextController.dispose();
+    pMenuDropDownTextController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(appBartitle: widget.fromName),
+      appBar: CommonAppBar(appBartitle: widget.fromName), // create menu
       body: MultiBlocListener(
         listeners: [
           BlocListener<SysMenuCreateBloc, SysMenuCreateState>(
@@ -121,6 +125,8 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                     .reset();
                 context.read<SystemMenuPrntBloc>().add(ResetSystemMenuPrnt());
                 menuNameTextController.clear();
+                pMenuDropDownTextController.clear();
+                moduleDropDownTextController.clear();
                 ScaffoldMessenger.of(context).showSnackBar(
                   CustomSnackBar.successSnackber(
                     message: "Successfully Created..!",
@@ -167,19 +173,23 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                   children: [
                     BlocBuilder<SystemModuleBloc, SystemModuleState>(
                       builder: (context, state) {
-                        return CommonDropdownButton<SysModuleData>(
+                        return CommonDropDownMenuWidget<SysModuleData>(
                           hintText: "Select Module",
-                          value: context
-                              .watch<VariableStateHandlerCubit<SysModuleData>>()
-                              .state,
-                          items: state is SystemModuleSuccess
+                          dropdownMenuEntries: state is SystemModuleSuccess
                               ? state.sysModuleDataList
                               : [],
-                          onChanged: (value) {
-                            context
-                                .read<
-                                    VariableStateHandlerCubit<SysModuleData>>()
-                                .update(value!);
+                          controller: moduleDropDownTextController,
+                          enabled: state is SystemModuleSuccess
+                              ? state.sysModuleDataList.isNotEmpty
+                              : false,
+                          onSelected: (value) {
+                            if (value != null) {
+                              context
+                                  .read<
+                                      VariableStateHandlerCubit<
+                                          SysModuleData>>()
+                                  .update(value);
+                            }
 
                             context
                                 .read<
@@ -192,15 +202,6 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                             context.read<SystemMenuPrntBloc>().add(
                                   ResetSystemMenuPrnt(),
                                 );
-                            // var selectedMenuType = context
-                            //     .read<VariableStateHandlerCubit<MenuType>>()
-                            //     .state;
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return "Please Select Module";
-                            }
-                            return null;
                           },
                         );
                       },
@@ -266,29 +267,26 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                           child: BlocBuilder<SystemMenuPrntBloc,
                               SystemMenuPrntState>(
                             builder: (context, state) {
-                              return CommonDropdownButton<SysMenuparentData>(
+                              return CommonDropDownMenuWidget<
+                                  SysMenuparentData>(
                                 hintText: "Select Parent Menu",
-                                value: context
-                                    .watch<
-                                        VariableStateHandlerCubit<
-                                            SysMenuparentData>>()
-                                    .state,
-                                items: state is SystemMenuPrntSuccess
-                                    ? state.sysMenuPrntDataList
-                                    : [],
-                                onChanged: (value) {
-                                  context
-                                      .read<
-                                          VariableStateHandlerCubit<
-                                              SysMenuparentData>>()
-                                      .update(value!);
+                                controller: pMenuDropDownTextController,
+                                enabled: state is SystemMenuPrntSuccess
+                                    ? state.sysMenuPrntDataList.isNotEmpty
+                                    : false,
+                                dropdownMenuEntries:
+                                    state is SystemMenuPrntSuccess
+                                        ? state.sysMenuPrntDataList
+                                        : [],
+                                onSelected: (value) {
+                                  if (value != null) {
+                                    context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                SysMenuparentData>>()
+                                        .update(value);
+                                  }
                                 },
-                                // validator: (value) {
-                                //   if (value == null) {
-                                //     return "Please Select Parent Module";
-                                //   }
-                                //   return null;
-                                // },
                               );
                             },
                           ),
@@ -330,12 +328,20 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                                   .read<
                                       VariableStateHandlerCubit<
                                           SysModuleData>>()
-                                  .state!;
+                                  .state;
                               var selectedPmenu = context
                                   .read<
                                       VariableStateHandlerCubit<
                                           SysMenuparentData>>()
                                   .state;
+                              if (selectedMod == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  CustomSnackBar.errorSnackber(
+                                    message: "Please Select Module",
+                                  ),
+                                );
+                                return;
+                              }
                               context.read<SysMenuCreateBloc>().add(
                                     CreateSysMenu(
                                       userId: loggedUser.userId,

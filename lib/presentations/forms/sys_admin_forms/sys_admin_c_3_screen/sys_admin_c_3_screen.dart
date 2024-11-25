@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
@@ -68,7 +69,9 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   TextEditingController userMobTextController = TextEditingController();
   TextEditingController userDeptTextController = TextEditingController();
   TextEditingController userDesgTextController = TextEditingController();
-
+  TextEditingController userDropDownTextController = TextEditingController();
+  TextEditingController modDropDownTextController = TextEditingController();
+  TextEditingController menuDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
 
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
@@ -85,7 +88,9 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
     userMobTextController.dispose();
     userDeptTextController.dispose();
     userDesgTextController.dispose();
-
+    userDropDownTextController.dispose();
+    modDropDownTextController.dispose();
+    menuDropDownTextController.dispose();
     super.dispose();
   }
 
@@ -103,6 +108,9 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
             userMobTextController.clear();
             userDeptTextController.clear();
             userDesgTextController.clear();
+            userDropDownTextController.clear();
+            modDropDownTextController.clear();
+            menuDropDownTextController.clear();
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "Permission Given..!",
@@ -136,13 +144,15 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                 ),
                 BlocBuilder<QrUserBloc, QrUserState>(
                   builder: (context, state) {
-                    return CommonDropdownButton<QrUserData>(
+                    return CommonDropDownMenuWidget<QrUserData>(
                       hintText: "Select User",
-                      items: state is QrUserSuccess ? state.qrUsers : [],
-                      value: context
-                          .watch<VariableStateHandlerCubit<QrUserData>>()
-                          .state,
-                      onChanged: (value) {
+                      dropdownMenuEntries:
+                          state is QrUserSuccess ? state.qrUsers : [],
+                      enabled: state is QrUserSuccess
+                          ? state.qrUsers.isNotEmpty
+                          : false,
+                      controller: userDropDownTextController,
+                      onSelected: (value) {
                         context
                             .read<VariableStateHandlerCubit<QrUserData>>()
                             .update(value!);
@@ -159,12 +169,6 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                 creatorId: loggedUser.userId,
                               ),
                             );
-                      },
-                      validator: (value) {
-                        if (value == null) {
-                          return "Please Select Apps User";
-                        }
-                        return null;
                       },
                     );
                   },
@@ -244,36 +248,34 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                     Expanded(
                       child: BlocBuilder<QrUserMenuBloc, QrUserMenuState>(
                         builder: (context, state) {
-                          return CommonDropdownButton<QrModuleData>(
+                          return CommonDropDownMenuWidget<QrModuleData>(
                             hintText: "Select Module",
-                            items: state is QrUserMenuSuccess
+                            dropdownMenuEntries: state is QrUserMenuSuccess
                                 ? state.qrUserMenu
                                 : [],
-                            onChanged: (value) {
+                            controller: modDropDownTextController,
+                            enabled: state is QrUserMenuSuccess
+                                ? state.qrUserMenu.isNotEmpty
+                                : false,
+                            onSelected: (value) {
+                              if (value != null) {
+                                context
+                                    .read<
+                                        VariableStateHandlerCubit<
+                                            QrModuleData>>()
+                                    .update(value);
+                              }
                               var selectedUser = context
                                   .read<VariableStateHandlerCubit<QrUserData>>()
                                   .state!;
-                              context
-                                  .read<
-                                      VariableStateHandlerCubit<QrModuleData>>()
-                                  .update(value!);
+
                               context.read<QrUserChildMenuBloc>().add(
                                     GetQrUserChildMenu(
                                       newUserId: selectedUser.userId!,
                                       creatorId: loggedUser.userId,
-                                      routeName: value.moduleName ?? "",
+                                      routeName: value?.moduleName ?? "",
                                     ),
                                   );
-                            },
-                            value: context
-                                .watch<
-                                    VariableStateHandlerCubit<QrModuleData>>()
-                                .state,
-                            validator: (value) {
-                              if (value == null) {
-                                return "Please Select Module";
-                              }
-                              return null;
                             },
                           );
                         },
@@ -286,29 +288,24 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                       child: BlocBuilder<QrUserChildMenuBloc,
                           QrUserChildMenuState>(
                         builder: (context, state) {
-                          return CommonDropdownButton<QrUserChildMenu>(
+                          return CommonDropDownMenuWidget<QrUserChildMenu>(
                             hintText: "Select Menu",
-                            items: state is QrUserChildMenuSuccess
+                            dropdownMenuEntries: state is QrUserChildMenuSuccess
                                 ? state.qrUserChildMenu
                                 : [],
-                            onChanged: (value) {
-                              context
-                                  .read<
-                                      VariableStateHandlerCubit<
-                                          QrUserChildMenu>>()
-                                  .update(value!);
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return "Please Select Menu";
+                            controller: menuDropDownTextController,
+                            enabled: state is QrUserChildMenuSuccess
+                                ? state.qrUserChildMenu.isNotEmpty
+                                : false,
+                            onSelected: (value) {
+                              if (value != null) {
+                                context
+                                    .read<
+                                        VariableStateHandlerCubit<
+                                            QrUserChildMenu>>()
+                                    .update(value);
                               }
-                              return null;
                             },
-                            value: context
-                                .watch<
-                                    VariableStateHandlerCubit<
-                                        QrUserChildMenu>>()
-                                .state,
                           );
                         },
                       ),
@@ -326,12 +323,29 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                         if (fromKey.currentState!.validate()) {
                           var selectedUser = context
                               .read<VariableStateHandlerCubit<QrUserData>>()
-                              .state!;
+                              .state;
 
                           var selectedChildMenu = context
                               .read<
                                   VariableStateHandlerCubit<QrUserChildMenu>>()
-                              .state!;
+                              .state;
+
+                          if (selectedUser == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackBar.errorSnackber(
+                                message: "Please Select User",
+                              ),
+                            );
+                            return;
+                          }
+                          if (selectedChildMenu == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackBar.errorSnackber(
+                                message: "Please Select Menu",
+                              ),
+                            );
+                            return;
+                          }
                           context.read<QrUserMenuPermissionBloc>().add(
                                 GetQrUserMenuPermission(
                                   userId: loggedUser.userId,

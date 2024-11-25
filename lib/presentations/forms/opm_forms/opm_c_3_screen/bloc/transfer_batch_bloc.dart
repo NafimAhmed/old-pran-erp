@@ -12,12 +12,13 @@ final class TransferBatch extends TransferBatchEvent {
   final String rqty;
   final String split;
 
-  TransferBatch(
-      {required this.pTrnid,
-      required this.userid,
-      required this.rackId,
-      required this.rqty,
-      required this.split});
+  TransferBatch({
+    required this.pTrnid,
+    required this.userid,
+    required this.rackId,
+    required this.rqty,
+    required this.split,
+  });
 }
 
 @immutable
