@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
@@ -166,5 +167,17 @@ abstract class RemoteDataRepository {
     required String machinename,
     required String userId,
     required String orgId,
+  });
+  Future<SubInvResponse> getSubInv({
+    required String orgId,
+  });
+  Future<void> createLocator({
+    required String userId,
+    required String orgId,
+    required String pSubInv,
+    required String pRow,
+    required String pRack,
+    required String pBeen,
+    required String pDesc,
   });
 }
