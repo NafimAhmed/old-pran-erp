@@ -16,6 +16,7 @@ import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -629,5 +630,31 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     await decodeResponse(response);
+  }
+
+  @override
+  Future<RePrintQrResponse> getRePrintData({
+    required String pTrno,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/qrReprintEnbl?ptrno=$pTrno'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: RePrintQrResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> enableRePrint({
+    required String pTrno,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/qrReprintEnbl?ptrno=$pTrno'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

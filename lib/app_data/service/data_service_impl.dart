@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -548,5 +549,26 @@ class DataServiceImpl implements DataService {
       pBeen: pBeen,
       pDesc: pDesc,
     );
+  }
+
+  @override
+  Future<List<RqrData>> getRePrintData({
+    required String pTrno,
+  }) async {
+    var response = await remoteDataRepository.getRePrintData(pTrno: pTrno);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.rqrData ?? [];
+  }
+
+  @override
+  Future<void> enableRePrint({
+    required String pTrno,
+  }) async {
+    var response = await remoteDataRepository.enableRePrint(pTrno: pTrno);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
   }
 }

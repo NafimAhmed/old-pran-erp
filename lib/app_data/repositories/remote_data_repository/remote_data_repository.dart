@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -179,5 +180,11 @@ abstract class RemoteDataRepository {
     required String pRack,
     required String pBeen,
     required String pDesc,
+  });
+  Future<RePrintQrResponse> getRePrintData({
+    required String pTrno,
+  });
+  Future<GenericResponse> enableRePrint({
+    required String pTrno,
   });
 }
