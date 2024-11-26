@@ -17,10 +17,10 @@ import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_7_s
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_7_screen/bloc/org_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_7_screen/bloc/sub_inv_bloc.dart';
 
-class SysAdminC7Screen extends StatelessWidget {
-  const SysAdminC7Screen({super.key, required this.fromName});
-  static const String routeName = "SYSTEM-ADMINISTRATOR-C-7-SCREEN";
-  static const String routePath = "/SYSTEM-ADMINISTRATOR-C-7-SCREEN";
+class InvC3Screen extends StatelessWidget {
+  const InvC3Screen({super.key, required this.fromName});
+  static const String routeName = "INV-C-3-SCREEN";
+  static const String routePath = "/INV-C-3-SCREEN";
   final String fromName;
   @override
   Widget build(BuildContext context) {
@@ -46,22 +46,21 @@ class SysAdminC7Screen extends StatelessWidget {
             ..update(List<String>.filled(4, "")),
         ),
       ],
-      child: SysAdminC7ScreenBody(
+      child: InvC3ScreenBody(
         fromName: fromName,
       ),
     );
   }
 }
 
-class SysAdminC7ScreenBody extends StatefulWidget {
-  const SysAdminC7ScreenBody(
-      {super.key, required this.fromName}); //Locator Create
+class InvC3ScreenBody extends StatefulWidget {
+  const InvC3ScreenBody({super.key, required this.fromName}); //Locator Create
   final String fromName;
   @override
-  State<SysAdminC7ScreenBody> createState() => _SysAdminC7ScreenBodyState();
+  State<InvC3ScreenBody> createState() => _InvC3ScreenBodyState();
 }
 
-class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
+class _InvC3ScreenBodyState extends State<InvC3ScreenBody> {
   late UserInfoModel loggedUser;
   final TextEditingController orgController = TextEditingController();
   final TextEditingController subInvController = TextEditingController();
