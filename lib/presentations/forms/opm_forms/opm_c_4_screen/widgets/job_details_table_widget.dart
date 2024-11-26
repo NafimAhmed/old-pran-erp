@@ -93,8 +93,10 @@ class JobHistoryDataSource extends DataGridSource {
             : Alignment.centerLeft,
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          ["Plan Start Date", "Plan Cmplt Date"].contains(e.columnName)
-              ? DateTime.parse(e.value).toFormatedString("dd-MM-yyy")
+          [
+            "Plan Start Date",
+          ].contains(e.columnName)
+              ? DateTime.parse(e.value).toFormatedString("dd-MM-yyyy")
               : e.value.toString(),
           textAlign: TextAlign.center,
         ),

@@ -58,7 +58,7 @@ abstract class DataService {
     required int transactId,
     required String userId,
   });
-  Future<List<JobHistory>> getJobHistory();
+  Future<List<JobHistory>> getJobHistory({required String userId});
   Future<void> tranferDelete({
     required int trnsfid,
     required String userId,

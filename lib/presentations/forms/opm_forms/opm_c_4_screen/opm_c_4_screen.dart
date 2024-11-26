@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
@@ -19,7 +21,7 @@ class OpmC4Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => JobHistoryBloc(getService())..add(JobHistoryGet()),
+      create: (context) => JobHistoryBloc(getService()),
       child: TransferDetailsScreenBody(
         fromName: fromName,
       ),
@@ -38,12 +40,14 @@ class TransferDetailsScreenBody extends StatefulWidget {
 class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   List<JobHistory> jobHisory = <JobHistory>[];
 
-  late TooltipBehavior _tooltip;
   List<_ChartData> chartData = [];
-
+  late UserInfoModel loggedUser;
   @override
   void initState() {
-    _tooltip = TooltipBehavior(enable: true);
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    context
+        .read<JobHistoryBloc>()
+        .add(JobHistoryGet(userId: loggedUser.userId));
     super.initState();
   }
 

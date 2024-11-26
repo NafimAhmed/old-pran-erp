@@ -114,9 +114,9 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<JobHistory>> getJobHistory() async {
-    var response = await remoteDataRepository.getJobHistory();
-    return response.items ?? [];
+  Future<List<JobHistory>> getJobHistory({required String userId}) async {
+    var response = await remoteDataRepository.getJobHistory(userId: userId);
+    return response.jobOrderInfo ?? [];
   }
 
   @override

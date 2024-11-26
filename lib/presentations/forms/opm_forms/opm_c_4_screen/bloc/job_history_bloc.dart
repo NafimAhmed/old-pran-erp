@@ -6,7 +6,11 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 @immutable
 sealed class JobHistoryEvent {}
 
-final class JobHistoryGet extends JobHistoryEvent {}
+final class JobHistoryGet extends JobHistoryEvent {
+  final String userId;
+
+  JobHistoryGet({required this.userId});
+}
 
 @immutable
 sealed class JobHistoryState {}
@@ -33,7 +37,7 @@ class JobHistoryBloc extends Bloc<JobHistoryEvent, JobHistoryState> {
     on<JobHistoryGet>((event, emit) async {
       emit(JobHistoryLoading());
       try {
-        var response = await _dataService.getJobHistory();
+        var response = await _dataService.getJobHistory(userId: event.userId);
         emit(JobHistorySuccess(jobHistoryList: response));
       } catch (error) {
         emit(JobHistoryError(error: error));
