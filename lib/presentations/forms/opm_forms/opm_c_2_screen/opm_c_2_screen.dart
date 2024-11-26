@@ -391,6 +391,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           if (value == null || value.isEmpty) {
                             return "Please Enter Good Quantity";
                           }
+                          if (int.parse(value) <= 0) {
+                            return "Can't Be Zero";
+                          }
                           return null;
                         },
                         onChanged: (value) {

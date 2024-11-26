@@ -39,14 +39,8 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   List<JobHistory> jobHisory = <JobHistory>[];
 
   late TooltipBehavior _tooltip;
-  // List<_ChartData> chartData = [];
-  final List<_ChartData> chartData = [
-    _ChartData("1", 35),
-    _ChartData("2", 23),
-    _ChartData("3", 34),
-    _ChartData("4", 25),
-    _ChartData("5", 40)
-  ];
+  List<_ChartData> chartData = [];
+
   @override
   void initState() {
     _tooltip = TooltipBehavior(enable: true);
@@ -77,11 +71,11 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                   //     _ChartData(i, state.jobHistoryList[i].goodQty ?? 0),
                   //   );
                   // }
-                  // chartData = state.jobHistoryList
-                  //     .map(
-                  //       (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
-                  //     )
-                  //     .toList();
+                  chartData = state.jobHistoryList
+                      .map(
+                        (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
+                      )
+                      .toList();
 
                   return Column(
                     children: [
@@ -133,14 +127,14 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                       ),
                       SfCartesianChart(
                         zoomPanBehavior: ZoomPanBehavior(
+                          enablePinching: true,
+                          zoomMode: ZoomMode.x,
                           enablePanning: true,
                         ),
                         primaryYAxis: const NumericAxis(
                           interval: 10000,
                         ),
                         primaryXAxis: CategoryAxis(
-                          autoScrollingDelta: 15,
-                          autoScrollingMode: AutoScrollingMode.start,
                           labelRotation: 90,
                           labelStyle: textTheme.bodySmall,
                         ),
