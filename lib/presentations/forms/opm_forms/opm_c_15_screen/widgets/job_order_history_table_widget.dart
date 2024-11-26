@@ -78,8 +78,11 @@ class JobOrderHisDataSource extends DataGridSource {
         cells: row.getCells().map<Widget>((e) {
       return Container(
         alignment: [
-          "Job Order Qty",
-          "Rack Qty",
+          "FPO Qty",
+          "Made Qty",
+          "Int Qty",
+          "Transfered Qty",
+          "OnHand Qty",
         ].contains(e.columnName)
             ? Alignment.centerRight
             : Alignment.centerLeft,

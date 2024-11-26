@@ -162,7 +162,7 @@ abstract class DataService {
   Future<List<IotTrnData>> getIotTrnData({
     required String userId,
   });
-  Future<List<JobOrderData>> getJobOrderSumHistory();
+  Future<List<JobOrderData>> getJobOrderSumHistory({required String userId});
   Future<List<UserOrg>> getOrgs();
   Future<void> giveOrgAccess({
     required String newUserId,

@@ -462,12 +462,14 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<JobOrderData>> getJobOrderSumHistory() async {
-    var response = await remoteDataRepository.getJobOrderSumHistory();
+  Future<List<JobOrderData>> getJobOrderSumHistory(
+      {required String userId}) async {
+    var response =
+        await remoteDataRepository.getJobOrderSumHistory(userId: userId);
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
-    return response.jobOrderData ?? [];
+    return response.jobLocatorInfo ?? [];
   }
 
   @override

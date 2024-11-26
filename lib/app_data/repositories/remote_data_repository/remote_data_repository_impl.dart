@@ -538,9 +538,12 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<JobOrderSumHistoryResponse> getJobOrderSumHistory() async {
-    var request = http.Request('POST',
-        Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/JoborderSumHistory'));
+  Future<JobOrderSumHistoryResponse> getJobOrderSumHistory(
+      {required String userId}) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/JoborderSumHistory?userid=$userId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,

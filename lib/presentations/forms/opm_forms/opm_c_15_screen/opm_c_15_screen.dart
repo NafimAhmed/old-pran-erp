@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_15_screen/bloc/job_order_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_15_screen/widgets/job_order_history_table_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -38,15 +40,18 @@ class OpmC15ScreenBody extends StatefulWidget {
 }
 
 class _OpmC15ScreenBodyState extends State<OpmC15ScreenBody> {
+  late TooltipBehavior _tooltip;
+  List<_ChartData> chartData = [];
+  late UserInfoModel loggedUser;
   @override
   void initState() {
     _tooltip = TooltipBehavior(enable: true);
-    context.read<JobOrderHistoryBloc>().add(GetJobOrderHistory());
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    context
+        .read<JobOrderHistoryBloc>()
+        .add(GetJobOrderHistory(userId: loggedUser.userId));
     super.initState();
   }
-
-  late TooltipBehavior _tooltip;
-  List<_ChartData> chartData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +74,7 @@ class _OpmC15ScreenBodyState extends State<OpmC15ScreenBody> {
 
                   chartData = state.jobOrderDataList
                       .map(
-                        (e) => _ChartData(e.jobOrderNo ?? "", e.rackQty ?? 0),
+                        (e) => _ChartData(e.jobOrderNo ?? "", e.madeQty ?? 0),
                       )
                       .toList();
                   return Column(

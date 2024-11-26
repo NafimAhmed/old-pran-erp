@@ -153,7 +153,8 @@ abstract class RemoteDataRepository {
   Future<IotTrnDataResponse> getIotTrnData({
     required String userId,
   });
-  Future<JobOrderSumHistoryResponse> getJobOrderSumHistory();
+  Future<JobOrderSumHistoryResponse> getJobOrderSumHistory(
+      {required String userId});
   Future<OrgsResponse> getOrgs();
   Future<GenericResponse> giveOrgAccess({
     required String newUserId,
