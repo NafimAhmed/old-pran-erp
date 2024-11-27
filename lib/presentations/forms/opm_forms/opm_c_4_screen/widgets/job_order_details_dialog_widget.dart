@@ -122,7 +122,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                 Expanded(
                   child: Text(
                     itemName,
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.left,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

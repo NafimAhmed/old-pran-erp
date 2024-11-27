@@ -122,7 +122,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                                   cells: jobHisDataSource
                                       .rows[details.rowColumnIndex.rowIndex - 1]
                                       .getCells()
-                                      .sublist(2),
+                                      .sublist(3),
                                 ),
                               );
                             }
