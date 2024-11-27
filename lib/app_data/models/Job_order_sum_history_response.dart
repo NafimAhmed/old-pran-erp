@@ -207,7 +207,7 @@ class JobOrderData {
         transferedQty: json["TRANSFERED_QTY"],
         intQty: json["INT_QTY"],
         onhandQty: json["ONHAND_QTY"],
-        locLocator: json["LOC_LOCATOR"],
+        locLocator: json["LOT_LOCATOR"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -218,7 +218,7 @@ class JobOrderData {
         "TRANSFERED_QTY": transferedQty,
         "INT_QTY": intQty,
         "ONHAND_QTY": onhandQty,
-        "LOC_LOCATOR": locLocator,
+        "LOT_LOCATOR": locLocator,
       };
 
   Map<String, dynamic> toTabMap() => {
