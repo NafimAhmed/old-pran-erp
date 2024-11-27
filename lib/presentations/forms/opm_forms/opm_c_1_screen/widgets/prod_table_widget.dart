@@ -12,7 +12,8 @@ class ProdTableWidget extends StatelessWidget {
       source: source,
       // frozenRowsCount: 2,
       allowExpandCollapseGroup: true,
-
+      rowHeight: 45,
+      headerRowHeight: 36,
       gridLinesVisibility: GridLinesVisibility.both,
       headerGridLinesVisibility: GridLinesVisibility.both,
       columnWidthMode: ColumnWidthMode.fitByCellValue,

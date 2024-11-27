@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history.dart';
+import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -11,6 +11,8 @@ class JobOrderHisTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SfDataGrid(
       source: source,
+      rowHeight: 30,
+      headerRowHeight: 36,
       frozenColumnsCount: 1,
       gridLinesVisibility: GridLinesVisibility.both,
       headerGridLinesVisibility: GridLinesVisibility.both,
@@ -74,24 +76,28 @@ class JobOrderHisDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    final int rowIndex = effectiveRows.indexOf(row);
     return DataGridRowAdapter(
+        color: rowIndex % 2 == 0
+            ? Colors.grey // Light grey for even rows
+            : Colors.white,
         cells: row.getCells().map<Widget>((e) {
-      return Container(
-        alignment: [
-          "FPO Qty",
-          "Made Qty",
-          "Int Qty",
-          "Transfered Qty",
-          "OnHand Qty",
-        ].contains(e.columnName)
-            ? Alignment.centerRight
-            : Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          e.value.toString(),
-          textAlign: TextAlign.center,
-        ),
-      );
-    }).toList());
+          return Container(
+            alignment: [
+              "FPO Qty",
+              "Made Qty",
+              "Int Qty",
+              "Transfered Qty",
+              "OnHand Qty",
+            ].contains(e.columnName)
+                ? Alignment.centerRight
+                : Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              e.value.toString(),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }).toList());
   }
 }
