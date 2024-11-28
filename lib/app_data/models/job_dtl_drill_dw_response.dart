@@ -48,6 +48,7 @@ class JobDtlDrillDwResponse {
 
 class JobDetail {
   final String? itemName;
+  final String? itemCode;
   final int? prodQty;
   final int? goodQty;
   final int? badQty;
@@ -57,6 +58,7 @@ class JobDetail {
 
   JobDetail({
     this.itemName,
+    this.itemCode,
     this.prodQty,
     this.goodQty,
     this.badQty,
@@ -67,6 +69,7 @@ class JobDetail {
 
   JobDetail copyWith({
     String? itemName,
+    String? itemCode,
     int? prodQty,
     int? goodQty,
     int? badQty,
@@ -76,6 +79,7 @@ class JobDetail {
   }) =>
       JobDetail(
         itemName: itemName ?? this.itemName,
+        itemCode: itemCode ?? this.itemCode,
         prodQty: prodQty ?? this.prodQty,
         goodQty: goodQty ?? this.goodQty,
         badQty: badQty ?? this.badQty,
@@ -90,6 +94,7 @@ class JobDetail {
 
   factory JobDetail.fromMap(Map<String, dynamic> json) => JobDetail(
         itemName: json["item_name"],
+        itemCode: json["item_code"],
         prodQty: json["prod_qty"],
         goodQty: json["good_qty"],
         badQty: json["bad_qty"],
@@ -100,6 +105,7 @@ class JobDetail {
 
   Map<String, dynamic> toMap() => {
         "item_name": itemName,
+        "item_code": itemCode,
         "prod_qty": prodQty,
         "good_qty": goodQty,
         "bad_qty": badQty,
@@ -109,6 +115,7 @@ class JobDetail {
       };
   Map<String, dynamic> toTabMap() => {
         "Item Name": itemName,
+        "Item Code": itemCode,
         "Prod Qty": prodQty,
         "Good Qty": goodQty,
         "Bad Qty": badQty,

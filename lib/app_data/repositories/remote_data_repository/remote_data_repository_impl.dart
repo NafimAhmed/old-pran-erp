@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
@@ -677,5 +678,21 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
         decoder: JobDtlDrillDwResponse.fromJson);
+  }
+
+  @override
+  Future<JoLocDrillDwResponse> getJobLocDrillDw({
+    required String userid,
+    required String jobOrderNo,
+    required String itemCode,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/JOLocDrillDw?userid=$userid&joborderno=$jobOrderNo&itemcode=$itemCode'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: JoLocDrillDwResponse.fromJson);
   }
 }

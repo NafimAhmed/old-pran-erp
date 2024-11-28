@@ -9,7 +9,7 @@ class CommonTableWidget extends StatelessWidget {
       this.onCellTap,
       this.frozenColumnsCount = 0});
   final TabDataSource source;
-  final void Function(DataGridCellTapDetails)? onCellTap;
+  final void Function(DataGridCellTapDetails details)? onCellTap;
   final int frozenColumnsCount;
   @override
   Widget build(BuildContext context) {

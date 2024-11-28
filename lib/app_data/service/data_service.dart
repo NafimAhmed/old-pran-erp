@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
@@ -202,5 +203,11 @@ abstract class DataService {
   Future<List<JobDetail>> getJobDtlDrillDw({
     required String userid,
     required String jobOrderNo,
+  });
+
+  Future<List<JobLocatorInfo>> getJobLocDrillDw({
+    required String userid,
+    required String jobOrderNo,
+    required String itemCode,
   });
 }

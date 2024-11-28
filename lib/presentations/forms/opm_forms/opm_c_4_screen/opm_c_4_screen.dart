@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_loc_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -28,6 +29,9 @@ class OpmC4Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => JobDetailsBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => JobLocatorDrilBloc(getService()),
         ),
       ],
       child: TransferDetailsScreenBody(
