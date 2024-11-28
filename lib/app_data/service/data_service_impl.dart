@@ -1,4 +1,4 @@
-import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history.dart';
+import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
@@ -572,5 +573,18 @@ class DataServiceImpl implements DataService {
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
+  }
+
+  @override
+  Future<List<JobDetail>> getJobDtlDrillDw({
+    required String userid,
+    required String jobOrderNo,
+  }) async {
+    var response = await remoteDataRepository.getJobDtlDrillDw(
+        userid: userid, jobOrderNo: jobOrderNo);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.jobDetails ?? [];
   }
 }

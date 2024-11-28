@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history.dart';
+import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
@@ -661,5 +662,20 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<JobDtlDrillDwResponse> getJobDtlDrillDw({
+    required String userid,
+    required String jobOrderNo,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userJobDtlDrillDw?userid=$userid&joborderno=$jobOrderNo'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: JobDtlDrillDwResponse.fromJson);
   }
 }

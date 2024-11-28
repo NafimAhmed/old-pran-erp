@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
@@ -20,8 +21,15 @@ class OpmC4Screen extends StatelessWidget {
   final String fromName;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => JobHistoryBloc(getService()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => JobHistoryBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => JobDetailsBloc(getService()),
+        ),
+      ],
       child: TransferDetailsScreenBody(
         fromName: fromName,
       ),
@@ -123,6 +131,8 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                                       .rows[details.rowColumnIndex.rowIndex - 1]
                                       .getCells()
                                       .sublist(3),
+                                  blocContext: context,
+                                  userId: loggedUser.userId,
                                 ),
                               );
                             }
