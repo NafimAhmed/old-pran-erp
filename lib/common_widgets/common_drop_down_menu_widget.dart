@@ -57,13 +57,21 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
         fontWeight: FontWeight.bold,
       ),
       onSelected: onSelected,
-      dropdownMenuEntries: dropdownMenuEntries.map(
-        (e) {
+      dropdownMenuEntries: List.generate(
+        dropdownMenuEntries.length,
+        (index) {
           return DropdownMenuEntry(
-            value: e,
-            label: e.toString(),
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(
+                index % 2 == 0
+                    ? appTheme.tertiary.withOpacity(0.2)
+                    : appTheme.tertiary.withOpacity(0.3),
+              ),
+            ),
+            value: dropdownMenuEntries[index],
+            label: dropdownMenuEntries[index].toString(),
             labelWidget: Text(
-              e.toString(),
+              dropdownMenuEntries[index].toString(),
               style: textTheme.bodySmall!.copyWith(
                 color: appTheme.primary,
                 fontSize: 15,
@@ -72,7 +80,7 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
             ),
           );
         },
-      ).toList(),
+      ),
     );
   }
 }
