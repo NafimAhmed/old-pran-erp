@@ -107,4 +107,13 @@ class JobDetail {
         "made_p": madeP,
         "unit": unit,
       };
+  Map<String, dynamic> toTabMap() => {
+        "Item Name": itemName,
+        "Prod Qty": prodQty,
+        "Good Qty": goodQty,
+        "Bad Qty": badQty,
+        "Due Qty": duesQty,
+        "Made p": madeP,
+        "Unit": unit,
+      };
 }

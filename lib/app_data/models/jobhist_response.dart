@@ -399,8 +399,6 @@ class JobHistory {
         "Made P %": "$madeP %",
         "Item": item,
         "FPO No": fpoNo,
-        "Plan Start Date": planStartDate,
-        "Plan Cmplt Date": planCmplDate,
         "FPO Qty": fpoQty,
         "Good Qty": goodQty,
         "Bad Qty": badQty,

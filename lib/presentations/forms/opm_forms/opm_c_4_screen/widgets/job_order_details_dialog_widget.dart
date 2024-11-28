@@ -211,7 +211,7 @@ class _TestDialogState extends State<TestDialog> {
   void initState() {
     List<Map<String, dynamic>> tableData = widget.jobDetails.map(
       (e) {
-        return e.toMap();
+        return e.toTabMap();
       },
     ).toList();
     tabDataSource = TabDataSource(tableData: tableData, alignment: []);
