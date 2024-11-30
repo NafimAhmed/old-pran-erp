@@ -7,10 +7,12 @@ class CommonTableWidget extends StatelessWidget {
       {super.key,
       required this.source,
       this.onCellTap,
-      this.frozenColumnsCount = 0});
+      this.frozenColumnsCount = 0,
+      this.colVisibilityOff = const []});
   final TabDataSource source;
   final void Function(DataGridCellTapDetails details)? onCellTap;
   final int frozenColumnsCount;
+  final List<String> colVisibilityOff;
   @override
   Widget build(BuildContext context) {
     return SfDataGrid(
@@ -30,6 +32,8 @@ class CommonTableWidget extends StatelessWidget {
               : 0,
           (index) {
             return GridColumn(
+              visible: !colVisibilityOff.contains(
+                  source._tableData.first.getCells()[index].columnName),
               columnName: source._tableData.first.getCells()[index].columnName,
               label: Container(
                 color: appTheme.primary,

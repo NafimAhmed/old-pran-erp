@@ -15,8 +15,8 @@ class JobDetailsTableWidget extends StatelessWidget {
     return SfDataGridTheme(
       data: SfDataGridThemeData(gridLineColor: appTheme.white),
       child: SfDataGrid(
-        rowHeight: 30,
-        headerRowHeight: 36,
+        rowHeight: 32,
+        headerRowHeight: 38,
         source: source,
         frozenColumnsCount: 1,
         gridLinesVisibility: GridLinesVisibility.both,

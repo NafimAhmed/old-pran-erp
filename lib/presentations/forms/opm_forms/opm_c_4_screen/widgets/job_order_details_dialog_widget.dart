@@ -245,7 +245,10 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
         return e.toTabMap();
       },
     ).toList();
-    tabDataSource = TabDataSource(tableData: tableData, alignment: []);
+    tabDataSource = TabDataSource(
+      tableData: tableData,
+      alignment: [],
+    );
     super.initState();
   }
 
@@ -270,7 +273,7 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
             builder: (context, state) {
               if (state is JobLocatorDrilLoading) {
                 return const SizedBox(
-                  height: 200,
+                  height: 300,
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -280,8 +283,21 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      context.pop();
+                    },
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Icon(
+                        Icons.close,
+                        color: appTheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                  ),
                   SizedBox(
-                    height: 200,
+                    height: 300,
                     child: CommonTableWidget(
                       source: tabDataSource,
                       onCellTap: (details) {
@@ -300,6 +316,7 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                               );
                         }
                       },
+                      colVisibilityOff: const ["Item Code"],
                     ),
                   ),
                 ],
@@ -344,8 +361,21 @@ class _JobLocDrillDwDialogState extends State<JobLocDrillDwDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          GestureDetector(
+            onTap: () {
+              context.pop();
+            },
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Icon(
+                Icons.close,
+                color: appTheme.primary,
+                size: 20,
+              ),
+            ),
+          ),
           SizedBox(
-            height: 200,
+            height: 300,
             child: CommonTableWidget(
               source: tabDataSource,
             ),
