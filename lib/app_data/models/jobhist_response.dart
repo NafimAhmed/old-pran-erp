@@ -398,7 +398,6 @@ class JobHistory {
         "Job Order No": jobOrderNo,
         "Made P %": "$madeP %",
         "Item": item,
-        "FPO No": fpoNo,
         "FPO Qty": fpoQty,
         "Good Qty": goodQty,
         "Bad Qty": badQty,

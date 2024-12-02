@@ -115,13 +115,13 @@ class JobLocatorInfo {
         "LOT_LOCATOR": lotLocator,
       };
   Map<String, dynamic> toTabMap() => {
-        "Job Order No": jobOrderNo,
-        "Item Name": itemName,
+        // "Job Order No": jobOrderNo,
+        // "Item Name": itemName,
         // "FPO Qty": fpoQty,
         // "Made Qty": madeQty,
         // "Transfer Qty": transferedQty,
         // "Int Qty": intQty,
-        // "OnHand Qty": onhandQty,
         "Lot Locator": lotLocator,
+        "OnHand Qty": onhandQty,
       };
 }

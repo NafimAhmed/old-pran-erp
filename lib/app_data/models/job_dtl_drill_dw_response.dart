@@ -120,7 +120,7 @@ class JobDetail {
         "Good Qty": goodQty,
         "Bad Qty": badQty,
         "Due Qty": duesQty,
-        "Made p": madeP,
+        "Made(%)": madeP,
         "Unit": unit,
       };
 }

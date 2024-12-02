@@ -82,133 +82,118 @@ class JobOrderDetailsDialog extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   Container(
-                    padding: const EdgeInsets.only(right: 5),
+                    padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              blocContext.read<JobDetailsBloc>().add(
-                                    JobDetailsGet(
-                                      userId: userId,
-                                      jobOrderno: jobOrderNo,
-                                    ),
-                                  );
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) {
-                              //     return Dialog(
-                              //       alignment: Alignment.center,
-                              //       backgroundColor:
-                              //           Theme.of(context).colorScheme.surface,
-                              //       shape: RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(10.0),
-                              //       ),
-                              //       insetPadding: const EdgeInsets.symmetric(
-                              //         horizontal: 20,
-                              //       ),
-                              //       child: const TestDialog(),
-                              //     );
-                              //   },
-                              // );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: appTheme.primary,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Job Order No",
-                                  textAlign: TextAlign.left,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: appTheme.white,
-                                      ),
-                                ),
-                              ),
+                      color: appTheme.primary,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "FG/SFG Status",
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          Text(
-                            jobOrderNo,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          )
-                        ],
                       ),
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 5,
                     ),
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(0.2),
+                        color: appTheme.primary.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            itemName,
-                            textAlign: TextAlign.left,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
+                        Text(
+                          itemName,
+                          textAlign: TextAlign.left,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        Text(
+                          jobOrderNo,
+                          textAlign: TextAlign.center,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         )
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ...List.generate(
-                    cells.length,
-                    (index) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              cells[index].columnName,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              ["Plan Start Date", "Plan Cmplt Date"]
-                                      .contains(cells[index].columnName)
-                                  ? DateTime.parse(cells[index].value)
-                                      .toFormatedString("dd-MM-yyy")
-                                  : cells[index].value.toString(),
-                              textAlign: TextAlign.end,
-                            ),
-                          )
-                        ],
-                      );
-                    },
+                  const SizedBox(height: 5),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: appTheme.primary.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        ...List.generate(
+                          cells.length,
+                          (index) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    cells[index].columnName,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    ["Plan Start Date", "Plan Cmplt Date"]
+                                            .contains(cells[index].columnName)
+                                        ? DateTime.parse(cells[index].value)
+                                            .toFormatedString("dd-MM-yyy")
+                                        : cells[index].value.toString(),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        blocContext.read<JobDetailsBloc>().add(
+                              JobDetailsGet(
+                                userId: userId,
+                                jobOrderno: jobOrderNo,
+                              ),
+                            );
+                      },
+                      child: Text(
+                        "See FG/SFG",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.white,
+                        ),
+                      ),
+                    ),
                   )
                 ],
               );
@@ -256,7 +241,8 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: BlocProvider.of<JobLocatorDrilBloc>(widget.blocContext),
-      child: Padding(
+      child: Container(
+        height: 300,
         padding: const EdgeInsets.all(8.0),
         child: BlocListener<JobLocatorDrilBloc, JobLocatorDrilState>(
           listener: (context, state) {
@@ -296,8 +282,30 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 300,
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: appTheme.primary,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "FG/SFG Details",
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
                     child: CommonTableWidget(
                       source: tabDataSource,
                       onCellTap: (details) {
@@ -355,7 +363,8 @@ class _JobLocDrillDwDialogState extends State<JobLocDrillDwDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      height: 300,
       padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -374,8 +383,30 @@ class _JobLocDrillDwDialogState extends State<JobLocDrillDwDialog> {
               ),
             ),
           ),
-          SizedBox(
-            height: 300,
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: appTheme.primary,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: Text(
+                "Locator Details",
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: appTheme.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
             child: CommonTableWidget(
               source: tabDataSource,
             ),
@@ -385,3 +416,36 @@ class _JobLocDrillDwDialogState extends State<JobLocDrillDwDialog> {
     );
   }
 }
+
+
+ // InkWell(
+                          //   onTap: () {
+                          //     blocContext.read<JobDetailsBloc>().add(
+                          //           JobDetailsGet(
+                          //             userId: userId,
+                          //             jobOrderno: jobOrderNo,
+                          //           ),
+                          //         );
+                          //   },
+                          //   child: Container(
+                          //     padding: const EdgeInsets.symmetric(
+                          //         horizontal: 10, vertical: 5),
+                          //     decoration: BoxDecoration(
+                          //       borderRadius: BorderRadius.circular(10),
+                          //       color: appTheme.primary,
+                          //     ),
+                          //     child: Center(
+                          //       child: Text(
+                          //         "Job Order No",
+                          //         textAlign: TextAlign.left,
+                          //         style: Theme.of(context)
+                          //             .textTheme
+                          //             .bodyMedium!
+                          //             .copyWith(
+                          //               fontWeight: FontWeight.bold,
+                          //               color: appTheme.white,
+                          //             ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
