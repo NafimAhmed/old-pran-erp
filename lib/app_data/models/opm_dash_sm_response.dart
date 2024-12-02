@@ -131,11 +131,11 @@ class JobDetailsStatus {
         "jo_due_made_P": joDueMadeP,
       };
   Map<String, dynamic> toTabMap() => {
-        "T_Cust": totalCustomer,
-        "T_Jo": totalJo,
+        "T Cust": totalCustomer,
+        "T Jo": totalJo,
         "Completed": completedJo,
-        "MadeP(%)": "$joMadeP %",
-        "DueP(%)": "$joDueMadeP %",
+        "Made(%)": "$joMadeP %",
+        "Due(%)": "$joDueMadeP %",
       };
 }
 
@@ -190,11 +190,11 @@ class ProdDtlStatus {
         "due_made_P": dueMadeP,
       };
   Map<String, dynamic> toTabMap() => {
-        "T_Item": totalItem,
+        "T Item": totalItem,
         "Completed": itemCompleted,
-        "T_Batch": totalBatch,
-        "MadeP(%)": "$madeP %",
-        "DueP(%)": "$dueMadeP %",
+        "T Batch": totalBatch,
+        "Made(%)": "$madeP %",
+        "Due(%)": "$dueMadeP %",
       };
 }
 
@@ -256,12 +256,12 @@ class BatchStatus {
         "due_made_P": dueMadeP,
       };
   Map<String, dynamic> toTabMap() => {
-        "T_Batch": totalBatch,
+        "T Batch": totalBatch,
         "Completed": completedBatch,
         "Unclosed": completedButUnclosedBatch,
         // "batch_completion_p": batchCompletionP,
-        "MadeP(%)": "$madeP %",
-        "DueP(%)": "$dueMadeP %",
+        "Made(%)": "$madeP %",
+        "Due(%)": "$dueMadeP %",
       };
 }
 
@@ -322,11 +322,11 @@ class ExtDtlStatus {
         "due_made_P": dueMadeP,
       };
   Map<String, dynamic> toTabMap() => {
-        "T_Item": totalItem,
+        "T Item": totalItem,
         "CompletionP": batchCompletionP,
         "Exp Comp": expCpltdButNotSysCom,
         // "near_this_week_expdt_JO": nearThisWeekExpdtJo,
-        "MadeP(%)": "$madeP %",
-        "DueP(%)": "$dueMadeP %",
+        "Made(%)": "$madeP %",
+        "Due(%)": "$dueMadeP %",
       };
 }
