@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
-
-import 'package:pran_rfl_erp/common_widgets/shapes/custom_shape_painter2.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_menu_bloc.dart';
@@ -59,7 +57,6 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
             .add(UserMenuGet(userId: loggedUser.userId));
       },
       child: Scaffold(
-        backgroundColor: Colors.blueGrey[50],
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

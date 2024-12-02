@@ -46,8 +46,8 @@ class _OpmC17ScreenBodyState extends State<OpmC17ScreenBody> {
 
     /*24 is for notification bar on Android*/
 
-    final double itemHeight = (size.height - kToolbarHeight) / 5;
-    final double itemWidth = size.width / 2;
+    final double itemHeight = (size.height - kToolbarHeight) / 5.5;
+    final double itemWidth = (size.width - 30) / 2;
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
       appBar: CommonAppBar(appBartitle: widget.fromName),
