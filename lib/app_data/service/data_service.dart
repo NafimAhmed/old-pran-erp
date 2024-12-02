@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
+import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
@@ -12,6 +13,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -158,6 +160,11 @@ abstract class DataService {
   Future<List<BatchCompData>> getBatchCompData({
     required String userId,
   });
+  Future<void> getBatchReleaseData({
+    required String userId,
+    required String orgId,
+    required String batchId,
+  });
   Future<List<RcvIotData>> getRcvInvOrgTrnData({
     required String userId,
   });
@@ -209,5 +216,8 @@ abstract class DataService {
     required String userid,
     required String jobOrderNo,
     required String itemCode,
+  });
+  Future<OpmDashSmResponse> getOpmDashboardSM({
+    required String userid,
   });
 }

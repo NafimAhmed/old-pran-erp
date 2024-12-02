@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -512,6 +513,21 @@ class RemoteDataRepositoryImpl
   }
 
   @override
+  Future<GenericResponse> getBatchReleaseData({
+    required String userId,
+    required String orgId,
+    required String batchId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchRelease?userid=$userId&orgid=$orgId&batchid=$batchId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
   Future<RcvInvOrgTrnDataResponse> getRcvInvOrgTrnData({
     required String userId,
   }) async {
@@ -694,5 +710,18 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
         decoder: JoLocDrillDwResponse.fromJson);
+  }
+
+  @override
+  Future<OpmDashSmResponse> getOpmDashboardSM({
+    required String userid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/opmDashboardSM?userid=$userid'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: OpmDashSmResponse.fromJson);
   }
 }

@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -441,6 +442,19 @@ class DataServiceImpl implements DataService {
   }
 
   @override
+  Future<void> getBatchReleaseData({
+    required String userId,
+    required String orgId,
+    required String batchId,
+  }) async {
+    var response = await remoteDataRepository.getBatchReleaseData(
+        userId: userId, orgId: orgId, batchId: batchId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
   Future<List<RcvIotData>> getRcvInvOrgTrnData({
     required String userId,
   }) async {
@@ -601,5 +615,16 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.jobLocatorInfo ?? [];
+  }
+
+  @override
+  Future<OpmDashSmResponse> getOpmDashboardSM({
+    required String userid,
+  }) async {
+    var response = await remoteDataRepository.getOpmDashboardSM(userid: userid);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response;
   }
 }
