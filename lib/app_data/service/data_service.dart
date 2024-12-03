@@ -157,6 +157,10 @@ abstract class DataService {
   Future<List<BatchCloseData>> getBatchCloseData({
     required String userId,
   });
+  Future<void> batchClose({
+    required String userId,
+    required int batchid,
+  });
   Future<List<BatchCompData>> getBatchCompData({
     required String userId,
   });

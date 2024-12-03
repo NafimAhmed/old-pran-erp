@@ -147,6 +147,10 @@ abstract class RemoteDataRepository {
   Future<BatchCloseDataResponse> getBatchCloseData({
     required String userId,
   });
+  Future<GenericResponse> batchClose({
+    required String userId,
+    required int batchid,
+  });
   Future<BatchCompDataResponse> getBatchCompData({
     required String userId,
   });

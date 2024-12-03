@@ -498,6 +498,20 @@ class RemoteDataRepositoryImpl
   }
 
   @override
+  Future<GenericResponse> batchClose({
+    required String userId,
+    required int batchid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchClose?userid=$userId&batchid=$batchid'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
   Future<BatchCompDataResponse> getBatchCompData({
     required String userId,
   }) async {

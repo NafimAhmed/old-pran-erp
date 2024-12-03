@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -7,6 +8,7 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_17_screen/bloc/opm_dash_sm_bloc.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
+import 'package:pran_rfl_erp/presentations/opm_dash_details_screen.dart/opm_dash_details_screen.dart';
 
 class OpmC17Screen extends StatelessWidget {
   const OpmC17Screen({super.key, required this.fromName});
@@ -42,12 +44,12 @@ class _OpmC17ScreenBodyState extends State<OpmC17ScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
+    // var dTopPad = MediaQuery.of(context).viewPadding.top;
+    // var dBotPad = MediaQuery.of(context).viewPadding.bottom;
 
-    /*24 is for notification bar on Android*/
-
-    final double itemHeight = (size.height - kToolbarHeight) / 5.5;
-    final double itemWidth = (size.width - 30) / 2;
+    // final double itemHeight = (size.height - dTopPad - dBotPad) / 5.5;
+    // final double itemWidth = (size.width - 30) / 2;
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
       appBar: CommonAppBar(appBartitle: widget.fromName),
@@ -113,19 +115,24 @@ class _OpmC17ScreenBodyState extends State<OpmC17ScreenBody> {
                     var exportSts = state.dashReport.extDtlStatus?.first;
                     return GridView(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                        childAspectRatio: (itemWidth / itemHeight),
-                      ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 15,
+                          mainAxisExtent:
+                              MediaQuery.of(context).size.height * 0.175
+                          // childAspectRatio: (itemWidth / itemHeight),
+                          ),
                       children: [
-                        OpmDashSmWidget(
-                          data: prodSts?.toTabMap() ?? {},
-                          lable: "Product Status",
-                        ),
                         OpmDashSmWidget(
                           data: jobSts?.toTabMap() ?? {},
                           lable: "Job Status",
+                          onTap: () {
+                            context.pushNamed(OpmDashDetailsScreen.routeName);
+                          },
+                        ),
+                        OpmDashSmWidget(
+                          data: prodSts?.toTabMap() ?? {},
+                          lable: "Product Status",
                         ),
                         OpmDashSmWidget(
                           data: batchSts?.toTabMap() ?? {},
@@ -150,14 +157,23 @@ class _OpmC17ScreenBodyState extends State<OpmC17ScreenBody> {
 }
 
 class OpmDashSmWidget extends StatelessWidget {
-  const OpmDashSmWidget({super.key, required this.data, required this.lable});
+  const OpmDashSmWidget(
+      {super.key, required this.data, required this.lable, this.onTap});
   final Map<String, dynamic> data;
   final String lable;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(
+            5,
+          ),
+          bottomRight: Radius.circular(
+            5,
+          ),
+        ),
         color: appTheme.white,
         border: Border.all(
           color: appTheme.primary,
@@ -166,18 +182,23 @@ class OpmDashSmWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            lable,
-            style: textTheme.bodyMedium!.copyWith(
-              color: appTheme.primary,
-              fontWeight: FontWeight.bold,
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: appTheme.primary,
+              ),
+              child: Center(
+                child: Text(
+                  lable,
+                  style: textTheme.bodyMedium!.copyWith(
+                    color: appTheme.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-          ),
-          Divider(
-            color: appTheme.primary,
-            height: 2,
-            indent: 5,
-            endIndent: 5,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(

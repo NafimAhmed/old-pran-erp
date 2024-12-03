@@ -27,6 +27,7 @@ import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_7_s
 import 'package:pran_rfl_erp/presentations/inventory_management_screen/inventory_management_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
+import 'package:pran_rfl_erp/presentations/opm_dash_details_screen.dart/opm_dash_details_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
@@ -76,6 +77,28 @@ class AppNavigation {
           return ModuleScreen(
             moduleName: state.extra as String,
           );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: PrintQrScreen.routePath,
+        name: PrintQrScreen.routeName,
+        builder: (context, state) {
+          var map = state.extra as Map<String, dynamic>;
+
+          return PrintQrScreen(
+            userBatchQrData: map["userBatchQrData"] as UserBatchQrData,
+            userQrPrintBlocCtx: map["userQrPrintBlocCtx"] as BuildContext,
+            userOrg: map["userOrg"] as UserOrg,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: OpmDashDetailsScreen.routePath,
+        name: OpmDashDetailsScreen.routeName,
+        builder: (context, state) {
+          return const OpmDashDetailsScreen();
         },
       ),
       GoRoute(
@@ -252,20 +275,6 @@ class AppNavigation {
         name: InventoryManagementScreen.routeName,
         builder: (context, state) {
           return const InventoryManagementScreen();
-        },
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: PrintQrScreen.routePath,
-        name: PrintQrScreen.routeName,
-        builder: (context, state) {
-          var map = state.extra as Map<String, dynamic>;
-
-          return PrintQrScreen(
-            userBatchQrData: map["userBatchQrData"] as UserBatchQrData,
-            userQrPrintBlocCtx: map["userQrPrintBlocCtx"] as BuildContext,
-            userOrg: map["userOrg"] as UserOrg,
-          );
         },
       ),
       GoRoute(

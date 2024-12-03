@@ -49,55 +49,38 @@ class BatchCompDataResponse {
 class BatchCompData {
   final String? batchNo;
   final int? batchId;
+  final String? organizationCode;
   final String? itemCode;
   final String? itemName;
-  final String? lotno;
-  final int? trnqty;
-  final String? subinventory;
-  final int? rackLocatorId;
-  final String? joborder;
-  final String? racklocator;
-  final int? actualQty;
-
+  final num? madeQty;
+  final num? batchQty;
   BatchCompData({
     this.batchNo,
     this.batchId,
+    this.organizationCode,
     this.itemCode,
     this.itemName,
-    this.lotno,
-    this.trnqty,
-    this.subinventory,
-    this.rackLocatorId,
-    this.joborder,
-    this.racklocator,
-    this.actualQty,
+    this.madeQty,
+    this.batchQty,
   });
 
   BatchCompData copyWith({
     String? batchNo,
     int? batchId,
+    String? organizationCode,
     String? itemCode,
     String? itemName,
-    String? lotno,
-    int? trnqty,
-    String? subinventory,
-    int? rackLocatorId,
-    String? joborder,
-    String? racklocator,
-    int? actualQty,
+    num? madeQty,
+    num? batchQty,
   }) =>
       BatchCompData(
         batchNo: batchNo ?? this.batchNo,
         batchId: batchId ?? this.batchId,
+        organizationCode: organizationCode ?? this.organizationCode,
         itemCode: itemCode ?? this.itemCode,
         itemName: itemName ?? this.itemName,
-        lotno: lotno ?? this.lotno,
-        trnqty: trnqty ?? this.trnqty,
-        subinventory: subinventory ?? this.subinventory,
-        rackLocatorId: rackLocatorId ?? this.rackLocatorId,
-        joborder: joborder ?? this.joborder,
-        racklocator: racklocator ?? this.racklocator,
-        actualQty: actualQty ?? this.actualQty,
+        madeQty: madeQty ?? this.madeQty,
+        batchQty: batchQty ?? this.batchQty,
       );
 
   factory BatchCompData.fromJson(String str) =>
@@ -108,28 +91,20 @@ class BatchCompData {
   factory BatchCompData.fromMap(Map<String, dynamic> json) => BatchCompData(
         batchNo: json["BATCH_NO"],
         batchId: json["BATCH_ID"],
+        organizationCode: json["ORGANIZATION_CODE"],
         itemCode: json["ITEM_CODE"],
-        itemName: json["ITEM_NAME"],
-        lotno: json["LOTNO"],
-        trnqty: json["TRNQTY"],
-        subinventory: json["SUBINVENTORY"],
-        rackLocatorId: json["RACK_LOCATOR_ID"],
-        joborder: json["JOBORDER"],
-        racklocator: json["RACKLOCATOR"],
-        actualQty: json["ACTUAL_QTY"],
+        itemName: json["item_name"],
+        madeQty: json["made_qty"],
+        batchQty: json["batch_qty"],
       );
 
   Map<String, dynamic> toMap() => {
         "BATCH_NO": batchNo,
         "BATCH_ID": batchId,
+        "ORGANIZATION_CODE": organizationCode,
         "ITEM_CODE": itemCode,
-        "ITEM_NAME": itemName,
-        "LOTNO": lotno,
-        "TRNQTY": trnqty,
-        "SUBINVENTORY": subinventory,
-        "RACK_LOCATOR_ID": rackLocatorId,
-        "JOBORDER": joborder,
-        "RACKLOCATOR": racklocator,
-        "ACTUAL_QTY": actualQty,
+        "item_name": itemName,
+        "made_qty": madeQty,
+        "batch_qty": batchQty
       };
 }

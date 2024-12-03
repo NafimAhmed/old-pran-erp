@@ -431,6 +431,18 @@ class DataServiceImpl implements DataService {
   }
 
   @override
+  Future<void> batchClose({
+    required String userId,
+    required int batchid,
+  }) async {
+    var response =
+        await remoteDataRepository.batchClose(userId: userId, batchid: batchid);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
   Future<List<BatchCompData>> getBatchCompData({
     required String userId,
   }) async {
