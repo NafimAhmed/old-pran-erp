@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
-import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -21,7 +20,7 @@ class JobDetailsTableWidget extends StatelessWidget {
         frozenColumnsCount: 1,
         gridLinesVisibility: GridLinesVisibility.both,
         headerGridLinesVisibility: GridLinesVisibility.none,
-        columnWidthMode: ColumnWidthMode.fitByCellValue,
+        columnWidthMode: ColumnWidthMode.auto,
         shrinkWrapRows: true,
         onCellTap: onCellTap,
         columns: <GridColumn>[

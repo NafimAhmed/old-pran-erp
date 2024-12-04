@@ -232,7 +232,7 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
     ).toList();
     tabDataSource = TabDataSource(
       tableData: tableData,
-      alignment: [],
+      alignment: ["Prod Qty", "Good Qty", "Bad Qty", "Due Qty", "Made(%)"],
     );
     super.initState();
   }

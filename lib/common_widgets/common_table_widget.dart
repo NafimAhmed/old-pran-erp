@@ -22,7 +22,7 @@ class CommonTableWidget extends StatelessWidget {
       frozenColumnsCount: frozenColumnsCount,
       gridLinesVisibility: GridLinesVisibility.none,
       headerGridLinesVisibility: GridLinesVisibility.none,
-      columnWidthMode: ColumnWidthMode.fitByCellValue,
+      columnWidthMode: ColumnWidthMode.auto,
       shrinkWrapRows: true,
       onCellTap: onCellTap,
       columns: <GridColumn>[
