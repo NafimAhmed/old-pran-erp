@@ -3,6 +3,7 @@ import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -85,7 +86,6 @@ abstract class DataService {
     required String userid,
     required String itemlotno,
     required String torackid,
-    required String tqty,
     required String trnid,
   });
 
@@ -163,6 +163,19 @@ abstract class DataService {
   });
   Future<List<BatchCompData>> getBatchCompData({
     required String userId,
+  });
+  Future<List<SkuDtlData>> getBatchCompDtlData({
+    required String userId,
+    required String batchid,
+  });
+  Future<void> batchCompDtlDataLnUpdt({
+    required String userId,
+    required String mtldtlid,
+    required String madeqty,
+  });
+  Future<void> completeBatch({
+    required String userId,
+    required String batchid,
   });
   Future<void> getBatchReleaseData({
     required String userId,

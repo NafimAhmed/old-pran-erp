@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -271,22 +272,21 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<void> interOrgTransfer({
+  Future<GenericResponse> interOrgTransfer({
     required String userid,
     required String itemlotno,
     required String torackid,
-    required String tqty,
     required String trnid,
   }) async {
     var request = http.Request(
       'POST',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/invtran/IOTapi?userid=$userid&itemlotno=$itemlotno&torackid=$torackid&tqty=$tqty&trnid=$trnid'),
+          '${appConfig.baseUrl}/ords/rpro/invtran/IOTapi?userid=$userid&itemlotno=$itemlotno&tlockid=$torackid&trnid=$trnid'),
     );
 
     http.StreamedResponse response = await request.send();
 
-    await decodeResponse(response);
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
   @override
@@ -495,6 +495,49 @@ class RemoteDataRepositoryImpl
 
     return await decodeResponse(response,
         decoder: BatchCloseDataResponse.fromJson);
+  }
+
+  @override
+  Future<BatchComDtlDataResponse> getBatchCompDtlData({
+    required String userId,
+    required String batchid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchComDtlData?userid=$userId&batchid=$batchid'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: BatchComDtlDataResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> batchCompDtlDataLnUpdt({
+    required String userId,
+    required String mtldtlid,
+    required String madeqty,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchComLnUpdt?userid=$userId&mtldtlid=$mtldtlid&madeqty=$madeqty'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> completeBatch({
+    required String userId,
+    required String batchid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchComplete?userid=$userId&batchid=$batchid'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
   @override

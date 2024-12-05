@@ -49,13 +49,13 @@ class LotTrnData {
   final String? batchNo;
   final int? trnid;
   final String? itemCode;
-  final int? itemName;
+  final String? itemName;
   final String? lotno;
   final int? rackQty;
-  final int? subinventory;
-  final String? rackLocatorId;
-  final int? joborder;
-  final int? racklocator;
+  final String? subinventory;
+  final int? rackLocatorId;
+  final String? joborder;
+  final String? racklocator;
 
   LotTrnData({
     this.batchNo,
@@ -74,13 +74,13 @@ class LotTrnData {
     String? batchNo,
     int? trnid,
     String? itemCode,
-    int? itemName,
+    String? itemName,
     String? lotno,
     int? rackQty,
-    int? subinventory,
-    String? rackLocatorId,
-    int? joborder,
-    int? racklocator,
+    String? subinventory,
+    int? rackLocatorId,
+    String? joborder,
+    String? racklocator,
   }) =>
       LotTrnData(
         batchNo: batchNo ?? this.batchNo,
@@ -124,17 +124,5 @@ class LotTrnData {
         "RACK_LOCATOR_ID": rackLocatorId,
         "JOBORDER": joborder,
         "RACKLOCATOR": racklocator,
-      };
-  Map<String, dynamic> toTabMap() => {
-        "Batch No": batchNo,
-        "TenId": trnid,
-        "Item Code": itemCode,
-        "Item Name": itemName,
-        "Lot No": lotno,
-        "Rack Qty": rackQty,
-        "Sub Inventory": subinventory,
-        "Rack Loc Id": rackLocatorId,
-        "Job Order": joborder,
-        "Rack Locator": racklocator,
       };
 }

@@ -12,5 +12,5 @@ class PrimaryColors {
   // green
   Color get green => const Color.fromRGBO(0, 176, 73, 1);
   //dividercolor
-  Color get dividerColor => const Color.fromRGBO(255, 255, 255, 0.32);
+  Color get dividerColor => const Color.fromARGB(81, 97, 95, 95);
 }

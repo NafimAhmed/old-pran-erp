@@ -9,13 +9,12 @@ final class InterOrgTransfer extends InterOrgTranferEvent {
   final String userid;
   final String itemlotno;
   final String torackid;
-  final String tqty;
+
   final String trnid;
   InterOrgTransfer({
     required this.userid,
     required this.itemlotno,
     required this.torackid,
-    required this.tqty,
     required this.trnid,
   });
 }
@@ -46,7 +45,6 @@ class InterOrgTransferBloc
           userid: event.userid,
           itemlotno: event.itemlotno,
           torackid: event.torackid,
-          tqty: event.tqty,
           trnid: event.trnid,
         );
         emit(InterOrgTransferSuccess());

@@ -50,7 +50,7 @@ class LotTrnDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
   LotTrnDataSource({required List<LotTrnData> lotTrnData}) {
     _lotTrnData = lotTrnData.map<DataGridRow>((e) {
-      Map<String, dynamic> map = e.toTabMap();
+      Map<String, dynamic> map = e.toMap();
       return DataGridRow(
         cells: [
           ...List.generate(

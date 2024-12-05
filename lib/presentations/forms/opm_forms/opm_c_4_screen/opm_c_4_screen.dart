@@ -118,23 +118,8 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                               AppModal.showCustomModal(
                                 context,
                                 content: JobOrderDetailsDialog(
-                                  jobOrderNo: jobHisDataSource
-                                      .rows[details.rowColumnIndex.rowIndex - 1]
-                                      .getCells()
-                                      .elementAt(
-                                          details.rowColumnIndex.columnIndex)
-                                      .value
-                                      .toString(),
-                                  itemName: jobHisDataSource
-                                      .rows[details.rowColumnIndex.rowIndex - 1]
-                                      .getCells()
-                                      .elementAt(2)
-                                      .value
-                                      .toString(),
-                                  cells: jobHisDataSource
-                                      .rows[details.rowColumnIndex.rowIndex - 1]
-                                      .getCells()
-                                      .sublist(3),
+                                  jobHistory: jobHisDataSource.jobHisData[
+                                      details.rowColumnIndex.rowIndex - 1],
                                   blocContext: context,
                                   userId: loggedUser.userId,
                                 ),

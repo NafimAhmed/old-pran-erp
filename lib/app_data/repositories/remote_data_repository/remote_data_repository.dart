@@ -3,6 +3,7 @@ import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -76,11 +77,10 @@ abstract class RemoteDataRepository {
     required String orgid,
   });
 
-  Future<void> interOrgTransfer({
+  Future<GenericResponse> interOrgTransfer({
     required String userid,
     required String itemlotno,
     required String torackid,
-    required String tqty,
     required String trnid,
   });
   Future<BatchQrDataResponse> userQrSave({
@@ -153,6 +153,19 @@ abstract class RemoteDataRepository {
   });
   Future<BatchCompDataResponse> getBatchCompData({
     required String userId,
+  });
+  Future<BatchComDtlDataResponse> getBatchCompDtlData({
+    required String userId,
+    required String batchid,
+  });
+  Future<GenericResponse> batchCompDtlDataLnUpdt({
+    required String userId,
+    required String mtldtlid,
+    required String madeqty,
+  });
+  Future<GenericResponse> completeBatch({
+    required String userId,
+    required String batchid,
   });
   Future<GenericResponse> getBatchReleaseData({
     required String userId,

@@ -6,17 +6,16 @@ import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/iot_trn_data_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/lot_trn_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/inter_org_transfer_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
 
@@ -89,7 +88,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
             if (state is InterOrgTransferSuccess) {
               context.read<ItemQrCubit>().resetItemData();
               context.read<RackQrCubit>().resetRackData();
-
+              context.read<VariableStateHandlerCubit<LotTrnData>>().reset();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                     content: const Text(
@@ -214,6 +213,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                             ],
                           ),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
@@ -289,6 +289,9 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                               if (state is RackQrDataLoaded) {
                                 rackQrData = state.rackQRDatalist;
                               }
+                              // if (state is RackQrInitial) {
+                              //   rackQrData = [];
+                              // }
                               return IotTrnWidget(
                                 loggedUser: loggedUser,
                                 iotTrnData: data,
@@ -418,15 +421,22 @@ class _IotTrnWidgetState extends State<IotTrnWidget> {
                 builder: (context, state) {
                   return ElevatedButton(
                     onPressed: () {
-                      context.read<InterOrgTransferBloc>().add(
-                            InterOrgTransfer(
-                              userid: widget.loggedUser.userId,
-                              trnid: widget.iotTrnData.trnid.toString(),
-                              itemlotno: widget.iotTrnData.lotno.toString(),
-                              torackid: widget.selectedRack!,
-                              tqty: widget.iotTrnData.rackQty.toString(),
-                            ),
-                          );
+                      if (widget.selectedRack != null) {
+                        context.read<InterOrgTransferBloc>().add(
+                              InterOrgTransfer(
+                                userid: widget.loggedUser.userId,
+                                trnid: widget.iotTrnData.trnid.toString(),
+                                itemlotno: widget.iotTrnData.lotno.toString(),
+                                torackid: widget.selectedRack!,
+                              ),
+                            );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          CustomSnackBar.errorSnackber(
+                            message: "Please Select Locator",
+                          ),
+                        );
+                      }
                     },
                     child: Text(
                       state is InterOrgTransferLoading
@@ -450,29 +460,62 @@ class _IotTrnWidgetState extends State<IotTrnWidget> {
           const SizedBox(
             height: 5,
           ),
-          Text(
-            widget.iotTrnData.joborder.toString(),
-            style: textTheme.bodyMedium!.copyWith(
-              color: appTheme.primary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Job Order:",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+              Text(
+                widget.iotTrnData.joborder.toString(),
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 5,
           ),
-          Text(
-            widget.iotTrnData.batchNo.toString(),
-            style: textTheme.bodyMedium!.copyWith(
-              color: appTheme.primary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Batch No:",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+              Text(
+                widget.iotTrnData.batchNo.toString(),
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 5,
           ),
-          Text(
-            widget.iotTrnData.racklocator.toString(),
-            style: textTheme.bodyMedium!.copyWith(
-              color: appTheme.primary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Locator:",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+              Text(
+                widget.iotTrnData.racklocator.toString(),
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+            ],
           ),
         ],
       ),

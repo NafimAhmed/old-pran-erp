@@ -3,12 +3,13 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CommonTableWidget extends StatelessWidget {
-  const CommonTableWidget(
-      {super.key,
-      required this.source,
-      this.onCellTap,
-      this.frozenColumnsCount = 0,
-      this.colVisibilityOff = const []});
+  const CommonTableWidget({
+    super.key,
+    required this.source,
+    this.onCellTap,
+    this.frozenColumnsCount = 0,
+    this.colVisibilityOff = const [],
+  });
   final TabDataSource source;
   final void Function(DataGridCellTapDetails details)? onCellTap;
   final int frozenColumnsCount;
@@ -89,8 +90,8 @@ class TabDataSource extends DataGridSource {
     final int rowIndex = effectiveRows.indexOf(row);
     return DataGridRowAdapter(
         color: rowIndex % 2 == 0
-            ? Colors.grey // Light grey for even rows
-            : Colors.white,
+            ? appTheme.primary.withOpacity(0.2)
+            : appTheme.primary.withOpacity(0.1),
         cells: row.getCells().map<Widget>((e) {
           return Container(
             alignment: _alignment.contains(e.columnName)

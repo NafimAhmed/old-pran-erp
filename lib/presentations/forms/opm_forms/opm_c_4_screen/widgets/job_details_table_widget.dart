@@ -12,7 +12,10 @@ class JobDetailsTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfDataGridTheme(
-      data: SfDataGridThemeData(gridLineColor: appTheme.white),
+      data: SfDataGridThemeData(
+        gridLineColor: appTheme.white,
+        frozenPaneLineColor: Colors.transparent,
+      ),
       child: SfDataGrid(
         rowHeight: 32,
         headerRowHeight: 38,
@@ -25,18 +28,18 @@ class JobDetailsTableWidget extends StatelessWidget {
         onCellTap: onCellTap,
         columns: <GridColumn>[
           ...List.generate(
-            source._jobHisData.isNotEmpty
-                ? source._jobHisData.first.getCells().length
+            source._jobHisRowData.isNotEmpty
+                ? source._jobHisRowData.first.getCells().length
                 : 0,
             (index) {
               return GridColumn(
                 columnName:
-                    source._jobHisData.first.getCells()[index].columnName,
+                    source._jobHisRowData.first.getCells()[index].columnName,
                 label: Container(
                   color: appTheme.primary,
                   alignment: Alignment.center,
                   child: Text(
-                    source._jobHisData.first.getCells()[index].columnName,
+                    source._jobHisRowData.first.getCells()[index].columnName,
                     style: textTheme.bodyMedium!.copyWith(
                       color: appTheme.white,
                     ),
@@ -56,7 +59,8 @@ class JobDetailsTableWidget extends StatelessWidget {
 class JobHistoryDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
   JobHistoryDataSource({required List<JobHistory> jobHistoryData}) {
-    _jobHisData = jobHistoryData.map<DataGridRow>((e) {
+    _jobHisData = jobHistoryData;
+    _jobHisRowData = jobHistoryData.map<DataGridRow>((e) {
       Map<String, dynamic> map = e.toMapForTab();
       return DataGridRow(
         cells: [
@@ -74,19 +78,19 @@ class JobHistoryDataSource extends DataGridSource {
     }).toList();
   }
 
-  List<DataGridRow> _jobHisData = [];
-
+  List<DataGridRow> _jobHisRowData = [];
+  List<JobHistory> _jobHisData = [];
   @override
-  List<DataGridRow> get rows => _jobHisData;
-
+  List<DataGridRow> get rows => _jobHisRowData;
+  List<JobHistory> get jobHisData => _jobHisData;
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final int rowIndex = effectiveRows.indexOf(row);
 
     return DataGridRowAdapter(
         color: rowIndex % 2 == 0
-            ? Colors.grey // Light grey for even rows
-            : Colors.white,
+            ? appTheme.primary.withOpacity(0.2)
+            : appTheme.primary.withOpacity(0.1),
         cells: row.getCells().map<Widget>((e) {
           LinearGradient? getColor() {
             if (e.columnName == 'Made P %') {
@@ -95,14 +99,28 @@ class JobHistoryDataSource extends DataGridSource {
                 double fillPercent = double.parse(e.value
                     .toString()
                     .replaceAll('%', '')); // fills for container from side
-                if (fillPercent <= 20) {
-                  fillColor = Colors.yellow; // Low
+                if (fillPercent <= 10) {
+                  fillColor = Colors.red; // 0-10
+                } else if (fillPercent <= 20) {
+                  fillColor = Colors.deepOrange; // 10-20
+                } else if (fillPercent <= 30) {
+                  fillColor = Colors.orange; // 20-30
+                } else if (fillPercent <= 40) {
+                  fillColor = Colors.amber; // 30-40
                 } else if (fillPercent <= 50) {
-                  fillColor = Colors.lightGreen; // Moderate
+                  fillColor = Colors.yellow; // 40-50
+                } else if (fillPercent <= 60) {
+                  fillColor = Colors.teal; // 50-60
+                } else if (fillPercent <= 70) {
+                  fillColor = Colors.cyan; // 60-70
+                } else if (fillPercent <= 80) {
+                  fillColor = Colors.blue; // 70-80
                 } else if (fillPercent <= 90) {
-                  fillColor = Colors.orange; // High
+                  fillColor = Colors.indigo; // 80-90
+                } else if (fillPercent < 100) {
+                  fillColor = Colors.purple; // 90-99
                 } else {
-                  fillColor = appTheme.green; // Critical
+                  fillColor = Colors.green; // 100
                 }
                 fillPercent = fillPercent / 100;
                 // Return a gradient based on the value
@@ -133,13 +151,14 @@ class JobHistoryDataSource extends DataGridSource {
           }
 
           TextStyle? getTextStyle() {
-            if (e.columnName == 'Made P %') {
-              return const TextStyle(
-                fontWeight: FontWeight.bold,
-              );
-            }
-
-            return null;
+            return [
+              "Made P %",
+              "Job Order No",
+            ].contains(e.columnName)
+                ? const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )
+                : null;
           }
 
           return Container(

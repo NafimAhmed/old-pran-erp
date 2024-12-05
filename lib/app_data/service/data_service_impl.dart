@@ -3,9 +3,9 @@ import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
-import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
@@ -31,7 +31,6 @@ import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_d
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
-
 import '../../core/exceptions/custom_exception.dart';
 import '../models/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
@@ -205,16 +204,17 @@ class DataServiceImpl implements DataService {
     required String userid,
     required String itemlotno,
     required String torackid,
-    required String tqty,
     required String trnid,
   }) async {
-    await remoteDataRepository.interOrgTransfer(
+    var response = await remoteDataRepository.interOrgTransfer(
       userid: userid,
       itemlotno: itemlotno,
       torackid: torackid,
-      tqty: tqty,
       trnid: trnid,
     );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
   }
 
   @override
@@ -451,6 +451,44 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.batchCompData ?? [];
+  }
+
+  @override
+  Future<List<SkuDtlData>> getBatchCompDtlData({
+    required String userId,
+    required String batchid,
+  }) async {
+    var response = await remoteDataRepository.getBatchCompDtlData(
+        userId: userId, batchid: batchid);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.skuDtlData ?? [];
+  }
+
+  @override
+  Future<void> batchCompDtlDataLnUpdt({
+    required String userId,
+    required String mtldtlid,
+    required String madeqty,
+  }) async {
+    var response = await remoteDataRepository.batchCompDtlDataLnUpdt(
+        userId: userId, mtldtlid: mtldtlid, madeqty: madeqty);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
+  Future<void> completeBatch({
+    required String userId,
+    required String batchid,
+  }) async {
+    var response = await remoteDataRepository.completeBatch(
+        userId: userId, batchid: batchid);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
   }
 
   @override

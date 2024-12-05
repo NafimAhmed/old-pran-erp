@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
+import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/common_widgets/common_table_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 
@@ -12,20 +13,15 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_loc_bloc.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class JobOrderDetailsDialog extends StatelessWidget {
   const JobOrderDetailsDialog({
     super.key,
-    required this.jobOrderNo,
-    required this.cells,
-    required this.itemName,
     required this.blocContext,
     required this.userId,
+    required this.jobHistory,
   });
-  final String jobOrderNo;
-  final String itemName;
-  final List<DataGridCell<dynamic>> cells;
+  final JobHistory jobHistory;
   final BuildContext blocContext;
   final String userId;
   @override
@@ -41,7 +37,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                 jobDetails: state.jobDetailsList,
                 blocContext: blocContext,
                 userId: userId,
-                jobOrderNo: jobOrderNo,
+                jobOrderNo: jobHistory.jobOrderNo ?? "",
               ),
             );
           }
@@ -68,38 +64,54 @@ class JobOrderDetailsDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      context.pop();
-                    },
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Icon(
-                        Icons.close,
-                        color: appTheme.primary,
-                        size: 20,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: appTheme.primary,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "FG/SFG Status",
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: appTheme.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: appTheme.primary,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "FG/SFG Status",
-                        textAlign: TextAlign.left,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: appTheme.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      const SizedBox(
+                        width: 10,
                       ),
-                    ),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: appTheme.primary,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: appTheme.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 5,
@@ -117,7 +129,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          itemName,
+                          jobHistory.item ?? "",
                           textAlign: TextAlign.left,
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -125,7 +137,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                                   ),
                         ),
                         Text(
-                          jobOrderNo,
+                          jobHistory.jobOrderNo ?? "",
                           textAlign: TextAlign.center,
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -137,6 +149,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Container(
+                    width: double.infinity,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 5,
@@ -146,32 +159,113 @@ class JobOrderDetailsDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ...List.generate(
-                          cells.length,
-                          (index) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    cells[index].columnName,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    ["Plan Start Date", "Plan Cmplt Date"]
-                                            .contains(cells[index].columnName)
-                                        ? DateTime.parse(cells[index].value)
-                                            .toFormatedString("dd-MM-yyy")
-                                        : cells[index].value.toString(),
-                                    textAlign: TextAlign.end,
-                                  ),
-                                )
-                              ],
-                            );
-                          },
+                        // ...List.generate(
+                        //   jobHistory.toMapForTab().length,
+                        //   (index) {
+                        //     return Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //       children: [
+                        //         Expanded(
+                        //           child: Text(
+                        //             jobHistory
+                        //                 .toMapForTab()
+                        //                 .entries
+                        //                 .elementAt(index)
+                        //                 .key,
+                        //           ),
+                        //         ),
+                        //         Expanded(
+                        //           child: Text(
+                        //             ["Plan Start Date", "Plan Cmplt Date"]
+                        //                     .contains(jobHistory
+                        //                         .toMapForTab()
+                        //                         .entries
+                        //                         .elementAt(index)
+                        //                         .key)
+                        //                 ? DateTime.parse(jobHistory
+                        //                         .toMapForTab()
+                        //                         .entries
+                        //                         .elementAt(index)
+                        //                         .value)
+                        //                     .toFormatedString("dd-MM-yyy")
+                        //                 : jobHistory
+                        //                     .toMapForTab()
+                        //                     .entries
+                        //                     .elementAt(index)
+                        //                     .value
+                        //                     .toString(),
+                        //             textAlign: TextAlign.end,
+                        //           ),
+                        //         )
+                        //       ],
+                        //     );
+                        //   },
+                        // ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                              child: Text("FPO Qty"),
+                            ),
+                            Expanded(
+                              child: Text(
+                                jobHistory.fpoQty.toString(),
+                                textAlign: TextAlign.end,
+                              ),
+                            )
+                          ],
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Good Qty"),
+                            Expanded(
+                              child: Text(
+                                jobHistory.goodQty.toString(),
+                                textAlign: TextAlign.end,
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        LinearProgressIndicator(
+                          backgroundColor: appTheme.dividerColor,
+                          borderRadius: BorderRadius.circular(8),
+                          color: appTheme.primary,
+                          value: (jobHistory.goodQty ?? 0) /
+                              (jobHistory.fpoQty ?? 1),
+                          minHeight: 5,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Trn Qty"),
+                            Expanded(
+                              child: Text(
+                                jobHistory.trnQty.toString(),
+                                textAlign: TextAlign.end,
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        LinearProgressIndicator(
+                          backgroundColor: appTheme.dividerColor,
+                          borderRadius: BorderRadius.circular(8),
+                          color: appTheme.primary,
+                          value: (jobHistory.trnQty ?? 0) /
+                              (jobHistory.fpoQty ?? 1),
+                          minHeight: 5,
+                        )
                       ],
                     ),
                   ),
@@ -183,7 +277,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                         blocContext.read<JobDetailsBloc>().add(
                               JobDetailsGet(
                                 userId: userId,
-                                jobOrderno: jobOrderNo,
+                                jobOrderno: jobHistory.jobOrderNo ?? "",
                               ),
                             );
                       },
@@ -269,38 +363,54 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      context.pop();
-                    },
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Icon(
-                        Icons.close,
-                        color: appTheme.primary,
-                        size: 20,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: appTheme.primary,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "FG/SFG Details",
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: appTheme.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: appTheme.primary,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "FG/SFG Details",
-                        textAlign: TextAlign.left,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: appTheme.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      const SizedBox(
+                        width: 10,
                       ),
-                    ),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: appTheme.primary,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: appTheme.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,

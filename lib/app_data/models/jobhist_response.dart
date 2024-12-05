@@ -53,11 +53,11 @@ class JobHistory {
   final String? creationDate;
   final String? planStartDate;
   final String? planCmplDate;
-  final double? fpoQty;
-  final int? goodQty;
-  final int? badQty;
-  final int? trnQty;
-  final int? rackQty;
+  final num? fpoQty;
+  final num? goodQty;
+  final num? badQty;
+  final num? trnQty;
+  final num? rackQty;
   final double? madeP;
   final double? dueMadeP;
   final String? customerName;
