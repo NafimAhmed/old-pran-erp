@@ -437,6 +437,9 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                       colVisibilityOff: const ["Item Code"],
                     ),
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                 ],
               );
             },
@@ -480,38 +483,51 @@ class _JobLocDrillDwDialogState extends State<JobLocDrillDwDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: () {
-              context.pop();
-            },
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Icon(
-                Icons.close,
-                color: appTheme.primary,
-                size: 20,
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    color: appTheme.primary,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Locator Details",
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-              color: appTheme.primary,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Center(
-              child: Text(
-                "Locator Details",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: appTheme.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+              const SizedBox(
+                width: 10,
               ),
-            ),
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: appTheme.primary,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    context.pop();
+                  },
+                  child: Icon(
+                    Icons.close,
+                    color: appTheme.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 10,
