@@ -11,12 +11,12 @@ final class GetBatchCompDtlLnUpdt extends BatchCompDtlLnUpdtEvent {
   final String userId;
   final String mtldtlid;
   final String madeqty;
-  final DataGridCellTapDetails details;
+  final int selectedIndex;
   GetBatchCompDtlLnUpdt({
     required this.userId,
     required this.mtldtlid,
     required this.madeqty,
-    required this.details,
+    required this.selectedIndex,
   });
 }
 
@@ -28,9 +28,10 @@ final class BatchCompDtlLnUpdtInitial extends BatchCompDtlLnUpdtState {}
 final class BatchCompDtlLnUpdtLoading extends BatchCompDtlLnUpdtState {}
 
 final class BatchCompDtlLnUpdtSuccess extends BatchCompDtlLnUpdtState {
-  final DataGridCellTapDetails details;
-
-  BatchCompDtlLnUpdtSuccess({required this.details});
+  final int selectedIndex;
+  final num madeQty;
+  BatchCompDtlLnUpdtSuccess(
+      {required this.selectedIndex, required this.madeQty});
 }
 
 final class BatchCompDtlLnUpdtError extends BatchCompDtlLnUpdtState {
@@ -51,7 +52,9 @@ class BatchCompDtlLnUpdtBloc
             userId: event.userId,
             mtldtlid: event.mtldtlid,
             madeqty: event.madeqty);
-        emit(BatchCompDtlLnUpdtSuccess(details: event.details));
+        emit(BatchCompDtlLnUpdtSuccess(
+            selectedIndex: event.selectedIndex,
+            madeQty: num.parse(event.madeqty)));
       } catch (e) {
         emit(BatchCompDtlLnUpdtError(error: e));
       }
