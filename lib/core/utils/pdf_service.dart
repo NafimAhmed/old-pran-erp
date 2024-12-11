@@ -45,16 +45,16 @@ class PdfService {
                         decoration: const pw.BoxDecoration(
                           border: pw.Border(
                             left: pw.BorderSide(
-                              color: PdfColors.black,
+                              color: PdfColors.grey,
                             ),
                             right: pw.BorderSide(
-                              color: PdfColors.black,
+                              color: PdfColors.grey,
                             ),
                             top: pw.BorderSide(
-                              color: PdfColors.black,
+                              color: PdfColors.grey,
                             ),
                             bottom: pw.BorderSide(
-                              color: PdfColors.black,
+                              color: PdfColors.grey,
                             ),
                           ),
                           color: PdfColors.white,
@@ -92,9 +92,56 @@ class PdfService {
                               indent: 0,
                               endIndent: 0,
                             ),
-                            buildQrDetails(
-                              lable: "Job No",
-                              value: userBatchQrData.jobno ?? "",
+                            pw.Row(
+                              mainAxisAlignment:
+                                  pw.MainAxisAlignment.spaceBetween,
+                              children: [
+                                pw.Row(
+                                  children: [
+                                    pw.Text(
+                                      "JO: ",
+                                      textAlign: pw.TextAlign.left,
+                                      style: pw.TextStyle(
+                                        fontSize: 8,
+                                        fontWeight: pw.FontWeight.bold,
+                                        color: PdfColors.black,
+                                      ),
+                                    ),
+                                    pw.Text(
+                                      "${userBatchQrData.jobno}",
+                                      textAlign: pw.TextAlign.left,
+                                      style: const pw.TextStyle(
+                                        fontSize: 8,
+                                        color: PdfColors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                pw.SizedBox(
+                                  width: 5,
+                                ),
+                                pw.Row(
+                                  children: [
+                                    pw.Text(
+                                      "LOT: ",
+                                      textAlign: pw.TextAlign.left,
+                                      style: pw.TextStyle(
+                                        fontSize: 8,
+                                        fontWeight: pw.FontWeight.bold,
+                                        color: PdfColors.black,
+                                      ),
+                                    ),
+                                    pw.Text(
+                                      userBatchQrData.lotno ?? "",
+                                      textAlign: pw.TextAlign.left,
+                                      style: const pw.TextStyle(
+                                        fontSize: 8,
+                                        color: PdfColors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -106,19 +153,16 @@ class PdfService {
                               children: [
                                 pw.Flexible(
                                   child: buildQrDetailsWLa(
-                                    lable: "FPO: ",
+                                    lable: "FPO : ",
                                     value: userBatchQrData.fpono ?? "",
                                   ),
                                 ),
-                                pw.VerticalDivider(
-                                  color: PdfColors.black,
-                                  width: 5,
-                                  indent: 0,
-                                  endIndent: 0,
+                                pw.SizedBox(
+                                  width: 7,
                                 ),
                                 pw.Flexible(
                                   child: buildQrDetailsWLa(
-                                    lable: "Batch: ",
+                                    lable: "Batch : ",
                                     value: userBatchQrData.batchNo ?? "",
                                   ),
                                 )
@@ -131,29 +175,20 @@ class PdfService {
                               endIndent: 0,
                             ),
                             pw.Row(
-                              mainAxisAlignment:
-                                  pw.MainAxisAlignment.spaceBetween,
                               children: [
                                 pw.Flexible(
                                   child: buildQrDetailsWLa(
-                                    lable: "QTY: ",
+                                    lable: "QTY : ",
                                     value: userBatchQrData.goodQty.toString(),
                                   ),
                                 ),
-                                pw.VerticalDivider(
-                                  color: PdfColors.black,
+                                pw.SizedBox(
                                   width: 5,
-                                  indent: 0,
-                                  endIndent: 0,
                                 ),
                                 pw.Flexible(
-                                  child: pw.Text(
-                                    userBatchQrData.expdate ?? "",
-                                    textAlign: pw.TextAlign.right,
-                                    style: const pw.TextStyle(
-                                      fontSize: 8,
-                                      color: PdfColors.black,
-                                    ),
+                                  child: buildQrDetailsWLa(
+                                    lable: "ExpDt : ",
+                                    value: userBatchQrData.expdate ?? "",
                                   ),
                                 )
                               ],
@@ -162,7 +197,9 @@ class PdfService {
                         ),
                       ),
                     ),
-                    pw.SizedBox(width: 5),
+                    pw.SizedBox(
+                      width: 7,
+                    ),
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
@@ -232,14 +269,11 @@ pw.Widget buildQrDetailsWLa({required String lable, required String value}) {
           ),
         ),
       ),
-      pw.SizedBox(
-        width: 5,
-      ),
       pw.Flexible(
         flex: 2,
         child: pw.Text(
           value,
-          textAlign: pw.TextAlign.left,
+          textAlign: pw.TextAlign.right,
           style: const pw.TextStyle(
             fontSize: 8,
             color: PdfColors.black,
