@@ -372,15 +372,6 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                     ),
                     CommonTableWidget(
                       source: tabDataSource,
-                      // onCellTap: (details) {
-                      //   if (details.rowColumnIndex.columnIndex == 0) {
-                      //     var itemCode = tabDataSource
-                      //         .rows[details.rowColumnIndex.rowIndex - 1]
-                      //         .getCells()[1]
-                      //         .value
-                      //         .toString();
-                      //   }
-                      // },
                       colVisibilityOff: const ["Item Code"],
                     ),
                     const SizedBox(

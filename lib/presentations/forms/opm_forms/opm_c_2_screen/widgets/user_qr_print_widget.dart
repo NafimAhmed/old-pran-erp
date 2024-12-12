@@ -24,7 +24,6 @@ class UserQrPrintWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // Text(userBatchQrData.lotno ?? ""),
               ElevatedButton(
                 style: ElevatedButton.styleFrom().copyWith(
                   padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(

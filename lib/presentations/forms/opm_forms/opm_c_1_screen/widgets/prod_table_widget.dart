@@ -10,7 +10,6 @@ class ProdTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SfDataGrid(
       source: source,
-      // frozenRowsCount: 2,
       allowExpandCollapseGroup: true,
       rowHeight: 45,
       headerRowHeight: 36,
@@ -18,7 +17,6 @@ class ProdTableWidget extends StatelessWidget {
       headerGridLinesVisibility: GridLinesVisibility.both,
       columnWidthMode: ColumnWidthMode.fitByCellValue,
       shrinkWrapRows: true,
-      // verticalScrollPhysics: const NeverScrollableScrollPhysics(),
       columns: <GridColumn>[
         ...List.generate(
           source._tempBatchData.first.getCells().length,

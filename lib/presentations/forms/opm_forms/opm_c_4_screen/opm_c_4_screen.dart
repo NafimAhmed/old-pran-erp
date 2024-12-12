@@ -82,11 +82,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                   var jobHisDataSource = JobHistoryDataSource(
                     jobHistoryData: state.jobHistoryList,
                   );
-                  // for (int i = 0; i < state.jobHistoryList.length; i++) {
-                  //   chartData.add(
-                  //     _ChartData(i, state.jobHistoryList[i].goodQty ?? 0),
-                  //   );
-                  // }
+
                   chartData = state.jobHistoryList
                       .map(
                         (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
@@ -98,7 +94,6 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      // const UserDetailsWidget(),
                       const SizedBox(
                         height: 10,
                       ),
@@ -107,13 +102,6 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                         child: JobDetailsTableWidget(
                           source: jobHisDataSource,
                           onCellTap: (details) {
-                            // log(
-                            //   source._jobHisData[details.rowColumnIndex.rowIndex - 1]
-                            //       .getCells()
-                            //       .elementAt(details.rowColumnIndex.columnIndex)
-                            //       .value
-                            //       .toString(),
-                            // );
                             if (details.rowColumnIndex.columnIndex == 0) {
                               AppModal.showCustomModal(
                                 context,
@@ -147,9 +135,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                             xValueMapper: (_ChartData data, _) => data.x,
                             yValueMapper: (_ChartData data, _) => data.y,
                             isVisibleInLegend: true,
-                            // Width of the columns
                             width: 1,
-                            // Spacing between the columns
                             spacing: 0.2,
                           )
                         ],

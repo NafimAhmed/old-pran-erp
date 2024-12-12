@@ -92,7 +92,6 @@ class _BatchCompSkuDtlWidgetState extends State<BatchCompSkuDtlWidget> {
                   source: skuDtlSource,
                   controller: _dataGridController,
                   onCellTap: (details) {
-                    // Ensure rowIndex is greater than 0 to avoid selecting the header.
                     if (details.rowColumnIndex.rowIndex > 0 &&
                         details.rowColumnIndex.columnIndex == 7 &&
                         !skuDtlSource.nonEditableRows
@@ -100,10 +99,6 @@ class _BatchCompSkuDtlWidgetState extends State<BatchCompSkuDtlWidget> {
                       var loggedUser =
                           context.read<LoggedUserInfoCubit>().state!;
 
-                      // log(skuDtlSource
-                      //     ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                      //     .materialDetailId
-                      //     .toString());
                       widget.blocContext.read<BatchCompDtlLnUpdtBloc>().add(
                             GetBatchCompDtlLnUpdt(
                               userId: loggedUser.userId,

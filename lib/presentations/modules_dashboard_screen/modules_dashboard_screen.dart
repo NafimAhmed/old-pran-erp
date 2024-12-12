@@ -102,13 +102,6 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                           ),
                           shape: BoxShape.circle,
                         ),
-                        // child: ClipRRect(
-                        //   borderRadius: BorderRadius.circular(80),
-                        //   child: Image.asset(
-                        //     fit: BoxFit.fill,
-                        //     ImageConstant.malePlaceholder,
-                        //   ),
-                        // ),
                       ),
                       const SizedBox(
                         width: 10,
@@ -299,17 +292,7 @@ class ModuleWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         elevation: 15,
         child: Container(
-          // padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter,
-            //   stops: const [0.65, 0.35],
-            //   colors: [
-            //     appTheme.white,
-            //     appTheme.primary,
-            //   ],
-            // ),
             border: Border(
               bottom: BorderSide(
                 color: appTheme.primary,
