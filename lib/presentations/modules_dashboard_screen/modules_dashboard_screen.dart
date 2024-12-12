@@ -11,6 +11,7 @@ import 'package:pran_rfl_erp/presentations/login_screeen/bloc/login_bloc.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
+import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/cubit/app_info_cubit_cubit.dart';
 
 class ModulesDashboardScreen extends StatelessWidget {
   const ModulesDashboardScreen({
@@ -21,8 +22,15 @@ class ModulesDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginBloc(getService()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => AppInfoCubitCubit()..getInfo(),
+        ),
+      ],
       child: const DashboardScreenBody(),
     );
   }
@@ -230,6 +238,43 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
               ),
             ),
           ],
+        ),
+        bottomNavigationBar: Container(
+          height: 30,
+          decoration: BoxDecoration(
+            color: appTheme.primary,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Version:",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.white,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              BlocBuilder<AppInfoCubitCubit, String?>(
+                builder: (context, state) {
+                  if (state != null) {
+                    return Text(
+                      state,
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.white,
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
