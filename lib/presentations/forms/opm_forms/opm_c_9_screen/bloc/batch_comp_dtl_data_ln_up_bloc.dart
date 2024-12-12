@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 @immutable
 sealed class BatchCompDtlLnUpdtEvent {}

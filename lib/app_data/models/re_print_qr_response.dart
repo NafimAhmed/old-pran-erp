@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 
 class RePrintQrResponse {
