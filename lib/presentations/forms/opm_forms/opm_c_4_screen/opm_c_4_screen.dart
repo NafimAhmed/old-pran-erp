@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
@@ -14,6 +16,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/j
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class OpmC4Screen extends StatelessWidget {
   const OpmC4Screen({super.key, required this.fromName});
@@ -63,6 +66,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
     super.initState();
   }
 
+  bool isGroupRowTapped = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +86,8 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                   var jobHisDataSource = JobHistoryDataSource(
                     jobHistoryData: state.jobHistoryList,
                   );
-
+                  jobHisDataSource.addColumnGroup(
+                      ColumnGroup(name: "Job Order No", sortGroupRows: false));
                   chartData = state.jobHistoryList
                       .map(
                         (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
@@ -102,7 +107,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                         child: JobDetailsTableWidget(
                           source: jobHisDataSource,
                           onCellTap: (details) {
-                            if (details.rowColumnIndex.columnIndex == 0) {
+                            if (details.rowColumnIndex.columnIndex == 2) {
                               AppModal.showCustomModal(
                                 context,
                                 content: JobOrderDetailsDialog(

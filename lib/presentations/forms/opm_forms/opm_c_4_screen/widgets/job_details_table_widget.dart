@@ -6,9 +6,15 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class JobDetailsTableWidget extends StatelessWidget {
   const JobDetailsTableWidget(
-      {super.key, required this.source, this.onCellTap});
+      {super.key,
+      required this.source,
+      this.onCellTap,
+      this.groupCollapsing,
+      this.groupExpanding});
   final JobHistoryDataSource source;
   final void Function(DataGridCellTapDetails)? onCellTap;
+  final bool Function(DataGridGroupChangingDetails)? groupCollapsing;
+  final bool Function(DataGridGroupChangingDetails)? groupExpanding;
   @override
   Widget build(BuildContext context) {
     return SfDataGridTheme(
@@ -20,12 +26,17 @@ class JobDetailsTableWidget extends StatelessWidget {
         rowHeight: 32,
         headerRowHeight: 38,
         source: source,
-        frozenColumnsCount: 1,
+        allowExpandCollapseGroup: true,
+        // autoExpandGroups: false,
+        frozenColumnsCount: 2,
+        groupCaptionTitleFormat: '{Key} - {ItemsCount}',
         gridLinesVisibility: GridLinesVisibility.both,
         headerGridLinesVisibility: GridLinesVisibility.none,
         columnWidthMode: ColumnWidthMode.auto,
         shrinkWrapRows: true,
         onCellTap: onCellTap,
+        groupCollapsing: groupCollapsing,
+        groupExpanding: groupExpanding,
         columns: <GridColumn>[
           ...List.generate(
             source._jobHisRowData.isNotEmpty
@@ -33,6 +44,8 @@ class JobDetailsTableWidget extends StatelessWidget {
                 : 0,
             (index) {
               return GridColumn(
+                visible: !["Job Order No"].contains(
+                    source._jobHisRowData.first.getCells()[index].columnName),
                 columnName:
                     source._jobHisRowData.first.getCells()[index].columnName,
                 label: Container(
@@ -184,5 +197,16 @@ class JobHistoryDataSource extends DataGridSource {
             ),
           );
         }).toList());
+  }
+
+  @override
+  Widget? buildGroupCaptionCellWidget(
+      RowColumnIndex rowColumnIndex, String summaryValue) {
+    return Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 5,
+          vertical: 5,
+        ),
+        child: Text(summaryValue));
   }
 }
