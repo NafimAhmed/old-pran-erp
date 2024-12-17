@@ -19,6 +19,9 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.suffixIcon,
     this.enabled,
     this.textCapitalization = TextCapitalization.none,
+    this.hintText,
+    this.filled,
+    this.fillColor,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -34,6 +37,9 @@ class CommonTextFieldWidget extends StatelessWidget {
   final Widget? suffixIcon;
   final bool? enabled;
   final TextCapitalization textCapitalization;
+  final String? hintText;
+  final bool? filled;
+  final Color? fillColor;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -53,6 +59,9 @@ class CommonTextFieldWidget extends StatelessWidget {
             color: appTheme.primary,
           ),
       decoration: InputDecoration(
+        filled: filled,
+        fillColor: fillColor,
+        hintText: hintText,
         labelText: labelText,
         suffixIcon: suffixIcon,
         contentPadding: const EdgeInsets.symmetric(horizontal: 5),

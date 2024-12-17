@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
@@ -676,5 +677,30 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response;
+  }
+
+  @override
+  Future<void> askAdd({
+    required String userid,
+    required String askText,
+  }) async {
+    var response =
+        await remoteDataRepository.askAdd(userid: userid, askText: askText);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
+  Future<List<GptInfo>> getMessages({
+    required String userid,
+  }) async {
+    var response = await remoteDataRepository.getMessages(
+      userid: userid,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.gptInfo ?? [];
   }
 }

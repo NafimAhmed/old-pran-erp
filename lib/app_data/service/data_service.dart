@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
@@ -234,6 +235,13 @@ abstract class DataService {
     required String itemCode,
   });
   Future<OpmDashSmResponse> getOpmDashboardSM({
+    required String userid,
+  });
+  Future<void> askAdd({
+    required String userid,
+    required String askText,
+  });
+  Future<List<GptInfo>> getMessages({
     required String userid,
   });
 }
