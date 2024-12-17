@@ -367,110 +367,106 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                         ),
                       ],
                     ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // CommonTableWidget(
+                    //   source: tabDataSource,
+                    //   colVisibilityOff: const ["Item Code"],
+                    // ),
                     const SizedBox(
                       height: 10,
                     ),
-                    CommonTableWidget(
-                      source: tabDataSource,
-                      colVisibilityOff: const ["Item Code"],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color: appTheme.primary.withOpacity(0.2)),
-                      child: Column(
-                        children: [
-                          ...List.generate(
-                            widget.jobDetails.length,
-                            (index) {
-                              return Column(
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              color: appTheme.primary.withOpacity(0.2)),
+                          child: Column(
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          widget.jobDetails[index].itemName ??
-                                              "",
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      ElevatedButton(
-                                        style:
-                                            ElevatedButton.styleFrom().copyWith(
-                                          padding: const WidgetStatePropertyAll(
-                                            EdgeInsets.zero,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          widget.blocContext
-                                              .read<JobLocatorDrilBloc>()
-                                              .add(
-                                                JobLocatorDrilGet(
-                                                  userid: widget.userId,
-                                                  itemCode: widget
-                                                          .jobDetails[index]
-                                                          .itemCode ??
-                                                      "",
-                                                  jobOrderNo: widget.jobOrderNo,
-                                                ),
-                                              );
-                                        },
-                                        child: Text(
-                                          "Locator",
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                  Expanded(
+                                    child: Text(
+                                      widget.jobDetails[index].itemName ?? "",
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
                                   const SizedBox(
-                                    height: 5,
+                                    width: 5,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Prod Qty",
-                                        textAlign: TextAlign.start,
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom().copyWith(
+                                      padding: const WidgetStatePropertyAll(
+                                        EdgeInsets.zero,
                                       ),
-                                      Text(
-                                        widget.jobDetails[index].prodQty
-                                            .toString(),
-                                        textAlign: TextAlign.start,
+                                    ),
+                                    onPressed: () {
+                                      widget.blocContext
+                                          .read<JobLocatorDrilBloc>()
+                                          .add(
+                                            JobLocatorDrilGet(
+                                              userid: widget.userId,
+                                              itemCode: widget.jobDetails[index]
+                                                      .itemCode ??
+                                                  "",
+                                              jobOrderNo: widget.jobOrderNo,
+                                            ),
+                                          );
+                                    },
+                                    child: Text(
+                                      "Locator",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.white,
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  LinearProgressIndicator(
-                                    backgroundColor: appTheme.dividerColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: appTheme.primary,
-                                    value: (widget.jobDetails[index].prodQty ??
-                                            0) /
-                                        (widget.jobDetails[index].goodQty ?? 1),
-                                    minHeight: 5,
-                                  ),
-                                  index < widget.jobDetails.length
-                                      ? const SizedBox(
-                                          height: 5,
-                                        )
-                                      : const SizedBox.shrink(),
+                                    ),
+                                  )
                                 ],
-                              );
-                            },
-                          )
-                        ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Prod Qty",
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Text(
+                                    widget.jobDetails[index].prodQty.toString(),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              LinearProgressIndicator(
+                                backgroundColor: appTheme.dividerColor,
+                                borderRadius: BorderRadius.circular(8),
+                                color: appTheme.primary,
+                                value: (widget.jobDetails[index].prodQty ?? 0) /
+                                    (widget.jobDetails[index].goodQty ?? 1),
+                                minHeight: 5,
+                              ),
+                              index < widget.jobDetails.length
+                                  ? const SizedBox(
+                                      height: 5,
+                                    )
+                                  : const SizedBox.shrink(),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 5,
                       ),
+                      itemCount: widget.jobDetails.length,
                     )
                   ],
                 ),
