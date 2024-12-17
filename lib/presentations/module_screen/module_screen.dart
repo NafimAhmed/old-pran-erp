@@ -69,6 +69,7 @@ class _ModuleScreenBodyState extends State<ModuleScreenBody> {
                           var pMenuItem = moduleMenu.userPmenuItems?[index];
                           return Card(
                             elevation: 10,
+                            clipBehavior: Clip.antiAlias,
                             child: ExpansionTile(
                               title: Text(
                                 pMenuItem?.menuName ?? "",
