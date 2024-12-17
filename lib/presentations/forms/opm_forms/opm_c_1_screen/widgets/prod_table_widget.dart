@@ -15,7 +15,7 @@ class ProdTableWidget extends StatelessWidget {
       headerRowHeight: 36,
       gridLinesVisibility: GridLinesVisibility.both,
       headerGridLinesVisibility: GridLinesVisibility.both,
-      columnWidthMode: ColumnWidthMode.fitByCellValue,
+      columnWidthMode: ColumnWidthMode.auto,
       shrinkWrapRows: true,
       columns: <GridColumn>[
         ...List.generate(
