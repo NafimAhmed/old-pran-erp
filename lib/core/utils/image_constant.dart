@@ -11,4 +11,5 @@ class ImageConstant {
   static String adminSettings = '$_imagePath/admin-settings.png';
   static String productionManager = '$_imagePath/production-manager.png';
   static String orderManagement = '$_imagePath/order-management.png';
+  static String speechBubble = "$_imagePath/speech-bubble.png";
 }
