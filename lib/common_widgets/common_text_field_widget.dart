@@ -20,8 +20,8 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.enabled,
     this.textCapitalization = TextCapitalization.none,
     this.hintText,
-    this.filled,
-    this.fillColor,
+    this.filled = true,
+    this.fillColor = Colors.white,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;

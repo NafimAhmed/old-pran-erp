@@ -25,6 +25,7 @@ import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
@@ -797,6 +798,7 @@ class RemoteDataRepositoryImpl
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
+  @override
   Future<ChatListResponse> getMessages({
     required String userid,
   }) async {
@@ -807,5 +809,46 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: ChatListResponse.fromJson);
+  }
+
+  @override
+  Future<TaskInfoResponse> getTaskInfoList({
+    required String userid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: TaskInfoResponse.fromJson);
+  }
+
+  @override
+  Future<TaskInfoResponse> getJobTaskList({
+    required String userid,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/jobtask?userid=$userid'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: TaskInfoResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> saveTaskStatus({
+    required String userid,
+    required String taskStatus,
+    required int taskId,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&taskstatus=$taskStatus&tskid=$taskId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

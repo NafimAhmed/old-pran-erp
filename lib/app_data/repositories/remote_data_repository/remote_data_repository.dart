@@ -23,6 +23,7 @@ import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
@@ -232,5 +233,16 @@ abstract class RemoteDataRepository {
   });
   Future<ChatListResponse> getMessages({
     required String userid,
+  });
+  Future<TaskInfoResponse> getTaskInfoList({
+    required String userid,
+  });
+  Future<TaskInfoResponse> getJobTaskList({
+    required String userid,
+  });
+  Future<GenericResponse> saveTaskStatus({
+    required String userid,
+    required String taskStatus,
+    required int taskId,
   });
 }

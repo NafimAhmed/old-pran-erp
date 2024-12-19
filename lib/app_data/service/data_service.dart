@@ -22,6 +22,7 @@ import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
@@ -243,5 +244,16 @@ abstract class DataService {
   });
   Future<List<GptInfo>> getMessages({
     required String userid,
+  });
+  Future<List<TaskInfo>> getTaskInfoList({
+    required String userid,
+  });
+  Future<List<TaskInfo>> getJobTaskList({
+    required String userid,
+  });
+  Future<void> saveTaskStatus({
+    required String userid,
+    required String taskStatus,
+    required int taskId,
   });
 }

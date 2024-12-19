@@ -45,6 +45,8 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
         }
       },
       inputDecorationTheme: InputDecorationTheme(
+        fillColor: appTheme.white,
+        filled: true,
         hintStyle: textTheme.bodySmall!.copyWith(
           color: appTheme.primary,
           fontSize: 15,
@@ -64,8 +66,8 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(
                 index % 2 == 0
-                    ? appTheme.tertiary.withOpacity(0.2)
-                    : appTheme.tertiary.withOpacity(0.3),
+                    ? appTheme.primary.withOpacity(0.2)
+                    : appTheme.primary.withOpacity(0.1),
               ),
             ),
             value: dropdownMenuEntries[index],

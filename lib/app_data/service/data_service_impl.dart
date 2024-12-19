@@ -22,6 +22,7 @@ import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
@@ -702,5 +703,44 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.gptInfo ?? [];
+  }
+
+  @override
+  Future<List<TaskInfo>> getTaskInfoList({
+    required String userid,
+  }) async {
+    var response = await remoteDataRepository.getTaskInfoList(
+      userid: userid,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.taskInfo ?? [];
+  }
+
+  @override
+  Future<List<TaskInfo>> getJobTaskList({
+    required String userid,
+  }) async {
+    var response = await remoteDataRepository.getTaskInfoList(
+      userid: userid,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.taskInfo ?? [];
+  }
+
+  @override
+  Future<void> saveTaskStatus({
+    required String userid,
+    required String taskStatus,
+    required int taskId,
+  }) async {
+    var response = await remoteDataRepository.saveTaskStatus(
+        userid: userid, taskStatus: taskStatus, taskId: taskId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
   }
 }
