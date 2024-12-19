@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
@@ -66,7 +67,8 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
     super.initState();
   }
 
-  bool isGroupRowTapped = false;
+  DataGridController controller = DataGridController();
+  TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,12 +101,24 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
+                      CommonTextFieldWidget(
+                        controller: _searchController,
+                        hintText: "Search",
+                        onChanged: (value) {
+                          context.read<JobHistoryBloc>().add(
+                                JobHistoryFilter(
+                                  searchValue: _searchController.text,
+                                ),
+                              );
+                        },
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.6,
                         child: JobDetailsTableWidget(
+                          controller: controller,
                           source: jobHisDataSource,
                           onCellTap: (details) {
                             if (details.rowColumnIndex.columnIndex == 2) {

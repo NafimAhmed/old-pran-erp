@@ -5,16 +5,19 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class JobDetailsTableWidget extends StatelessWidget {
-  const JobDetailsTableWidget(
-      {super.key,
-      required this.source,
-      this.onCellTap,
-      this.groupCollapsing,
-      this.groupExpanding});
+  const JobDetailsTableWidget({
+    super.key,
+    required this.source,
+    this.onCellTap,
+    this.groupCollapsing,
+    this.groupExpanding,
+    this.controller,
+  });
   final JobHistoryDataSource source;
   final void Function(DataGridCellTapDetails)? onCellTap;
   final bool Function(DataGridGroupChangingDetails)? groupCollapsing;
   final bool Function(DataGridGroupChangingDetails)? groupExpanding;
+  final DataGridController? controller;
   @override
   Widget build(BuildContext context) {
     return SfDataGridTheme(
@@ -23,11 +26,13 @@ class JobDetailsTableWidget extends StatelessWidget {
         frozenPaneLineColor: Colors.transparent,
       ),
       child: SfDataGrid(
+        controller: controller,
         rowHeight: 32,
         headerRowHeight: 38,
         source: source,
         allowExpandCollapseGroup: true,
-        // autoExpandGroups: false,
+        autoExpandGroups: false,
+        columnWidthCalculationRange: ColumnWidthCalculationRange.allRows,
         frozenColumnsCount: 2,
         groupCaptionTitleFormat: '{Key} - {ItemsCount}',
         gridLinesVisibility: GridLinesVisibility.both,
