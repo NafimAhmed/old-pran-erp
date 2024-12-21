@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
@@ -742,5 +743,19 @@ class DataServiceImpl implements DataService {
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
+  }
+
+  @override
+  Future<List<JobOrderInfo>> getJobOrderInfo({
+    required String userId,
+    required String itemId,
+    required String jobOrderNo,
+  }) async {
+    var response = await remoteDataRepository.getJobOrderInfo(
+        userId: userId, itemId: itemId, jobOrderNo: jobOrderNo);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.jobOrderInfo ?? [];
   }
 }
