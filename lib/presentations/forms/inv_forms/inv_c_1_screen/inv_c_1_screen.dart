@@ -76,6 +76,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
             userId: loggedUser.userId,
           ),
         );
+
     super.initState();
   }
 
@@ -278,51 +279,63 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                       );
                     }
                     if (state is LotTrnSuccess) {
-                      return ListView.separated(
-                        itemBuilder: (context, index) {
-                          var data = state.lotTrnDataList[index];
-                          var selectedData = context
-                              .watch<VariableStateHandlerCubit<LotTrnData>>()
-                              .state;
-                          return BlocBuilder<RackQrCubit, RackQrState>(
-                            builder: (context, state) {
-                              if (state is RackQrDataLoaded) {
-                                rackQrData = state.rackQRDatalist;
-                              }
-                              // if (state is RackQrInitial) {
-                              //   rackQrData = [];
-                              // }
-                              return IotTrnWidget(
-                                loggedUser: loggedUser,
-                                iotTrnData: data,
-                                selectedRack: selectedData != null
-                                    ? selectedData.trnid == data.trnid
-                                        ? rackQrData[0]
-                                        : null
-                                    : null,
-                                onQrPressed: () async {
-                                  var qrData =
-                                      await buildScanner(context, controller);
-                                  if (context.mounted) {
-                                    context
-                                        .read<RackQrCubit>()
-                                        .setrackData(rackQrData: qrData);
-                                    context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                LotTrnData>>()
-                                        .update(data);
-                                  }
-                                },
-                              );
-                            },
-                          );
-                        },
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: 10,
-                        ),
-                        itemCount: state.lotTrnDataList.length,
-                      );
+                      if (state.lotTrnDataList.isNotEmpty) {
+                        return ListView.separated(
+                          itemBuilder: (context, index) {
+                            var data = state.lotTrnDataList[index];
+                            var selectedData = context
+                                .watch<VariableStateHandlerCubit<LotTrnData>>()
+                                .state;
+                            return BlocBuilder<RackQrCubit, RackQrState>(
+                              builder: (context, state) {
+                                if (state is RackQrDataLoaded) {
+                                  rackQrData = state.rackQRDatalist;
+                                }
+                                // if (state is RackQrInitial) {
+                                //   rackQrData = [];
+                                // }
+                                return IotTrnWidget(
+                                  loggedUser: loggedUser,
+                                  iotTrnData: data,
+                                  selectedRack: selectedData != null
+                                      ? selectedData.trnid == data.trnid
+                                          ? rackQrData[0]
+                                          : null
+                                      : null,
+                                  onQrPressed: () async {
+                                    var qrData =
+                                        await buildScanner(context, controller);
+                                    if (context.mounted) {
+                                      context
+                                          .read<RackQrCubit>()
+                                          .setrackData(rackQrData: qrData);
+                                      context
+                                          .read<
+                                              VariableStateHandlerCubit<
+                                                  LotTrnData>>()
+                                          .update(data);
+                                    }
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 10,
+                          ),
+                          itemCount: state.lotTrnDataList.length,
+                        );
+                      } else {
+                        return Center(
+                          child: Text(
+                            "No Stock Found",
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      }
                     }
                     return Container();
                   },
