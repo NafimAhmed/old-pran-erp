@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_loc_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_ord_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -36,6 +37,9 @@ class OpmC4Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => JobLocatorDrilBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => JobOrderInfoBloc(getService()),
         ),
       ],
       child: TransferDetailsScreenBody(
@@ -68,102 +72,130 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   }
 
   DataGridController controller = DataGridController();
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName), //job report
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: BlocBuilder<JobHistoryBloc, JobHistoryState>(
-              builder: (context, state) {
-                if (state is JobHistoryLoading) {
-                  return const CircularProgressIndicator();
-                }
-                if (state is JobHistorySuccess) {
-                  var jobHisDataSource = JobHistoryDataSource(
-                    jobHistoryData: state.jobHistoryList,
-                  );
-                  jobHisDataSource.addColumnGroup(
-                      ColumnGroup(name: "Job Order No", sortGroupRows: false));
-                  chartData = state.jobHistoryList
-                      .map(
-                        (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
-                      )
-                      .toList();
+      body: BlocListener<JobOrderInfoBloc, JobOrderInfoState>(
+        listener: (context, state) {
+          if (state is JobOrderInfoSuccess) {
+            AppModal.showCustomModal(
+              context,
+              content: JobOrderDetailsDialog(
+                jobOrderInfo: state.jobOrderInfoList.first,
+                blocContext: context,
+                userId: loggedUser.userId,
+              ),
+            );
+          }
+        },
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+              ),
+              child: BlocBuilder<JobHistoryBloc, JobHistoryState>(
+                builder: (context, state) {
+                  if (state is JobHistoryLoading) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is JobHistorySuccess) {
+                    var jobHisDataSource = JobHistoryDataSource(
+                      jobHistoryData: state.jobHistoryList,
+                    );
+                    // jobHisDataSource.addColumnGroup(
+                    //     ColumnGroup(name: "Job Order No", sortGroupRows: false));
+                    chartData = state.jobHistoryList
+                        .map(
+                          (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
+                        )
+                        .toList();
 
-                  return Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CommonTextFieldWidget(
-                        controller: _searchController,
-                        hintText: "Search",
-                        onChanged: (value) {
-                          context.read<JobHistoryBloc>().add(
-                                JobHistoryFilter(
-                                  searchValue: _searchController.text,
-                                ),
-                              );
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: JobDetailsTableWidget(
-                          controller: controller,
-                          source: jobHisDataSource,
-                          onCellTap: (details) {
-                            if (details.rowColumnIndex.columnIndex == 2) {
-                              AppModal.showCustomModal(
-                                context,
-                                content: JobOrderDetailsDialog(
-                                  jobHistory: jobHisDataSource.jobHisData[
-                                      details.rowColumnIndex.rowIndex - 1],
-                                  blocContext: context,
-                                  userId: loggedUser.userId,
-                                ),
-                              );
-                            }
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CommonTextFieldWidget(
+                          controller: _searchController,
+                          hintText: "Search Job Order No",
+                          onChanged: (value) {
+                            context.read<JobHistoryBloc>().add(
+                                  JobHistoryFilter(
+                                    searchValue: _searchController.text,
+                                  ),
+                                );
                           },
                         ),
-                      ),
-                      SfCartesianChart(
-                        zoomPanBehavior: ZoomPanBehavior(
-                          enablePinching: true,
-                          zoomMode: ZoomMode.x,
-                          enablePanning: true,
+                        const SizedBox(
+                          height: 10,
                         ),
-                        primaryYAxis: const NumericAxis(
-                          interval: 10000,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: JobDetailsTableWidget(
+                            controller: controller,
+                            source: jobHisDataSource,
+                            onCellTap: (details) {
+                              if ([
+                                0,
+                                1,
+                                2
+                              ].contains(details.rowColumnIndex.columnIndex)) {
+                                var jobOrder = jobHisDataSource
+                                    .jobHisData[
+                                        details.rowColumnIndex.rowIndex - 1]
+                                    .jobOrderNo;
+                                var itemCode = jobHisDataSource
+                                    .jobHisData[
+                                        details.rowColumnIndex.rowIndex - 1]
+                                    .item
+                                    ?.split("-")
+                                    .first
+                                    .trim();
+                                // log(jobOrder ?? "");
+                                // log(itemCode ?? "");
+                                context.read<JobOrderInfoBloc>().add(
+                                      JobOrderInfoGet(
+                                          userId: loggedUser.userId,
+                                          jobOrderno: jobOrder ?? "",
+                                          itemId: itemCode ?? ""),
+                                    );
+                              }
+                            },
+                          ),
                         ),
-                        primaryXAxis: CategoryAxis(
-                          labelRotation: 90,
-                          labelStyle: textTheme.bodySmall,
-                        ),
-                        series: <CartesianSeries<_ChartData, String>>[
-                          ColumnSeries<_ChartData, String>(
-                            dataSource: chartData,
-                            xValueMapper: (_ChartData data, _) => data.x,
-                            yValueMapper: (_ChartData data, _) => data.y,
-                            isVisibleInLegend: true,
-                            width: 1,
-                            spacing: 0.2,
-                          )
-                        ],
-                      )
-                    ],
-                  );
-                }
-                return Container();
-              },
+                        SfCartesianChart(
+                          zoomPanBehavior: ZoomPanBehavior(
+                            enablePinching: true,
+                            zoomMode: ZoomMode.x,
+                            enablePanning: true,
+                          ),
+                          primaryYAxis: const NumericAxis(
+                            interval: 10000,
+                          ),
+                          primaryXAxis: CategoryAxis(
+                            labelRotation: 90,
+                            labelStyle: textTheme.bodySmall,
+                          ),
+                          series: <CartesianSeries<_ChartData, String>>[
+                            ColumnSeries<_ChartData, String>(
+                              dataSource: chartData,
+                              xValueMapper: (_ChartData data, _) => data.x,
+                              yValueMapper: (_ChartData data, _) => data.y,
+                              isVisibleInLegend: true,
+                              width: 1,
+                              spacing: 0.2,
+                            )
+                          ],
+                        )
+                      ],
+                    );
+                  }
+                  return Container();
+                },
+              ),
             ),
           ),
         ),

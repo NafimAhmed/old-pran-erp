@@ -30,16 +30,17 @@ class JobDetailsTableWidget extends StatelessWidget {
         rowHeight: 32,
         headerRowHeight: 38,
         source: source,
-        allowExpandCollapseGroup: true,
-        autoExpandGroups: false,
+        // allowExpandCollapseGroup: true,
+        // autoExpandGroups: false,
         columnWidthCalculationRange: ColumnWidthCalculationRange.allRows,
-        frozenColumnsCount: 2,
-        groupCaptionTitleFormat: '{Key} - {ItemsCount}',
+        frozenColumnsCount: 1,
+        // groupCaptionTitleFormat: '{Key} - ({ItemsCount})',
         gridLinesVisibility: GridLinesVisibility.both,
         headerGridLinesVisibility: GridLinesVisibility.none,
         columnWidthMode: ColumnWidthMode.auto,
         shrinkWrapRows: true,
         onCellTap: onCellTap,
+
         groupCollapsing: groupCollapsing,
         groupExpanding: groupExpanding,
         columns: <GridColumn>[
@@ -49,7 +50,7 @@ class JobDetailsTableWidget extends StatelessWidget {
                 : 0,
             (index) {
               return GridColumn(
-                visible: !["Job Order No"].contains(
+                visible: ![""].contains(
                     source._jobHisRowData.first.getCells()[index].columnName),
                 columnName:
                     source._jobHisRowData.first.getCells()[index].columnName,
@@ -204,14 +205,14 @@ class JobHistoryDataSource extends DataGridSource {
         }).toList());
   }
 
-  @override
-  Widget? buildGroupCaptionCellWidget(
-      RowColumnIndex rowColumnIndex, String summaryValue) {
-    return Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 5,
-        ),
-        child: Text(summaryValue));
-  }
+  // @override
+  // Widget? buildGroupCaptionCellWidget(
+  //     RowColumnIndex rowColumnIndex, String summaryValue) {
+  //   return Container(
+  //       padding: const EdgeInsets.symmetric(
+  //         horizontal: 5,
+  //         vertical: 5,
+  //       ),
+  //       child: Text(summaryValue));
+  // }
 }

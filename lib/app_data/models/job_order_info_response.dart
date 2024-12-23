@@ -156,4 +156,18 @@ class JobOrderInfo {
         "NEAR_HOURS": nearHours,
         "sales_qty": salesQty,
       };
+  Map<String, dynamic> toTabMap() => {
+        "Buyer Name": buyerName,
+        "JO/FPO Qty": fpoQty,
+        "Batch Qty": batchQty,
+        "Due Qty": madeQty,
+        "DUE_QTY": dueQty,
+        "Sales Qty": salesQty,
+        "Per Day Avg Prod": perDayAvgProd,
+        "Inspection Date": inspectionDate,
+        "Possible Days": possibleDays,
+        "Possible Hours": possibleHours,
+        "Near Days": nearDays,
+        "Near Hours": nearHours,
+      };
 }

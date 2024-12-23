@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
-import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/common_widgets/common_table_widget.dart';
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
@@ -15,11 +17,12 @@ class JobOrderDetailsDialog extends StatelessWidget {
     super.key,
     required this.blocContext,
     required this.userId,
-    required this.jobHistory,
+    required this.jobOrderInfo,
   });
-  final JobHistory jobHistory;
+  final JobOrderInfo jobOrderInfo;
   final BuildContext blocContext;
   final String userId;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -33,7 +36,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                 jobDetails: state.jobDetailsList,
                 blocContext: blocContext,
                 userId: userId,
-                jobOrderNo: jobHistory.jobOrderNo ?? "",
+                jobOrderNo: jobOrderInfo.jobOrderNo ?? "",
               ),
             );
           }
@@ -125,21 +128,19 @@ class JobOrderDetailsDialog extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          jobHistory.item ?? "",
+                          jobOrderInfo.item ?? "",
                           textAlign: TextAlign.left,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
-                          jobHistory.jobOrderNo ?? "",
+                          jobOrderInfo.jobOrderNo ?? "",
                           textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        )
+                          style: textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -151,75 +152,57 @@ class JobOrderDetailsDialog extends StatelessWidget {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: appTheme.primary.withOpacity(0.2),
+                      color: appTheme.primary.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Expanded(
-                              child: Text("FPO Qty"),
-                            ),
-                            Expanded(
-                              child: Text(
-                                jobHistory.fpoQty.toString(),
-                                textAlign: TextAlign.end,
+                        ...List.generate(jobOrderInfo.toTabMap().length,
+                            (index) {
+                          var key = jobOrderInfo
+                              .toTabMap()
+                              .entries
+                              .elementAt(index)
+                              .key;
+                          var value = jobOrderInfo
+                              .toTabMap()
+                              .entries
+                              .elementAt(index)
+                              .value;
+                          return Column(
+                            children: [
+                              JobOdrInfoLbl(
+                                title: key,
+                                value: ["Inspection Date"].contains(key)
+                                    ? DateTime.parse(value)
+                                        .toFormatedString("dd-MMM-yyyy")
+                                    : value.toString(),
                               ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Good Qty"),
-                            Expanded(
-                              child: Text(
-                                jobHistory.goodQty.toString(),
-                                textAlign: TextAlign.end,
+                              const Divider(
+                                indent: 0,
+                                endIndent: 0,
+                                color: Colors.white,
+                                height: 2,
+                                thickness: 1.5,
                               ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
+                            ],
+                          );
+                        }),
+                        JobOdrInfoLbl(
+                          title: "Made(%)",
+                          value: jobOrderInfo.madeP.toString(),
                         ),
                         LinearProgressIndicator(
                           backgroundColor: appTheme.dividerColor,
                           borderRadius: BorderRadius.circular(8),
                           color: appTheme.primary,
-                          value: (jobHistory.goodQty ?? 0) /
-                              (jobHistory.fpoQty ?? 1),
+                          value: jobOrderInfo.madeP?.toDouble(),
                           minHeight: 5,
                         ),
                         const SizedBox(
                           height: 5,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Trn Qty"),
-                            Expanded(
-                              child: Text(
-                                jobHistory.trnQty.toString(),
-                                textAlign: TextAlign.end,
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        LinearProgressIndicator(
-                          backgroundColor: appTheme.dividerColor,
-                          borderRadius: BorderRadius.circular(8),
-                          color: appTheme.primary,
-                          value: (jobHistory.trnQty ?? 0) /
-                              (jobHistory.fpoQty ?? 1),
-                          minHeight: 5,
-                        )
                       ],
                     ),
                   ),
@@ -231,7 +214,7 @@ class JobOrderDetailsDialog extends StatelessWidget {
                         blocContext.read<JobDetailsBloc>().add(
                               JobDetailsGet(
                                 userId: userId,
-                                jobOrderno: jobHistory.jobOrderNo ?? "",
+                                jobOrderno: jobOrderInfo.jobOrderNo ?? "",
                               ),
                             );
                       },
@@ -249,6 +232,36 @@ class JobOrderDetailsDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class JobOdrInfoLbl extends StatelessWidget {
+  const JobOdrInfoLbl({
+    super.key,
+    required this.title,
+    required this.value,
+  });
+
+  final String title;
+  final String? value;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title),
+        const SizedBox(
+          width: 5,
+        ),
+        Expanded(
+          child: Text(
+            value ?? "",
+            textAlign: TextAlign.end,
+          ),
+        )
+      ],
     );
   }
 }
@@ -449,9 +462,16 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                               LinearProgressIndicator(
                                 backgroundColor: appTheme.dividerColor,
                                 borderRadius: BorderRadius.circular(8),
-                                color: appTheme.primary,
-                                value: (widget.jobDetails[index].prodQty ?? 0) /
-                                    (widget.jobDetails[index].goodQty ?? 1),
+                                color: [
+                                  "100%"
+                                ].contains(widget.jobDetails[index].madeP)
+                                    ? appTheme.green
+                                    : appTheme.primary,
+                                value: double.parse(widget
+                                            .jobDetails[index].madeP
+                                            ?.replaceAll('%', '') ??
+                                        "0") /
+                                    100,
                                 minHeight: 5,
                               ),
                               index < widget.jobDetails.length
@@ -563,6 +583,7 @@ class _JobLocDrillDwDialogState extends State<JobLocDrillDwDialog> {
           ),
           Expanded(
             child: CommonTableWidget(
+              frozenColumnsCount: 1,
               source: tabDataSource,
             ),
           ),
