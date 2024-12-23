@@ -48,44 +48,40 @@ class JoLocDrillDwResponse {
 
 class JobLocatorInfo {
   final String? jobOrderNo;
-  final String? itemName;
-  final int? fpoQty;
-  final int? madeQty;
+  final String? lotno;
+  final String? rcvFromLocator;
+  final int? rcvQty;
   final int? transferedQty;
-  final int? intQty;
-  final int? onhandQty;
-  final String? lotLocator;
+  final int? balanceQty;
+  final String? transferedToLocator;
 
   JobLocatorInfo({
     this.jobOrderNo,
-    this.itemName,
-    this.fpoQty,
-    this.madeQty,
+    this.lotno,
+    this.rcvFromLocator,
+    this.rcvQty,
     this.transferedQty,
-    this.intQty,
-    this.onhandQty,
-    this.lotLocator,
+    this.balanceQty,
+    this.transferedToLocator,
   });
 
   JobLocatorInfo copyWith({
     String? jobOrderNo,
-    String? itemName,
-    int? fpoQty,
-    int? madeQty,
+    String? lotno,
+    String? rcvFromLocator,
+    int? rcvQty,
     int? transferedQty,
-    int? intQty,
-    int? onhandQty,
-    String? lotLocator,
+    int? balanceQty,
+    String? transferedToLocator,
   }) =>
       JobLocatorInfo(
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
-        itemName: itemName ?? this.itemName,
-        fpoQty: fpoQty ?? this.fpoQty,
-        madeQty: madeQty ?? this.madeQty,
+        lotno: lotno ?? this.lotno,
+        rcvFromLocator: rcvFromLocator ?? this.rcvFromLocator,
+        rcvQty: rcvQty ?? this.rcvQty,
         transferedQty: transferedQty ?? this.transferedQty,
-        intQty: intQty ?? this.intQty,
-        onhandQty: onhandQty ?? this.onhandQty,
-        lotLocator: lotLocator ?? this.lotLocator,
+        balanceQty: balanceQty ?? this.balanceQty,
+        transferedToLocator: transferedToLocator ?? this.transferedToLocator,
       );
 
   factory JobLocatorInfo.fromJson(String str) =>
@@ -95,33 +91,28 @@ class JobLocatorInfo {
 
   factory JobLocatorInfo.fromMap(Map<String, dynamic> json) => JobLocatorInfo(
         jobOrderNo: json["JOB_ORDER_NO"],
-        itemName: json["ITEM_NAME"],
-        fpoQty: json["FPO_QTY"],
-        madeQty: json["MADE_QTY"],
+        lotno: json["LOTNO"],
+        rcvFromLocator: json["RCV_FROM_LOCATOR"],
+        rcvQty: json["RCV_QTY"],
         transferedQty: json["TRANSFERED_QTY"],
-        intQty: json["INT_QTY"],
-        onhandQty: json["ONHAND_QTY"],
-        lotLocator: json["LOT_LOCATOR"],
+        balanceQty: json["BALANCE_QTY"],
+        transferedToLocator: json["TRANSFERED_TO_LOCATOR"],
       );
 
   Map<String, dynamic> toMap() => {
         "JOB_ORDER_NO": jobOrderNo,
-        "ITEM_NAME": itemName,
-        "FPO_QTY": fpoQty,
-        "MADE_QTY": madeQty,
+        "LOTNO": lotno,
+        "RCV_FROM_LOCATOR": rcvFromLocator,
+        "RCV_QTY": rcvQty,
         "TRANSFERED_QTY": transferedQty,
-        "INT_QTY": intQty,
-        "ONHAND_QTY": onhandQty,
-        "LOT_LOCATOR": lotLocator,
+        "BALANCE_QTY": balanceQty,
+        "TRANSFERED_TO_LOCATOR": transferedToLocator,
       };
   Map<String, dynamic> toTabMap() => {
-        // "Job Order No": jobOrderNo,
-        // "Item Name": itemName,
-        // "FPO Qty": fpoQty,
-        // "Made Qty": madeQty,
-        // "Transfer Qty": transferedQty,
-        // "Int Qty": intQty,
-        "Lot Locator": lotLocator,
-        "OnHand Qty": onhandQty,
+        "RCV_QTY": rcvQty,
+        "Transfer Qty": transferedQty,
+        "Balance Qty": balanceQty,
+        "Rcv From Locator": rcvFromLocator,
+        "Transfer To Locator": transferedToLocator,
       };
 }
