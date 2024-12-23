@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CommonTableWidget extends StatelessWidget {
@@ -16,40 +17,47 @@ class CommonTableWidget extends StatelessWidget {
   final List<String> colVisibilityOff;
   @override
   Widget build(BuildContext context) {
-    return SfDataGrid(
-      rowHeight: 30,
-      headerRowHeight: 36,
-      source: source,
-      frozenColumnsCount: frozenColumnsCount,
-      gridLinesVisibility: GridLinesVisibility.none,
-      headerGridLinesVisibility: GridLinesVisibility.none,
-      columnWidthMode: ColumnWidthMode.auto,
-      shrinkWrapRows: true,
-      onCellTap: onCellTap,
-      columns: <GridColumn>[
-        ...List.generate(
-          source._tableData.isNotEmpty
-              ? source._tableData.first.getCells().length
-              : 0,
-          (index) {
-            return GridColumn(
-              visible: !colVisibilityOff.contains(
-                  source._tableData.first.getCells()[index].columnName),
-              columnName: source._tableData.first.getCells()[index].columnName,
-              label: Container(
-                color: appTheme.primary,
-                alignment: Alignment.center,
-                child: Text(
-                  source._tableData.first.getCells()[index].columnName,
-                  style: textTheme.bodyMedium!.copyWith(
-                    color: appTheme.white,
+    return SfDataGridTheme(
+      data: SfDataGridThemeData(
+        gridLineColor: appTheme.white,
+        frozenPaneLineColor: Colors.transparent,
+      ),
+      child: SfDataGrid(
+        rowHeight: 30,
+        headerRowHeight: 36,
+        source: source,
+        frozenColumnsCount: frozenColumnsCount,
+        gridLinesVisibility: GridLinesVisibility.none,
+        headerGridLinesVisibility: GridLinesVisibility.none,
+        columnWidthMode: ColumnWidthMode.auto,
+        shrinkWrapRows: true,
+        onCellTap: onCellTap,
+        columns: <GridColumn>[
+          ...List.generate(
+            source._tableData.isNotEmpty
+                ? source._tableData.first.getCells().length
+                : 0,
+            (index) {
+              return GridColumn(
+                visible: !colVisibilityOff.contains(
+                    source._tableData.first.getCells()[index].columnName),
+                columnName:
+                    source._tableData.first.getCells()[index].columnName,
+                label: Container(
+                  color: appTheme.primary,
+                  alignment: Alignment.center,
+                  child: Text(
+                    source._tableData.first.getCells()[index].columnName,
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: appTheme.white,
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        )
-      ],
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 }
@@ -99,7 +107,7 @@ class TabDataSource extends DataGridSource {
                 : Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              e.value.toString(),
+              e.value != null ? e.value.toString() : "",
               textAlign: TextAlign.center,
             ),
           );
