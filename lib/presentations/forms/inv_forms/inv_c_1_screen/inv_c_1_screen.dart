@@ -218,6 +218,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
+                                flex: 2,
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

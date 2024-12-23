@@ -222,6 +222,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
+                                flex: 2,
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
