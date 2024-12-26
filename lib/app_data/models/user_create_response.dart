@@ -3,22 +3,26 @@ import 'dart:convert';
 class UserCreateResponse {
   final int? statusCode;
   final String? message;
+  final String? errorMessage;
   final List<NewUserInfo>? newUserInfo;
 
   UserCreateResponse({
     this.statusCode,
     this.message,
     this.newUserInfo,
+    this.errorMessage,
   });
 
   UserCreateResponse copyWith({
     int? statusCode,
     String? message,
+    String? errorMessage,
     List<NewUserInfo>? newUserInfo,
   }) =>
       UserCreateResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
+        errorMessage: errorMessage ?? this.errorMessage,
         newUserInfo: newUserInfo ?? this.newUserInfo,
       );
 
@@ -31,6 +35,7 @@ class UserCreateResponse {
       UserCreateResponse(
         statusCode: json["status_code"],
         message: json["message"],
+        errorMessage: json["error_message"],
         newUserInfo: json["new_user_info"] == null
             ? []
             : List<NewUserInfo>.from(
@@ -40,6 +45,7 @@ class UserCreateResponse {
   Map<String, dynamic> toMap() => {
         "status_code": statusCode,
         "message": message,
+        "error_message": errorMessage,
         "new_user_info": newUserInfo == null
             ? []
             : List<dynamic>.from(newUserInfo!.map((x) => x.toMap())),
