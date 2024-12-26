@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -68,6 +69,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   TextEditingController userNameTextController = TextEditingController();
   TextEditingController userMobTextController = TextEditingController();
   TextEditingController userDeptTextController = TextEditingController();
+  TextEditingController apexTextController = TextEditingController();
   TextEditingController userDesgTextController = TextEditingController();
   TextEditingController userDropDownTextController = TextEditingController();
   TextEditingController modDropDownTextController = TextEditingController();
@@ -88,6 +90,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
     userMobTextController.dispose();
     userDeptTextController.dispose();
     userDesgTextController.dispose();
+    apexTextController.dispose();
     userDropDownTextController.dispose();
     modDropDownTextController.dispose();
     menuDropDownTextController.dispose();
@@ -315,56 +318,88 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                 const SizedBox(
                   height: 10,
                 ),
-                BlocBuilder<QrUserMenuPermissionBloc,
-                    QrUserMenuPermissionState>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (fromKey.currentState!.validate()) {
-                          var selectedUser = context
-                              .read<VariableStateHandlerCubit<QrUserData>>()
-                              .state;
+                Row(
+                  children: [
+                    context
+                                .watch<
+                                    VariableStateHandlerCubit<QrModuleData>>()
+                                .state
+                                ?.moduleName ==
+                            "APEX"
+                        ? Expanded(
+                            child: CommonTextFieldWidget(
+                              controller: apexTextController,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              labelText: "Page No",
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter Apex Page No";
+                                }
+                                return null;
+                              },
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    BlocBuilder<QrUserMenuPermissionBloc,
+                        QrUserMenuPermissionState>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            if (fromKey.currentState!.validate()) {
+                              var selectedUser = context
+                                  .read<VariableStateHandlerCubit<QrUserData>>()
+                                  .state;
 
-                          var selectedChildMenu = context
-                              .read<
-                                  VariableStateHandlerCubit<QrUserChildMenu>>()
-                              .state;
+                              var selectedChildMenu = context
+                                  .read<
+                                      VariableStateHandlerCubit<
+                                          QrUserChildMenu>>()
+                                  .state;
 
-                          if (selectedUser == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              CustomSnackBar.errorSnackber(
-                                message: "Please Select User",
-                              ),
-                            );
-                            return;
-                          }
-                          if (selectedChildMenu == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              CustomSnackBar.errorSnackber(
-                                message: "Please Select Menu",
-                              ),
-                            );
-                            return;
-                          }
-                          context.read<QrUserMenuPermissionBloc>().add(
-                                GetQrUserMenuPermission(
-                                  userId: loggedUser.userId,
-                                  newUserId: selectedUser.userId!,
-                                  menuId: selectedChildMenu.menuId.toString(),
-                                ),
-                              );
-                        }
+                              if (selectedUser == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  CustomSnackBar.errorSnackber(
+                                    message: "Please Select User",
+                                  ),
+                                );
+                                return;
+                              }
+                              if (selectedChildMenu == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  CustomSnackBar.errorSnackber(
+                                    message: "Please Select Menu",
+                                  ),
+                                );
+                                return;
+                              }
+                              context.read<QrUserMenuPermissionBloc>().add(
+                                    GetQrUserMenuPermission(
+                                      userId: loggedUser.userId,
+                                      newUserId: selectedUser.userId!,
+                                      menuId:
+                                          selectedChildMenu.menuId.toString(),
+                                    ),
+                                  );
+                            }
+                          },
+                          child: Text(
+                            state is QrUserMenuPermissionLoading
+                                ? "Saving..."
+                                : "Save",
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                            ),
+                          ),
+                        );
                       },
-                      child: Text(
-                        state is QrUserMenuPermissionLoading
-                            ? "Saving..."
-                            : "Save",
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.white,
-                        ),
-                      ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ],
             ),
