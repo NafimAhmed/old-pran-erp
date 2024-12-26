@@ -347,7 +347,7 @@ class DataServiceImpl implements DataService {
         desigName: desigName,
         deptName: deptName);
     if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+      throw ApiDataException(response.errorMessage);
     }
     return response.newUserInfo ?? [];
   }
