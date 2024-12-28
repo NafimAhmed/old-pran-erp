@@ -77,6 +77,20 @@ class OpmDashSmResponse {
             ? []
             : List<dynamic>.from(extDtlStatus!.map((x) => x.toMap())),
       };
+  Map<String, dynamic> toTabMap() => {
+        "prod_dtl_status": prodDtlStatus == null
+            ? []
+            : List<dynamic>.from(prodDtlStatus!.map((x) => x.toMap())),
+        "job_details_status": jobDetailsStatus == null
+            ? []
+            : List<dynamic>.from(jobDetailsStatus!.map((x) => x.toMap())),
+        "batch_status": batchStatus == null
+            ? []
+            : List<dynamic>.from(batchStatus!.map((x) => x.toMap())),
+        "Ext_dtl_status": extDtlStatus == null
+            ? []
+            : List<dynamic>.from(extDtlStatus!.map((x) => x.toMap())),
+      };
 }
 
 class JobDetailsStatus {

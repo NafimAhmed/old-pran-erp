@@ -39,6 +39,7 @@ class OpmDashSmBloc extends Bloc<OpmDashSmEvent, OpmDashSmState> {
       try {
         var response =
             await _dataService.getOpmDashboardSM(userid: event.userId);
+
         emit(OpmDashSmSuccess(dashReport: response));
       } catch (e) {
         emit(OpmDashSmError(error: e));

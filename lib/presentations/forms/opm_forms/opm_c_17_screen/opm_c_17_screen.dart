@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -8,7 +7,6 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_17_screen/bloc/opm_dash_sm_bloc.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
-import 'package:pran_rfl_erp/presentations/opm_dash_details_screen.dart/opm_dash_details_screen.dart';
 
 class OpmC17Screen extends StatelessWidget {
   const OpmC17Screen({super.key, required this.fromName});
@@ -105,137 +103,52 @@ class _OpmC17ScreenBodyState extends State<OpmC17ScreenBody> {
             const SizedBox(
               height: 10,
             ),
-            Expanded(
-              child: BlocBuilder<OpmDashSmBloc, OpmDashSmState>(
-                builder: (context, state) {
-                  if (state is OpmDashSmSuccess) {
-                    var prodSts = state.dashReport.prodDtlStatus?.first;
-                    var jobSts = state.dashReport.jobDetailsStatus?.first;
-                    var batchSts = state.dashReport.batchStatus?.first;
-                    var exportSts = state.dashReport.extDtlStatus?.first;
-                    return GridView(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 15,
-                          mainAxisSpacing: 15,
-                          mainAxisExtent:
-                              MediaQuery.of(context).size.height * 0.175
-                          // childAspectRatio: (itemWidth / itemHeight),
-                          ),
-                      children: [
-                        OpmDashSmWidget(
-                          data: jobSts?.toTabMap() ?? {},
-                          lable: "Job Status",
-                          onTap: () {
-                            context.pushNamed(OpmDashDetailsScreen.routeName);
-                          },
-                        ),
-                        OpmDashSmWidget(
-                          data: prodSts?.toTabMap() ?? {},
-                          lable: "Product Status",
-                        ),
-                        OpmDashSmWidget(
-                          data: batchSts?.toTabMap() ?? {},
-                          lable: "Batch Status",
-                        ),
-                        OpmDashSmWidget(
-                          data: exportSts?.toTabMap() ?? {},
-                          lable: "Export Status",
-                        ),
-                      ],
-                    );
-                  }
-                  return Container();
-                },
-              ),
-            )
+            // Expanded(
+            //   child: BlocBuilder<OpmDashSmBloc, OpmDashSmState>(
+            //     builder: (context, state) {
+            //       if (state is OpmDashSmSuccess) {
+            //         var prodSts = state.dashReport.prodDtlStatus?.first;
+            //         var jobSts = state.dashReport.jobDetailsStatus?.first;
+            //         var batchSts = state.dashReport.batchStatus?.first;
+            //         var exportSts = state.dashReport.extDtlStatus?.first;
+            //         return GridView(
+            //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //               crossAxisCount: 2,
+            //               crossAxisSpacing: 15,
+            //               mainAxisSpacing: 15,
+            //               mainAxisExtent:
+            //                   MediaQuery.of(context).size.height * 0.175
+            //               // childAspectRatio: (itemWidth / itemHeight),
+            //               ),
+            //           children: [
+            //             OpmDashSmWidget(
+            //               data: jobSts?.toTabMap() ?? {},
+            //               lable: "Job Status",
+            //               onTap: () {
+            //                 context.pushNamed(OpmDashDetailsScreen.routeName);
+            //               },
+            //             ),
+            //             OpmDashSmWidget(
+            //               data: prodSts?.toTabMap() ?? {},
+            //               lable: "Product Status",
+            //             ),
+            //             OpmDashSmWidget(
+            //               data: batchSts?.toTabMap() ?? {},
+            //               lable: "Batch Status",
+            //             ),
+            //             OpmDashSmWidget(
+            //               data: exportSts?.toTabMap() ?? {},
+            //               lable: "Export Status",
+            //             ),
+            //           ],
+            //         );
+            //       }
+            //       return Container();
+            //     },
+            //   ),
+            // )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class OpmDashSmWidget extends StatelessWidget {
-  const OpmDashSmWidget(
-      {super.key, required this.data, required this.lable, this.onTap});
-  final Map<String, dynamic> data;
-  final String lable;
-  final void Function()? onTap;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(
-            5,
-          ),
-          bottomRight: Radius.circular(
-            5,
-          ),
-        ),
-        color: appTheme.white,
-        border: Border.all(
-          color: appTheme.primary,
-          width: 1.5,
-        ),
-      ),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: appTheme.primary,
-              ),
-              child: Center(
-                child: Text(
-                  lable,
-                  style: textTheme.bodyMedium!.copyWith(
-                    color: appTheme.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 5,
-            ),
-            child: Column(
-              children: [
-                ...List.generate(
-                  data.length,
-                  (index) {
-                    return Row(
-                      children: [
-                        Text(
-                          data.entries.elementAt(index).key,
-                          style: textTheme.bodySmall!.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            data.entries.elementAt(index).value.toString(),
-                            textAlign: TextAlign.right,
-                            style: textTheme.bodySmall!.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ),
-          )
-        ],
       ),
     );
   }
