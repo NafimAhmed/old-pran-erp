@@ -66,8 +66,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   FocusNode badQtyFocusNode = FocusNode();
   TextEditingController dropDownTextController = TextEditingController();
 
-  String _locatorId = "";
-  String _itemId = "";
+  final String _locatorId = "";
+  final String _itemId = "";
   UserInfoModel? loggedUser;
   UserMachine? selectedMachine;
   List<UserMachine> userMachineList = [];
