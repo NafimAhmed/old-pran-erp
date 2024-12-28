@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -8,7 +7,6 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
-
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -34,9 +32,6 @@ class SysAdminC3Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<QrUserData>(),
-        ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<QrModuleData>(),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<QrUserChildMenu>(),
@@ -105,7 +100,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
         listener: (context, state) {
           if (state is QrUserMenuPermissionSuccess) {
             context.read<VariableStateHandlerCubit<QrUserData>>().reset();
-            context.read<VariableStateHandlerCubit<QrModuleData>>().reset();
+
             context.read<VariableStateHandlerCubit<QrUserChildMenu>>().reset();
             userNameTextController.clear();
             userMobTextController.clear();
@@ -159,9 +154,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                         context
                             .read<VariableStateHandlerCubit<QrUserData>>()
                             .update(value!);
-                        context
-                            .read<VariableStateHandlerCubit<QrModuleData>>()
-                            .reset();
+
                         userNameTextController.text = value.userName ?? "";
                         userMobTextController.text = "";
                         userDeptTextController.text = "";
@@ -261,13 +254,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                 ? state.qrUserMenu.isNotEmpty
                                 : false,
                             onSelected: (value) {
-                              if (value != null) {
-                                context
-                                    .read<
-                                        VariableStateHandlerCubit<
-                                            QrModuleData>>()
-                                    .update(value);
-                              }
+                              if (value != null) {}
                               var selectedUser = context
                                   .read<VariableStateHandlerCubit<QrUserData>>()
                                   .state!;
@@ -319,33 +306,8 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                   height: 10,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    context
-                                .watch<
-                                    VariableStateHandlerCubit<QrModuleData>>()
-                                .state
-                                ?.moduleName ==
-                            "APEX"
-                        ? Expanded(
-                            child: CommonTextFieldWidget(
-                              controller: apexTextController,
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              labelText: "Page No",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Enter Apex Page No";
-                                }
-                                return null;
-                              },
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    const SizedBox(
-                      width: 10,
-                    ),
                     BlocBuilder<QrUserMenuPermissionBloc,
                         QrUserMenuPermissionState>(
                       builder: (context, state) {
