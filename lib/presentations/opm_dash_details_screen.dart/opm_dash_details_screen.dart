@@ -54,7 +54,7 @@ class _OpmDashDetailsBodyState extends State<OpmDashDetailsBody>
                     color: appTheme.primary,
                   ),
                 ),
-                tabs: [
+                tabs: const [
                   Tab(
                     text: "Due",
                   ),
