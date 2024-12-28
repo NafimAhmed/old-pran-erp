@@ -5,7 +5,7 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 class OpmC8Screen extends StatelessWidget {
   const OpmC8Screen({super.key, required this.fromName});
   static const String routeName = "OPM-C-8-SCREEN";
-  static const String routePath = "/opm_c_8_screen";
+  static const String routePath = "/OPM-C-8-SCREEN";
   final String fromName;
   @override
   Widget build(BuildContext context) {
