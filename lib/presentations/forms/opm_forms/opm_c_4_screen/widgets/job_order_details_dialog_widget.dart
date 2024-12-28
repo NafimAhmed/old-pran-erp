@@ -3,44 +3,67 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
-import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
-import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/common_widgets/common_table_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_loc_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_ord_info_bloc.dart';
 
-class JobOrderDetailsDialog extends StatelessWidget {
+class JobOrderDetailsDialog extends StatefulWidget {
   const JobOrderDetailsDialog({
     super.key,
     required this.blocContext,
     required this.userId,
-    required this.jobOrderInfo,
+    required this.jobOrder,
+    required this.itemCode,
   });
-  final JobOrderInfo jobOrderInfo;
+
   final BuildContext blocContext;
   final String userId;
+  final String jobOrder;
+  final String itemCode;
+  @override
+  State<JobOrderDetailsDialog> createState() => _JobOrderDetailsDialogState();
+}
 
+class _JobOrderDetailsDialogState extends State<JobOrderDetailsDialog> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: BlocProvider.of<JobDetailsBloc>(blocContext),
-      child: BlocListener<JobDetailsBloc, JobDetailsState>(
-        listener: (context, state) {
-          if (state is JobDetailsSuccess) {
-            AppModal.showCustomModal(
-              blocContext,
-              content: JobDetailsDialog(
-                jobDetails: state.jobDetailsList,
-                blocContext: blocContext,
-                userId: userId,
-                jobOrderNo: jobOrderInfo.jobOrderNo ?? "",
-              ),
-            );
-          }
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: BlocProvider.of<JobDetailsBloc>(widget.blocContext),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<JobOrderInfoBloc>(widget.blocContext)
+            ..add(
+              JobOrderInfoGet(
+                  userId: widget.userId,
+                  jobOrderno: widget.jobOrder,
+                  itemId: widget.itemCode),
+            ),
+        ),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<JobDetailsBloc, JobDetailsState>(
+            listener: (context, state) {
+              if (state is JobDetailsSuccess) {
+                AppModal.showCustomModal(
+                  widget.blocContext,
+                  content: JobDetailsDialog(
+                    jobDetails: state.jobDetailsList,
+                    blocContext: widget.blocContext,
+                    userId: widget.userId,
+                    jobOrderNo: widget.jobOrder,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         child: Container(
           width: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -93,16 +116,16 @@ class JobOrderDetailsDialog extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: appTheme.primary,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.pop();
-                          },
+                      GestureDetector(
+                        onTap: () {
+                          context.pop();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: appTheme.primary,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                           child: Icon(
                             Icons.close,
                             color: appTheme.white,
@@ -115,116 +138,139 @@ class JobOrderDetailsDialog extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: appTheme.primary.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          jobOrderInfo.item ?? "",
-                          textAlign: TextAlign.left,
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          jobOrderInfo.jobOrderNo ?? "",
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: appTheme.primary.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...List.generate(jobOrderInfo.toTabMap().length,
-                            (index) {
-                          var key = jobOrderInfo
-                              .toTabMap()
-                              .entries
-                              .elementAt(index)
-                              .key;
-                          var value = jobOrderInfo
-                              .toTabMap()
-                              .entries
-                              .elementAt(index)
-                              .value;
+                  BlocBuilder<JobOrderInfoBloc, JobOrderInfoState>(
+                    builder: (context, state) {
+                      if (state is JobOrderInfoLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is JobOrderInfoSuccess) {
+                        if (state.jobOrderInfoList.isNotEmpty) {
+                          var jobOrderInfo = state.jobOrderInfoList.first;
                           return Column(
                             children: [
-                              JobOdrInfoLbl(
-                                title: key,
-                                value: ["Inspection Date"].contains(key)
-                                    ? DateTime.parse(value)
-                                        .toFormatedString("dd-MMM-yyyy")
-                                    : value.toString(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    color: appTheme.primary.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      jobOrderInfo.item ?? "",
+                                      textAlign: TextAlign.left,
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      jobOrderInfo.jobOrderNo ?? "",
+                                      textAlign: TextAlign.center,
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const Divider(
-                                indent: 0,
-                                endIndent: 0,
-                                color: Colors.white,
-                                height: 2,
-                                thickness: 1.5,
+                              const SizedBox(height: 5),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ...List.generate(
+                                        jobOrderInfo.toTabMap().length,
+                                        (index) {
+                                      var key = jobOrderInfo
+                                          .toTabMap()
+                                          .entries
+                                          .elementAt(index)
+                                          .key;
+                                      var value = jobOrderInfo
+                                          .toTabMap()
+                                          .entries
+                                          .elementAt(index)
+                                          .value;
+                                      return Container(
+                                        padding: const EdgeInsets.all(5),
+                                        color: index % 2 == 0
+                                            ? appTheme.primary.withOpacity(0.2)
+                                            : appTheme.primary.withOpacity(0.1),
+                                        child: Column(
+                                          children: [
+                                            JobOdrInfoLbl(
+                                              title: key,
+                                              value: ["Inspection Date"]
+                                                      .contains(key)
+                                                  ? DateTime.parse(value)
+                                                      .toFormatedString(
+                                                          "dd-MMM-yyyy")
+                                                  : value.toString(),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                                    JobOdrInfoLbl(
+                                      title: "Made(%)",
+                                      value: jobOrderInfo.madeP.toString(),
+                                    ),
+                                    LinearProgressIndicator(
+                                      backgroundColor: appTheme.dividerColor,
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: appTheme.primary,
+                                      value: jobOrderInfo.madeP?.toDouble(),
+                                      minHeight: 5,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Align(
+                                alignment: Alignment.center,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    widget.blocContext
+                                        .read<JobDetailsBloc>()
+                                        .add(
+                                          JobDetailsGet(
+                                            userId: widget.userId,
+                                            jobOrderno:
+                                                jobOrderInfo.jobOrderNo ?? "",
+                                          ),
+                                        );
+                                  },
+                                  child: Text(
+                                    "See FG/SFG",
+                                    style: textTheme.bodyMedium!.copyWith(
+                                      color: appTheme.white,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           );
-                        }),
-                        JobOdrInfoLbl(
-                          title: "Made(%)",
-                          value: jobOrderInfo.madeP.toString(),
-                        ),
-                        LinearProgressIndicator(
-                          backgroundColor: appTheme.dividerColor,
-                          borderRadius: BorderRadius.circular(8),
-                          color: appTheme.primary,
-                          value: jobOrderInfo.madeP?.toDouble(),
-                          minHeight: 5,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Align(
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        blocContext.read<JobDetailsBloc>().add(
-                              JobDetailsGet(
-                                userId: userId,
-                                jobOrderno: jobOrderInfo.jobOrderNo ?? "",
-                              ),
-                            );
-                      },
-                      child: Text(
-                        "See FG/SFG",
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.white,
-                        ),
-                      ),
-                    ),
+                        }
+                      }
+                      return Container();
+                    },
                   )
                 ],
               );
@@ -361,16 +407,16 @@ class _JobDetailsDialogState extends State<JobDetailsDialog> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: appTheme.primary,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              context.pop();
-                            },
+                        GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: appTheme.primary,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
                             child: Icon(
                               Icons.close,
                               color: appTheme.white,

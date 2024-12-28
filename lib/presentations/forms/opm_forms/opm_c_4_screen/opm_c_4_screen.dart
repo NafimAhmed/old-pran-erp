@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
@@ -78,18 +76,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName), //job report
       body: BlocListener<JobOrderInfoBloc, JobOrderInfoState>(
-        listener: (context, state) {
-          if (state is JobOrderInfoSuccess) {
-            AppModal.showCustomModal(
-              context,
-              content: JobOrderDetailsDialog(
-                jobOrderInfo: state.jobOrderInfoList.first,
-                blocContext: context,
-                userId: loggedUser.userId,
-              ),
-            );
-          }
-        },
+        listener: (context, state) {},
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
@@ -156,12 +143,21 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                                     .trim();
                                 // log(jobOrder ?? "");
                                 // log(itemCode ?? "");
-                                context.read<JobOrderInfoBloc>().add(
-                                      JobOrderInfoGet(
-                                          userId: loggedUser.userId,
-                                          jobOrderno: jobOrder ?? "",
-                                          itemId: itemCode ?? ""),
-                                    );
+                                // context.read<JobOrderInfoBloc>().add(
+                                //       JobOrderInfoGet(
+                                //           userId: loggedUser.userId,
+                                //           jobOrderno: jobOrder ?? "",
+                                //           itemId: itemCode ?? ""),
+                                //     );
+                                AppModal.showCustomModal(
+                                  context,
+                                  content: JobOrderDetailsDialog(
+                                    jobOrder: jobOrder ?? "",
+                                    itemCode: itemCode ?? "",
+                                    blocContext: context,
+                                    userId: loggedUser.userId,
+                                  ),
+                                );
                               }
                             },
                           ),

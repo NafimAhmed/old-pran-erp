@@ -56,7 +56,7 @@ class JobHistoryBloc extends Bloc<JobHistoryEvent, JobHistoryState> {
       emit(JobHistoryLoading());
       try {
         if (event.searchValue.isNotEmpty) {
-          var _filterlist = _jobHistoryList.where(
+          var filterlist = _jobHistoryList.where(
             (element) {
               return element.jobOrderNo
                       ?.toLowerCase()
@@ -64,7 +64,7 @@ class JobHistoryBloc extends Bloc<JobHistoryEvent, JobHistoryState> {
                   false;
             },
           ).toList();
-          emit(JobHistorySuccess(jobHistoryList: _filterlist));
+          emit(JobHistorySuccess(jobHistoryList: filterlist));
         } else {
           emit(JobHistorySuccess(jobHistoryList: _jobHistoryList));
         }
