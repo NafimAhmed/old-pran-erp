@@ -66,16 +66,16 @@ class PdfService {
                               lable: "ItemName",
                               value: userBatchQrData.itemname ?? "",
                             ),
-                            pw.Divider(
-                              color: PdfColors.black,
-                              height: 5,
-                              indent: 0,
-                              endIndent: 0,
-                            ),
-                            buildQrDetails(
-                              lable: "Customer",
-                              value: userBatchQrData.custname ?? "",
-                            ),
+                            // pw.Divider(
+                            //   color: PdfColors.black,
+                            //   height: 5,
+                            //   indent: 0,
+                            //   endIndent: 0,
+                            // ),
+                            // buildQrDetails(
+                            //   lable: "Customer",
+                            //   value: userBatchQrData.custname ?? "",
+                            // ),
                             pw.Divider(
                               color: PdfColors.black,
                               height: 5,
@@ -206,7 +206,7 @@ class PdfService {
                       width: 85,
                       height: 85,
                       data:
-                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${userBatchQrData.custname}\n${userBatchQrData.createdDate}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}",
+                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${userBatchQrData.createdDate}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}",
                     ),
                   ],
                 ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
@@ -25,7 +27,11 @@ class ItemQrCubit extends Cubit<ItemQrState> {
     try {
       var list = itemQrData.split("\n");
       var userBatchQrData = UserBatchQrData.fromJson(list.last);
-      emit(ItemQrDataLoaded(userBatchQrData: userBatchQrData));
+      var newOb = userBatchQrData.copyWith(
+          itemname: list[0],
+          goodQty: int.parse(list[list.length - 2].split(":").last));
+
+      emit(ItemQrDataLoaded(userBatchQrData: newOb));
     } catch (error) {
       emit(ItemQrDataError(error: error));
     }

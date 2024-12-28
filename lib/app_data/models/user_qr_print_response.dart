@@ -139,9 +139,9 @@ class UserBatchQrData {
         "BATCHNO": batchNo,
       };
   Map<String, dynamic> toQrMap() => {
-        "ITEMNAME": itemname,
-        "CUSTNAME": custname,
+        // "ITEMNAME": itemname,
+        // "CUSTNAME": custname,
         "LOTNO": lotno,
-        "GOOD_QTY": goodQty,
+        // "GOOD_QTY": goodQty,
       };
 }
