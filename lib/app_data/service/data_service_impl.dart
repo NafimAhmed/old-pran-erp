@@ -20,6 +20,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
+import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -757,5 +758,14 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.jobOrderInfo ?? [];
+  }
+
+  @override
+  Future<List<ShiftData>> getShiftData() async {
+    var response = await remoteDataRepository.getShiftData();
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.shiftData ?? [];
   }
 }
