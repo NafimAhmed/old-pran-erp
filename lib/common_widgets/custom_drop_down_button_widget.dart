@@ -22,6 +22,7 @@ class CommonDropdownButton<T> extends StatelessWidget {
       isExpanded: true,
       padding: EdgeInsets.zero,
       menuMaxHeight: 250,
+      iconEnabledColor: Colors.black,
       decoration: InputDecoration(
         fillColor: appTheme.white,
         filled: true,
