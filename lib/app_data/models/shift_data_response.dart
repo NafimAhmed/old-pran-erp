@@ -95,4 +95,9 @@ class ShiftData {
         "SHIFT_DESC": shiftDesc,
         "TOTAL_SHIFT_HR": totalShiftHr,
       };
+
+  @override
+  String toString() {
+    return shiftName ?? "";
+  }
 }
