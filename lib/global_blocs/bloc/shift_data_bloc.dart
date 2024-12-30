@@ -7,10 +7,8 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 @immutable
 sealed class ShiftDataEvent {}
 
-final class ShiftDataGet extends ShiftDataEvent {
-  final String userId;
-
-  ShiftDataGet({required this.userId});
+final class GetShiftData extends ShiftDataEvent {
+  GetShiftData();
 }
 
 @immutable
@@ -36,7 +34,7 @@ class ShiftDataBloc extends Bloc<ShiftDataEvent, ShiftDataState> {
   final DataService _dataService;
   List<ShiftData> _shiftlist = [];
   ShiftDataBloc(this._dataService) : super(ShiftDataInitial()) {
-    on<ShiftDataGet>((event, emit) async {
+    on<GetShiftData>((event, emit) async {
       emit(ShiftDataLoading());
       try {
         var response = await _dataService.getShiftData();

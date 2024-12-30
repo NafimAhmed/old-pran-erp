@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
@@ -13,6 +14,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart'
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/shift_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_print_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_save_bloc.dart';
@@ -36,6 +38,15 @@ class OpmC2Screen extends StatelessWidget {
           create: (context) => UserBasicDataBloc(getService()),
         ),
         BlocProvider(
+          create: (context) => UserQrSaveBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => UserQrPrintBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => ShiftDataBloc(getService()),
+        ),
+        BlocProvider(
           create: (context) => VariableStateHandlerCubit<UserOrg>(),
         ),
         BlocProvider(
@@ -44,12 +55,6 @@ class OpmC2Screen extends StatelessWidget {
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<UserBatch>(),
         ),
-        BlocProvider(
-          create: (context) => UserQrSaveBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => UserQrPrintBloc(getService()),
-        )
       ],
       child: ProductionScreenBody(
         fromName: fromName,
@@ -263,9 +268,15 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             controller: batchDropDownTextController,
                             hintText: "Select Batch",
                             onSelected: (value) {
-                              context
-                                  .read<VariableStateHandlerCubit<UserBatch>>()
-                                  .update(value!);
+                              if (value != null) {
+                                context
+                                    .read<
+                                        VariableStateHandlerCubit<UserBatch>>()
+                                    .update(value);
+                                context
+                                    .read<ShiftDataBloc>()
+                                    .add(GetShiftData());
+                              }
                               FocusManager.instance.primaryFocus?.unfocus();
                             },
                             dropdownMenuEntries: state is UserBasicDataSuccess
@@ -526,8 +537,21 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     ],
                   ),
                 ),
-                // CommonDropdownButton(
-                //     hintText: "Change Shift", onChanged: (value) {}),
+                BlocBuilder<ShiftDataBloc, ShiftDataState>(
+                  builder: (context, state) {
+                    if (state is ShiftDataSuccess) {
+                      return CommonDropdownButton<ShiftData>(
+                        hintText: "Change Shift",
+                        items: state.shiftList,
+                        onChanged: (value) {},
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
                   builder: (context, state) {
                     return ElevatedButton(
