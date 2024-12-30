@@ -67,7 +67,7 @@ class CommonDropDownMenuWidget<T> extends StatelessWidget {
               backgroundColor: WidgetStatePropertyAll(
                 index % 2 == 0
                     ? appTheme.primary.withOpacity(0.2)
-                    : appTheme.primary.withOpacity(0.1),
+                    : appTheme.white,
               ),
             ),
             value: dropdownMenuEntries[index],
