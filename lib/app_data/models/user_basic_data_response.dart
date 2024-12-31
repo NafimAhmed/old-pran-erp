@@ -78,7 +78,9 @@ class UserBatch {
   final String? batchStatus;
   final int? flagStatus;
   final String? shiftName;
-  final String? shiftManPower;
+  final int? shiftManPower;
+  final String? lotNo;
+  final String? machineName;
 
   UserBatch({
     this.organizationCode,
@@ -96,14 +98,16 @@ class UserBatch {
     this.flagStatus,
     this.shiftName,
     this.shiftManPower,
+    this.lotNo,
+    this.machineName,
   });
 
   UserBatch copyWith({
     String? organizationCode,
     String? organizationName,
-    final int? batchId,
-    final int? inventoryItemId,
-    final int? materialDetailId,
+    int? batchId,
+    int? inventoryItemId,
+    int? materialDetailId,
     String? batchNo,
     String? itemCode,
     String? itemName,
@@ -112,25 +116,30 @@ class UserBatch {
     String? jobOrderNo,
     String? batchStatus,
     int? flagStatus,
-    final String? shiftName,
-    final String? shiftManPower,
+    String? shiftName,
+    int? shiftManPower,
+    String? lotNo,
+    String? machineName,
   }) =>
       UserBatch(
-          organizationCode: organizationCode ?? this.organizationCode,
-          organizationName: organizationName ?? this.organizationName,
-          batchId: batchId ?? this.batchId,
-          inventoryItemId: inventoryItemId ?? this.inventoryItemId,
-          materialDetailId: materialDetailId ?? this.materialDetailId,
-          batchNo: batchNo ?? this.batchNo,
-          itemCode: itemCode ?? this.itemCode,
-          itemName: itemName ?? this.itemName,
-          originalQty: originalQty ?? this.originalQty,
-          totalQty: totalQty ?? this.totalQty,
-          jobOrderNo: jobOrderNo ?? this.jobOrderNo,
-          batchStatus: batchStatus ?? this.batchStatus,
-          flagStatus: flagStatus ?? this.flagStatus,
-          shiftName: shiftName ?? this.shiftName,
-          shiftManPower: shiftManPower ?? this.shiftManPower);
+        organizationCode: organizationCode ?? this.organizationCode,
+        organizationName: organizationName ?? this.organizationName,
+        batchId: batchId ?? this.batchId,
+        inventoryItemId: inventoryItemId ?? this.inventoryItemId,
+        materialDetailId: materialDetailId ?? this.materialDetailId,
+        batchNo: batchNo ?? this.batchNo,
+        itemCode: itemCode ?? this.itemCode,
+        itemName: itemName ?? this.itemName,
+        originalQty: originalQty ?? this.originalQty,
+        totalQty: totalQty ?? this.totalQty,
+        jobOrderNo: jobOrderNo ?? this.jobOrderNo,
+        batchStatus: batchStatus ?? this.batchStatus,
+        flagStatus: flagStatus ?? this.flagStatus,
+        shiftName: shiftName ?? this.shiftName,
+        shiftManPower: shiftManPower ?? this.shiftManPower,
+        lotNo: lotNo ?? this.lotNo,
+        machineName: machineName ?? this.machineName,
+      );
 
   factory UserBatch.fromJson(String str) => UserBatch.fromMap(json.decode(str));
 
@@ -141,21 +150,24 @@ class UserBatch {
   }
 
   factory UserBatch.fromMap(Map<String, dynamic> json) => UserBatch(
-      organizationCode: json["ORGANIZATION_CODE"],
-      organizationName: json["ORGANIZATION_NAME"],
-      batchId: json["batch_id"],
-      inventoryItemId: json["inventory_item_id"],
-      materialDetailId: json["material_detail_id"],
-      batchNo: json["BATCH_NO"],
-      itemCode: json["ITEM_CODE"],
-      itemName: json["ITEM_NAME"],
-      originalQty: json["ORIGINAL_QTY"],
-      totalQty: json["TOTAL_QTY"],
-      jobOrderNo: json["JOB_ORDER_NO"],
-      batchStatus: json["BATCH_STATUS"],
-      flagStatus: json["FLAG_STATUS"],
-      shiftName: json["SHIFT_NAME"],
-      shiftManPower: json["SHIFT_MAN_POWER"]);
+        organizationCode: json["ORGANIZATION_CODE"],
+        organizationName: json["ORGANIZATION_NAME"],
+        batchId: json["batch_id"],
+        inventoryItemId: json["inventory_item_id"],
+        materialDetailId: json["material_detail_id"],
+        batchNo: json["BATCH_NO"],
+        itemCode: json["ITEM_CODE"],
+        itemName: json["ITEM_NAME"],
+        originalQty: json["ORIGINAL_QTY"],
+        totalQty: json["TOTAL_QTY"],
+        jobOrderNo: json["JOB_ORDER_NO"],
+        batchStatus: json["BATCH_STATUS"],
+        flagStatus: json["FLAG_STATUS"],
+        shiftName: json["SHIFT_NAME"],
+        shiftManPower: json["SHIFT_MAN_POWER"],
+        lotNo: json["LOTNO"],
+        machineName: json["MACHINE_NAME"],
+      );
 
   Map<String, dynamic> toMap() => {
         "ORGANIZATION_CODE": organizationCode,
@@ -171,6 +183,10 @@ class UserBatch {
         "JOB_ORDER_NO": jobOrderNo,
         "BATCH_STATUS": batchStatus,
         "FLAG_STATUS": flagStatus,
+        "SHIFT_NAME": shiftName,
+        "SHIFT_MAN_POWER": shiftManPower,
+        "LOTNO": lotNo,
+        "MACHINE_NAME": machineName,
       };
 }
 
