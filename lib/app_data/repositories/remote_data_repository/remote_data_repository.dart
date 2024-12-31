@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -253,4 +254,16 @@ abstract class RemoteDataRepository {
     required String jobOrderNo,
   });
   Future<ShiftDataResponse> getShiftData();
+  Future<BatchShiftChangeResponse> getBatchShiftData({
+    required String userId,
+    required int orgId,
+    required String batchNo,
+  });
+  Future<GenericResponse> batchShiftChange({
+    required String userId,
+    required String lotNo,
+    required String shiftName,
+    required String machineName,
+    required String manPower,
+  });
 }

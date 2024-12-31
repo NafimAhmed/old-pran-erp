@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
@@ -767,5 +768,41 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.shiftData ?? [];
+  }
+
+  @override
+  Future<BatchShiftChangeResponse> getBatchShiftData({
+    required String userId,
+    required int orgId,
+    required String batchNo,
+  }) async {
+    var response = await remoteDataRepository.getBatchShiftData(
+      userId: userId,
+      orgId: orgId,
+      batchNo: batchNo,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response;
+  }
+
+  @override
+  Future<void> batchShiftChange({
+    required String userId,
+    required String lotNo,
+    required String shiftName,
+    required String machineName,
+    required String manPower,
+  }) async {
+    var response = await remoteDataRepository.batchShiftChange(
+        userId: userId,
+        lotNo: lotNo,
+        shiftName: shiftName,
+        machineName: machineName,
+        manPower: manPower);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
   }
 }

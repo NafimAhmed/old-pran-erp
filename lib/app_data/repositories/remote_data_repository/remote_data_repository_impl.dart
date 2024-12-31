@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -878,5 +879,38 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
 
     return await decodeResponse(response, decoder: ShiftDataResponse.fromJson);
+  }
+
+  @override
+  Future<BatchShiftChangeResponse> getBatchShiftData({
+    required String userId,
+    required int orgId,
+    required String batchNo,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/batchShiftChange?userid=$userId&orgid=$orgId&batchno=$batchNo'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: BatchShiftChangeResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> batchShiftChange({
+    required String userId,
+    required String lotNo,
+    required String shiftName,
+    required String machineName,
+    required String manPower,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/batchShiftChange?lotno=$lotNo&userid=$userId&shiftnm=$shiftName&mcnname=$machineName&manpw=$manPower'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }
