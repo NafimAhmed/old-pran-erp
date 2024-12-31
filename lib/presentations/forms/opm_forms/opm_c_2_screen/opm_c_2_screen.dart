@@ -288,176 +288,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      BlocBuilder<VariableStateHandlerCubit<UserBatch>,
-                          UserBatch?>(
-                        builder: (context, state) {
-                          if (state != null) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                                vertical: 7,
-                              ),
-                              decoration: BoxDecoration(
-                                color: appTheme.primary,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Shift:",
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                color: appTheme.white,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                state.shiftName ?? "",
-                                                textAlign: TextAlign.right,
-                                                style: textTheme.bodyMedium!
-                                                    .copyWith(
-                                                  color: appTheme.white,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Man Power:",
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                color: appTheme.white,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                state.shiftManPower ?? "",
-                                                textAlign: TextAlign.right,
-                                                style: textTheme.bodyMedium!
-                                                    .copyWith(
-                                                  color: appTheme.white,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "B Qty: ",
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                color: appTheme.white,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                state.originalQty.toString(),
-                                                textAlign: TextAlign.right,
-                                                style: textTheme.bodyMedium!
-                                                    .copyWith(
-                                                  color: appTheme.white,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "M Qty :",
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                color: appTheme.white,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                state.totalQty.toString(),
-                                                textAlign: TextAlign.right,
-                                                style: textTheme.bodyMedium!
-                                                    .copyWith(
-                                                  color: appTheme.white,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "P Qty :",
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                color: appTheme.white,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                "${(state.originalQty ?? 0) - (state.totalQty ?? 0)}",
-                                                textAlign: TextAlign.right,
-                                                style: textTheme.bodyMedium!
-                                                    .copyWith(
-                                                  color: appTheme.white,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          return Container();
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       CommonLableWthTextField(
                         lableName: "Good Qty",
                         focusNode: goodQtyFocusNode,
@@ -536,6 +366,165 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                     ],
                   ),
+                ),
+                BlocBuilder<VariableStateHandlerCubit<UserBatch>, UserBatch?>(
+                  builder: (context, state) {
+                    if (state != null) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 7,
+                        ),
+                        decoration: BoxDecoration(
+                          color: appTheme.primary,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Shift:",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          state.shiftName ?? "",
+                                          textAlign: TextAlign.right,
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Man Power:",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          state.shiftManPower.toString(),
+                                          textAlign: TextAlign.right,
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "B Qty: ",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          state.originalQty.toString(),
+                                          textAlign: TextAlign.right,
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "M Qty :",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          state.totalQty.toString(),
+                                          textAlign: TextAlign.right,
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "P Qty :",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          "${(state.originalQty ?? 0) - (state.totalQty ?? 0)}",
+                                          textAlign: TextAlign.right,
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 BlocBuilder<ShiftDataBloc, ShiftDataState>(
                   builder: (context, state) {
