@@ -19,11 +19,17 @@ class CommonDropdownButton<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
       value: value,
+      isDense: true,
       isExpanded: true,
       padding: EdgeInsets.zero,
       menuMaxHeight: 250,
       iconEnabledColor: Colors.black,
       decoration: InputDecoration(
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 5,
+          vertical: 8,
+        ),
         fillColor: appTheme.white,
         filled: true,
       ).applyDefaults(Theme.of(context).inputDecorationTheme),
