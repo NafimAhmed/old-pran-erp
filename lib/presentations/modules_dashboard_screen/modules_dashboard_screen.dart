@@ -201,6 +201,7 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                                         .moduleName ??
                                     "",
                                 onTap: () {
+                                  // context.pop();
                                   if (state.menuItems
                                       .elementAt(index)
                                       .moduleName!
