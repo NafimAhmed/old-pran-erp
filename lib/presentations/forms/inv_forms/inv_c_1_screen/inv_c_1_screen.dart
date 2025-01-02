@@ -531,6 +531,26 @@ class _IotTrnWidgetState extends State<IotTrnWidget> {
               ),
             ],
           ),
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Batch Status:",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+              Text(
+                widget.iotTrnData.batchStatus ?? "",
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

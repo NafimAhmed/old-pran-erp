@@ -56,6 +56,7 @@ class LotTrnData {
   final int? rackLocatorId;
   final String? joborder;
   final String? racklocator;
+  final String? batchStatus;
 
   LotTrnData({
     this.batchNo,
@@ -68,6 +69,7 @@ class LotTrnData {
     this.rackLocatorId,
     this.joborder,
     this.racklocator,
+    this.batchStatus,
   });
 
   LotTrnData copyWith({
@@ -81,19 +83,20 @@ class LotTrnData {
     int? rackLocatorId,
     String? joborder,
     String? racklocator,
+    String? batchStatus,
   }) =>
       LotTrnData(
-        batchNo: batchNo ?? this.batchNo,
-        trnid: trnid ?? this.trnid,
-        itemCode: itemCode ?? this.itemCode,
-        itemName: itemName ?? this.itemName,
-        lotno: lotno ?? this.lotno,
-        rackQty: rackQty ?? this.rackQty,
-        subinventory: subinventory ?? this.subinventory,
-        rackLocatorId: rackLocatorId ?? this.rackLocatorId,
-        joborder: joborder ?? this.joborder,
-        racklocator: racklocator ?? this.racklocator,
-      );
+          batchNo: batchNo ?? this.batchNo,
+          trnid: trnid ?? this.trnid,
+          itemCode: itemCode ?? this.itemCode,
+          itemName: itemName ?? this.itemName,
+          lotno: lotno ?? this.lotno,
+          rackQty: rackQty ?? this.rackQty,
+          subinventory: subinventory ?? this.subinventory,
+          rackLocatorId: rackLocatorId ?? this.rackLocatorId,
+          joborder: joborder ?? this.joborder,
+          racklocator: racklocator ?? this.racklocator,
+          batchStatus: batchStatus ?? this.batchStatus);
 
   factory LotTrnData.fromJson(String str) =>
       LotTrnData.fromMap(json.decode(str));
@@ -111,6 +114,7 @@ class LotTrnData {
         rackLocatorId: json["RACK_LOCATOR_ID"],
         joborder: json["JOBORDER"],
         racklocator: json["RACKLOCATOR"],
+        batchStatus: json["BATCH_STATUS"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -124,5 +128,6 @@ class LotTrnData {
         "RACK_LOCATOR_ID": rackLocatorId,
         "JOBORDER": joborder,
         "RACKLOCATOR": racklocator,
+        "BATCH_STATUS": batchStatus,
       };
 }
