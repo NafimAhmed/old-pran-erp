@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
@@ -912,5 +913,33 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<JobOrderCompletionListResponse> getJoComplList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/jobStatusData?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: JobOrderCompletionListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> completeJO({
+    required String userId,
+    required String jobOrderNo,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/jobStatusData?userid=$userId&joborderno=$jobOrderNo'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

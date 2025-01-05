@@ -11,6 +11,7 @@ import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
@@ -801,6 +802,31 @@ class DataServiceImpl implements DataService {
         shiftName: shiftName,
         machineName: machineName,
         manPower: manPower);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
+  Future<List<JobOrderCompletion>> getJoComplList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getJoComplList(
+      userId: userId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.jobData ?? [];
+  }
+
+  @override
+  Future<void> completeJO({
+    required String userId,
+    required String jobOrderNo,
+  }) async {
+    var response = await remoteDataRepository.completeJO(
+        userId: userId, jobOrderNo: jobOrderNo);
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
