@@ -12,6 +12,12 @@ final class GetTaskInfo extends TaskInfoEvent {
   GetTaskInfo({required this.userId});
 }
 
+final class RemoveTaskInfo extends TaskInfoEvent {
+  final int index;
+
+  RemoveTaskInfo({required this.index});
+}
+
 @immutable
 sealed class TaskInfoState {}
 
@@ -33,12 +39,23 @@ final class TaskInfoError extends TaskInfoState {
 
 class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
   final DataService _dataService;
+  List<TaskInfo> _taskInfoList = [];
   TaskInfoBloc(this._dataService) : super(TaskInfoInitial()) {
     on<GetTaskInfo>((event, emit) async {
       emit(TaskInfoLoading());
       try {
         var response = await _dataService.getTaskInfoList(userid: event.userId);
-        emit(TaskInfoSuccess(taskInfoList: response));
+        _taskInfoList = response;
+        emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
+      } catch (e) {
+        emit(TaskInfoError(error: e));
+      }
+    });
+    on<RemoveTaskInfo>((event, emit) async {
+      emit(TaskInfoLoading());
+      try {
+        _taskInfoList.removeAt(event.index);
+        emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
       } catch (e) {
         emit(TaskInfoError(error: e));
       }

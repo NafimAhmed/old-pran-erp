@@ -87,17 +87,43 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                     }
                     if (state is JoComplListSuccess) {
                       return ListView.separated(
-                        clipBehavior: Clip.antiAlias,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         itemBuilder: (context, index) {
                           var data = state.jobOrderCompletionList[index];
                           return ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
+                            clipBehavior: Clip.antiAlias,
+                            borderRadius: BorderRadius.circular(10),
                             child: Dismissible(
                               key: Key(data.jobOrderNo ?? ""),
                               dismissThresholds: const {
                                 DismissDirection.startToEnd: 0.8
+                              },
+                              confirmDismiss: (direction) async {
+                                return await showDialog<bool>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text("Are You Sure"),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text("Cancel"),
+                                              onPressed: () {
+                                                Navigator.pop(context,
+                                                    false); // Return false if cancelled
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text("OK"),
+                                              onPressed: () {
+                                                Navigator.pop(context,
+                                                    true); // Return true if confirmed
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ) ??
+                                    false; // Default to false if dialog is dismissed without selection
                               },
                               onDismissed: (direction) {
                                 context
@@ -116,6 +142,9 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
                                     Icon(
                                       Icons.save,
                                       color: appTheme.white,
@@ -136,16 +165,16 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                   ),
                                 ),
                                 child: Container(
-                                  width: double.infinity,
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: Colors.green.shade600,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: appTheme.primary,
-                                        width: 3,
-                                      ),
+                                    color: appTheme.white,
+                                    border: Border.all(
+                                      width: 5,
+                                      color: const Color.fromARGB(
+                                          255, 200, 238, 169),
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      10,
                                     ),
                                   ),
                                   child: Column(
@@ -155,8 +184,74 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                       Text(
                                         data.jobOrderNo ?? "",
                                         style: textTheme.bodyMedium!.copyWith(
-                                          color: appTheme.white,
+                                          color: appTheme.primary,
                                         ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "FPO Qty",
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.primary,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              data.fpoQty.toString(),
+                                              style: textTheme.bodyMedium!
+                                                  .copyWith(
+                                                color: appTheme.primary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Job Order Qty",
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.primary,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              data.jobOrderQty.toString(),
+                                              style: textTheme.bodyMedium!
+                                                  .copyWith(
+                                                color: appTheme.primary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Status",
+                                            style:
+                                                textTheme.bodyMedium!.copyWith(
+                                              color: appTheme.primary,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              data.jobStatus ?? "",
+                                              style: textTheme.bodyMedium!
+                                                  .copyWith(
+                                                color: appTheme.primary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -166,7 +261,7 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                           );
                         },
                         separatorBuilder: (context, index) => const SizedBox(
-                          height: 10,
+                          height: 6,
                         ),
                         itemCount: state.jobOrderCompletionList.length,
                       );
