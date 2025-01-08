@@ -66,7 +66,8 @@ abstract class RemoteDataRepository {
     required int transactId,
     required String userId,
   });
-  Future<JobHistoryResponse> getJobHistory({required String userId});
+  Future<JobHistoryResponse> getJobHistory(
+      {required String userId, required String jobNo});
   Future<void> tranferDelete({
     required int trnsfid,
     required String userId,

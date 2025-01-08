@@ -10,12 +10,11 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_loc_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_ord_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/top_jo_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/top_jo_Info_dialog.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -30,9 +29,6 @@ class OpmC4Screen extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => TopJoInfoBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => JobHistoryBloc(getService()),
         ),
         BlocProvider(
           create: (context) => JobDetailsBloc(getService()),
@@ -97,8 +93,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                     var jobHisDataSource = JobHistoryDataSource(
                       jobHistoryData: state.topJoInfoList,
                     );
-                    // jobHisDataSource.addColumnGroup(
-                    //     ColumnGroup(name: "Job Order No", sortGroupRows: false));
+
                     chartData = state.topJoInfoList
                         .map(
                           (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
@@ -139,19 +134,11 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                                     .jobHisData[
                                         details.rowColumnIndex.rowIndex - 1]
                                     .jobOrderNo;
-                                // var itemCode = jobHisDataSource
-                                //     .jobHisData[
-                                //         details.rowColumnIndex.rowIndex - 1]
-                                //     .item
-                                //     ?.split("-")
-                                //     .first
-                                //     .trim();
 
                                 AppModal.showCustomModal(
                                   context,
-                                  content: JobOrderDetailsDialog(
+                                  content: TopJoInfoDialog(
                                     jobOrder: jobOrder ?? "",
-                                    // itemCode: itemCode ?? "",
                                     blocContext: context,
                                     userId: loggedUser.userId,
                                   ),

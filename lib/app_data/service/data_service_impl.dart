@@ -123,8 +123,10 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<JobHistory>> getJobHistory({required String userId}) async {
-    var response = await remoteDataRepository.getJobHistory(userId: userId);
+  Future<List<JobHistory>> getJobHistory(
+      {required String userId, required String jobNo}) async {
+    var response =
+        await remoteDataRepository.getJobHistory(userId: userId, jobNo: jobNo);
     return response.jobOrderInfo ?? [];
   }
 

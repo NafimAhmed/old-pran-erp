@@ -8,14 +8,8 @@ sealed class JobHistoryEvent {}
 
 final class JobHistoryGet extends JobHistoryEvent {
   final String userId;
-
-  JobHistoryGet({required this.userId});
-}
-
-final class JobHistoryFilter extends JobHistoryEvent {
-  final String searchValue;
-
-  JobHistoryFilter({required this.searchValue});
+  final String jobNo;
+  JobHistoryGet({required this.userId, required this.jobNo});
 }
 
 @immutable
@@ -44,30 +38,11 @@ class JobHistoryBloc extends Bloc<JobHistoryEvent, JobHistoryState> {
     on<JobHistoryGet>((event, emit) async {
       emit(JobHistoryLoading());
       try {
-        var response = await _dataService.getJobHistory(userId: event.userId);
+        var response = await _dataService.getJobHistory(
+            userId: event.userId, jobNo: event.jobNo);
         _jobHistoryList.clear();
         _jobHistoryList = response;
         emit(JobHistorySuccess(jobHistoryList: response));
-      } catch (error) {
-        emit(JobHistoryError(error: error));
-      }
-    });
-    on<JobHistoryFilter>((event, emit) async {
-      emit(JobHistoryLoading());
-      try {
-        if (event.searchValue.isNotEmpty) {
-          var filterlist = _jobHistoryList.where(
-            (element) {
-              return element.jobOrderNo
-                      ?.toLowerCase()
-                      .contains(event.searchValue.toLowerCase()) ??
-                  false;
-            },
-          ).toList();
-          emit(JobHistorySuccess(jobHistoryList: filterlist));
-        } else {
-          emit(JobHistorySuccess(jobHistoryList: _jobHistoryList));
-        }
       } catch (error) {
         emit(JobHistoryError(error: error));
       }
