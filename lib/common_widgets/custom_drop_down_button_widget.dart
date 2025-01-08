@@ -46,7 +46,7 @@ class CommonDropdownButton<T> extends StatelessWidget {
       ),
       style: textTheme.bodyMedium!.copyWith(
         overflow: TextOverflow.ellipsis,
-        color: appTheme.primary,
+        color: hintcolor ?? appTheme.primary,
         fontWeight: FontWeight.bold,
       ),
       items: items?.map(
