@@ -28,6 +28,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
@@ -284,5 +285,8 @@ abstract class DataService {
   Future<void> completeJO({
     required String userId,
     required String jobOrderNo,
+  });
+  Future<List<TopJoInfo>> getTopJOInfoList({
+    required String userId,
   });
 }

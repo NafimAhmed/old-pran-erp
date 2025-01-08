@@ -30,6 +30,7 @@ import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
+import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
@@ -90,24 +91,6 @@ class RemoteDataRepositoryImpl
         decoder: TempBatchDataResponse.fromJson);
   }
 
-  // @override
-  // Future<void> transferBatch(
-  //     {required String batchId,
-  //     required String itemId,
-  //     required String rackId,
-  //     required String rqty,
-  //     required String split}) async {
-  //   var request = http.Request(
-  //       'POST',
-  //       Uri.parse(
-  //           '${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch_test?batchid=$batchId&itemid=$itemId&rqty=$rqty&rackid=$rackId&split_flag=$split'));
-
-  //   http.StreamedResponse response = await request.send();
-
-  //   await decodeResponse(
-  //     response,
-  //   );
-  // }
   @override
   Future<void> transferBatch({
     required String pTrnid,
@@ -131,8 +114,6 @@ class RemoteDataRepositoryImpl
   @override
   Future<TransferBatchDataResponse> getTransferBatchData(
       {required String userId}) async {
-    // var request = http.Request(
-    //     'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/trnsfbatch'));
     var request = http.Request(
         'GET',
         Uri.parse(
@@ -161,10 +142,6 @@ class RemoteDataRepositoryImpl
     required int transactId,
     required String userId,
   }) async {
-    // var request = http.Request(
-    //     'POST',
-    //     Uri.parse(
-    //         '${appConfig.baseUrl}/ords/rpro/batch/racktrnsf?racktrnid=$transactId'));
     var request = http.Request(
       'POST',
       Uri.parse(
@@ -176,14 +153,6 @@ class RemoteDataRepositoryImpl
     await decodeResponse(
       response,
     );
-    // var request = http.Request(
-    //     'POST',
-    //     Uri.parse(
-    //         '${appConfig.baseUrl}/ords/rpro/batch/racktrnf_test?racktrnid=$transactId'));
-
-    // http.StreamedResponse response = await request.send();
-
-    // await decodeResponse(response);
   }
 
   @override
@@ -203,10 +172,6 @@ class RemoteDataRepositoryImpl
     required int trnsfid,
     required String userId,
   }) async {
-    // var request = http.Request(
-    //     'POST',
-    //     Uri.parse(
-    //         '${appConfig.baseUrl}/ords/rpro/batch/trnfdel?trnsfid=$trnsfid'));
     var request = http.Request(
         'POST',
         Uri.parse(
@@ -941,5 +906,19 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<TopJoInfoListResponse> getTopJOInfoList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/jobhistTop?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: TopJoInfoListResponse.fromJson);
   }
 }
