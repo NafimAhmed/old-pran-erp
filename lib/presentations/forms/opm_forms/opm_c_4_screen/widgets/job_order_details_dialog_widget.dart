@@ -17,13 +17,13 @@ class JobOrderDetailsDialog extends StatefulWidget {
     required this.blocContext,
     required this.userId,
     required this.jobOrder,
-    required this.itemCode,
+    // required this.itemCode,
   });
 
   final BuildContext blocContext;
   final String userId;
   final String jobOrder;
-  final String itemCode;
+  // final String itemCode;
   @override
   State<JobOrderDetailsDialog> createState() => _JobOrderDetailsDialogState();
 }
@@ -42,7 +42,7 @@ class _JobOrderDetailsDialogState extends State<JobOrderDetailsDialog> {
               JobOrderInfoGet(
                   userId: widget.userId,
                   jobOrderno: widget.jobOrder,
-                  itemId: widget.itemCode),
+                  itemId: ""),
             ),
         ),
       ],

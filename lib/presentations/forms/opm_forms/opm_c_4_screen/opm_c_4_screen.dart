@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/j
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_history_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_loc_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_ord_info_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/top_jo_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_order_details_dialog_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -27,6 +28,9 @@ class OpmC4Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => TopJoInfoBloc(getService()),
+        ),
         BlocProvider(
           create: (context) => JobHistoryBloc(getService()),
         ),
@@ -63,9 +67,10 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
-    context
-        .read<JobHistoryBloc>()
-        .add(JobHistoryGet(userId: loggedUser.userId));
+    context.read<TopJoInfoBloc>().add(TopJoInfoGet(userId: loggedUser.userId));
+    // context
+    //     .read<JobHistoryBloc>()
+    //     .add(JobHistoryGet(userId: loggedUser.userId));
     super.initState();
   }
 
@@ -83,18 +88,18 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
               padding: const EdgeInsets.symmetric(
                 horizontal: 10,
               ),
-              child: BlocBuilder<JobHistoryBloc, JobHistoryState>(
+              child: BlocBuilder<TopJoInfoBloc, TopJoInfoState>(
                 builder: (context, state) {
-                  if (state is JobHistoryLoading) {
+                  if (state is TopJoInfoLoading) {
                     return const CircularProgressIndicator();
                   }
-                  if (state is JobHistorySuccess) {
+                  if (state is TopJoInfoSuccess) {
                     var jobHisDataSource = JobHistoryDataSource(
-                      jobHistoryData: state.jobHistoryList,
+                      jobHistoryData: state.topJoInfoList,
                     );
                     // jobHisDataSource.addColumnGroup(
                     //     ColumnGroup(name: "Job Order No", sortGroupRows: false));
-                    chartData = state.jobHistoryList
+                    chartData = state.topJoInfoList
                         .map(
                           (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
                         )
@@ -109,8 +114,8 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                           controller: _searchController,
                           hintText: "Search Job Order No",
                           onChanged: (value) {
-                            context.read<JobHistoryBloc>().add(
-                                  JobHistoryFilter(
+                            context.read<TopJoInfoBloc>().add(
+                                  TopJoInfoFilter(
                                     searchValue: _searchController.text,
                                   ),
                                 );
@@ -134,26 +139,19 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                                     .jobHisData[
                                         details.rowColumnIndex.rowIndex - 1]
                                     .jobOrderNo;
-                                var itemCode = jobHisDataSource
-                                    .jobHisData[
-                                        details.rowColumnIndex.rowIndex - 1]
-                                    .item
-                                    ?.split("-")
-                                    .first
-                                    .trim();
-                                // log(jobOrder ?? "");
-                                // log(itemCode ?? "");
-                                // context.read<JobOrderInfoBloc>().add(
-                                //       JobOrderInfoGet(
-                                //           userId: loggedUser.userId,
-                                //           jobOrderno: jobOrder ?? "",
-                                //           itemId: itemCode ?? ""),
-                                //     );
+                                // var itemCode = jobHisDataSource
+                                //     .jobHisData[
+                                //         details.rowColumnIndex.rowIndex - 1]
+                                //     .item
+                                //     ?.split("-")
+                                //     .first
+                                //     .trim();
+
                                 AppModal.showCustomModal(
                                   context,
                                   content: JobOrderDetailsDialog(
                                     jobOrder: jobOrder ?? "",
-                                    itemCode: itemCode ?? "",
+                                    // itemCode: itemCode ?? "",
                                     blocContext: context,
                                     userId: loggedUser.userId,
                                   ),

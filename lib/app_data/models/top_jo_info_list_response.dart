@@ -119,4 +119,15 @@ class TopJoInfo {
         "made_p": madeP,
         "sales_qty": salesQty,
       };
+  Map<String, dynamic> toTabMap() => {
+        "Job Order No": jobOrderNo,
+        "Made P %": madeP,
+        "Buyer Name": buyerName,
+        "FPO Qty": fpoQty,
+        "Good Qty": goodQty,
+        "Trn Qty": trnQty,
+        "Rack Qty": rackQty,
+        "Sales Qty": salesQty,
+        "Delivery Date": deliveryDate,
+      };
 }

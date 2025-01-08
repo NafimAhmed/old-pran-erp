@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
+
+import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -77,10 +80,10 @@ class JobDetailsTableWidget extends StatelessWidget {
 /// is used to map the employee data to the datagrid widget.
 class JobHistoryDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
-  JobHistoryDataSource({required List<JobHistory> jobHistoryData}) {
+  JobHistoryDataSource({required List<TopJoInfo> jobHistoryData}) {
     _jobHisData = jobHistoryData;
     _jobHisRowData = jobHistoryData.map<DataGridRow>((e) {
-      Map<String, dynamic> map = e.toMapForTab();
+      Map<String, dynamic> map = e.toTabMap();
       return DataGridRow(
         cells: [
           ...List.generate(
@@ -98,10 +101,10 @@ class JobHistoryDataSource extends DataGridSource {
   }
 
   List<DataGridRow> _jobHisRowData = [];
-  List<JobHistory> _jobHisData = [];
+  List<TopJoInfo> _jobHisData = [];
   @override
   List<DataGridRow> get rows => _jobHisRowData;
-  List<JobHistory> get jobHisData => _jobHisData;
+  List<TopJoInfo> get jobHisData => _jobHisData;
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final int rowIndex = effectiveRows.indexOf(row);
@@ -183,24 +186,32 @@ class JobHistoryDataSource extends DataGridSource {
           return Container(
             decoration: BoxDecoration(gradient: getColor()),
             alignment: [
-              "FPO No",
+              "Sales Qty",
               "FPO Qty",
-              "Total Made Qty",
               "Good Qty",
               "Bad Qty",
               "Trn Qty",
               "Rack Qty",
               "Made P %",
-              "Due Made P %"
+              "Delivery Date",
             ].contains(e.columnName)
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              e.value.toString(),
-              textAlign: TextAlign.center,
-              style: getTextStyle(),
-            ),
+            child: [
+              "Delivery Date",
+            ].contains(e.columnName)
+                ? Text(
+                    DateTime.parse(e.value.toString())
+                        .toFormatedString("dd-MMM-yyyy"),
+                    textAlign: TextAlign.center,
+                    style: getTextStyle(),
+                  )
+                : Text(
+                    e.value.toString(),
+                    textAlign: TextAlign.center,
+                    style: getTextStyle(),
+                  ),
           );
         }).toList());
   }
