@@ -9,9 +9,13 @@ class CommonDropdownButton<T> extends StatelessWidget {
     this.value,
     required this.onChanged,
     this.validator,
+    this.fillColor,
+    this.hintcolor,
   });
   final String hintText;
   final List<T>? items;
+  final Color? fillColor;
+  final Color? hintcolor;
   final T? value;
   final void Function(T? value) onChanged;
   final String? Function(T? value)? validator;
@@ -30,13 +34,13 @@ class CommonDropdownButton<T> extends StatelessWidget {
           horizontal: 5,
           vertical: 8,
         ),
-        fillColor: appTheme.white,
+        fillColor: fillColor ?? appTheme.white,
         filled: true,
       ).applyDefaults(Theme.of(context).inputDecorationTheme),
       hint: Text(
         hintText,
         style: textTheme.bodyMedium!.copyWith(
-          color: appTheme.primary,
+          color: hintcolor ?? appTheme.primary,
           fontWeight: FontWeight.bold,
         ),
       ),
