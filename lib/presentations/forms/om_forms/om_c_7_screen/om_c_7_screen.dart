@@ -367,6 +367,8 @@ class TaskWidgetContent extends StatelessWidget {
                   value: context
                       .watch<VariableStateHandlerCubit<TaskStatusType>>()
                       .state,
+                  fillColor: appTheme.primary,
+                  hintcolor: Colors.white,
                   onChanged: (value) {
                     if (value != null) {
                       context
