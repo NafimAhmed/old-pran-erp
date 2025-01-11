@@ -58,13 +58,25 @@ class CommonTextFieldWidget extends StatelessWidget {
           textTheme.bodyMedium!.copyWith(
             color: appTheme.primary,
           ),
+      onTapOutside: (event) {
+        focusNode?.unfocus();
+      },
       decoration: InputDecoration(
+        isDense: true,
         filled: filled,
         fillColor: fillColor,
         hintText: hintText,
         labelText: labelText,
         suffixIcon: suffixIcon,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+        floatingLabelStyle: textTheme.bodyMedium!.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 8,
+        ),
       ).applyDefaults(
         Theme.of(context).inputDecorationTheme,
       ),

@@ -33,6 +33,7 @@ class AppTheme {
       // ),
       labelStyle: textTheme.bodyMedium!.copyWith(color: appTheme.primary),
       floatingLabelStyle: textTheme.bodyMedium!.copyWith(color: Colors.black),
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
 
       // When input field is not focused and not showing errors
       border: OutlineInputBorder(
