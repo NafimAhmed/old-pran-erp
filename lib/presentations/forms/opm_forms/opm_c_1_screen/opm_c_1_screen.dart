@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
-import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
-import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/user_machine_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/prod_qr_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/prod_qr_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/bloc/temp_batch_data_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_1_screen/widgets/prod_table_widget.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class OpmC1Screen extends StatelessWidget {

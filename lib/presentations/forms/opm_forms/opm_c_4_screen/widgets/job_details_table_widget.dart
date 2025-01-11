@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';

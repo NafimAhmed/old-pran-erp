@@ -323,26 +323,6 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
   }
 }
 
-//  Expanded(
-//               child: BlocBuilder<UserMenuBloc, UserMenuState>(
-//                 builder: (context, state) {
-//                   if (state is UserMenuLoading) {
-//                     return const Center(
-//                       child: CircularProgressIndicator(),
-//                     );
-//                   }
-//                   if (state is UserMenuSuccess) {
-//                     return Padding(
-//                       padding: const EdgeInsets.symmetric(
-//                         horizontal: 15,
-//                       ),
-//                       child: ,
-//                     );
-//                   }
-//                   return Container();
-//                 },
-//               ),
-//             ),
 class OpmDashSmWidget extends StatelessWidget {
   const OpmDashSmWidget(
       {super.key, required this.data, required this.lable, this.onTap});
