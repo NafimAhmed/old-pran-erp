@@ -105,6 +105,7 @@ abstract class DataService {
     required String goodQty,
     required String badQty,
     required String qty,
+    required String shiftnm,
   });
 
   Future<List<UserBatchQrData>> getUserQrPrintData({

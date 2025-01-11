@@ -271,11 +271,12 @@ class RemoteDataRepositoryImpl
     required String goodQty,
     required String badQty,
     required String qty,
+    required String shiftnm,
   }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty'));
+            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty&shiftnm=$shiftnm'));
 
     http.StreamedResponse response = await request.send();
 

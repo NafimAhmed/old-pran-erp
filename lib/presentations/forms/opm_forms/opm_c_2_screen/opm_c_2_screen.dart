@@ -55,6 +55,9 @@ class OpmC2Screen extends StatelessWidget {
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<UserBatch>(),
         ),
+        BlocProvider(
+          create: (context) => VariableStateHandlerCubit<ShiftData>(),
+        ),
       ],
       child: ProductionScreenBody(
         fromName: fromName,
@@ -367,6 +370,142 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     ],
                   ),
                 ),
+
+                Row(
+                  children: [
+                    BlocBuilder<ShiftDataBloc, ShiftDataState>(
+                      builder: (context, state) {
+                        if (state is ShiftDataSuccess) {
+                          return Expanded(
+                            child: CommonDropdownButton<ShiftData>(
+                              hintText: "Change Shift",
+                              value: context
+                                  .watch<VariableStateHandlerCubit<ShiftData>>()
+                                  .state,
+                              items: state.shiftList,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              ShiftData>>()
+                                      .update(value);
+                                }
+                              },
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          onPressed: state is UserQrSaveLoading
+                              ? () {}
+                              : () {
+                                  if (fromkey.currentState!.validate()) {
+                                    if (context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    UserOrg>>()
+                                            .state ==
+                                        null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        CustomSnackBar.errorSnackber(
+                                          message: "Please Select Org",
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    if (context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    UserBatch>>()
+                                            .state ==
+                                        null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        CustomSnackBar.errorSnackber(
+                                          message: "Please Select Batch",
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    if (context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    UserMachine>>()
+                                            .state ==
+                                        null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        CustomSnackBar.errorSnackber(
+                                          message: "Please Select Machine",
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    var selectedOrg = context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserOrg>>()
+                                        .state;
+                                    var selectedMachine = context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserMachine>>()
+                                        .state;
+                                    var selectedBatch = context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                UserBatch>>()
+                                        .state;
+
+                                    var seletedShift = context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                ShiftData>>()
+                                        .state;
+                                    context.read<UserQrSaveBloc>().add(
+                                          UserQrSave(
+                                            userid: loggedUser.userId,
+                                            itemid: selectedBatch!
+                                                .inventoryItemId
+                                                .toString(),
+                                            machine:
+                                                selectedMachine!.machineName!,
+                                            batchid: selectedBatch.batchId
+                                                .toString(),
+                                            orgid: selectedOrg!.organizationId
+                                                .toString(),
+                                            goodQty: goodQtyTextController.text,
+                                            badQty: badQtyTextController.text,
+                                            qty: quantityTextController.text,
+                                            shiftnm:
+                                                seletedShift?.shiftName ?? "",
+                                          ),
+                                        );
+                                  }
+                                },
+                          child: Text(
+                            state is UserQrSaveLoading ? "Saving.." : "Save",
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
                 BlocBuilder<VariableStateHandlerCubit<UserBatch>, UserBatch?>(
                   builder: (context, state) {
                     if (state != null) {
@@ -442,7 +581,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "B Qty: ",
@@ -468,7 +607,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "M Qty :",
@@ -494,7 +633,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "P Qty :",
@@ -521,108 +660,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       );
                     }
                     return Container();
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                BlocBuilder<ShiftDataBloc, ShiftDataState>(
-                  builder: (context, state) {
-                    if (state is ShiftDataSuccess) {
-                      return CommonDropdownButton<ShiftData>(
-                        hintText: "Change Shift",
-                        items: state.shiftList,
-                        onChanged: (value) {},
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: state is UserQrSaveLoading
-                          ? () {}
-                          : () {
-                              if (fromkey.currentState!.validate()) {
-                                if (context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserOrg>>()
-                                        .state ==
-                                    null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    CustomSnackBar.errorSnackber(
-                                      message: "Please Select Org",
-                                    ),
-                                  );
-                                  return;
-                                }
-                                if (context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserBatch>>()
-                                        .state ==
-                                    null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    CustomSnackBar.errorSnackber(
-                                      message: "Please Select Batch",
-                                    ),
-                                  );
-                                  return;
-                                }
-                                if (context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserMachine>>()
-                                        .state ==
-                                    null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    CustomSnackBar.errorSnackber(
-                                      message: "Please Select Machine",
-                                    ),
-                                  );
-                                  return;
-                                }
-                                var selectedOrg = context
-                                    .read<VariableStateHandlerCubit<UserOrg>>()
-                                    .state;
-                                var selectedMachine = context
-                                    .read<
-                                        VariableStateHandlerCubit<
-                                            UserMachine>>()
-                                    .state;
-                                var selectedBatch = context
-                                    .read<
-                                        VariableStateHandlerCubit<UserBatch>>()
-                                    .state;
-                                context.read<UserQrSaveBloc>().add(
-                                      UserQrSave(
-                                          userid: loggedUser.userId,
-                                          itemid: selectedBatch!.inventoryItemId
-                                              .toString(),
-                                          machine:
-                                              selectedMachine!.machineName!,
-                                          batchid:
-                                              selectedBatch.batchId.toString(),
-                                          orgid: selectedOrg!.organizationId
-                                              .toString(),
-                                          goodQty: goodQtyTextController.text,
-                                          badQty: badQtyTextController.text,
-                                          qty: quantityTextController.text),
-                                    );
-                              }
-                            },
-                      child: Text(
-                        state is UserQrSaveLoading ? "Saving.." : "Save",
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.white,
-                        ),
-                      ),
-                    );
                   },
                 ),
                 SizedBox(
