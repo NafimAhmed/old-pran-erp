@@ -37,7 +37,8 @@ class SysAdminC5Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<QrUserData>(),
         ),
         BlocProvider(
-          create: (context) => VariableStateHandlerCubit<UserOrg>(),
+          create: (context) =>
+              VariableStateHandlerCubit<List<int>>()..update([]),
         ),
       ],
       child: SysAdminC5ScreenBody(
@@ -83,7 +84,7 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
         listener: (context, state) {
           if (state is OrgAccessSuccess) {
             context.read<VariableStateHandlerCubit<QrUserData>>().reset();
-            context.read<VariableStateHandlerCubit<UserOrg>>().reset();
+            context.read<VariableStateHandlerCubit<List<int>>>().update([]);
             userDropDownTextController.clear();
             orgDropDownTextController.clear();
             ScaffoldMessenger.of(context).showSnackBar(
@@ -104,48 +105,117 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                 const SizedBox(
                   height: 10,
                 ),
-                BlocBuilder<QrUserBloc, QrUserState>(
-                  builder: (context, state) {
-                    return CommonDropDownMenuWidget<QrUserData>(
-                      hintText: "Select User",
-                      enabled: state is QrUserSuccess
-                          ? state.qrUsers.isNotEmpty
-                          : false,
-                      dropdownMenuEntries:
-                          state is QrUserSuccess ? state.qrUsers : [],
-                      controller: userDropDownTextController,
-                      onSelected: (value) {
-                        if (value != null) {
-                          context
-                              .read<VariableStateHandlerCubit<QrUserData>>()
-                              .update(value);
-                        }
+                Row(
+                  children: [
+                    BlocBuilder<QrUserBloc, QrUserState>(
+                      builder: (context, state) {
+                        return Expanded(
+                          child: CommonDropDownMenuWidget<QrUserData>(
+                            hintText: "Select User",
+                            enabled: state is QrUserSuccess
+                                ? state.qrUsers.isNotEmpty
+                                : false,
+                            dropdownMenuEntries:
+                                state is QrUserSuccess ? state.qrUsers : [],
+                            controller: userDropDownTextController,
+                            onSelected: (value) {
+                              if (value != null) {
+                                context
+                                    .read<
+                                        VariableStateHandlerCubit<QrUserData>>()
+                                    .update(value);
+                              }
+                            },
+                          ),
+                        );
                       },
-                    );
-                  },
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CommonDropDownMenuWidget(
+                        hintText: "Select OU",
+                        enabled: false,
+                        // enabled: state is QrUserSuccess
+                        //     ? state.qrUsers.isNotEmpty
+                        //     : false,
+                        dropdownMenuEntries: [],
+                        controller: userDropDownTextController,
+                        onSelected: (value) {
+                          if (value != null) {
+                            // context
+                            //     .read<VariableStateHandlerCubit<QrUserData>>()
+                            //     .update(value);
+                          }
+                        },
+                      ),
+                    )
+                  ],
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                BlocBuilder<OrgBloc, OrgState>(
-                  builder: (context, state) {
-                    return CommonDropDownMenuWidget<UserOrg>(
-                      hintText: "Select Org",
-                      dropdownMenuEntries:
-                          state is OrgSuccess ? state.userOrgList : [],
-                      enabled: state is OrgSuccess
-                          ? state.userOrgList.isNotEmpty
-                          : false,
-                      controller: orgDropDownTextController,
-                      onSelected: (value) {
-                        if (value != null) {
-                          context
-                              .read<VariableStateHandlerCubit<UserOrg>>()
-                              .update(value);
-                        }
-                      },
-                    );
-                  },
+                Expanded(
+                  child: BlocBuilder<OrgBloc, OrgState>(
+                    builder: (context, state) {
+                      if (state is OrgLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is OrgSuccess) {
+                        return ListView.separated(
+                          itemBuilder: (context, index) {
+                            var data = state.userOrgList[index];
+                            return CheckboxListTile(
+                              title: Text(
+                                data.organizationName ?? "",
+                                style: textTheme.bodyMedium!.copyWith(),
+                              ),
+                              subtitle: Text(
+                                data.organizationCode ?? "",
+                              ),
+                              value: context
+                                      .watch<
+                                          VariableStateHandlerCubit<
+                                              List<int>>>()
+                                      .state
+                                      ?.contains(index) ??
+                                  false,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  var selectedList = List<int>.from(context
+                                          .read<
+                                              VariableStateHandlerCubit<
+                                                  List<int>>>()
+                                          .state ??
+                                      []);
+                                  if (value) {
+                                    selectedList.add(index);
+                                  } else {
+                                    selectedList.remove(index);
+                                  }
+                                  context
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              List<int>>>()
+                                      .update(selectedList);
+                                }
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              height: 10,
+                            );
+                          },
+                          itemCount: 10,
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
@@ -159,7 +229,7 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                               .read<VariableStateHandlerCubit<QrUserData>>()
                               .state;
                           var orgId = context
-                              .read<VariableStateHandlerCubit<UserOrg>>()
+                              .read<VariableStateHandlerCubit<List<int>>>()
                               .state;
 
                           if (newUserId == null) {
@@ -178,13 +248,13 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                             );
                             return;
                           }
-                          context.read<OrgAccessBloc>().add(
-                                GiveOrgAccess(
-                                  newUserId: newUserId.userId ?? "",
-                                  userId: loggedUser.userId,
-                                  orgId: orgId.organizationId.toString(),
-                                ),
-                              );
+                          // context.read<OrgAccessBloc>().add(
+                          //       GiveOrgAccess(
+                          //         newUserId: newUserId.userId ?? "",
+                          //         userId: loggedUser.userId,
+                          //         orgId: orgId.organizationId.toString(),
+                          //       ),
+                          //     );
                         }
                       },
                       child: Text(
@@ -207,3 +277,23 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
     );
   }
 }
+// BlocBuilder<OrgBloc, OrgState>(
+//                   builder: (context, state) {
+//                     return CommonDropDownMenuWidget<UserOrg>(
+//                       hintText: "Select Org",
+//                       dropdownMenuEntries:
+//                           state is OrgSuccess ? state.userOrgList : [],
+//                       enabled: state is OrgSuccess
+//                           ? state.userOrgList.isNotEmpty
+//                           : false,
+//                       controller: orgDropDownTextController,
+//                       onSelected: (value) {
+//                         if (value != null) {
+//                           context
+//                               .read<VariableStateHandlerCubit<List<int>>()
+//                               .update(value);
+//                         }
+//                       },
+//                     );
+//                   },
+//                 ),
