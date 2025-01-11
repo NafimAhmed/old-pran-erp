@@ -11,6 +11,10 @@ final class GetShiftData extends ShiftDataEvent {
   GetShiftData();
 }
 
+final class ResetShiftData extends ShiftDataEvent {
+  ResetShiftData();
+}
+
 @immutable
 sealed class ShiftDataState {}
 
@@ -44,6 +48,9 @@ class ShiftDataBloc extends Bloc<ShiftDataEvent, ShiftDataState> {
       } catch (e) {
         emit(ShiftDataError(error: e));
       }
+    });
+    on<ResetShiftData>((event, emit) async {
+      emit(ShiftDataInitial());
     });
   }
 }

@@ -107,6 +107,58 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     super.dispose();
   }
 
+  bool _customValidator() {
+    if (context.read<VariableStateHandlerCubit<UserOrg>>().state == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackBar.errorSnackber(
+          message: "Please Select Org",
+        ),
+      );
+      return false; // Validation failed
+    }
+    if (context.read<VariableStateHandlerCubit<UserBatch>>().state == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackBar.errorSnackber(
+          message: "Please Select Batch",
+        ),
+      );
+      return false; // Validation failed
+    }
+    if (context.read<VariableStateHandlerCubit<UserMachine>>().state == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackBar.errorSnackber(
+          message: "Please Select Machine",
+        ),
+      );
+      return false; // Validation failed
+    }
+    return true; // Validation passed
+  }
+
+  void _userQrSave() {
+    var selectedOrg = context.read<VariableStateHandlerCubit<UserOrg>>().state;
+    var selectedMachine =
+        context.read<VariableStateHandlerCubit<UserMachine>>().state;
+    var selectedBatch =
+        context.read<VariableStateHandlerCubit<UserBatch>>().state;
+
+    var seletedShift =
+        context.read<VariableStateHandlerCubit<ShiftData>>().state;
+    context.read<UserQrSaveBloc>().add(
+          UserQrSave(
+            userid: loggedUser.userId,
+            itemid: selectedBatch!.inventoryItemId.toString(),
+            machine: selectedMachine!.machineName!,
+            batchid: selectedBatch.batchId.toString(),
+            orgid: selectedOrg!.organizationId.toString(),
+            goodQty: goodQtyTextController.text,
+            badQty: badQtyTextController.text,
+            qty: quantityTextController.text,
+            shiftnm: seletedShift?.shiftName ?? "",
+          ),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserQrSaveBloc, UserQrSaveState>(
@@ -127,6 +179,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               context.read<VariableStateHandlerCubit<UserOrg>>().state;
           context.read<VariableStateHandlerCubit<UserMachine>>().reset();
           context.read<VariableStateHandlerCubit<UserBatch>>().reset();
+          context.read<VariableStateHandlerCubit<ShiftData>>().reset();
+          context.read<ShiftDataBloc>().add(ResetShiftData());
           context.read<UserBasicDataBloc>().add(
                 UserBasicDataGet(
                   userId: loggedUser.userId,
@@ -277,6 +331,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                         VariableStateHandlerCubit<UserBatch>>()
                                     .update(value);
                                 context
+                                    .read<
+                                        VariableStateHandlerCubit<ShiftData>>()
+                                    .reset();
+                                context
                                     .read<ShiftDataBloc>()
                                     .add(GetShiftData());
                               }
@@ -408,88 +466,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               ? () {}
                               : () {
                                   if (fromkey.currentState!.validate()) {
-                                    if (context
-                                            .read<
-                                                VariableStateHandlerCubit<
-                                                    UserOrg>>()
-                                            .state ==
-                                        null) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        CustomSnackBar.errorSnackber(
-                                          message: "Please Select Org",
-                                        ),
-                                      );
-                                      return;
+                                    if (_customValidator()) {
+                                      _userQrSave();
                                     }
-                                    if (context
-                                            .read<
-                                                VariableStateHandlerCubit<
-                                                    UserBatch>>()
-                                            .state ==
-                                        null) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        CustomSnackBar.errorSnackber(
-                                          message: "Please Select Batch",
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    if (context
-                                            .read<
-                                                VariableStateHandlerCubit<
-                                                    UserMachine>>()
-                                            .state ==
-                                        null) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        CustomSnackBar.errorSnackber(
-                                          message: "Please Select Machine",
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    var selectedOrg = context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserOrg>>()
-                                        .state;
-                                    var selectedMachine = context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserMachine>>()
-                                        .state;
-                                    var selectedBatch = context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserBatch>>()
-                                        .state;
-
-                                    var seletedShift = context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                ShiftData>>()
-                                        .state;
-                                    context.read<UserQrSaveBloc>().add(
-                                          UserQrSave(
-                                            userid: loggedUser.userId,
-                                            itemid: selectedBatch!
-                                                .inventoryItemId
-                                                .toString(),
-                                            machine:
-                                                selectedMachine!.machineName!,
-                                            batchid: selectedBatch.batchId
-                                                .toString(),
-                                            orgid: selectedOrg!.organizationId
-                                                .toString(),
-                                            goodQty: goodQtyTextController.text,
-                                            badQty: badQtyTextController.text,
-                                            qty: quantityTextController.text,
-                                            shiftnm:
-                                                seletedShift?.shiftName ?? "",
-                                          ),
-                                        );
                                   }
                                 },
                           child: Text(

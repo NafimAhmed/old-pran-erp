@@ -15,16 +15,18 @@ final class UserQrSave extends UserQrSaveEvent {
   final String goodQty;
   final String badQty;
   final String qty;
-
-  UserQrSave(
-      {required this.userid,
-      required this.itemid,
-      required this.machine,
-      required this.batchid,
-      required this.orgid,
-      required this.goodQty,
-      required this.badQty,
-      required this.qty});
+  final String shiftnm;
+  UserQrSave({
+    required this.userid,
+    required this.itemid,
+    required this.machine,
+    required this.batchid,
+    required this.orgid,
+    required this.goodQty,
+    required this.badQty,
+    required this.qty,
+    required this.shiftnm,
+  });
 }
 
 @immutable
@@ -61,6 +63,7 @@ class UserQrSaveBloc extends Bloc<UserQrSaveEvent, UserQrSaveState> {
           goodQty: event.goodQty,
           badQty: event.badQty,
           qty: event.qty,
+          shiftnm: event.shiftnm,
         );
         emit(UserQrSaveSuccess(batchQrDataList: response));
       } catch (e) {
