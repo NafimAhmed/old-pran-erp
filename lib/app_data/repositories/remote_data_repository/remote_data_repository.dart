@@ -7,7 +7,6 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
-import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
