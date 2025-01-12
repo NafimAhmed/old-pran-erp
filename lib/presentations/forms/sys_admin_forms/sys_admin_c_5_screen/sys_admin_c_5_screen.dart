@@ -116,6 +116,8 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                       controller: userDropDownTextController,
                       onSelected: (value) {
                         if (value != null) {
+                          // FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
                           context
                               .read<VariableStateHandlerCubit<QrUserData>>()
                               .update(value);
@@ -139,6 +141,8 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                       controller: orgDropDownTextController,
                       onSelected: (value) {
                         if (value != null) {
+                          // FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
                           context
                               .read<VariableStateHandlerCubit<UserOrg>>()
                               .update(value);

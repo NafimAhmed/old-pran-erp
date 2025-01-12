@@ -141,6 +141,8 @@ class _InvC3ScreenBodyState extends State<InvC3ScreenBody> {
                           state is OrgSuccess ? state.userOrgList : [],
                       onSelected: (value) {
                         if (value != null) {
+                          // FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
                           context
                               .read<VariableStateHandlerCubit<UserOrg>>()
                               .update(value);

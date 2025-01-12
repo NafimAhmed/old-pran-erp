@@ -151,6 +151,8 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                           : false,
                       controller: userDropDownTextController,
                       onSelected: (value) {
+                        // FocusScope.of(context).unfocus();
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<VariableStateHandlerCubit<QrUserData>>()
                             .update(value!);
@@ -254,7 +256,8 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                 ? state.qrUserMenu.isNotEmpty
                                 : false,
                             onSelected: (value) {
-                              if (value != null) {}
+                              // FocusScope.of(context).unfocus();
+                              FocusManager.instance.primaryFocus?.unfocus();
                               var selectedUser = context
                                   .read<VariableStateHandlerCubit<QrUserData>>()
                                   .state!;
@@ -289,6 +292,8 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                 : false,
                             onSelected: (value) {
                               if (value != null) {
+                                // FocusScope.of(context).unfocus();
+                                FocusManager.instance.primaryFocus?.unfocus();
                                 context
                                     .read<
                                         VariableStateHandlerCubit<

@@ -118,6 +118,8 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
                       state is UserOrgSuccess ? state.userOrg : [],
                   onSelected: (value) {
                     if (value != null) {
+                      // FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
                       context
                           .read<VariableStateHandlerCubit<UserOrg>>()
                           .update(value);

@@ -140,7 +140,7 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
                     onSelected: (value) {
                       if (value != null) {
                         // FocusScope.of(context).unfocus();
-                        // FocusManager.instance.primaryFocus?.unfocus();
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<VariableStateHandlerCubit<JoInfo>>()
                             .update(value);
