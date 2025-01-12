@@ -38,7 +38,7 @@ class CustomSnackBar {
               height: 30,
               child: Image.asset(
                 fit: BoxFit.contain,
-                color: Colors.black54,
+                color: Colors.white,
                 ImageConstant.speechBubble,
               ),
             ),
