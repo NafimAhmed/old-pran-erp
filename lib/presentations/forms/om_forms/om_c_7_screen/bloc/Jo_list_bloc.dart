@@ -5,43 +5,43 @@ import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
-sealed class JoInfoEvent {}
+sealed class JoListEvent {}
 
-final class GetJoInfo extends JoInfoEvent {
+final class GetJoList extends JoListEvent {
   final String userId;
 
-  GetJoInfo({required this.userId});
+  GetJoList({required this.userId});
 }
 
 @immutable
-sealed class JoInfoState {}
+sealed class JoListState {}
 
-final class JoInfoInitial extends JoInfoState {}
+final class JoListInitial extends JoListState {}
 
-final class JoInfoLoading extends JoInfoState {}
+final class JoListLoading extends JoListState {}
 
-final class JoInfoSuccess extends JoInfoState {
+final class JoListSuccess extends JoListState {
   final List<JoInfo> joInfoList;
 
-  JoInfoSuccess({required this.joInfoList});
+  JoListSuccess({required this.joInfoList});
 }
 
-final class JoInfoError extends JoInfoState {
+final class JoListError extends JoListState {
   final Object error;
 
-  JoInfoError({required this.error});
+  JoListError({required this.error});
 }
 
-class JoInfoBloc extends Bloc<JoInfoEvent, JoInfoState> {
+class JoListBloc extends Bloc<JoListEvent, JoListState> {
   final DataService _dataService;
-  JoInfoBloc(this._dataService) : super(JoInfoInitial()) {
-    on<GetJoInfo>((event, emit) async {
-      emit(JoInfoLoading());
+  JoListBloc(this._dataService) : super(JoListInitial()) {
+    on<GetJoList>((event, emit) async {
+      emit(JoListLoading());
       try {
         var response = await _dataService.getJoList(userid: event.userId);
-        emit(JoInfoSuccess(joInfoList: response));
+        emit(JoListSuccess(joInfoList: response));
       } catch (e) {
-        emit(JoInfoError(error: e));
+        emit(JoListError(error: e));
       }
     });
   }
