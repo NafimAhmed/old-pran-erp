@@ -42,7 +42,6 @@ import '../../models/rcv_inv_org_trn_data_response.dart';
 import '../../models/user_menu_item_response.dart';
 
 abstract class RemoteDataRepository {
-  Future<EmployeResponse> getEmplist();
   Future<void> sendProdQrInfo(
     String itemId,
     String batchId,

@@ -53,16 +53,6 @@ class RemoteDataRepositoryImpl
   RemoteDataRepositoryImpl({required this.appConfig});
 
   @override
-  Future<EmployeResponse> getEmplist() async {
-    var request = http.Request(
-        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/hr/empinfo/'));
-
-    http.StreamedResponse response = await request.send();
-
-    return await decodeResponse(response, decoder: EmployeResponse.fromJson);
-  }
-
-  @override
   Future<void> sendProdQrInfo(
     String itemId,
     String batchId,
