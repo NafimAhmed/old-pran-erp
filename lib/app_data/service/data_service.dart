@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
@@ -254,8 +255,9 @@ abstract class DataService {
   });
   Future<List<TaskInfo>> getTaskInfoList({
     required String userid,
+    required String jobOrderNo,
   });
-  Future<List<TaskInfo>> getJobTaskList({
+  Future<List<JoInfo>> getJoList({
     required String userid,
   });
   Future<void> saveTaskStatus({

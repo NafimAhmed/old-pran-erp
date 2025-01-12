@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -11,6 +12,7 @@ import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/Jo_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/task_Save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/task_info_bloc.dart';
 
@@ -24,13 +26,16 @@ class OmC7Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => JoInfoBloc(getService()),
+        ),
+        BlocProvider(
           create: (context) => TaskInfoBloc(getService()),
         ),
         BlocProvider(
           create: (context) => TaskSaveBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => VariableStateHandlerCubit<String>(),
+          create: (context) => VariableStateHandlerCubit<JoInfo>(),
         ),
       ],
       child: OmC7ScreenBody(
@@ -48,10 +53,10 @@ class OmC7ScreenBody extends StatefulWidget {
 }
 
 enum TaskStatusType {
-  start("Start"),
-  closed("Closed"),
+  pending("Pending"),
   completed("Completed"),
-  pending("Pending");
+  start("Start"),
+  closed("Closed");
 
   const TaskStatusType(this.value);
 
@@ -70,12 +75,11 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
 
-    context.read<TaskInfoBloc>().add(
-          GetTaskInfo(
+    context.read<JoInfoBloc>().add(
+          GetJoInfo(
             userId: loggedUser.userId,
           ),
         );
-
     super.initState();
   }
 
@@ -100,10 +104,12 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
                 message: "Successfully Saved",
               ),
             );
+            var selectedJob =
+                context.read<VariableStateHandlerCubit<JoInfo>>().state!;
             context.read<TaskInfoBloc>().add(
                   GetTaskInfo(
-                    userId: loggedUser.userId,
-                  ),
+                      userId: loggedUser.userId,
+                      jobOrderNo: selectedJob.jobOrderNo ?? ""),
                 );
           }
           if (state is TaskSaveError) {
@@ -123,23 +129,29 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
               const SizedBox(
                 height: 10,
               ),
-              CommonDropDownMenuWidget<String>(
-                hintText: "Job Order No",
-                enabled: true,
-                controller: orgDropDownTextController,
-                dropdownMenuEntries: const [
-                  "DOLLAR TREE-14-25",
-                  "DOLLAR TREE-13-25",
-                  "DOLLAR TREE-12-25",
-                  "COLOR BABY-07-24",
-                  "BIRGMA-24-12"
-                ],
-                onSelected: (value) {
-                  if (value != null) {
-                    context
-                        .read<VariableStateHandlerCubit<String>>()
-                        .update(value);
-                  }
+              BlocBuilder<JoInfoBloc, JoInfoState>(
+                builder: (context, state) {
+                  return CommonDropDownMenuWidget<JoInfo>(
+                    hintText: "Job Order No",
+                    enabled: state is JoInfoSuccess ? true : false,
+                    controller: orgDropDownTextController,
+                    dropdownMenuEntries:
+                        state is JoInfoSuccess ? state.joInfoList : [],
+                    onSelected: (value) {
+                      if (value != null) {
+                        // FocusScope.of(context).unfocus();
+                        // FocusManager.instance.primaryFocus?.unfocus();
+                        context
+                            .read<VariableStateHandlerCubit<JoInfo>>()
+                            .update(value);
+                        context.read<TaskInfoBloc>().add(
+                              GetTaskInfo(
+                                  userId: loggedUser.userId,
+                                  jobOrderNo: value.jobOrderNo ?? ""),
+                            );
+                      }
+                    },
+                  );
                 },
               ),
               const SizedBox(

@@ -8,8 +8,11 @@ sealed class TaskInfoEvent {}
 
 final class GetTaskInfo extends TaskInfoEvent {
   final String userId;
-
-  GetTaskInfo({required this.userId});
+  final String jobOrderNo;
+  GetTaskInfo({
+    required this.userId,
+    required this.jobOrderNo,
+  });
 }
 
 final class RemoveTaskInfo extends TaskInfoEvent {
@@ -44,7 +47,10 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
     on<GetTaskInfo>((event, emit) async {
       emit(TaskInfoLoading());
       try {
-        var response = await _dataService.getTaskInfoList(userid: event.userId);
+        var response = await _dataService.getTaskInfoList(
+          userid: event.userId,
+          jobOrderNo: event.jobOrderNo,
+        );
         _taskInfoList = response;
         emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
       } catch (e) {
