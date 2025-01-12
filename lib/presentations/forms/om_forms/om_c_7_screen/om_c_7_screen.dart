@@ -26,7 +26,7 @@ class OmC7Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => JoInfoBloc(getService()),
+          create: (context) => JoListBloc(getService()),
         ),
         BlocProvider(
           create: (context) => TaskInfoBloc(getService()),
@@ -75,8 +75,8 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
 
-    context.read<JoInfoBloc>().add(
-          GetJoInfo(
+    context.read<JoListBloc>().add(
+          GetJoList(
             userId: loggedUser.userId,
           ),
         );
@@ -129,14 +129,14 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
               const SizedBox(
                 height: 10,
               ),
-              BlocBuilder<JoInfoBloc, JoInfoState>(
+              BlocBuilder<JoListBloc, JoListState>(
                 builder: (context, state) {
                   return CommonDropDownMenuWidget<JoInfo>(
                     hintText: "Job Order No",
-                    enabled: state is JoInfoSuccess ? true : false,
+                    enabled: state is JoListSuccess ? true : false,
                     controller: orgDropDownTextController,
                     dropdownMenuEntries:
-                        state is JoInfoSuccess ? state.joInfoList : [],
+                        state is JoListSuccess ? state.joInfoList : [],
                     onSelected: (value) {
                       if (value != null) {
                         // FocusScope.of(context).unfocus();
