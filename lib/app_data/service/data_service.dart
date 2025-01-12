@@ -46,7 +46,6 @@ abstract class DataService {
   Future<void> clearUserFrmLocal();
   Future<UserInfoModel?> getLoggedUser();
 
-  Future<List<Employee>> getEmplist();
   Future<void> sendProdQrInfo(
     String itemId,
     String batchId,

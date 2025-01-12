@@ -53,12 +53,6 @@ class DataServiceImpl implements DataService {
   });
 
   @override
-  Future<List<Employee>> getEmplist() async {
-    var response = await remoteDataRepository.getEmplist();
-    return response.items;
-  }
-
-  @override
   Future<void> sendProdQrInfo(
     String itemId,
     String batchId,
