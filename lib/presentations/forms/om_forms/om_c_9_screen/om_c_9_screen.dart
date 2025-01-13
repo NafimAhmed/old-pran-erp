@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -46,6 +47,10 @@ class OmC9ScreenBody extends StatefulWidget {
 class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
   TextEditingController orgDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
+
+  final Map<int, VariableStateHandlerCubit<DateTime>> startDateCubits = {};
+  final Map<int, VariableStateHandlerCubit<String>> complDateCubits = {};
+  final Map<int, VariableStateHandlerCubit<TaskType>> taskTypeCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -101,6 +106,12 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
                 itemBuilder: (context, index) {
                   return TaskWidget(
                     index: index,
+                    startDateCubit: startDateCubits.putIfAbsent(
+                        index, () => VariableStateHandlerCubit<DateTime>()),
+                    complDateCubit: complDateCubits.putIfAbsent(
+                        index, () => VariableStateHandlerCubit<String>()),
+                    taskCubit: taskTypeCubits.putIfAbsent(
+                        index, () => VariableStateHandlerCubit<TaskType>()),
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(
@@ -116,18 +127,41 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
   }
 }
 
+enum TaskType {
+  independent("In"),
+  dependent("De");
+
+  final String value;
+
+  const TaskType(this.value);
+  @override
+  String toString() {
+    return name;
+  }
+}
+
 class TaskWidget extends StatelessWidget {
-  const TaskWidget({super.key, required this.index});
+  const TaskWidget({
+    super.key,
+    required this.index,
+    required this.startDateCubit,
+    required this.complDateCubit,
+    required this.taskCubit,
+  });
   final int index;
+  final VariableStateHandlerCubit<DateTime> startDateCubit;
+  final VariableStateHandlerCubit<String> complDateCubit;
+  final VariableStateHandlerCubit<TaskType> taskCubit;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<DateTime>(),
+        BlocProvider.value(value: startDateCubit),
+        BlocProvider.value(
+          value: complDateCubit,
         ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<String>(),
+        BlocProvider.value(
+          value: taskCubit..update(TaskType.independent),
         ),
       ],
       child: TaskWidgetContent(
@@ -158,9 +192,70 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
       child: CheckboxListTile(
         visualDensity: VisualDensity.standard,
         contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-        title: Text(
-          "Task Name",
-          style: textTheme.bodyMedium,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Task Name",
+              style: textTheme.bodyMedium,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.04,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: SegmentedButton<TaskType>(
+                      style: SegmentedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
+                      showSelectedIcon: false,
+                      selected: <TaskType>{
+                        context
+                            .watch<VariableStateHandlerCubit<TaskType>>()
+                            .state!
+                      },
+                      onSelectionChanged: (Set<TaskType> newSelection) {
+                        context
+                            .read<VariableStateHandlerCubit<TaskType>>()
+                            .update(newSelection.first);
+                      },
+                      segments: <ButtonSegment<TaskType>>[
+                        ...TaskType.values.map((e) {
+                          return ButtonSegment<TaskType>(
+                            label: Text(e.value),
+                            value: e,
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                BlocBuilder<VariableStateHandlerCubit<TaskType>, TaskType?>(
+                  builder: (context, state) {
+                    if (state == TaskType.dependent) {
+                      return Expanded(
+                        child: CommonDropdownButton(
+                          hintText: "Select Parent Task",
+                          onChanged: (value) {},
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+          ],
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,12 +373,12 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
         context.read<VariableStateHandlerCubit<DateTime>>().state;
     var selectedComplDt =
         context.read<VariableStateHandlerCubit<String>>().state;
-    if (selectedStartDt == null && selectedComplDt == null) {
+    if (selectedStartDt != null && selectedComplDt != null) {
+      return true;
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
           CustomSnackBar.errorSnackber(message: "Please Assign Date"));
       return false;
-    } else {
-      return true;
     }
   }
 }
