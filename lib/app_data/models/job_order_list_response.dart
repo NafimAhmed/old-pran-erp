@@ -48,20 +48,20 @@ class JobOrderListResponse {
 
 class JoInfo {
   final String? jobOrderNo;
-  final String? processStatus;
+  final int? jobId;
 
   JoInfo({
     this.jobOrderNo,
-    this.processStatus,
+    this.jobId,
   });
 
   JoInfo copyWith({
     String? jobOrderNo,
-    String? processStatus,
+    int? jobId,
   }) =>
       JoInfo(
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
-        processStatus: processStatus ?? this.processStatus,
+        jobId: jobId ?? this.jobId,
       );
 
   factory JoInfo.fromJson(String str) => JoInfo.fromMap(json.decode(str));
@@ -70,12 +70,12 @@ class JoInfo {
 
   factory JoInfo.fromMap(Map<String, dynamic> json) => JoInfo(
         jobOrderNo: json["JOB_ORDER_NO"],
-        processStatus: json["PROCESS_STATUS"],
+        jobId: json["jobid"],
       );
 
   Map<String, dynamic> toMap() => {
         "JOB_ORDER_NO": jobOrderNo,
-        "PROCESS_STATUS": processStatus,
+        "jobid": jobId,
       };
   @override
   String toString() {
