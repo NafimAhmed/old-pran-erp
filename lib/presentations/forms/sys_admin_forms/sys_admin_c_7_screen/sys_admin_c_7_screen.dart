@@ -142,6 +142,8 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
                           state is OrgSuccess ? state.userOrgList : [],
                       onSelected: (value) {
                         if (value != null) {
+                          // FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
                           context
                               .read<VariableStateHandlerCubit<UserOrg>>()
                               .update(value);
@@ -174,6 +176,8 @@ class _SysAdminC7ScreenBodyState extends State<SysAdminC7ScreenBody> {
                           state is SubInvSuccess ? state.subInvList : [],
                       onSelected: (value) {
                         if (value != null) {
+                          // FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
                           context
                               .read<VariableStateHandlerCubit<SubInvData>>()
                               .update(value);

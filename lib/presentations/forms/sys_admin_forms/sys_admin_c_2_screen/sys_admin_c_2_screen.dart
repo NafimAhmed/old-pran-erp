@@ -239,6 +239,8 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                 hintText: "Select User",
 
                                 onSelected: (value) {
+                                  // FocusScope.of(context).unfocus();
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                   context
                                       .read<
                                           VariableStateHandlerCubit<

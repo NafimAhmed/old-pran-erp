@@ -51,10 +51,27 @@ class CommonDropdownButton<T> extends StatelessWidget {
       ),
       items: items?.map(
         (e) {
-          return DropdownMenuItem(
-            value: e,
-            child: Text(e.toString()),
-          );
+          if (e == value) {
+            return DropdownMenuItem(
+              value: e,
+              child: Text(
+                e.toString(),
+                style: textTheme.bodyMedium!.copyWith(
+                  color: hintcolor ?? appTheme.primary,
+                ),
+              ),
+            );
+          } else {
+            return DropdownMenuItem(
+              value: e,
+              child: Text(
+                e.toString(),
+                style: textTheme.bodyMedium!.copyWith(
+                  color: appTheme.primary,
+                ),
+              ),
+            );
+          }
         },
       ).toList(),
       onChanged: onChanged,

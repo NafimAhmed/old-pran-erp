@@ -184,6 +184,8 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                               : false,
                           onSelected: (value) {
                             if (value != null) {
+                              // FocusScope.of(context).unfocus();
+                              FocusManager.instance.primaryFocus?.unfocus();
                               context
                                   .read<
                                       VariableStateHandlerCubit<
@@ -214,10 +216,18 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                         Expanded(
                           child: CommonDropdownButton<MenuType>(
                             hintText: "Select Menu Type",
+                            // hintcolor: appTheme.primary,
                             value: context
                                 .watch<VariableStateHandlerCubit<MenuType>>()
                                 .state,
-                            items: MenuType.values,
+                            items: context
+                                        .watch<
+                                            VariableStateHandlerCubit<
+                                                SysModuleData>>()
+                                        .state !=
+                                    null
+                                ? MenuType.values
+                                : [],
                             onChanged: (value) {
                               context
                                   .read<VariableStateHandlerCubit<MenuType>>()
@@ -280,6 +290,9 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
                                         : [],
                                 onSelected: (value) {
                                   if (value != null) {
+                                    // FocusScope.of(context).unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                     context
                                         .read<
                                             VariableStateHandlerCubit<

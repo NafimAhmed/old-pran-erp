@@ -7,13 +7,13 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
-import 'package:pran_rfl_erp/app_data/models/employee_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
+import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
@@ -41,7 +41,6 @@ import '../../models/rcv_inv_org_trn_data_response.dart';
 import '../../models/user_menu_item_response.dart';
 
 abstract class RemoteDataRepository {
-  Future<EmployeResponse> getEmplist();
   Future<void> sendProdQrInfo(
     String itemId,
     String batchId,
@@ -243,8 +242,9 @@ abstract class RemoteDataRepository {
   });
   Future<TaskInfoResponse> getTaskInfoList({
     required String userid,
+    required String jobOrderNo,
   });
-  Future<TaskInfoResponse> getJobTaskList({
+  Future<JobOrderListResponse> getJoList({
     required String userid,
   });
   Future<GenericResponse> saveTaskStatus({

@@ -287,6 +287,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               //                   controller: dropDownTextController,
               //                   dropdownMenuEntries: userMachineList,
               //                   onSelected: (value) {
+              // FocusScope.of(context).unfocus();
+              //  FocusManager.instance.primaryFocus?.unfocus();
               //                     context
               //                         .read<UserMachineBloc>()
               //                         .add(MachineSelected(selectedLov: value));

@@ -242,6 +242,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ? state.userOrg
                                       : [],
                                   onSelected: (value) {
+                                    // FocusScope.of(context).unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                     context.read<UserQrPrintBloc>().add(
                                           GetUserQrPrintData(
                                             userid: loggedUser.userId,
@@ -297,6 +300,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                           []
                                       : [],
                                   onSelected: (value) {
+                                    // FocusScope.of(context).unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                     context
                                         .read<
                                             VariableStateHandlerCubit<
@@ -326,6 +332,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             hintText: "Select Batch",
                             onSelected: (value) {
                               if (value != null) {
+                                // FocusScope.of(context).unfocus();
+                                FocusManager.instance.primaryFocus?.unfocus();
                                 context
                                     .read<
                                         VariableStateHandlerCubit<UserBatch>>()

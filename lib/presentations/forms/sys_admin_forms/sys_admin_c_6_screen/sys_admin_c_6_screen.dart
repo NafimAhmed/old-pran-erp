@@ -207,6 +207,8 @@ class _SysAdminC6ScreenBodyState extends State<SysAdminC6ScreenBody> {
                               : [],
                           onSelected: (value) {
                             if (value != null) {
+                              // FocusScope.of(context).unfocus();
+                              FocusManager.instance.primaryFocus?.unfocus();
                               context
                                   .read<
                                       VariableStateHandlerCubit<MachineInfo>>()
@@ -232,6 +234,8 @@ class _SysAdminC6ScreenBodyState extends State<SysAdminC6ScreenBody> {
                               : [],
                           onSelected: (value) {
                             if (value != null) {
+                              // FocusScope.of(context).unfocus();
+                              FocusManager.instance.primaryFocus?.unfocus();
                               context
                                   .read<VariableStateHandlerCubit<UserOrg>>()
                                   .update(value);
