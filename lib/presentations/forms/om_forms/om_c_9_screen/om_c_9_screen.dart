@@ -111,7 +111,9 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
                     complDateCubit: complDateCubits.putIfAbsent(
                         index, () => VariableStateHandlerCubit<String>()),
                     taskCubit: taskTypeCubits.putIfAbsent(
-                        index, () => VariableStateHandlerCubit<TaskType>()),
+                        index,
+                        () => VariableStateHandlerCubit<TaskType>()
+                          ..update(TaskType.independent)),
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(
@@ -156,12 +158,14 @@ class TaskWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: startDateCubit),
+        BlocProvider.value(
+          value: startDateCubit,
+        ),
         BlocProvider.value(
           value: complDateCubit,
         ),
         BlocProvider.value(
-          value: taskCubit..update(TaskType.independent),
+          value: taskCubit,
         ),
       ],
       child: TaskWidgetContent(
@@ -190,6 +194,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: CheckboxListTile(
+        controlAffinity: ListTileControlAffinity.leading,
         visualDensity: VisualDensity.standard,
         contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         title: Column(
@@ -243,6 +248,14 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                       return Expanded(
                         child: CommonDropdownButton(
                           hintText: "Select Parent Task",
+                          items: const [
+                            "Task1",
+                            "Task2",
+                            "Task3",
+                            "Task4",
+                            "Task5",
+                            "Task6",
+                          ],
                           onChanged: (value) {},
                         ),
                       );
