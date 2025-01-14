@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
-import 'package:pran_rfl_erp/core/extentions/extentions.dart';
-import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/Jo_list_bloc.dart';
+
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/widgets/task_create_widget.dart';
 
 class OmC9Screen extends StatelessWidget {
   const OmC9Screen({super.key, required this.fromName});
@@ -26,14 +26,29 @@ class OmC9Screen extends StatelessWidget {
           create: (context) => JoListBloc(getService()),
         ),
         BlocProvider(
-          create: (context) =>
-              VariableStateHandlerCubit<List<int>>()..update([]),
+          create: (context) => TaskListBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => VariableStateHandlerCubit<JoInfo>(),
         ),
       ],
       child: OmC9ScreenBody(
         fromName: fromName,
       ),
     );
+  }
+}
+
+enum TaskType {
+  independent("In"),
+  dependent("De");
+
+  final String value;
+
+  const TaskType(this.value);
+  @override
+  String toString() {
+    return name;
   }
 }
 
@@ -51,6 +66,7 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
   final Map<int, VariableStateHandlerCubit<DateTime>> startDateCubits = {};
   final Map<int, VariableStateHandlerCubit<String>> complDateCubits = {};
   final Map<int, VariableStateHandlerCubit<TaskType>> taskTypeCubits = {};
+  final Map<int, VariableStateHandlerCubit<Task>> pTaskCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -59,6 +75,7 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
             userId: loggedUser.userId,
           ),
         );
+
     super.initState();
   }
 
@@ -93,6 +110,14 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
                     if (value != null) {
                       // FocusScope.of(context).unfocus();
                       FocusManager.instance.primaryFocus?.unfocus();
+                      context
+                          .read<VariableStateHandlerCubit<JoInfo>>()
+                          .update(value);
+                      context.read<TaskListBloc>().add(
+                            GetTaskList(
+                              userId: loggedUser.userId,
+                            ),
+                          );
                     }
                   },
                 );
@@ -102,296 +127,53 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
               height: 10,
             ),
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return TaskWidget(
-                    index: index,
-                    startDateCubit: startDateCubits.putIfAbsent(
-                        index, () => VariableStateHandlerCubit<DateTime>()),
-                    complDateCubit: complDateCubits.putIfAbsent(
-                        index, () => VariableStateHandlerCubit<String>()),
-                    taskCubit: taskTypeCubits.putIfAbsent(
-                        index,
-                        () => VariableStateHandlerCubit<TaskType>()
-                          ..update(TaskType.independent)),
-                  );
+              child: BlocBuilder<TaskListBloc, TaskListState>(
+                builder: (context, state) {
+                  if (state is TaskListLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is TaskListSuccess) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        var data = state.taskList[index];
+                        return TaskCreateWidget(
+                          data: data,
+                          joInfo: context
+                              .read<VariableStateHandlerCubit<JoInfo>>()
+                              .state!,
+                          loggedUser: loggedUser,
+                          taskList: state.taskList,
+                          index: index,
+                          startDateCubit: startDateCubits.putIfAbsent(
+                              data.taskNo ?? 0,
+                              () => VariableStateHandlerCubit<DateTime>()),
+                          complDateCubit: complDateCubits.putIfAbsent(
+                              data.taskNo ?? 0,
+                              () => VariableStateHandlerCubit<String>()),
+                          taskTypeCubit: taskTypeCubits.putIfAbsent(
+                            data.taskNo ?? 0,
+                            () => VariableStateHandlerCubit<TaskType>()
+                              ..update(TaskType.independent),
+                          ),
+                          pTaskCubit: pTaskCubits.putIfAbsent(data.taskNo ?? 0,
+                              () => VariableStateHandlerCubit<Task>()),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 10,
+                      ),
+                      itemCount: state.taskList.length,
+                    );
+                  }
+                  return Container();
                 },
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 10,
-                ),
-                itemCount: 10,
               ),
             )
           ],
         ),
       ),
     );
-  }
-}
-
-enum TaskType {
-  independent("In"),
-  dependent("De");
-
-  final String value;
-
-  const TaskType(this.value);
-  @override
-  String toString() {
-    return name;
-  }
-}
-
-class TaskWidget extends StatelessWidget {
-  const TaskWidget({
-    super.key,
-    required this.index,
-    required this.startDateCubit,
-    required this.complDateCubit,
-    required this.taskCubit,
-  });
-  final int index;
-  final VariableStateHandlerCubit<DateTime> startDateCubit;
-  final VariableStateHandlerCubit<String> complDateCubit;
-  final VariableStateHandlerCubit<TaskType> taskCubit;
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(
-          value: startDateCubit,
-        ),
-        BlocProvider.value(
-          value: complDateCubit,
-        ),
-        BlocProvider.value(
-          value: taskCubit,
-        ),
-      ],
-      child: TaskWidgetContent(
-        index: index,
-      ),
-    );
-  }
-}
-
-class TaskWidgetContent extends StatefulWidget {
-  const TaskWidgetContent({
-    super.key,
-    required this.index,
-  });
-  final int index;
-  @override
-  State<TaskWidgetContent> createState() => _TaskWidgetContentState();
-}
-
-class _TaskWidgetContentState extends State<TaskWidgetContent> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.indigo[100],
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: CheckboxListTile(
-        controlAffinity: ListTileControlAffinity.leading,
-        visualDensity: VisualDensity.standard,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Task Name",
-              style: textTheme.bodyMedium,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: SegmentedButton<TaskType>(
-                      style: SegmentedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                      ),
-                      showSelectedIcon: false,
-                      selected: <TaskType>{
-                        context
-                            .watch<VariableStateHandlerCubit<TaskType>>()
-                            .state!
-                      },
-                      onSelectionChanged: (Set<TaskType> newSelection) {
-                        context
-                            .read<VariableStateHandlerCubit<TaskType>>()
-                            .update(newSelection.first);
-                      },
-                      segments: <ButtonSegment<TaskType>>[
-                        ...TaskType.values.map((e) {
-                          return ButtonSegment<TaskType>(
-                            label: Text(e.value),
-                            value: e,
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                BlocBuilder<VariableStateHandlerCubit<TaskType>, TaskType?>(
-                  builder: (context, state) {
-                    if (state == TaskType.dependent) {
-                      return Expanded(
-                        child: CommonDropdownButton(
-                          hintText: "Select Parent Task",
-                          items: const [
-                            "Task1",
-                            "Task2",
-                            "Task3",
-                            "Task4",
-                            "Task5",
-                            "Task6",
-                          ],
-                          onChanged: (value) {},
-                        ),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Start Date"),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: Text(
-                      textAlign: TextAlign.right,
-                      context
-                              .watch<VariableStateHandlerCubit<DateTime>>()
-                              .state
-                              ?.toFormatedString("dd-MMM-yyyy") ??
-                          ""),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                InkWell(
-                  onTap: () async {
-                    var selectedDate = await showDatePicker(
-                      context: context,
-                      firstDate:
-                          DateTime.now().subtract(const Duration(days: 120)),
-                      lastDate: DateTime.now().add(const Duration(days: 120)),
-                      initialDate: DateTime.now(),
-                    );
-                    if (selectedDate != null && context.mounted) {
-                      context
-                          .read<VariableStateHandlerCubit<DateTime>>()
-                          .update(selectedDate);
-                    }
-                  },
-                  child: const Icon(
-                    Icons.calendar_month_sharp,
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Comlt Date"),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: Text(
-                      textAlign: TextAlign.right,
-                      context
-                              .watch<VariableStateHandlerCubit<String>>()
-                              .state ??
-                          ""),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                InkWell(
-                  onTap: () async {
-                    var selectedDate = await showDatePicker(
-                      context: context,
-                      firstDate:
-                          DateTime.now().subtract(const Duration(days: 120)),
-                      lastDate: DateTime.now().add(const Duration(days: 120)),
-                      initialDate: DateTime.now(),
-                    );
-                    if (selectedDate != null && context.mounted) {
-                      context
-                          .read<VariableStateHandlerCubit<String>>()
-                          .update(selectedDate.toFormatedString("dd-MMM-yyyy"));
-                    }
-                  },
-                  child: const Icon(
-                    Icons.calendar_month_sharp,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        value: context
-                .watch<VariableStateHandlerCubit<List<int>>>()
-                .state
-                ?.contains(widget.index) ??
-            false,
-        onChanged: (value) {
-          if (value != null && _validator()) {
-            var selectedList = List<int>.from(
-                context.read<VariableStateHandlerCubit<List<int>>>().state ??
-                    []);
-            if (value) {
-              selectedList.add(widget.index);
-            } else {
-              selectedList.remove(widget.index);
-            }
-            context
-                .read<VariableStateHandlerCubit<List<int>>>()
-                .update(selectedList);
-          }
-        },
-      ),
-    );
-  }
-
-  bool _validator() {
-    var selectedStartDt =
-        context.read<VariableStateHandlerCubit<DateTime>>().state;
-    var selectedComplDt =
-        context.read<VariableStateHandlerCubit<String>>().state;
-    if (selectedStartDt != null && selectedComplDt != null) {
-      return true;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          CustomSnackBar.errorSnackber(message: "Please Assign Date"));
-      return false;
-    }
   }
 }
