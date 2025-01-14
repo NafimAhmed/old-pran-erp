@@ -28,6 +28,7 @@ import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
@@ -842,5 +843,42 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.topJoInfo ?? [];
+  }
+
+  @override
+  Future<List<Task>> getTaskList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getTaskList(
+      userId: userId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.allTaskList ?? [];
+  }
+
+  @override
+  Future<void> taskAssign({
+    required int jobId,
+    required int? pId,
+    required String tsknm,
+    required String tskdesc,
+    required String tskasgne,
+    required String startDate,
+    required String endDate,
+  }) async {
+    var response = await remoteDataRepository.taskAssign(
+      jobId: jobId,
+      pId: pId,
+      tsknm: tsknm,
+      tskdesc: tskdesc,
+      tskasgne: tskasgne,
+      startDate: startDate,
+      endDate: endDate,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
   }
 }

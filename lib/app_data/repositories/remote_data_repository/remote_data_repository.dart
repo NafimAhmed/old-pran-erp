@@ -28,6 +28,7 @@ import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
@@ -279,5 +280,17 @@ abstract class RemoteDataRepository {
   });
   Future<TopJoInfoListResponse> getTopJOInfoList({
     required String userId,
+  });
+  Future<TaskListResponse> getTaskList({
+    required String userId,
+  });
+  Future<GenericResponse> taskAssign({
+    required int jobId,
+    required int? pId,
+    required String tsknm,
+    required String tskdesc,
+    required String tskasgne,
+    required String startDate,
+    required String endDate,
   });
 }
