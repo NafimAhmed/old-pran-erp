@@ -9,3 +9,13 @@ extension FormatDateTime on DateTime {
     }
   }
 }
+
+extension StringToDateTime on String {
+  DateTime? stringToDateTime() {
+    try {
+      return DateTime.parse(this);
+    } catch (e) {
+      return null;
+    }
+  }
+}
