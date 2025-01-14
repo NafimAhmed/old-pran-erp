@@ -69,12 +69,12 @@ class JoInfo {
   String toJson() => json.encode(toMap());
 
   factory JoInfo.fromMap(Map<String, dynamic> json) => JoInfo(
-        jobOrderNo: json["JOB_ORDER_NO"],
+        jobOrderNo: json["job_order_no"],
         jobId: json["jobid"],
       );
 
   Map<String, dynamic> toMap() => {
-        "JOB_ORDER_NO": jobOrderNo,
+        "job_order_no": jobOrderNo,
         "jobid": jobId,
       };
   @override
