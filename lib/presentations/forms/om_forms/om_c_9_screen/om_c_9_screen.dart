@@ -63,10 +63,8 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
   TextEditingController orgDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
 
-  final Map<int, VariableStateHandlerCubit<DateTime>> startDateCubits = {};
-  final Map<int, VariableStateHandlerCubit<String>> complDateCubits = {};
   final Map<int, VariableStateHandlerCubit<TaskType>> taskTypeCubits = {};
-  final Map<int, VariableStateHandlerCubit<Task>> pTaskCubits = {};
+  final Map<int, VariableStateHandlerCubit<Task>> taskCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -146,19 +144,15 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
                           loggedUser: loggedUser,
                           taskList: state.taskList,
                           index: index,
-                          startDateCubit: startDateCubits.putIfAbsent(
-                              data.taskNo ?? 0,
-                              () => VariableStateHandlerCubit<DateTime>()),
-                          complDateCubit: complDateCubits.putIfAbsent(
-                              data.taskNo ?? 0,
-                              () => VariableStateHandlerCubit<String>()),
                           taskTypeCubit: taskTypeCubits.putIfAbsent(
                             data.taskNo ?? 0,
                             () => VariableStateHandlerCubit<TaskType>()
                               ..update(TaskType.independent),
                           ),
-                          pTaskCubit: pTaskCubits.putIfAbsent(data.taskNo ?? 0,
-                              () => VariableStateHandlerCubit<Task>()),
+                          taskCubit: taskCubits.putIfAbsent(
+                              data.taskNo ?? 0,
+                              () => VariableStateHandlerCubit<Task>()
+                                ..update(Task())),
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(

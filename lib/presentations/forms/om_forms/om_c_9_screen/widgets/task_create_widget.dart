@@ -20,20 +20,17 @@ class TaskCreateWidget extends StatelessWidget {
   const TaskCreateWidget({
     super.key,
     required this.index,
-    required this.startDateCubit,
-    required this.complDateCubit,
     required this.taskTypeCubit,
     required this.data,
     required this.taskList,
-    required this.pTaskCubit,
+    required this.taskCubit,
     required this.loggedUser,
     required this.joInfo,
   });
   final int index;
-  final VariableStateHandlerCubit<DateTime> startDateCubit;
-  final VariableStateHandlerCubit<String> complDateCubit;
+
   final VariableStateHandlerCubit<TaskType> taskTypeCubit;
-  final VariableStateHandlerCubit<Task> pTaskCubit;
+  final VariableStateHandlerCubit<Task> taskCubit;
   final Task data;
   final List<Task> taskList;
   final UserInfoModel loggedUser;
@@ -43,16 +40,10 @@ class TaskCreateWidget extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(
-          value: startDateCubit,
-        ),
-        BlocProvider.value(
-          value: complDateCubit,
-        ),
-        BlocProvider.value(
           value: taskTypeCubit,
         ),
         BlocProvider.value(
-          value: pTaskCubit,
+          value: taskCubit,
         ),
         BlocProvider(
           create: (context) => TaskAssignBloc(getService()),
@@ -148,12 +139,19 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                           .state
                           ?.taskNo,
                       startDate: context
-                          .read<VariableStateHandlerCubit<DateTime>>()
-                          .state!
-                          .toFormatedString("dd-MMM-yyyy"),
+                              .read<VariableStateHandlerCubit<Task>>()
+                              .state!
+                              .sdate
+                              ?.stringToDateTime()
+                              ?.toFormatedString("dd-MMM-yyyy") ??
+                          "",
                       endDate: context
-                          .read<VariableStateHandlerCubit<String>>()
-                          .state!,
+                              .read<VariableStateHandlerCubit<Task>>()
+                              .state!
+                              .tdate
+                              ?.stringToDateTime()
+                              ?.toFormatedString("dd-MMM-yyyy") ??
+                          "",
                     ),
                   );
 
@@ -180,9 +178,8 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             context
                 .read<VariableStateHandlerCubit<TaskType>>()
                 .update(TaskType.independent);
-            context.read<VariableStateHandlerCubit<Task>>().reset();
-            context.read<VariableStateHandlerCubit<DateTime>>().reset();
-            context.read<VariableStateHandlerCubit<String>>().reset();
+            context.read<VariableStateHandlerCubit<Task>>().update(Task());
+
             context.read<TaskListBloc>().add(removeTask(index: widget.index));
             ScaffoldMessenger.of(context)
                 .showSnackBar(CustomSnackBar.successSnackber(
@@ -266,10 +263,16 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                         .update(newSelection.first);
                                     if (newSelection.first ==
                                         TaskType.independent) {
+                                      var stateTask = context
+                                          .read<
+                                              VariableStateHandlerCubit<Task>>()
+                                          .state!;
                                       context
                                           .read<
                                               VariableStateHandlerCubit<Task>>()
-                                          .reset();
+                                          .update(
+                                            stateTask.copyWith(pId: 0),
+                                          );
                                     }
                                   },
                                   segments: <ButtonSegment<TaskType>>[
@@ -293,9 +296,6 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                           if (state == TaskType.dependent) {
                             return Expanded(
                               child: CommonDropdownButton<Task>(
-                                value: context
-                                    .watch<VariableStateHandlerCubit<Task>>()
-                                    .state,
                                 hintText: "Select Parent Task",
                                 items: widget.taskList.where(
                                   (element) {
@@ -304,9 +304,14 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                 ).toList(),
                                 onChanged: (value) {
                                   if (value != null) {
+                                    var stateTask = context
+                                        .read<VariableStateHandlerCubit<Task>>()
+                                        .state!;
                                     context
                                         .read<VariableStateHandlerCubit<Task>>()
-                                        .update(value);
+                                        .update(
+                                          stateTask.copyWith(pId: value.taskNo),
+                                        );
                                   }
                                 },
                               ),
@@ -337,8 +342,10 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                     ? context
                                             .watch<
                                                 VariableStateHandlerCubit<
-                                                    DateTime>>()
+                                                    Task>>()
                                             .state
+                                            ?.sdate
+                                            ?.stringToDateTime()
                                             ?.toFormatedString("dd-MMM-yyyy") ??
                                         ""
                                     : widget.data.sdate ?? ""),
@@ -359,11 +366,18 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                     );
                                     if (selectedDate != null &&
                                         context.mounted) {
+                                      var stateTask = context
+                                          .read<
+                                              VariableStateHandlerCubit<Task>>()
+                                          .state!;
                                       context
                                           .read<
-                                              VariableStateHandlerCubit<
-                                                  DateTime>>()
-                                          .update(selectedDate);
+                                              VariableStateHandlerCubit<Task>>()
+                                          .update(
+                                            stateTask.copyWith(
+                                              sdate: selectedDate.toString(),
+                                            ),
+                                          );
                                     }
                                   },
                                   child: const Icon(
@@ -390,25 +404,29 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                     ? context
                                             .watch<
                                                 VariableStateHandlerCubit<
-                                                    String>>()
-                                            .state ??
+                                                    Task>>()
+                                            .state
+                                            ?.tdate
+                                            ?.stringToDateTime()
+                                            ?.toFormatedString("dd-MMM-yyyy") ??
                                         ""
                                     : widget.data.sdate ?? ""),
                           ),
                           const SizedBox(
                             width: 8,
                           ),
-                          BlocBuilder<VariableStateHandlerCubit<DateTime>,
-                              DateTime?>(
+                          BlocBuilder<VariableStateHandlerCubit<Task>, Task?>(
                             builder: (context, state) {
-                              if (state != null) {
+                              if (state != null && state.sdate != null) {
                                 return InkWell(
                                   onTap: () async {
-                                    var startDate = context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                DateTime>>()
-                                        .state!;
+                                    var startDate = DateTime.parse(context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    Task>>()
+                                            .state!
+                                            .sdate ??
+                                        "");
                                     var selectedDate = await showDatePicker(
                                       context: context,
                                       firstDate: startDate,
@@ -418,12 +436,18 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                     );
                                     if (selectedDate != null &&
                                         context.mounted) {
+                                      var stateTask = context
+                                          .read<
+                                              VariableStateHandlerCubit<Task>>()
+                                          .state!;
                                       context
                                           .read<
-                                              VariableStateHandlerCubit<
-                                                  String>>()
-                                          .update(selectedDate
-                                              .toFormatedString("dd-MMM-yyyy"));
+                                              VariableStateHandlerCubit<Task>>()
+                                          .update(
+                                            stateTask.copyWith(
+                                              tdate: selectedDate.toString(),
+                                            ),
+                                          );
                                     }
                                   },
                                   child: const Icon(
@@ -448,8 +472,9 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
   }
 
   bool _saveValidation() {
-    if (context.watch<VariableStateHandlerCubit<DateTime>>().state != null &&
-        context.watch<VariableStateHandlerCubit<String>>().state != null) {
+    if (context.watch<VariableStateHandlerCubit<Task>>().state != null &&
+        context.watch<VariableStateHandlerCubit<Task>>().state!.sdate != null &&
+        context.watch<VariableStateHandlerCubit<Task>>().state!.tdate != null) {
       return true;
     } else {
       return false;
