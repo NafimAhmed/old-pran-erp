@@ -857,4 +857,28 @@ class DataServiceImpl implements DataService {
     }
     return response.allTaskList ?? [];
   }
+
+  @override
+  Future<void> taskAssign({
+    required int jobId,
+    required int? pId,
+    required String tsknm,
+    required String tskdesc,
+    required String tskasgne,
+    required String startDate,
+    required String endDate,
+  }) async {
+    var response = await remoteDataRepository.taskAssign(
+      jobId: jobId,
+      pId: pId,
+      tsknm: tsknm,
+      tskdesc: tskdesc,
+      tskasgne: tskasgne,
+      startDate: startDate,
+      endDate: endDate,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
 }

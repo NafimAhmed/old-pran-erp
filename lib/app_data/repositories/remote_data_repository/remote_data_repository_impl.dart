@@ -929,4 +929,23 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: TaskListResponse.fromJson);
   }
+
+  @override
+  Future<GenericResponse> taskAssign({
+    required int jobId,
+    required int? pId,
+    required String tsknm,
+    required String tskdesc,
+    required String tskasgne,
+    required String startDate,
+    required String endDate,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?jobid=$jobId&pid=$pId&tsknm=$tsknm&tskdesc=$tskdesc&tskasgne=$tskasgne&STDT=$startDate&EDDT=$endDate&userid=$tskasgne'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
 }

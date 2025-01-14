@@ -294,4 +294,13 @@ abstract class DataService {
   Future<List<Task>> getTaskList({
     required String userId,
   });
+  Future<void> taskAssign({
+    required int jobId,
+    required int? pId,
+    required String tsknm,
+    required String tskdesc,
+    required String tskasgne,
+    required String startDate,
+    required String endDate,
+  });
 }

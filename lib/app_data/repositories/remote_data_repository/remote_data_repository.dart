@@ -284,4 +284,13 @@ abstract class RemoteDataRepository {
   Future<TaskListResponse> getTaskList({
     required String userId,
   });
+  Future<GenericResponse> taskAssign({
+    required int jobId,
+    required int? pId,
+    required String tsknm,
+    required String tskdesc,
+    required String tskasgne,
+    required String startDate,
+    required String endDate,
+  });
 }
