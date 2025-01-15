@@ -20,6 +20,12 @@ final class RemoveJo extends JoComplListEvent {
   final int index;
 }
 
+final class JoComplListFilter extends JoComplListEvent {
+  final String searchValue;
+
+  JoComplListFilter({required this.searchValue});
+}
+
 @immutable
 sealed class JoComplListState {}
 
@@ -63,6 +69,26 @@ class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
         );
       } catch (e) {
         emit(JoComplListError(error: e));
+      }
+    });
+    on<JoComplListFilter>((event, emit) async {
+      emit(JoComplListLoading());
+      try {
+        if (event.searchValue.isNotEmpty) {
+          var filterlist = _dataList.where(
+            (element) {
+              return element.jobOrderNo
+                      ?.toLowerCase()
+                      .contains(event.searchValue.toLowerCase()) ??
+                  false;
+            },
+          ).toList();
+          emit(JoComplListSuccess(jobOrderCompletionList: filterlist));
+        } else {
+          emit(JoComplListSuccess(jobOrderCompletionList: _dataList));
+        }
+      } catch (error) {
+        emit(JoComplListError(error: error));
       }
     });
   }

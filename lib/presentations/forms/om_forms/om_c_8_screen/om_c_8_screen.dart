@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
@@ -41,7 +42,8 @@ class OmC8ScreenBody extends StatefulWidget {
 }
 
 class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
-  TextEditingController taskTextEditingController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   late UserInfoModel loggedUser;
   @override
   void initState() {
@@ -54,7 +56,8 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
 
   @override
   void dispose() {
-    taskTextEditingController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -65,6 +68,7 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
       body: BlocListener<ComplJoBloc, ComplJoState>(
         listener: (context, state) {
           if (state is ComplJoSuccess) {
+            _searchController.clear();
             context
                 .read<JoComplListBloc>()
                 .add(GetJoComplList(userId: loggedUser.userId));
@@ -77,6 +81,21 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(
+                height: 10,
+              ),
+              CommonTextFieldWidget(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                hintText: "Search Job Order No",
+                onChanged: (value) {
+                  context.read<JoComplListBloc>().add(
+                        JoComplListFilter(
+                          searchValue: _searchController.text,
+                        ),
+                      );
+                },
+              ),
               Expanded(
                 child: BlocBuilder<JoComplListBloc, JoComplListState>(
                   builder: (context, state) {
