@@ -22,6 +22,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.hintText,
     this.filled = true,
     this.fillColor = Colors.white,
+    this.onTap,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -33,6 +34,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   final String? Function(String? value)? validator;
   final TextAlign textAlign;
   final bool readOnly;
+  final void Function()? onTap;
   final void Function(String value)? onChanged;
   final Widget? suffixIcon;
   final bool? enabled;
@@ -61,6 +63,7 @@ class CommonTextFieldWidget extends StatelessWidget {
       onTapOutside: (event) {
         focusNode?.unfocus();
       },
+      onTap: onTap,
       decoration: InputDecoration(
         isDense: true,
         filled: filled,
