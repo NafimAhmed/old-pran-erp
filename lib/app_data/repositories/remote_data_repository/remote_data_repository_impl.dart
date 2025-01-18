@@ -265,11 +265,14 @@ class RemoteDataRepositoryImpl
     required String badQty,
     required String qty,
     required String shiftnm,
+    required String shiftFromTime,
   }) async {
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty&shiftnm=$shiftnm'));
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty&shiftnm=$shiftnm&shiftFromTime=$shiftFromTime',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
 
@@ -344,9 +347,11 @@ class RemoteDataRepositoryImpl
     required String? pParent,
   }) async {
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/sysadmin/syscreatemenu?userid=$userId&P_menu_name=$pMenuName&P_menu_type=$pMenuType&P_module=$pModule&P_parent=$pParent'));
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/sysadmin/syscreatemenu?userid=$userId&P_menu_name=$pMenuName&P_menu_type=$pMenuType&P_module=$pModule&P_parent=$pParent',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
@@ -15,7 +14,6 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
-
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/shift_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
@@ -147,7 +145,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
         context.read<VariableStateHandlerCubit<UserMachine>>().state;
     var selectedBatch =
         context.read<VariableStateHandlerCubit<UserBatch>>().state;
-
     var seletedShift =
         context.read<VariableStateHandlerCubit<ShiftData>>().state;
     context.read<UserQrSaveBloc>().add(
@@ -161,6 +158,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             badQty: badQtyTextController.text,
             qty: quantityTextController.text,
             shiftnm: seletedShift?.shiftName ?? "",
+            shiftFromTime: timeTextController.text,
           ),
         );
   }
@@ -684,6 +682,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     }
                     return Container();
                   },
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 SizedBox(
                   height: 300,

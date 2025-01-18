@@ -234,17 +234,20 @@ class DataServiceImpl implements DataService {
     required String badQty,
     required String qty,
     required String shiftnm,
+    required String shiftFromTime,
   }) async {
     var response = await remoteDataRepository.userQrSave(
-        userid: userid,
-        itemid: itemid,
-        machine: machine,
-        batchid: batchid,
-        orgid: orgid,
-        goodQty: goodQty,
-        badQty: badQty,
-        qty: qty,
-        shiftnm: shiftnm);
+      userid: userid,
+      itemid: itemid,
+      machine: machine,
+      batchid: batchid,
+      orgid: orgid,
+      goodQty: goodQty,
+      badQty: badQty,
+      qty: qty,
+      shiftnm: shiftnm,
+      shiftFromTime: shiftFromTime,
+    );
     if (response.statusCode == 200) {
       return response.batchQrData ?? [];
     }

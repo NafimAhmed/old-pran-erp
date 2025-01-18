@@ -102,6 +102,7 @@ abstract class RemoteDataRepository {
     required String badQty,
     required String qty,
     required String shiftnm,
+    required String shiftFromTime,
   });
   Future<UserQrPrintResponse> getUserQrPrintData({
     required String userid,
