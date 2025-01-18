@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -947,5 +948,22 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<BatchStatusCheckResponse> getBatchStatus({
+    required String userId,
+    required String lotNo,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userBatchCheck?userid=$userId&lotno=$lotNo'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(
+      response,
+      decoder: BatchStatusCheckResponse.fromJson,
+    );
   }
 }
