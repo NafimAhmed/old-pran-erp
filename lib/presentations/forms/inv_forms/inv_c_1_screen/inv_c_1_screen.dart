@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
+import 'package:pran_rfl_erp/common_widgets/batch_status_dialog.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
@@ -152,70 +153,10 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
         BlocListener<CheckBatchStatusBloc, CheckBatchStatusState>(
           listener: (context, state) {
             if (state is CheckBatchStatusSuccess) {
+              var data = state.batchStatus;
               AppModal.showCustomModal(
                 context,
-                content: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CommonDialogHeader(title: "Batch Status"),
-                      Row(
-                        children: [
-                          const Text("Batch Status"),
-                          Expanded(
-                            child: Text(
-                              textAlign: TextAlign.right,
-                              state.batchStatus.batchStatus ?? "",
-                              style: textTheme.bodyMedium!.copyWith(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Batch No"),
-                                Expanded(
-                                  child: Text(
-                                    textAlign: TextAlign.right,
-                                    state.batchStatus.batchNo ?? "",
-                                    style: textTheme.bodyMedium!.copyWith(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("ORG"),
-                                Expanded(
-                                  child: Text(
-                                    textAlign: TextAlign.right,
-                                    state.batchStatus.organizationCode ?? "",
-                                    style: textTheme.bodyMedium!.copyWith(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                content: BatchStatusDialog(data: data),
               );
             }
           },
