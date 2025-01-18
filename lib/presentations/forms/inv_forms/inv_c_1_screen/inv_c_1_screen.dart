@@ -6,11 +6,14 @@ import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/check_batch_status_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/iot_trn_data_bloc.dart';
@@ -36,13 +39,16 @@ class InvC1Screen extends StatelessWidget {
           create: (context) => LotTrnBloc(getService()),
         ),
         BlocProvider(
+          create: (context) => IotTrnDataBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => CheckBatchStatusBloc(getService()),
+        ),
+        BlocProvider(
           create: (context) => ItemQrCubit(),
         ),
         BlocProvider(
           create: (context) => RackQrCubit(),
-        ),
-        BlocProvider(
-          create: (context) => IotTrnDataBloc(getService()),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<LotTrnData>(),
@@ -143,6 +149,77 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
             }
           },
         ),
+        BlocListener<CheckBatchStatusBloc, CheckBatchStatusState>(
+          listener: (context, state) {
+            if (state is CheckBatchStatusSuccess) {
+              AppModal.showCustomModal(
+                context,
+                content: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CommonDialogHeader(title: "Batch Status"),
+                      Row(
+                        children: [
+                          const Text("Batch Status"),
+                          Expanded(
+                            child: Text(
+                              textAlign: TextAlign.right,
+                              state.batchStatus.batchStatus ?? "",
+                              style: textTheme.bodyMedium!.copyWith(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Batch No"),
+                                Expanded(
+                                  child: Text(
+                                    textAlign: TextAlign.right,
+                                    state.batchStatus.batchNo ?? "",
+                                    style: textTheme.bodyMedium!.copyWith(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("ORG"),
+                                Expanded(
+                                  child: Text(
+                                    textAlign: TextAlign.right,
+                                    state.batchStatus.organizationCode ?? "",
+                                    style: textTheme.bodyMedium!.copyWith(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
+          },
+        )
       ],
       child: Scaffold(
         appBar: CommonAppBar(appBartitle: widget.fromName),
@@ -153,16 +230,44 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
           child: Column(
             children: [
               const SizedBox(
-                height: 10,
+                height: 5,
               ),
-              ReadQrWidget(
-                qrType: "Item QR",
-                onPressed: () async {
-                  var data = await buildScanner(context, controller);
-                  if (context.mounted) {
-                    context.read<ItemQrCubit>().setItemData(itemQrData: data);
-                  }
-                },
+              Row(
+                children: [
+                  BlocBuilder<ItemQrCubit, ItemQrState>(
+                    builder: (context, state) {
+                      if (state is ItemQrDataLoaded) {
+                        return IconButton.filled(
+                          icon: const Icon(
+                            Icons.manage_search_rounded,
+                          ),
+                          onPressed: () {
+                            context.read<CheckBatchStatusBloc>().add(
+                                  CheckBatchStatus(
+                                    lotNo: state.userBatchQrData.lotno ?? "",
+                                    userId: loggedUser.userId,
+                                  ),
+                                );
+                          },
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  Expanded(
+                    child: ReadQrWidget(
+                      qrType: "Item QR",
+                      onPressed: () async {
+                        var data = await buildScanner(context, controller);
+                        if (context.mounted) {
+                          context
+                              .read<ItemQrCubit>()
+                              .setItemData(itemQrData: data);
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 10,
@@ -193,6 +298,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
                         color: appTheme.primary.withOpacity(
                           0.2,
                         ),
