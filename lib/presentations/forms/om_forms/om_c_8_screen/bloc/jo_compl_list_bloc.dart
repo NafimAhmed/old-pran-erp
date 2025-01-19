@@ -9,9 +9,10 @@ sealed class JoComplListEvent {}
 
 final class GetJoComplList extends JoComplListEvent {
   final String userId;
-
+  final String searchValue;
   GetJoComplList({
     required this.userId,
+    required this.searchValue,
   });
 }
 
@@ -53,9 +54,15 @@ class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
       try {
         var response = await _dataService.getJoComplList(userId: event.userId);
         _dataList = response;
-        emit(
-          JoComplListSuccess(jobOrderCompletionList: _dataList),
-        );
+
+        if (event.searchValue.isNotEmpty) {
+          emit(JoComplListSuccess(
+              jobOrderCompletionList: _filterList(event.searchValue)));
+        } else {
+          emit(
+            JoComplListSuccess(jobOrderCompletionList: _dataList),
+          );
+        }
       } catch (e) {
         emit(JoComplListError(error: e));
       }
@@ -75,15 +82,8 @@ class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
       emit(JoComplListLoading());
       try {
         if (event.searchValue.isNotEmpty) {
-          var filterlist = _dataList.where(
-            (element) {
-              return element.jobOrderNo
-                      ?.toLowerCase()
-                      .contains(event.searchValue.toLowerCase()) ??
-                  false;
-            },
-          ).toList();
-          emit(JoComplListSuccess(jobOrderCompletionList: filterlist));
+          emit(JoComplListSuccess(
+              jobOrderCompletionList: _filterList(event.searchValue)));
         } else {
           emit(JoComplListSuccess(jobOrderCompletionList: _dataList));
         }
@@ -91,5 +91,16 @@ class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
         emit(JoComplListError(error: error));
       }
     });
+  }
+  List<JobOrderCompletion> _filterList(String filerText) {
+    var filterlist = _dataList.where(
+      (element) {
+        return element.jobOrderNo
+                ?.toLowerCase()
+                .contains(filerText.toLowerCase()) ??
+            false;
+      },
+    ).toList();
+    return filterlist;
   }
 }

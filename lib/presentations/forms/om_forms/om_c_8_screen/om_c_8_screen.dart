@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,9 +50,12 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
-    context
-        .read<JoComplListBloc>()
-        .add(GetJoComplList(userId: loggedUser.userId));
+    context.read<JoComplListBloc>().add(
+          GetJoComplList(
+            userId: loggedUser.userId,
+            searchValue: _searchController.text,
+          ),
+        );
     super.initState();
   }
 
@@ -65,15 +70,14 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
-      body: BlocListener<ComplJoBloc, ComplJoState>(
-        listener: (context, state) {
-          if (state is ComplJoSuccess) {
-            _searchController.clear();
-            context
-                .read<JoComplListBloc>()
-                .add(GetJoComplList(userId: loggedUser.userId));
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ComplJoBloc, ComplJoState>(
+            listener: (context, state) {
+              if (state is ComplJoSuccess) {}
+            },
+          ),
+        ],
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
@@ -118,8 +122,9 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                 DismissDirection.startToEnd: 0.8
                               },
                               confirmDismiss: (direction) async {
-                                return await showDialog<bool>(
+                                var result = await showDialog<bool>(
                                       context: context,
+                                      barrierDismissible: false,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
                                           title: const Text("Are You Sure"),
@@ -127,31 +132,56 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                             TextButton(
                                               child: const Text("Cancel"),
                                               onPressed: () {
-                                                Navigator.pop(context,
-                                                    false); // Return false if cancelled
+                                                Navigator.pop(context, false);
                                               },
                                             ),
                                             TextButton(
                                               child: const Text("OK"),
                                               onPressed: () {
-                                                Navigator.pop(context,
-                                                    true); // Return true if confirmed
+                                                Navigator.pop(context, true);
                                               },
                                             ),
                                           ],
                                         );
                                       },
                                     ) ??
-                                    false; // Default to false if dialog is dismissed without selection
+                                    false;
+                                if (result && context.mounted) {
+                                  context.read<ComplJoBloc>().add(
+                                        CompleteJo(
+                                            userId: loggedUser.userId,
+                                            jobOrderNo: data.jobOrderNo ?? ""),
+                                      );
+                                  final completer = Completer<bool>();
+                                  final subscription = context
+                                      .read<ComplJoBloc>()
+                                      .stream
+                                      .listen((state) {
+                                    if (state is ComplJoSuccess) {
+                                      completer.complete(
+                                          true); // Complete with true on success
+                                    } else if (state is ComplJoError) {
+                                      completer.complete(
+                                          false); // Complete with false on failure
+                                    }
+                                  });
+
+                                  // Wait for the result and clean up the subscription
+                                  final isSuccess = await completer.future;
+                                  subscription.cancel();
+                                  return isSuccess;
+                                }
+                                return result;
                               },
                               onDismissed: (direction) {
                                 context
                                     .read<JoComplListBloc>()
                                     .add(RemoveJo(index: index));
-                                context.read<ComplJoBloc>().add(
-                                      CompleteJo(
-                                          userId: loggedUser.userId,
-                                          jobOrderNo: data.jobOrderNo ?? ""),
+                                context.read<JoComplListBloc>().add(
+                                      GetJoComplList(
+                                        userId: loggedUser.userId,
+                                        searchValue: _searchController.text,
+                                      ),
                                     );
                               },
                               background: Container(
