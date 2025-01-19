@@ -68,7 +68,7 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                     hintText: "Select Org",
                     enabled: false,
                     controller: orgDropDownTextController,
-                    dropdownMenuEntries: [],
+                    dropdownMenuEntries: const [],
                     onSelected: (value) {
                       if (value != null) {
                         // FocusScope.of(context).unfocus();
@@ -85,7 +85,7 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                     hintText: "Select JO/PO",
                     enabled: false,
                     controller: orgDropDownTextController,
-                    dropdownMenuEntries: [],
+                    dropdownMenuEntries: const [],
                     onSelected: (value) {
                       if (value != null) {
                         // FocusScope.of(context).unfocus();

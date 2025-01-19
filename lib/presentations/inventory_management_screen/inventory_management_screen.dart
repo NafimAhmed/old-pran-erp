@@ -24,15 +24,15 @@ class _InventoryManagementScreenBodyState
     extends State<InventoryManagementScreenBody> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CommonAppBar(appBartitle: "Test Data"),
+    return const Scaffold(
+      appBar: CommonAppBar(appBartitle: "Test Data"),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: 10,
         ),
         child: Column(
           children: [
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
           ],

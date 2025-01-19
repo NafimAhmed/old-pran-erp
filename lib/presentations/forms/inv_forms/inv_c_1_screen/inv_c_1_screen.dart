@@ -7,7 +7,6 @@ import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/batch_status_dialog.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
