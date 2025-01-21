@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppModal {
   static Future<T?> showCustomModal<T>(BuildContext context,
-      {String? title, Widget? content}) {
-    return showDialog(
+      {String? title, Widget? content}) async {
+    return await showDialog<T>(
       context: context,
       barrierDismissible: true,
       builder: (context) => Dialog(
