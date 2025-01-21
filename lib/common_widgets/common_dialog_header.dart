@@ -6,8 +6,10 @@ class CommonDialogHeader extends StatelessWidget {
   const CommonDialogHeader({
     super.key,
     required this.title,
+    this.onTap,
   });
   final String title;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -38,9 +40,10 @@ class CommonDialogHeader extends StatelessWidget {
           width: 10,
         ),
         GestureDetector(
-          onTap: () {
-            context.pop();
-          },
+          onTap: onTap ??
+              () {
+                context.pop();
+              },
           child: Container(
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
