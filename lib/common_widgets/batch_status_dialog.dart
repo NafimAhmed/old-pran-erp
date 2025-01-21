@@ -28,7 +28,7 @@ class BatchStatusDialog extends StatelessWidget {
                   data.batchStatus ?? "",
                   style: textTheme.bodyMedium!.copyWith(
                     fontSize: 17,
-                    color: data.batchStatus?.toLowerCase() == "Closed"
+                    color: ["Closed", "Completed"].contains(data.batchStatus)
                         ? appTheme.green
                         : const Color.fromARGB(255, 252, 62, 62),
                     fontWeight: FontWeight.bold,
