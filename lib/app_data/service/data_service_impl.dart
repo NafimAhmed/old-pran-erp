@@ -898,4 +898,36 @@ class DataServiceImpl implements DataService {
     }
     return response.batchStatusCk?.first ?? BatchStatusCheck();
   }
+
+  @override
+  Future<void> createProject({
+    required String pname,
+    required String pDesc,
+    required String stDate,
+    required String endate,
+    required String pManager,
+    required String pClientName,
+    required String pBudget,
+    required String pStatus,
+    required String pPriority,
+    required String pTtlPerson,
+    required String pManHours,
+  }) async {
+    var response = await remoteDataRepository.createProject(
+      pname: pname,
+      pDesc: pDesc,
+      stDate: stDate,
+      endate: endate,
+      pManager: pManager,
+      pClientName: pClientName,
+      pBudget: pBudget,
+      pStatus: pStatus,
+      pPriority: pPriority,
+      pTtlPerson: pTtlPerson,
+      pManHours: pManHours,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+  }
 }

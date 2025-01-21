@@ -309,4 +309,17 @@ abstract class DataService {
     required String userId,
     required String lotNo,
   });
+  Future<void> createProject({
+    required String pname,
+    required String pDesc,
+    required String stDate,
+    required String endate,
+    required String pManager,
+    required String pClientName,
+    required String pBudget,
+    required String pStatus,
+    required String pPriority,
+    required String pTtlPerson,
+    required String pManHours,
+  });
 }

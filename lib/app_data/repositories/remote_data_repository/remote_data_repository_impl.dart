@@ -971,4 +971,29 @@ class RemoteDataRepositoryImpl
       decoder: BatchStatusCheckResponse.fromJson,
     );
   }
+
+  @override
+  Future<GenericResponse> createProject({
+    required String pname,
+    required String pDesc,
+    required String stDate,
+    required String endate,
+    required String pManager,
+    required String pClientName,
+    required String pBudget,
+    required String pStatus,
+    required String pPriority,
+    required String pTtlPerson,
+    required String pManHours,
+  }) async {
+    var request = http.Request(
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_project_name=$pname&v_description=$pDesc&v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_status=$pStatus&v_priority=$pPriority&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours',
+      ),
+    );
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
 }
