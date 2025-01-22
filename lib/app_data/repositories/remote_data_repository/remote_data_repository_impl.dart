@@ -814,9 +814,11 @@ class RemoteDataRepositoryImpl
     required int taskId,
   }) async {
     var request = http.Request(
-        'PUT',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&taskstatus=$taskStatus&tskid=$taskId'));
+      'PUT',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&taskstatus=$taskStatus&tskid=$taskId',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
