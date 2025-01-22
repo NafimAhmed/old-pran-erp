@@ -287,7 +287,7 @@ abstract class RemoteDataRepository {
     required String userId,
   });
   Future<GenericResponse> taskAssign({
-    required int jobId,
+    required String jobId,
     required int? pId,
     required String tsknm,
     required String tskdesc,

@@ -6,7 +6,7 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 sealed class TaskAssignEvent {}
 
 final class TaskAssign extends TaskAssignEvent {
-  final int jobId;
+  final String jobId;
   final int? pId;
   final String tsknm;
   final String tskdesc;

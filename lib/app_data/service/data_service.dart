@@ -297,7 +297,7 @@ abstract class DataService {
     required String userId,
   });
   Future<void> taskAssign({
-    required int jobId,
+    required String jobId,
     required int? pId,
     required String tsknm,
     required String tskdesc,

@@ -938,7 +938,7 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<GenericResponse> taskAssign({
-    required int jobId,
+    required String jobId,
     required int? pId,
     required String tsknm,
     required String tskdesc,

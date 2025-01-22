@@ -157,7 +157,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
               context.read<TaskAssignBloc>().add(
                     TaskAssign(
                       tskasgne: widget.loggedUser.userId,
-                      jobId: widget.joInfo.jobId ?? 0,
+                      jobId: widget.joInfo.jobId ?? "0",
                       tsknm: widget.data.taskName ?? "",
                       tskdesc: widget.data.taskName ?? "",
                       pId: context
