@@ -71,6 +71,8 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
   TextEditingController taskTextEditingController = TextEditingController();
   TextEditingController orgDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
+  final Map<int, VariableStateHandlerCubit<TaskStatusType>>
+      taskStatusTypeCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -170,6 +172,11 @@ class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
                         itemBuilder: (context, index) {
                           var data = state.taskInfoList[index];
                           return TaskWidget(
+                            taskStatusTypeCubit:
+                                taskStatusTypeCubits.putIfAbsent(
+                              data.tasksid ?? 0,
+                              () => VariableStateHandlerCubit<TaskStatusType>(),
+                            ),
                             index: index,
                             data: data,
                           );
@@ -197,14 +204,16 @@ class TaskWidget extends StatelessWidget {
     super.key,
     required this.data,
     required this.index,
+    required this.taskStatusTypeCubit,
   });
 
   final TaskInfo data;
   final int index;
+  final VariableStateHandlerCubit<TaskStatusType> taskStatusTypeCubit;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => VariableStateHandlerCubit<TaskStatusType>(),
+    return BlocProvider.value(
+      value: taskStatusTypeCubit,
       child: TaskWidgetContent(
         data: data,
         index: index,
@@ -270,6 +279,7 @@ class TaskWidgetContent extends StatelessWidget {
                   taskId: data.tasksid ?? 0,
                 ),
               );
+          context.read<VariableStateHandlerCubit<TaskStatusType>>().reset();
         },
         background: Container(
           decoration: BoxDecoration(
@@ -375,21 +385,38 @@ class TaskWidgetContent extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                CommonDropdownButton<TaskStatusType>(
-                  value: context
-                      .watch<VariableStateHandlerCubit<TaskStatusType>>()
-                      .state,
-                  fillColor: appTheme.primary,
-                  hintcolor: Colors.white,
-                  onChanged: (value) {
-                    if (value != null) {
-                      context
-                          .read<VariableStateHandlerCubit<TaskStatusType>>()
-                          .update(value);
-                    }
-                  },
-                  hintText: "Change Task Status",
-                  items: TaskStatusType.values,
+                Row(
+                  children: [
+                    Expanded(
+                      child: CommonDropdownButton<TaskStatusType>(
+                        value: context
+                            .watch<VariableStateHandlerCubit<TaskStatusType>>()
+                            .state,
+                        fillColor: appTheme.primary,
+                        hintcolor: Colors.white,
+                        onChanged: (value) {
+                          if (value != null) {
+                            context
+                                .read<
+                                    VariableStateHandlerCubit<TaskStatusType>>()
+                                .update(value);
+                          }
+                        },
+                        hintText: "Change Task Status",
+                        items: TaskStatusType.values,
+                      ),
+                    ),
+                    // const SizedBox(
+                    //   width: 5,
+                    // ),
+                    // IconButton.filledTonal(
+                    //   onPressed: () {},
+                    //   icon: Icon(
+                    //     Icons.note_add,
+                    //     color: appTheme.white,
+                    //   ),
+                    // ),
+                  ],
                 ),
               ],
             ),
