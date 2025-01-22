@@ -171,19 +171,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                               ?.stringToDateTime()
                               ?.toFormatedString("dd-MMM-yyyy") ??
                           "",
-                              .read<VariableStateHandlerCubit<Task>>()
-                              .state!
-                              .sdate
-                              ?.stringToDateTime()
-                              ?.toFormatedString("dd-MMM-yyyy") ??
-                          "",
                       endDate: context
-                              .read<VariableStateHandlerCubit<Task>>()
-                              .state!
-                              .tdate
-                              ?.stringToDateTime()
-                              ?.toFormatedString("dd-MMM-yyyy") ??
-                          "",
                               .read<VariableStateHandlerCubit<Task>>()
                               .state!
                               .tdate
@@ -216,8 +204,6 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             context
                 .read<VariableStateHandlerCubit<TaskType>>()
                 .update(TaskType.independent);
-            context.read<VariableStateHandlerCubit<Task>>().update(Task());
-
             context.read<VariableStateHandlerCubit<Task>>().update(Task());
 
             context.read<TaskListBloc>().add(removeTask(index: widget.index));
@@ -307,16 +293,9 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                           .read<
                                               VariableStateHandlerCubit<Task>>()
                                           .state!;
-                                      var stateTask = context
-                                          .read<
-                                              VariableStateHandlerCubit<Task>>()
-                                          .state!;
                                       context
                                           .read<
                                               VariableStateHandlerCubit<Task>>()
-                                          .update(
-                                            stateTask.copyWith(pId: 0),
-                                          );
                                           .update(
                                             stateTask.copyWith(pId: 0),
                                           );
@@ -354,14 +333,8 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                     var stateTask = context
                                         .read<VariableStateHandlerCubit<Task>>()
                                         .state!;
-                                    var stateTask = context
-                                        .read<VariableStateHandlerCubit<Task>>()
-                                        .state!;
                                     context
                                         .read<VariableStateHandlerCubit<Task>>()
-                                        .update(
-                                          stateTask.copyWith(pId: value.taskNo),
-                                        );
                                         .update(
                                           stateTask.copyWith(pId: value.taskNo),
                                         );
