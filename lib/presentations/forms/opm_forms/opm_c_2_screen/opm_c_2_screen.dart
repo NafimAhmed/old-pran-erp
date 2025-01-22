@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
@@ -83,6 +84,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController batchDropDownTextController = TextEditingController();
   TextEditingController orgDropDownTextController = TextEditingController();
   TextEditingController machineDropDownTextController = TextEditingController();
+  TextEditingController timeTextController = TextEditingController();
+
   List<UserMachine> machineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   late UserInfoModel loggedUser;
@@ -101,6 +104,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     quantityFocusNode.dispose();
     goodQtyFocusNode.dispose();
     badQtyFocusNode.dispose();
+    timeTextController.dispose();
     batchDropDownTextController.dispose();
     machineDropDownTextController.dispose();
     orgDropDownTextController.dispose();
@@ -141,7 +145,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
         context.read<VariableStateHandlerCubit<UserMachine>>().state;
     var selectedBatch =
         context.read<VariableStateHandlerCubit<UserBatch>>().state;
-
     var seletedShift =
         context.read<VariableStateHandlerCubit<ShiftData>>().state;
     context.read<UserQrSaveBloc>().add(
@@ -155,6 +158,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             badQty: badQtyTextController.text,
             qty: quantityTextController.text,
             shiftnm: seletedShift?.shiftName ?? "",
+            shiftFromTime: timeTextController.text,
           ),
         );
   }
@@ -436,13 +440,12 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     ],
                   ),
                 ),
-
-                Row(
-                  children: [
-                    BlocBuilder<ShiftDataBloc, ShiftDataState>(
-                      builder: (context, state) {
-                        if (state is ShiftDataSuccess) {
-                          return Expanded(
+                BlocBuilder<ShiftDataBloc, ShiftDataState>(
+                  builder: (context, state) {
+                    if (state is ShiftDataSuccess) {
+                      return Row(
+                        children: [
+                          Expanded(
                             child: CommonDropdownButton<ShiftData>(
                               hintText: "Change Shift",
                               value: context
@@ -456,39 +459,70 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                           VariableStateHandlerCubit<
                                               ShiftData>>()
                                       .update(value);
+                                  timeTextController.text =
+                                      value.fromShift ?? "00:00";
                                 }
                               },
                             ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
-                      builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: state is UserQrSaveLoading
-                              ? () {}
-                              : () {
-                                  if (fromkey.currentState!.validate()) {
-                                    if (_customValidator()) {
-                                      _userQrSave();
-                                    }
-                                  }
-                                },
-                          child: Text(
-                            state is UserQrSaveLoading ? "Saving.." : "Save",
-                            style: textTheme.bodyMedium!.copyWith(
-                              color: appTheme.white,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CommonTextFieldWidget(
+                              hintText: "Change Time",
+                              controller: timeTextController,
+                              readOnly: true,
+                              textAlign: TextAlign.center,
+                              onTap: () async {
+                                var shiftL = timeTextController.text
+                                    .split(":")
+                                    .map(
+                                      (e) => int.parse(e),
+                                    )
+                                    .toList();
+                                var pickedTime = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(
+                                      hour: shiftL.first, minute: shiftL.last),
+                                );
+                                if (pickedTime != null && context.mounted) {
+                                  timeTextController.text =
+                                      "${pickedTime.hour.toString().padLeft(2, "0")}:${pickedTime.minute.toString().padLeft(2, "0")}";
+                                }
+                              },
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ],
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+
+                const SizedBox(
+                  width: 10,
+                ),
+                BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: state is UserQrSaveLoading
+                          ? () {}
+                          : () {
+                              if (fromkey.currentState!.validate()) {
+                                if (_customValidator()) {
+                                  _userQrSave();
+                                }
+                              }
+                            },
+                      child: Text(
+                        state is UserQrSaveLoading ? "Saving.." : "Save",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.white,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 5,
@@ -648,6 +682,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     }
                     return Container();
                   },
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 SizedBox(
                   height: 300,

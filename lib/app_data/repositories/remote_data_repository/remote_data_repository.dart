@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
@@ -101,6 +102,7 @@ abstract class RemoteDataRepository {
     required String badQty,
     required String qty,
     required String shiftnm,
+    required String shiftFromTime,
   });
   Future<UserQrPrintResponse> getUserQrPrintData({
     required String userid,
@@ -292,5 +294,22 @@ abstract class RemoteDataRepository {
     required String tskasgne,
     required String startDate,
     required String endDate,
+  });
+  Future<BatchStatusCheckResponse> getBatchStatus({
+    required String userId,
+    required String lotNo,
+  });
+  Future<GenericResponse> createProject({
+    required String pname,
+    required String pDesc,
+    required String stDate,
+    required String endate,
+    required String pManager,
+    required String pClientName,
+    required String pBudget,
+    required String pStatus,
+    required String pPriority,
+    required String pTtlPerson,
+    required String pManHours,
   });
 }

@@ -9,15 +9,22 @@ sealed class JoComplListEvent {}
 
 final class GetJoComplList extends JoComplListEvent {
   final String userId;
-
+  final String searchValue;
   GetJoComplList({
     required this.userId,
+    required this.searchValue,
   });
 }
 
 final class RemoveJo extends JoComplListEvent {
   RemoveJo({required this.index});
   final int index;
+}
+
+final class JoComplListFilter extends JoComplListEvent {
+  final String searchValue;
+
+  JoComplListFilter({required this.searchValue});
 }
 
 @immutable
@@ -47,9 +54,15 @@ class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
       try {
         var response = await _dataService.getJoComplList(userId: event.userId);
         _dataList = response;
-        emit(
-          JoComplListSuccess(jobOrderCompletionList: _dataList),
-        );
+
+        if (event.searchValue.isNotEmpty) {
+          emit(JoComplListSuccess(
+              jobOrderCompletionList: _filterList(event.searchValue)));
+        } else {
+          emit(
+            JoComplListSuccess(jobOrderCompletionList: _dataList),
+          );
+        }
       } catch (e) {
         emit(JoComplListError(error: e));
       }
@@ -65,5 +78,29 @@ class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
         emit(JoComplListError(error: e));
       }
     });
+    on<JoComplListFilter>((event, emit) async {
+      emit(JoComplListLoading());
+      try {
+        if (event.searchValue.isNotEmpty) {
+          emit(JoComplListSuccess(
+              jobOrderCompletionList: _filterList(event.searchValue)));
+        } else {
+          emit(JoComplListSuccess(jobOrderCompletionList: _dataList));
+        }
+      } catch (error) {
+        emit(JoComplListError(error: error));
+      }
+    });
+  }
+  List<JobOrderCompletion> _filterList(String filerText) {
+    var filterlist = _dataList.where(
+      (element) {
+        return element.jobOrderNo
+                ?.toLowerCase()
+                .contains(filerText.toLowerCase()) ??
+            false;
+      },
+    ).toList();
+    return filterlist;
   }
 }

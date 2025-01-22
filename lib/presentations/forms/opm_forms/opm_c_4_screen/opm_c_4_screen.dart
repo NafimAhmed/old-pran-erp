@@ -31,13 +31,14 @@ class OpmC4Screen extends StatelessWidget {
           create: (context) => TopJoInfoBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => JobDetailsBloc(getService()),
+          create: (context) => JobDetailsBloc(getService()), //FG/SFG details
         ),
         BlocProvider(
-          create: (context) => JobLocatorDrilBloc(getService()),
+          create: (context) =>
+              JobLocatorDrilBloc(getService()), // Locator Details
         ),
         BlocProvider(
-          create: (context) => JobOrderInfoBloc(getService()),
+          create: (context) => JobOrderInfoBloc(getService()), //FG/SFG Status
         ),
       ],
       child: TransferDetailsScreenBody(

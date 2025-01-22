@@ -26,16 +26,18 @@ class OpmC9Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BatchCompDataBloc(getService()),
+          create: (context) => BatchCompDataBloc(getService()), //list
         ),
         BlocProvider(
-          create: (context) => BatchCompDtlDataBloc(getService()),
+          create: (context) =>
+              BatchCompDtlDataBloc(getService()), // Batch Detail Data
         ),
         BlocProvider(
-          create: (context) => BatchCompDtlLnUpdtBloc(getService()),
+          create: (context) =>
+              BatchCompDtlLnUpdtBloc(getService()), // Batch Info Update
         ),
         BlocProvider(
-          create: (context) => CompBatchBloc(getService()),
+          create: (context) => CompBatchBloc(getService()), // Complete Batch
         ),
       ],
       child: OpmC9ScreenBody(

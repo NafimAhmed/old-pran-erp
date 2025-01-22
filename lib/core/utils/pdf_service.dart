@@ -95,51 +95,64 @@ class PdfService {
                             pw.Row(
                               mainAxisAlignment:
                                   pw.MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
                               children: [
-                                pw.Row(
-                                  children: [
-                                    pw.Text(
-                                      "JO: ",
-                                      textAlign: pw.TextAlign.left,
-                                      style: pw.TextStyle(
-                                        fontSize: 8,
-                                        fontWeight: pw.FontWeight.bold,
-                                        color: PdfColors.black,
+                                pw.Expanded(
+                                  child: pw.Row(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.start,
+                                    children: [
+                                      pw.Text(
+                                        "JO: ",
+                                        textAlign: pw.TextAlign.left,
+                                        style: pw.TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColors.black,
+                                        ),
                                       ),
-                                    ),
-                                    pw.Text(
-                                      "${userBatchQrData.jobno}",
-                                      textAlign: pw.TextAlign.left,
-                                      style: const pw.TextStyle(
-                                        fontSize: 8,
-                                        color: PdfColors.black,
+                                      pw.Expanded(
+                                        child: pw.Text(
+                                          userBatchQrData.jobno ?? "",
+                                          textAlign: pw.TextAlign.left,
+                                          style: const pw.TextStyle(
+                                            fontSize: 8,
+                                            color: PdfColors.black,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 pw.SizedBox(
                                   width: 5,
                                 ),
-                                pw.Row(
-                                  children: [
-                                    pw.Text(
-                                      "LOT: ",
-                                      textAlign: pw.TextAlign.left,
-                                      style: pw.TextStyle(
-                                        fontSize: 8,
-                                        fontWeight: pw.FontWeight.bold,
-                                        color: PdfColors.black,
+                                pw.Expanded(
+                                  child: pw.Row(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.start,
+                                    children: [
+                                      pw.Text(
+                                        "LOT: ",
+                                        textAlign: pw.TextAlign.left,
+                                        style: pw.TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColors.black,
+                                        ),
                                       ),
-                                    ),
-                                    pw.Text(
-                                      userBatchQrData.lotno ?? "",
-                                      textAlign: pw.TextAlign.left,
-                                      style: const pw.TextStyle(
-                                        fontSize: 8,
-                                        color: PdfColors.black,
+                                      pw.Expanded(
+                                        child: pw.Text(
+                                          userBatchQrData.lotno ?? "",
+                                          textAlign: pw.TextAlign.left,
+                                          style: const pw.TextStyle(
+                                            fontSize: 8,
+                                            color: PdfColors.black,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

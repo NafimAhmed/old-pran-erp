@@ -24,6 +24,9 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/opm_c_
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_8_screen/opm_c_8_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_9_screen/opm_c_9_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/po_c_2_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen.dart/project_c_7_screen.dart';
+
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/sys_admin_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_screen/sys_admin_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/sys_admin_c_3_screen.dart';
@@ -399,6 +402,26 @@ class AppNavigation {
         name: SysAdminC7Screen.routeName,
         builder: (context, state) {
           return SysAdminC7Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: PoC2Screen.routePath,
+        name: PoC2Screen.routeName,
+        builder: (context, state) {
+          return PoC2Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: ProjectC7Screen.routePath,
+        name: ProjectC7Screen.routeName,
+        builder: (context, state) {
+          return ProjectC7Screen(
             fromName: state.extra as String,
           );
         },

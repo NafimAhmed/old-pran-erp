@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -264,11 +265,14 @@ class RemoteDataRepositoryImpl
     required String badQty,
     required String qty,
     required String shiftnm,
+    required String shiftFromTime,
   }) async {
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty&shiftnm=$shiftnm'));
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?userid=$userid&machine=$machine&orgid=$orgid&batchid=$batchid&itemid=$itemid&goodqty=$goodQty&badqty=$badQty&qty=$qty&shiftnm=$shiftnm&shiftFromTime=$shiftFromTime',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
 
@@ -343,9 +347,11 @@ class RemoteDataRepositoryImpl
     required String? pParent,
   }) async {
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/sysadmin/syscreatemenu?userid=$userId&P_menu_name=$pMenuName&P_menu_type=$pMenuType&P_module=$pModule&P_parent=$pParent'));
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/sysadmin/syscreatemenu?userid=$userId&P_menu_name=$pMenuName&P_menu_type=$pMenuType&P_module=$pModule&P_parent=$pParent',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
@@ -944,6 +950,48 @@ class RemoteDataRepositoryImpl
         'POST',
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?jobid=$jobId&pid=$pId&tsknm=$tsknm&tskdesc=$tskdesc&tskasgne=$tskasgne&STDT=$startDate&EDDT=$endDate&userid=$tskasgne'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<BatchStatusCheckResponse> getBatchStatus({
+    required String userId,
+    required String lotNo,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/batch/userBatchCheck?userid=$userId&lotno=$lotNo'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(
+      response,
+      decoder: BatchStatusCheckResponse.fromJson,
+    );
+  }
+
+  @override
+  Future<GenericResponse> createProject({
+    required String pname,
+    required String pDesc,
+    required String stDate,
+    required String endate,
+    required String pManager,
+    required String pClientName,
+    required String pBudget,
+    required String pStatus,
+    required String pPriority,
+    required String pTtlPerson,
+    required String pManHours,
+  }) async {
+    var request = http.Request(
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_project_name=$pname&v_description=$pDesc&v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_status=$pStatus&v_priority=$pPriority&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

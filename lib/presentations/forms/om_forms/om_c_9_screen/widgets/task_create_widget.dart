@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,10 +6,14 @@ import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
+import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
+import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_assign_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_list_bloc.dart';
@@ -74,11 +77,34 @@ class TaskWidgetContent extends StatefulWidget {
   final List<Task> taskList;
   final UserInfoModel loggedUser;
   final JoInfo joInfo;
+
   @override
   State<TaskWidgetContent> createState() => _TaskWidgetContentState();
 }
 
 class _TaskWidgetContentState extends State<TaskWidgetContent> {
+  late TextEditingController _taskNameController;
+  late TextEditingController _stDateController;
+  late TextEditingController _enDateController;
+  late FocusNode _taskFocusNode;
+  @override
+  void initState() {
+    _taskNameController = TextEditingController();
+    _stDateController = TextEditingController();
+    _enDateController = TextEditingController();
+    _taskFocusNode = FocusNode();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _taskNameController.dispose();
+    _stDateController.dispose();
+    _enDateController.dispose();
+    _taskFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<TaskAssignBloc, TaskAssignState>(
@@ -137,7 +163,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                       pId: context
                           .read<VariableStateHandlerCubit<Task>>()
                           .state
-                          ?.taskNo,
+                          ?.pId,
                       startDate: context
                               .read<VariableStateHandlerCubit<Task>>()
                               .state!
@@ -145,7 +171,19 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                               ?.stringToDateTime()
                               ?.toFormatedString("dd-MMM-yyyy") ??
                           "",
+                              .read<VariableStateHandlerCubit<Task>>()
+                              .state!
+                              .sdate
+                              ?.stringToDateTime()
+                              ?.toFormatedString("dd-MMM-yyyy") ??
+                          "",
                       endDate: context
+                              .read<VariableStateHandlerCubit<Task>>()
+                              .state!
+                              .tdate
+                              ?.stringToDateTime()
+                              ?.toFormatedString("dd-MMM-yyyy") ??
+                          "",
                               .read<VariableStateHandlerCubit<Task>>()
                               .state!
                               .tdate
@@ -178,6 +216,8 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             context
                 .read<VariableStateHandlerCubit<TaskType>>()
                 .update(TaskType.independent);
+            context.read<VariableStateHandlerCubit<Task>>().update(Task());
+
             context.read<VariableStateHandlerCubit<Task>>().update(Task());
 
             context.read<TaskListBloc>().add(removeTask(index: widget.index));
@@ -222,7 +262,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.indigo[100],
+                color: Colors.indigo.shade200,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Column(
@@ -267,9 +307,16 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                           .read<
                                               VariableStateHandlerCubit<Task>>()
                                           .state!;
+                                      var stateTask = context
+                                          .read<
+                                              VariableStateHandlerCubit<Task>>()
+                                          .state!;
                                       context
                                           .read<
                                               VariableStateHandlerCubit<Task>>()
+                                          .update(
+                                            stateTask.copyWith(pId: 0),
+                                          );
                                           .update(
                                             stateTask.copyWith(pId: 0),
                                           );
@@ -307,8 +354,14 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                     var stateTask = context
                                         .read<VariableStateHandlerCubit<Task>>()
                                         .state!;
+                                    var stateTask = context
+                                        .read<VariableStateHandlerCubit<Task>>()
+                                        .state!;
                                     context
                                         .read<VariableStateHandlerCubit<Task>>()
+                                        .update(
+                                          stateTask.copyWith(pId: value.taskNo),
+                                        );
                                         .update(
                                           stateTask.copyWith(pId: value.taskNo),
                                         );
@@ -325,141 +378,305 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Start Date"),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Expanded(
-                            child: Text(
-                                textAlign: TextAlign.right,
-                                widget.data.sdate == "N/A"
-                                    ? context
-                                            .watch<
-                                                VariableStateHandlerCubit<
-                                                    Task>>()
-                                            .state
-                                            ?.sdate
-                                            ?.stringToDateTime()
-                                            ?.toFormatedString("dd-MMM-yyyy") ??
-                                        ""
-                                    : widget.data.sdate ?? ""),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          widget.data.sdate == "N/A"
-                              ? InkWell(
-                                  onTap: () async {
-                                    var selectedDate = await showDatePicker(
-                                      context: context,
-                                      firstDate: DateTime.now()
-                                          .subtract(const Duration(days: 120)),
-                                      lastDate: DateTime.now()
-                                          .add(const Duration(days: 120)),
-                                      initialDate: DateTime.now(),
-                                    );
-                                    if (selectedDate != null &&
-                                        context.mounted) {
-                                      var stateTask = context
-                                          .read<
-                                              VariableStateHandlerCubit<Task>>()
-                                          .state!;
-                                      context
-                                          .read<
-                                              VariableStateHandlerCubit<Task>>()
-                                          .update(
-                                            stateTask.copyWith(
-                                              sdate: selectedDate.toString(),
-                                            ),
-                                          );
-                                    }
-                                  },
-                                  child: const Icon(
-                                    Icons.calendar_month_sharp,
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Comlt Date"),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Expanded(
-                            child: Text(
-                                textAlign: TextAlign.right,
-                                widget.data.sdate == "N/A"
-                                    ? context
-                                            .watch<
-                                                VariableStateHandlerCubit<
-                                                    Task>>()
-                                            .state
-                                            ?.tdate
-                                            ?.stringToDateTime()
-                                            ?.toFormatedString("dd-MMM-yyyy") ??
-                                        ""
-                                    : widget.data.sdate ?? ""),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          BlocBuilder<VariableStateHandlerCubit<Task>, Task?>(
-                            builder: (context, state) {
-                              if (state != null && state.sdate != null) {
-                                return InkWell(
-                                  onTap: () async {
-                                    var startDate = DateTime.parse(context
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  textAlign: TextAlign.left,
+                                  widget.data.sdate == "N/A"
+                                      ? context
+                                              .watch<
+                                                  VariableStateHandlerCubit<
+                                                      Task>>()
+                                              .state
+                                              ?.sdate
+                                              ?.stringToDateTime()
+                                              ?.toFormatedString(
+                                                  "dd-MMM-yyyy") ??
+                                          "Start Date"
+                                      : widget.data.sdate ?? ""),
+                            ),
+                            widget.data.sdate == "N/A"
+                                ? InkWell(
+                                    onTap: () async {
+                                      var selectedDate = await showDatePicker(
+                                        context: context,
+                                        firstDate: DateTime.now().subtract(
+                                            const Duration(days: 120)),
+                                        lastDate: DateTime.now()
+                                            .add(const Duration(days: 120)),
+                                        initialDate: DateTime.now(),
+                                      );
+                                      if (selectedDate != null &&
+                                          context.mounted) {
+                                        var stateTask = context
                                             .read<
                                                 VariableStateHandlerCubit<
                                                     Task>>()
-                                            .state!
-                                            .sdate ??
-                                        "");
-                                    var selectedDate = await showDatePicker(
-                                      context: context,
-                                      firstDate: startDate,
-                                      lastDate: startDate
-                                          .add(const Duration(days: 120)),
-                                      initialDate: startDate,
-                                    );
-                                    if (selectedDate != null &&
-                                        context.mounted) {
-                                      var stateTask = context
-                                          .read<
-                                              VariableStateHandlerCubit<Task>>()
-                                          .state!;
-                                      context
-                                          .read<
-                                              VariableStateHandlerCubit<Task>>()
-                                          .update(
-                                            stateTask.copyWith(
-                                              tdate: selectedDate.toString(),
-                                            ),
-                                          );
-                                    }
-                                  },
-                                  child: const Icon(
-                                    Icons.calendar_month_sharp,
-                                  ),
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            },
-                          ),
-                        ],
+                                            .state!;
+                                        context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    Task>>()
+                                            .update(
+                                              stateTask.copyWith(
+                                                sdate: selectedDate.toString(),
+                                              ),
+                                            );
+                                      }
+                                    },
+                                    child: const Icon(
+                                      Icons.calendar_month_sharp,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
+                        ),
+                      ),
+                      const Text(" -- "),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  textAlign: widget.data.sdate == "N/A"
+                                      ? TextAlign.left
+                                      : TextAlign.right,
+                                  widget.data.sdate == "N/A"
+                                      ? context
+                                              .watch<
+                                                  VariableStateHandlerCubit<
+                                                      Task>>()
+                                              .state
+                                              ?.tdate
+                                              ?.stringToDateTime()
+                                              ?.toFormatedString(
+                                                  "dd-MMM-yyyy") ??
+                                          "Select Cmplt"
+                                      : widget.data.sdate ?? ""),
+                            ),
+                            BlocBuilder<VariableStateHandlerCubit<Task>, Task?>(
+                              builder: (context, state) {
+                                if (state != null && state.sdate != null) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      var startDate = DateTime.parse(context
+                                              .read<
+                                                  VariableStateHandlerCubit<
+                                                      Task>>()
+                                              .state!
+                                              .sdate ??
+                                          "");
+                                      var selectedDate = await showDatePicker(
+                                        context: context,
+                                        firstDate: startDate,
+                                        lastDate: startDate
+                                            .add(const Duration(days: 120)),
+                                        initialDate: startDate,
+                                      );
+                                      if (selectedDate != null &&
+                                          context.mounted) {
+                                        var stateTask = context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    Task>>()
+                                            .state!;
+                                        context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    Task>>()
+                                            .update(
+                                              stateTask.copyWith(
+                                                tdate: selectedDate.toString(),
+                                              ),
+                                            );
+                                      }
+                                    },
+                                    child: const Icon(
+                                      Icons.calendar_month_sharp,
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
+                        ),
                       )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _taskNameController.text.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.indigo.shade100,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    textAlign: TextAlign.right,
+                                    _taskNameController.text,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.left,
+                                          _enDateController.text.isNotEmpty
+                                              ? DateTime.parse(
+                                                      _enDateController.text)
+                                                  .toFormatedString(
+                                                      "dd-MMM-yyyy")
+                                              : "",
+                                        ),
+                                      ),
+                                      const Text("--"),
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.right,
+                                          _stDateController.text.isNotEmpty
+                                              ? DateTime.parse(
+                                                      _stDateController.text)
+                                                  .toFormatedString(
+                                                      "dd-MMM-yyyy")
+                                              : "",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      widget.data.sdate == "N/A"
+                          ? SizedBox(
+                              height: 30.0,
+                              width: 30.0,
+                              child: IconButton.filled(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Icons.add_sharp,
+                                  color: appTheme.white,
+                                ),
+                                onPressed: () async {
+                                  await AppModal.showCustomModal(
+                                    context,
+                                    content: Container(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CommonDialogHeader(
+                                            title: widget.data.taskName ?? "",
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          CommonLableWthTextField(
+                                            focusNode: _taskFocusNode,
+                                            textController: _taskNameController,
+                                            lableName: "New",
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Expanded(
+                                                child: CommonTextFieldWidget(
+                                                  readOnly: true,
+                                                  hintText: "Start Date",
+                                                  controller: _stDateController,
+                                                  suffixIcon: const Icon(
+                                                    Icons.calendar_month,
+                                                  ),
+                                                  onTap: () async {
+                                                    var selectedDate =
+                                                        await showDatePicker(
+                                                      context: context,
+                                                      firstDate: DateTime.now()
+                                                          .subtract(
+                                                              const Duration(
+                                                                  days: 120)),
+                                                      lastDate: DateTime.now()
+                                                          .add(const Duration(
+                                                              days: 120)),
+                                                      initialDate:
+                                                          DateTime.now(),
+                                                    );
+                                                    if (selectedDate != null &&
+                                                        context.mounted) {
+                                                      _stDateController.text =
+                                                          selectedDate
+                                                              .toString();
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: CommonTextFieldWidget(
+                                                  readOnly: true,
+                                                  hintText: "End Date",
+                                                  controller: _enDateController,
+                                                  suffixIcon: const Icon(
+                                                    Icons.calendar_month,
+                                                  ),
+                                                  onTap: () async {
+                                                    var selectedDate =
+                                                        await showDatePicker(
+                                                      context: context,
+                                                      firstDate: DateTime.now()
+                                                          .subtract(
+                                                              const Duration(
+                                                                  days: 120)),
+                                                      lastDate: DateTime.now()
+                                                          .add(const Duration(
+                                                              days: 120)),
+                                                      initialDate:
+                                                          DateTime.now(),
+                                                    );
+                                                    if (selectedDate != null &&
+                                                        context.mounted) {
+                                                      _enDateController.text =
+                                                          selectedDate
+                                                              .toString();
+                                                    }
+                                                  },
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                 ],
