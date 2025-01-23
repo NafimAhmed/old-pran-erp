@@ -8,7 +8,9 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
+import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
@@ -930,9 +932,11 @@ class RemoteDataRepositoryImpl
     required String userId,
   }) async {
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/tasklist?userid=$userId'));
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/taskapi/tasklist?userid=$userId',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: TaskListResponse.fromJson);
@@ -997,5 +1001,32 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<DepartmentListResponse> getDeptList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/deptinfo?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: DepartmentListResponse.fromJson);
+  }
+
+  @override
+  Future<BuyerListResponse> getBuyerList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/buyerinfo?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: BuyerListResponse.fromJson);
   }
 }

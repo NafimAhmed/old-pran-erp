@@ -7,7 +7,9 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
+import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
@@ -929,5 +931,27 @@ class DataServiceImpl implements DataService {
     if (response.statusCode != 200) {
       throw ApiDataException(response.errorMessage);
     }
+  }
+
+  @override
+  Future<List<DeptList>> getDeptList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getDeptList(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.deptList ?? [];
+  }
+
+  @override
+  Future<List<BuyerList>> getBuyerList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getBuyerList(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.buyerList ?? [];
   }
 }
