@@ -15,7 +15,7 @@ sealed class DeptListState {}
 final class DeptListInitial extends DeptListState {}
 
 final class DeptListSuccess extends DeptListState {
-  final List<DeptList> deptList;
+  final List<Department> deptList;
 
   DeptListSuccess({required this.deptList});
 }

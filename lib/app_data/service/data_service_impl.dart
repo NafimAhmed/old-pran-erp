@@ -934,7 +934,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<DeptList>> getDeptList({
+  Future<List<Department>> getDeptList({
     required String userId,
   }) async {
     var response = await remoteDataRepository.getDeptList(userId: userId);
@@ -945,7 +945,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<BuyerList>> getBuyerList({
+  Future<List<Buyer>> getBuyerList({
     required String userId,
   }) async {
     var response = await remoteDataRepository.getBuyerList(userId: userId);

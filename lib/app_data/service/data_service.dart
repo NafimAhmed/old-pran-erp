@@ -324,10 +324,10 @@ abstract class DataService {
     required String pTtlPerson,
     required String pManHours,
   });
-  Future<List<DeptList>> getDeptList({
+  Future<List<Department>> getDeptList({
     required String userId,
   });
-  Future<List<BuyerList>> getBuyerList({
+  Future<List<Buyer>> getBuyerList({
     required String userId,
   });
 }

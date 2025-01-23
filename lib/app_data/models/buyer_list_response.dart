@@ -3,7 +3,7 @@ import 'dart:convert';
 class BuyerListResponse {
   final int? statusCode;
   final String? message;
-  final List<BuyerList>? buyerList;
+  final List<Buyer>? buyerList;
 
   BuyerListResponse({
     this.statusCode,
@@ -14,7 +14,7 @@ class BuyerListResponse {
   BuyerListResponse copyWith({
     int? statusCode,
     String? message,
-    List<BuyerList>? buyerList,
+    List<Buyer>? buyerList,
   }) =>
       BuyerListResponse(
         statusCode: statusCode ?? this.statusCode,
@@ -33,8 +33,8 @@ class BuyerListResponse {
         message: json["message"],
         buyerList: json["Buyer_list"] == null
             ? []
-            : List<BuyerList>.from(
-                json["Buyer_list"]!.map((x) => BuyerList.fromMap(x))),
+            : List<Buyer>.from(
+                json["Buyer_list"]!.map((x) => Buyer.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
@@ -46,25 +46,25 @@ class BuyerListResponse {
       };
 }
 
-class BuyerList {
+class Buyer {
   final String? buyerName;
 
-  BuyerList({
+  Buyer({
     this.buyerName,
   });
 
-  BuyerList copyWith({
+  Buyer copyWith({
     String? buyerName,
   }) =>
-      BuyerList(
+      Buyer(
         buyerName: buyerName ?? this.buyerName,
       );
 
-  factory BuyerList.fromJson(String str) => BuyerList.fromMap(json.decode(str));
+  factory Buyer.fromJson(String str) => Buyer.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory BuyerList.fromMap(Map<String, dynamic> json) => BuyerList(
+  factory Buyer.fromMap(Map<String, dynamic> json) => Buyer(
         buyerName: json["BUYER_NAME"],
       );
 

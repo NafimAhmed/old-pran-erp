@@ -3,7 +3,7 @@ import 'dart:convert';
 class DepartmentListResponse {
   final int? statusCode;
   final String? message;
-  final List<DeptList>? deptList;
+  final List<Department>? deptList;
 
   DepartmentListResponse({
     this.statusCode,
@@ -14,7 +14,7 @@ class DepartmentListResponse {
   DepartmentListResponse copyWith({
     int? statusCode,
     String? message,
-    List<DeptList>? deptList,
+    List<Department>? deptList,
   }) =>
       DepartmentListResponse(
         statusCode: statusCode ?? this.statusCode,
@@ -33,8 +33,8 @@ class DepartmentListResponse {
         message: json["message"],
         deptList: json["Dept_list"] == null
             ? []
-            : List<DeptList>.from(
-                json["Dept_list"]!.map((x) => DeptList.fromMap(x))),
+            : List<Department>.from(
+                json["Dept_list"]!.map((x) => Department.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
@@ -46,25 +46,26 @@ class DepartmentListResponse {
       };
 }
 
-class DeptList {
+class Department {
   final String? taskDept;
 
-  DeptList({
+  Department({
     this.taskDept,
   });
 
-  DeptList copyWith({
+  Department copyWith({
     String? taskDept,
   }) =>
-      DeptList(
+      Department(
         taskDept: taskDept ?? this.taskDept,
       );
 
-  factory DeptList.fromJson(String str) => DeptList.fromMap(json.decode(str));
+  factory Department.fromJson(String str) =>
+      Department.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory DeptList.fromMap(Map<String, dynamic> json) => DeptList(
+  factory Department.fromMap(Map<String, dynamic> json) => Department(
         taskDept: json["TASK_DEPT"],
       );
 

@@ -15,7 +15,7 @@ sealed class BuyerListState {}
 final class BuyerListInitial extends BuyerListState {}
 
 final class BuyerListSuccess extends BuyerListState {
-  final List<BuyerList> buyerList;
+  final List<Buyer> buyerList;
 
   BuyerListSuccess({required this.buyerList});
 }
