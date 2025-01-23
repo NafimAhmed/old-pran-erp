@@ -23,6 +23,8 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.filled = true,
     this.fillColor = Colors.white,
     this.onTap,
+    this.expands = false,
+    this.maxLines = 1,
   });
   final FocusNode? focusNode;
   final TextEditingController? controller;
@@ -42,16 +44,20 @@ class CommonTextFieldWidget extends StatelessWidget {
   final String? hintText;
   final bool? filled;
   final Color? fillColor;
+  final bool expands;
+  final int? maxLines;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       textCapitalization: textCapitalization,
+      expands: expands,
       enabled: enabled,
       readOnly: readOnly,
       focusNode: focusNode,
       controller: controller,
       obscureText: obscureText,
       autocorrect: false,
+      maxLines: maxLines,
       textAlign: textAlign,
       enableSuggestions: false,
       keyboardType: keyboardType,
