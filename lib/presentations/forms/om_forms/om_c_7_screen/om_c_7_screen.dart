@@ -312,14 +312,43 @@ class TaskWidgetContent extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: appTheme.white,
+              color: const Color.fromARGB(255, 201, 208, 247),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    color: appTheme.tertiary,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          data.taskName ?? "",
+                          textAlign: TextAlign.center,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Text(
+                //   data.taskName ?? "",
+                //   style: textTheme.bodyMedium!.copyWith(
+                //     color: appTheme.primary,
+                //   ),
+                // ),
                 Text(
-                  data.taskName ?? "",
+                  data.jobOrderNo ?? "",
                   style: textTheme.bodyMedium!.copyWith(
                     color: appTheme.primary,
                   ),
@@ -385,39 +414,43 @@ class TaskWidgetContent extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CommonDropdownButton<TaskStatusType>(
-                        value: context
-                            .watch<VariableStateHandlerCubit<TaskStatusType>>()
-                            .state,
-                        fillColor: appTheme.primary,
-                        hintcolor: Colors.white,
-                        onChanged: (value) {
-                          if (value != null) {
-                            context
-                                .read<
-                                    VariableStateHandlerCubit<TaskStatusType>>()
-                                .update(value);
-                          }
-                        },
-                        hintText: "Change Task Status",
-                        items: TaskStatusType.values,
-                      ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.37,
+                    child: CommonDropdownButton<TaskStatusType>(
+                      value: context
+                          .watch<VariableStateHandlerCubit<TaskStatusType>>()
+                          .state,
+                      onChanged: (value) {
+                        if (value != null) {
+                          context
+                              .read<VariableStateHandlerCubit<TaskStatusType>>()
+                              .update(value);
+                        }
+                      },
+                      hintText: "Change Status",
+                      items: TaskStatusType.values,
                     ),
-                    // const SizedBox(
-                    //   width: 5,
-                    // ),
-                    // IconButton.filledTonal(
-                    //   onPressed: () {},
-                    //   icon: Icon(
-                    //     Icons.note_add,
-                    //     color: appTheme.white,
-                    //   ),
-                    // ),
-                  ],
-                ),
+                  ),
+                )
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: ,
+                //     ),
+                //     // const SizedBox(
+                //     //   width: 5,
+                //     // ),
+                //     // IconButton.filledTonal(
+                //     //   onPressed: () {},
+                //     //   icon: Icon(
+                //     //     Icons.note_add,
+                //     //     color: appTheme.white,
+                //     //   ),
+                //     // ),
+                //   ],
+                // ),
               ],
             ),
           ),
