@@ -2,21 +2,27 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
-import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/buyer_list_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_assign_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/model/child_task.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/om_c_9_screen.dart';
 
 class TaskCreateWidget extends StatelessWidget {
@@ -29,11 +35,13 @@ class TaskCreateWidget extends StatelessWidget {
     required this.taskCubit,
     required this.loggedUser,
     required this.joInfo,
+    required this.childTaskCubit,
   });
   final int index;
 
   final VariableStateHandlerCubit<TaskType> taskTypeCubit;
   final VariableStateHandlerCubit<Task> taskCubit;
+  final VariableStateHandlerCubit<NewTask> childTaskCubit;
   final Task data;
   final List<Task> taskList;
   final UserInfoModel loggedUser;
@@ -47,6 +55,9 @@ class TaskCreateWidget extends StatelessWidget {
         ),
         BlocProvider.value(
           value: taskCubit,
+        ),
+        BlocProvider.value(
+          value: childTaskCubit,
         ),
         BlocProvider(
           create: (context) => TaskAssignBloc(getService()),
@@ -86,13 +97,24 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
   late TextEditingController _taskNameController;
   late TextEditingController _stDateController;
   late TextEditingController _enDateController;
+  late TextEditingController _manController;
+  late TextEditingController _hourController;
   late FocusNode _taskFocusNode;
+  late FocusNode _manDateFocusNode;
+  late FocusNode _hourDateFocusNode;
   @override
   void initState() {
-    _taskNameController = TextEditingController();
-    _stDateController = TextEditingController();
-    _enDateController = TextEditingController();
+    var childTask = context.read<VariableStateHandlerCubit<NewTask>>().state;
+    _taskNameController =
+        TextEditingController(text: childTask?.taskName ?? "");
+    _stDateController = TextEditingController(text: childTask?.stDate ?? "");
+    _enDateController = TextEditingController(text: childTask?.enDate ?? "");
     _taskFocusNode = FocusNode();
+    _manController = TextEditingController(text: childTask?.manPower ?? "");
+    _hourController = TextEditingController(text: childTask?.hour ?? "");
+
+    _manDateFocusNode = FocusNode();
+    _hourDateFocusNode = FocusNode();
     super.initState();
   }
 
@@ -102,6 +124,11 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
     _stDateController.dispose();
     _enDateController.dispose();
     _taskFocusNode.dispose();
+    _manController.dispose();
+    _hourController.dispose();
+
+    _manDateFocusNode.dispose();
+    _hourDateFocusNode.dispose();
     super.dispose();
   }
 
@@ -487,19 +514,28 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _taskNameController.text.isNotEmpty
-                          ? Container(
+                      BlocBuilder<VariableStateHandlerCubit<NewTask>, NewTask?>(
+                        builder: (context, state) {
+                          if (state != null &&
+                              (state.stDate?.isNotEmpty ?? false) &&
+                              (state.enDate?.isNotEmpty ?? false) &&
+                              (state.manPower?.isNotEmpty ?? false) &&
+                              (state.hour?.isNotEmpty ?? false) &&
+                              (state.dept?.isNotEmpty ?? false) &&
+                              (state.buyer?.isNotEmpty ?? false) &&
+                              (state.userId?.isNotEmpty ?? false)) {
+                            return Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: Colors.indigo.shade100,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     textAlign: TextAlign.right,
-                                    _taskNameController.text,
+                                    state.taskName ?? "",
                                   ),
                                   Row(
                                     crossAxisAlignment:
@@ -508,11 +544,12 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                       Expanded(
                                         child: Text(
                                           textAlign: TextAlign.left,
-                                          _enDateController.text.isNotEmpty
+                                          state.stDate != null &&
+                                                  state.stDate!.isNotEmpty
                                               ? DateTime.parse(
-                                                      _enDateController.text)
-                                                  .toFormatedString(
-                                                      "dd-MMM-yyyy")
+                                                  state.stDate ?? "",
+                                                ).toFormatedString(
+                                                  "dd-MMM-yyyy")
                                               : "",
                                         ),
                                       ),
@@ -520,20 +557,66 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                       Expanded(
                                         child: Text(
                                           textAlign: TextAlign.right,
-                                          _stDateController.text.isNotEmpty
+                                          state.enDate != null &&
+                                                  state.enDate!.isNotEmpty
                                               ? DateTime.parse(
-                                                      _stDateController.text)
-                                                  .toFormatedString(
-                                                      "dd-MMM-yyyy")
+                                                  state.enDate ?? "",
+                                                ).toFormatedString(
+                                                  "dd-MMM-yyyy")
                                               : "",
                                         ),
                                       ),
                                     ],
                                   ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.left,
+                                          "${state.manPower ?? ""}-Man",
+                                        ),
+                                      ),
+                                      const Text("--"),
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.right,
+                                          "${state.hour ?? ""}-hr",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.left,
+                                          "Dept: ${state.dept ?? ""}",
+                                        ),
+                                      ),
+                                      const Text("--"),
+                                      Expanded(
+                                        child: Text(
+                                          textAlign: TextAlign.right,
+                                          "Buyer: ${state.buyer ?? ""}",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    textAlign: TextAlign.left,
+                                    "Assigned To: ${state.userName ?? ""}(${state.userId})",
+                                  ),
                                 ],
                               ),
-                            )
-                          : const SizedBox.shrink(),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -550,102 +633,39 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                                 onPressed: () async {
                                   await AppModal.showCustomModal(
                                     context,
-                                    content: Container(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          CommonDialogHeader(
-                                            title: widget.data.taskName ?? "",
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          CommonLableWthTextField(
-                                            focusNode: _taskFocusNode,
-                                            textController: _taskNameController,
-                                            lableName: "New",
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Expanded(
-                                                child: CommonTextFieldWidget(
-                                                  readOnly: true,
-                                                  hintText: "Start Date",
-                                                  controller: _stDateController,
-                                                  suffixIcon: const Icon(
-                                                    Icons.calendar_month,
-                                                  ),
-                                                  onTap: () async {
-                                                    var selectedDate =
-                                                        await showDatePicker(
-                                                      context: context,
-                                                      firstDate: DateTime.now()
-                                                          .subtract(
-                                                              const Duration(
-                                                                  days: 120)),
-                                                      lastDate: DateTime.now()
-                                                          .add(const Duration(
-                                                              days: 120)),
-                                                      initialDate:
-                                                          DateTime.now(),
-                                                    );
-                                                    if (selectedDate != null &&
-                                                        context.mounted) {
-                                                      _stDateController.text =
-                                                          selectedDate
-                                                              .toString();
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: CommonTextFieldWidget(
-                                                  readOnly: true,
-                                                  hintText: "End Date",
-                                                  controller: _enDateController,
-                                                  suffixIcon: const Icon(
-                                                    Icons.calendar_month,
-                                                  ),
-                                                  onTap: () async {
-                                                    var selectedDate =
-                                                        await showDatePicker(
-                                                      context: context,
-                                                      firstDate: DateTime.now()
-                                                          .subtract(
-                                                              const Duration(
-                                                                  days: 120)),
-                                                      lastDate: DateTime.now()
-                                                          .add(const Duration(
-                                                              days: 120)),
-                                                      initialDate:
-                                                          DateTime.now(),
-                                                    );
-                                                    if (selectedDate != null &&
-                                                        context.mounted) {
-                                                      _enDateController.text =
-                                                          selectedDate
-                                                              .toString();
-                                                    }
-                                                  },
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                                    content: NewTaskWidget(
+                                      blocContext: context,
+                                      widget: widget,
+                                      taskFocusNode: _taskFocusNode,
+                                      taskNameController: _taskNameController,
+                                      manDateFocusNode: _manDateFocusNode,
+                                      manController: _manController,
+                                      hourDateFocusNode: _hourDateFocusNode,
+                                      hourController: _hourController,
+                                      stDateController: _stDateController,
+                                      enDateController: _enDateController,
                                     ),
                                   );
-                                  setState(() {});
+                                  if (context.mounted) {
+                                    var newtask = context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    NewTask>>()
+                                            .state ??
+                                        NewTask();
+                                    newtask = newtask.copyWith(
+                                      taskName: _taskNameController.text,
+                                      stDate: _stDateController.text,
+                                      enDate: _enDateController.text,
+                                      manPower: _manController.text,
+                                      hour: _hourController.text,
+                                    );
+                                    context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                NewTask>>()
+                                        .update(newtask);
+                                  }
                                 },
                               ),
                             )
@@ -670,18 +690,239 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
       return false;
     }
   }
+}
 
-  // bool _validator() {
-  //   var selectedStartDt =
-  //       context.read<VariableStateHandlerCubit<DateTime>>().state;
-  //   var selectedComplDt =
-  //       context.read<VariableStateHandlerCubit<String>>().state;
-  //   if (selectedStartDt != null && selectedComplDt != null) {
-  //     return true;
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //         CustomSnackBar.errorSnackber(message: "Please Assign Date"));
-  //     return false;
-  //   }
-  // }
+class NewTaskWidget extends StatefulWidget {
+  const NewTaskWidget({
+    super.key,
+    required this.widget,
+    required FocusNode taskFocusNode,
+    required TextEditingController taskNameController,
+    required FocusNode manDateFocusNode,
+    required TextEditingController manController,
+    required FocusNode hourDateFocusNode,
+    required TextEditingController hourController,
+    required TextEditingController stDateController,
+    required TextEditingController enDateController,
+    required this.blocContext,
+  })  : _taskFocusNode = taskFocusNode,
+        _taskNameController = taskNameController,
+        _manDateFocusNode = manDateFocusNode,
+        _manController = manController,
+        _hourDateFocusNode = hourDateFocusNode,
+        _hourController = hourController,
+        _stDateController = stDateController,
+        _enDateController = enDateController;
+
+  final TaskWidgetContent widget;
+  final FocusNode _taskFocusNode;
+  final TextEditingController _taskNameController;
+  final FocusNode _manDateFocusNode;
+  final TextEditingController _manController;
+  final FocusNode _hourDateFocusNode;
+  final TextEditingController _hourController;
+  final TextEditingController _stDateController;
+  final TextEditingController _enDateController;
+  final BuildContext blocContext;
+  @override
+  State<NewTaskWidget> createState() => _NewTaskWidgetState();
+}
+
+class _NewTaskWidgetState extends State<NewTaskWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: BlocProvider.of<DeptListBloc>(widget.blocContext),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<BuyerListBloc>(widget.blocContext),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<QrUserBloc>(widget.blocContext),
+        ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CommonDialogHeader(
+              title: widget.widget.data.taskName ?? "",
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 65,
+              child: CommonTextFieldWidget(
+                focusNode: widget._taskFocusNode,
+                controller: widget._taskNameController,
+                labelText: "New Task",
+                expands: true,
+                maxLines: null,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonTextFieldWidget(
+                    focusNode: widget._manDateFocusNode,
+                    controller: widget._manController,
+                    labelText: "Man",
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CommonTextFieldWidget(
+                    focusNode: widget._hourDateFocusNode,
+                    controller: widget._hourController,
+                    labelText: "Hour",
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: CommonTextFieldWidget(
+                    readOnly: true,
+                    hintText: "Start Date",
+                    controller: widget._stDateController,
+                    suffixIcon: const Icon(
+                      Icons.calendar_month,
+                    ),
+                    onTap: () async {
+                      var selectedDate = await showDatePicker(
+                        context: context,
+                        firstDate:
+                            DateTime.now().subtract(const Duration(days: 120)),
+                        lastDate: DateTime.now().add(const Duration(days: 120)),
+                        initialDate: DateTime.now(),
+                      );
+                      if (selectedDate != null && context.mounted) {
+                        widget._stDateController.text = selectedDate.toString();
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CommonTextFieldWidget(
+                    readOnly: true,
+                    hintText: "End Date",
+                    controller: widget._enDateController,
+                    suffixIcon: const Icon(
+                      Icons.calendar_month,
+                    ),
+                    onTap: () async {
+                      var selectedDate = await showDatePicker(
+                        context: context,
+                        firstDate:
+                            DateTime.now().subtract(const Duration(days: 120)),
+                        lastDate: DateTime.now().add(const Duration(days: 120)),
+                        initialDate: DateTime.now(),
+                      );
+                      if (selectedDate != null && context.mounted) {
+                        widget._enDateController.text = selectedDate.toString();
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: BlocBuilder<DeptListBloc, DeptListState>(
+                    builder: (context, state) {
+                      return CommonDropdownButton<Department>(
+                        hintText: "Department",
+                        items: state is DeptListSuccess ? state.deptList : [],
+                        onChanged: (value) {
+                          var newtask = widget.blocContext
+                                  .read<VariableStateHandlerCubit<NewTask>>()
+                                  .state ??
+                              NewTask();
+                          newtask = newtask.copyWith(dept: value?.taskDept);
+                          widget.blocContext
+                              .read<VariableStateHandlerCubit<NewTask>>()
+                              .update(newtask);
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: BlocBuilder<BuyerListBloc, BuyerListState>(
+                    builder: (context, state) {
+                      return CommonDropdownButton<Buyer>(
+                        hintText: "Buyer",
+                        items: state is BuyerListSuccess ? state.buyerList : [],
+                        onChanged: (value) {
+                          var newtask = widget.blocContext
+                                  .read<VariableStateHandlerCubit<NewTask>>()
+                                  .state ??
+                              NewTask();
+                          newtask = newtask.copyWith(buyer: value?.buyerName);
+                          widget.blocContext
+                              .read<VariableStateHandlerCubit<NewTask>>()
+                              .update(newtask);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            BlocBuilder<QrUserBloc, QrUserState>(
+              builder: (context, state) {
+                return CommonDropdownButton<QrUserData>(
+                  hintText: "User",
+                  items: state is QrUserSuccess ? state.qrUsers : [],
+                  onChanged: (value) {
+                    var newtask = widget.blocContext
+                            .read<VariableStateHandlerCubit<NewTask>>()
+                            .state ??
+                        NewTask();
+                    newtask = newtask.copyWith(
+                        userId: value?.userId, userName: value?.userName);
+                    widget.blocContext
+                        .read<VariableStateHandlerCubit<NewTask>>()
+                        .update(newtask);
+                  },
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
