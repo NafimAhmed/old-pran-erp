@@ -707,9 +707,9 @@ class NewTaskWidget extends StatefulWidget {
     required this.blocContext,
   })  : _taskFocusNode = taskFocusNode,
         _taskNameController = taskNameController,
-        _manDateFocusNode = manDateFocusNode,
+        _manFocusNode = manDateFocusNode,
         _manController = manController,
-        _hourDateFocusNode = hourDateFocusNode,
+        _hourFocusNode = hourDateFocusNode,
         _hourController = hourController,
         _stDateController = stDateController,
         _enDateController = enDateController;
@@ -717,9 +717,9 @@ class NewTaskWidget extends StatefulWidget {
   final TaskWidgetContent widget;
   final FocusNode _taskFocusNode;
   final TextEditingController _taskNameController;
-  final FocusNode _manDateFocusNode;
+  final FocusNode _manFocusNode;
   final TextEditingController _manController;
-  final FocusNode _hourDateFocusNode;
+  final FocusNode _hourFocusNode;
   final TextEditingController _hourController;
   final TextEditingController _stDateController;
   final TextEditingController _enDateController;
@@ -772,7 +772,7 @@ class _NewTaskWidgetState extends State<NewTaskWidget> {
               children: [
                 Expanded(
                   child: CommonTextFieldWidget(
-                    focusNode: widget._manDateFocusNode,
+                    focusNode: widget._manFocusNode,
                     controller: widget._manController,
                     labelText: "Man",
                   ),
@@ -782,7 +782,7 @@ class _NewTaskWidgetState extends State<NewTaskWidget> {
                 ),
                 Expanded(
                   child: CommonTextFieldWidget(
-                    focusNode: widget._hourDateFocusNode,
+                    focusNode: widget._hourFocusNode,
                     controller: widget._hourController,
                     labelText: "Hour",
                   ),
