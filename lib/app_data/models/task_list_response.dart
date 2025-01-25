@@ -52,6 +52,8 @@ class Task {
   final String? taskDept;
   final String? sdate;
   final String? tdate;
+  final int? tskTp;
+  final int? projectId;
   final int? pId;
 
   Task({
@@ -60,6 +62,8 @@ class Task {
     this.taskDept,
     this.sdate,
     this.tdate,
+    this.tskTp,
+    this.projectId,
     this.pId,
   });
 
@@ -69,6 +73,8 @@ class Task {
     String? taskDept,
     String? sdate,
     String? tdate,
+    int? tskTp,
+    int? projectId,
     int? pId,
   }) =>
       Task(
@@ -77,6 +83,8 @@ class Task {
         taskDept: taskDept ?? this.taskDept,
         sdate: sdate ?? this.sdate,
         tdate: tdate ?? this.tdate,
+        tskTp: tskTp ?? this.tskTp,
+        projectId: projectId ?? this.projectId,
         pId: pId ?? this.pId,
       );
 
@@ -90,6 +98,8 @@ class Task {
         taskDept: json["task_dept"],
         sdate: json["sdate"],
         tdate: json["tdate"],
+        tskTp: json["tsk_tp"],
+        projectId: json["project_id"],
         pId: json["p_id"],
       );
 
@@ -99,10 +109,8 @@ class Task {
         "task_dept": taskDept,
         "sdate": sdate,
         "tdate": tdate,
+        "tsk_tp": tskTp,
+        "project_id": projectId,
         "p_id": pId,
       };
-  @override
-  String toString() {
-    return taskName ?? "";
-  }
 }
