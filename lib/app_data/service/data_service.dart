@@ -38,7 +38,7 @@ import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/data_class/main_task.dart';
+import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 import '../models/task_list_response.dart';
 import '../models/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
