@@ -25,6 +25,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -46,6 +47,7 @@ import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/data_class/main_task.dart';
 
 import '../../models/user_menu_item_response.dart';
 
@@ -1028,5 +1030,33 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: BuyerListResponse.fromJson);
+  }
+
+  @override
+  Future<ProjectListResponse> getProjectList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/projectInfo?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: ProjectListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> createMainTask({
+    required String userId,
+    required MainTask mainTask,
+  }) async {
+    var request = http.Request(
+      'POST',
+      Uri.parse(
+          '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId'),
+    );
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

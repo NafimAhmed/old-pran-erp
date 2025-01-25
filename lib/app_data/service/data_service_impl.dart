@@ -22,6 +22,7 @@ import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
+import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -43,6 +44,7 @@ import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_d
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/data_class/main_task.dart';
 import '../../core/exceptions/custom_exception.dart';
 import '../models/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
@@ -953,5 +955,28 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.buyerList ?? [];
+  }
+
+  @override
+  Future<List<Project>> getProjectList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getProjectList(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.projectList ?? [];
+  }
+
+  @override
+  Future<void> createMainTask({
+    required String userId,
+    required MainTask mainTask,
+  }) async {
+    var response = await remoteDataRepository.createMainTask(
+        userId: userId, mainTask: mainTask);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
   }
 }

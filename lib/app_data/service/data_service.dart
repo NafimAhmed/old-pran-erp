@@ -21,6 +21,7 @@ import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
+import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -37,6 +38,7 @@ import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/data_class/main_task.dart';
 import '../models/task_list_response.dart';
 import '../models/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
@@ -329,5 +331,12 @@ abstract class DataService {
   });
   Future<List<Buyer>> getBuyerList({
     required String userId,
+  });
+  Future<List<Project>> getProjectList({
+    required String userId,
+  });
+  Future<void> createMainTask({
+    required String userId,
+    required MainTask mainTask,
   });
 }

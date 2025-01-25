@@ -7,7 +7,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart'
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen.dart/bloc/Project_create_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen/bloc/project_create_bloc.dart';
 
 class ProjectC7Screen extends StatelessWidget {
   const ProjectC7Screen({super.key, required this.fromName});
