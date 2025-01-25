@@ -14,7 +14,7 @@ import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dar
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/Jo_list_bloc.dart';
 
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_list_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/model/child_task.dart';
+
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/widgets/task_create_widget.dart';
 
 class OmC9Screen extends StatelessWidget {
@@ -78,7 +78,7 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
 
   final Map<int, VariableStateHandlerCubit<TaskType>> taskTypeCubits = {};
   final Map<int, VariableStateHandlerCubit<Task>> taskCubits = {};
-  final Map<int, VariableStateHandlerCubit<NewTask>> childTaskCubits = {};
+
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -180,10 +180,6 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
                               ..update(
                                 Task(),
                               ),
-                          ),
-                          childTaskCubit: childTaskCubits.putIfAbsent(
-                            data.taskNo ?? 0,
-                            () => VariableStateHandlerCubit<NewTask>(),
                           ),
                         );
                       },

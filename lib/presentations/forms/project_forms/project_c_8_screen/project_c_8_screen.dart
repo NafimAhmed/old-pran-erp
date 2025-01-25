@@ -15,9 +15,9 @@ import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/global_blocs/bloc/main_task_create_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/task_create_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/bloc/project_list_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/data_class/main_task.dart';
+import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 
 class ProjectC8Screen extends StatelessWidget {
   const ProjectC8Screen({super.key, required this.fromName});
@@ -38,7 +38,7 @@ class ProjectC8Screen extends StatelessWidget {
           create: (context) => ProjectListBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => MainTaskCreateBloc(getService()),
+          create: (context) => TaskCreateBloc(getService()),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<MainTask>(),
@@ -119,9 +119,9 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
       appBar: CommonAppBar(
         appBartitle: widget.fromName,
       ),
-      body: BlocListener<MainTaskCreateBloc, MainTaskCreateState>(
+      body: BlocListener<TaskCreateBloc, TaskCreateState>(
         listener: (context, state) {
-          if (state is MainTaskCreateSuccess) {
+          if (state is TaskCreateSuccess) {
             _prntTaskController.clear();
             _stDateController.clear();
             _enDateController.clear();
@@ -368,7 +368,7 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                 const SizedBox(
                   height: 10,
                 ),
-                BlocBuilder<MainTaskCreateBloc, MainTaskCreateState>(
+                BlocBuilder<TaskCreateBloc, TaskCreateState>(
                   builder: (context, state) {
                     return ElevatedButton(
                       onPressed: () {
@@ -391,8 +391,8 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                           context
                               .read<VariableStateHandlerCubit<MainTask>>()
                               .update(newMainTask);
-                          context.read<MainTaskCreateBloc>().add(
-                                MainTaskCreate(
+                          context.read<TaskCreateBloc>().add(
+                                TaskCreate(
                                   userId: loggedUser.userId,
                                   mainTask: newMainTask,
                                 ),
@@ -400,7 +400,7 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                         }
                       },
                       child: Text(
-                        state is MainTaskCreateLoading ? "Adding..." : "Add",
+                        state is TaskCreateLoading ? "Adding..." : "Add",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.white,
                         ),
