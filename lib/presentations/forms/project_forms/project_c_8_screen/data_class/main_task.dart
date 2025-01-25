@@ -12,6 +12,7 @@ class MainTask {
   final String? man;
   final String? hr;
   final Department? taskDept;
+  final String? taskparentid;
 
   MainTask({
     this.taskName,
@@ -23,6 +24,7 @@ class MainTask {
     this.man,
     this.hr,
     this.taskDept,
+    this.taskparentid,
   });
 
   MainTask copyWith({
@@ -35,6 +37,7 @@ class MainTask {
     String? man,
     String? hr,
     Department? taskDept,
+    String? taskparentid,
   }) {
     return MainTask(
       taskName: taskName ?? this.taskName,
@@ -46,6 +49,7 @@ class MainTask {
       stDate: stDate ?? this.stDate,
       enDate: enDate ?? this.enDate,
       taskDept: taskDept ?? this.taskDept,
+      taskparentid: taskDesc ?? this.taskparentid,
     );
   }
 }

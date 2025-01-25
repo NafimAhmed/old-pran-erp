@@ -1053,7 +1053,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
       'POST',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId'),
+          '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId&taskparentid=${mainTask.taskparentid ?? ""}'),
     );
 
     http.StreamedResponse response = await request.send();

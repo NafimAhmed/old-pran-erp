@@ -15,7 +15,7 @@ import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/bloc/main_task_create_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/bloc/main_task_create_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/bloc/project_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/data_class/main_task.dart';
 
@@ -378,6 +378,7 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                                   .state ??
                               MainTask();
                           newMainTask = newMainTask.copyWith(
+                            taskparentid: "0",
                             taskName: _prntTaskController.text,
                             taskDesc: _prntTaskController.text,
                             man: _manController.text,
