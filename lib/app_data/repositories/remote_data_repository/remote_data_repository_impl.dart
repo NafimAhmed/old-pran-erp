@@ -26,6 +26,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -1074,5 +1075,19 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
         decoder: ParentTaskListResponse.fromJson);
+  }
+
+  @override
+  Future<PoJobListResponse> getPoJobList({
+    required String userId,
+    required String jobpono,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/poJobList?userid=$userId&jobpono=$jobpono'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: PoJobListResponse.fromJson);
   }
 }

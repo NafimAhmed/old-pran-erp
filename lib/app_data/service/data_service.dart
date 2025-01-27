@@ -22,6 +22,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -343,5 +344,9 @@ abstract class DataService {
   Future<List<ParentTask>> getParentTaskList({
     required String userId,
     required int projectId,
+  });
+  Future<List<PoJob>> getPoJobList({
+    required String userId,
+    required String jobpono,
   });
 }
