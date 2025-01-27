@@ -21,6 +21,7 @@ import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -338,5 +339,9 @@ abstract class DataService {
   Future<void> createMainTask({
     required String userId,
     required MainTask mainTask,
+  });
+  Future<List<ParentTask>> getParentTaskList({
+    required String userId,
+    required int projectId,
   });
 }

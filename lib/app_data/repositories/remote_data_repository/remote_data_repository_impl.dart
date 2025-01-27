@@ -25,6 +25,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -1053,10 +1054,25 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
       'POST',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId&taskparentid=${mainTask.taskparentid ?? ""}'),
+          '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId&taskparentid=${mainTask.taskparentid?.taskId ?? "0"}&jobno=${mainTask.jobNo ?? "0"}'),
     );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<ParentTaskListResponse> getParentTaskList({
+    required String userId,
+    required int projectId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/parebtTaskList?userid=$userId&projectid=$projectId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: ParentTaskListResponse.fromJson);
   }
 }
