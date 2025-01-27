@@ -1,6 +1,10 @@
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
+
+import '../../presentations/forms/project_forms/project_c_8_screen/project_c_8_screen.dart';
 
 class MainTask {
   final String? taskName;
@@ -12,8 +16,9 @@ class MainTask {
   final String? man;
   final String? hr;
   final Department? taskDept;
-  final String? taskparentid;
-
+  final TaskType? taskType;
+  final ParentTask? taskparentid;
+  final PoJob? jobNo;
   MainTask({
     this.taskName,
     this.taskDesc,
@@ -24,7 +29,9 @@ class MainTask {
     this.man,
     this.hr,
     this.taskDept,
+    this.taskType,
     this.taskparentid,
+    this.jobNo,
   });
 
   MainTask copyWith({
@@ -36,8 +43,10 @@ class MainTask {
     String? enDate,
     String? man,
     String? hr,
+    TaskType? taskType,
     Department? taskDept,
-    String? taskparentid,
+    ParentTask? taskparentid,
+    PoJob? jobNo,
   }) {
     return MainTask(
       taskName: taskName ?? this.taskName,
@@ -48,8 +57,10 @@ class MainTask {
       hr: hr ?? this.hr,
       stDate: stDate ?? this.stDate,
       enDate: enDate ?? this.enDate,
+      taskType: taskType ?? this.taskType,
       taskDept: taskDept ?? this.taskDept,
-      taskparentid: taskparentid ?? this.taskparentid,
+      taskparentid: taskparentid,
+      jobNo: jobNo ?? this.jobNo,
     );
   }
 }

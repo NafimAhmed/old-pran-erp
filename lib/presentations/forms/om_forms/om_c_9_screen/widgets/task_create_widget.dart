@@ -860,8 +860,8 @@ class _NewTaskWidgetState extends State<NewTaskWidget> {
                           if (_fromKey.currentState!.validate()) {
                             MainTask newChildTask = MainTask();
                             newChildTask = newChildTask.copyWith(
-                              taskparentid:
-                                  widget.widget.data.taskNo?.toString() ?? "0",
+                              // taskparentid:
+                              //     widget.widget.data.taskNo?.toString() ?? "0",
                               projectId: Project(
                                 projectId: widget.widget.data.projectId,
                               ),

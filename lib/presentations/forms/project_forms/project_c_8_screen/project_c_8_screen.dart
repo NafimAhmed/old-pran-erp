@@ -1,21 +1,27 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
-import 'package:pran_rfl_erp/core/extentions/extentions.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/task_create_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/bloc/parent_task_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/bloc/po_job_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/bloc/project_list_bloc.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 
@@ -41,6 +47,12 @@ class ProjectC8Screen extends StatelessWidget {
           create: (context) => TaskCreateBloc(getService()),
         ),
         BlocProvider(
+          create: (context) => PrntTaskListBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => PoJobListBloc(getService()),
+        ),
+        BlocProvider(
           create: (context) => VariableStateHandlerCubit<MainTask>(),
         ),
       ],
@@ -48,6 +60,20 @@ class ProjectC8Screen extends StatelessWidget {
         fromName: fromName,
       ),
     );
+  }
+}
+
+enum TaskType {
+  parent("Parent", "p"),
+  child("Child", "c");
+
+  const TaskType(this.value, this.type);
+
+  final String value;
+  final String type;
+  @override
+  String toString() {
+    return value;
   }
 }
 
@@ -60,9 +86,10 @@ class ProjectC8ScreenBody extends StatefulWidget {
 
 class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
   late TextEditingController _prntTaskController;
-  late TextEditingController _projectDropDownTextController;
+
   late TextEditingController _stDateController;
   late TextEditingController _enDateController;
+
   late FocusNode _prntTaskfocusNode;
   late FocusNode _manFocusNode;
   late TextEditingController _manController;
@@ -77,12 +104,13 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
     _prntTaskController = TextEditingController();
     _stDateController = TextEditingController();
     _enDateController = TextEditingController();
+
     _prntTaskfocusNode = FocusNode();
     _manController = TextEditingController();
     _manFocusNode = FocusNode();
     _hourController = TextEditingController();
     _hourFocusNode = FocusNode();
-    _projectDropDownTextController = TextEditingController();
+
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
 
     context.read<DeptListBloc>().add(
@@ -105,7 +133,7 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
     _prntTaskfocusNode.dispose();
     _stDateController.dispose();
     _enDateController.dispose();
-    _projectDropDownTextController.dispose();
+
     super.dispose();
   }
 
@@ -119,6 +147,7 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
       appBar: CommonAppBar(
         appBartitle: widget.fromName,
       ),
+      resizeToAvoidBottomInset: false,
       body: BlocListener<TaskCreateBloc, TaskCreateState>(
         listener: (context, state) {
           if (state is TaskCreateSuccess) {
@@ -143,13 +172,13 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                 ),
                 BlocBuilder<ProjectListBloc, ProjectListState>(
                   builder: (context, state) {
-                    return CommonDropDownMenuWidget<Project>(
+                    return CustomDropdownSearch<Project>(
                       hintText: "Select Project",
                       enabled: state is ProjectListSuccess ? true : false,
-                      controller: _projectDropDownTextController,
-                      dropdownMenuEntries:
+                      value: mainTask?.projectId,
+                      items:
                           state is ProjectListSuccess ? state.projectList : [],
-                      onSelected: (value) {
+                      onChanged: (value) {
                         if (value != null) {
                           // FocusScope.of(context).unfocus();
                           FocusManager.instance.primaryFocus?.unfocus();
@@ -161,11 +190,12 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                           context
                               .read<VariableStateHandlerCubit<MainTask>>()
                               .update(newMainTask);
-                          // context.read<TaskListBloc>().add(
-                          //       GetTaskList(
-                          //         userId: loggedUser.userId,
-                          //       ),
-                          //     );
+
+                          context.read<PoJobListBloc>().add(
+                                PoJobListGet(
+                                    userId: loggedUser.userId,
+                                    jobpono: value.projectName ?? ""),
+                              );
                         }
                       },
                     );
@@ -195,6 +225,10 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                         focusNode: _manFocusNode,
                         controller: _manController,
                         labelText: "Man",
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Enter Man";
@@ -211,6 +245,10 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                         focusNode: _hourFocusNode,
                         controller: _hourController,
                         labelText: "Hour",
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Enter hour";
@@ -334,7 +372,8 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                     Expanded(
                       child: BlocBuilder<QrUserBloc, QrUserState>(
                         builder: (context, state) {
-                          return CommonDropdownButton<QrUserData>(
+                          return CustomDropdownSearch<QrUserData>(
+                            // controller: _assigneeDropController,
                             hintText: "Assignee",
                             items: state is QrUserSuccess ? state.qrUsers : [],
                             value: mainTask?.assignee,
@@ -368,35 +407,151 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                 const SizedBox(
                   height: 10,
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CommonDropdownButton<TaskType>(
+                        hintText: "Task Type",
+                        value: mainTask?.taskType,
+                        items: TaskType.values,
+                        onChanged: (value) {
+                          if (value != null) {
+                            var newMainTask = context
+                                    .read<VariableStateHandlerCubit<MainTask>>()
+                                    .state ??
+                                MainTask();
+                            newMainTask = newMainTask.copyWith(
+                              taskType: value,
+                              taskparentid: null,
+                            );
+                            context
+                                .read<VariableStateHandlerCubit<MainTask>>()
+                                .update(newMainTask);
+                            if (newMainTask.taskType == TaskType.child) {
+                              context.read<PrntTaskListBloc>().add(
+                                    PrntTaskListGet(
+                                      userId: loggedUser.userId,
+                                      projectId:
+                                          newMainTask.projectId?.projectId ?? 0,
+                                    ),
+                                  );
+                            } else {
+                              context.read<PrntTaskListBloc>().add(
+                                    PrntTaskListReset(),
+                                  );
+                            }
+                          }
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return "Select Type";
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: BlocBuilder<PrntTaskListBloc, PrntTaskListState>(
+                        builder: (context, state) {
+                          return CustomDropdownSearch<ParentTask>(
+                            // controller: _prntDropTextController,
+                            hintText: "Parent Task",
+                            enabled: state is PrntTaskListSuccess
+                                ? state.prntTaskList.isNotEmpty
+                                : false,
+                            items: state is PrntTaskListSuccess
+                                ? state.prntTaskList
+                                : [],
+                            value: mainTask?.taskparentid,
+                            onChanged: (value) {
+                              if (value != null) {
+                                var newMainTask = context
+                                        .read<
+                                            VariableStateHandlerCubit<
+                                                MainTask>>()
+                                        .state ??
+                                    MainTask();
+                                newMainTask =
+                                    newMainTask.copyWith(taskparentid: value);
+                                context
+                                    .read<VariableStateHandlerCubit<MainTask>>()
+                                    .update(newMainTask);
+                              }
+                            },
+                            validator: (value) {
+                              if (mainTask?.taskType == TaskType.child &&
+                                  value == null) {
+                                return "Select Prnt Task";
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                BlocBuilder<PoJobListBloc, PoJobListState>(
+                  builder: (context, state) {
+                    return CustomDropdownSearch<PoJob>(
+                      hintText: "Select JO No",
+                      enabled: state is PoJobListSuccess ? true : false,
+                      items: state is PoJobListSuccess ? state.poJobList : [],
+                      value: mainTask?.jobNo,
+                      onChanged: (value) {
+                        if (value != null) {
+                          var newMainTask = context
+                                  .read<VariableStateHandlerCubit<MainTask>>()
+                                  .state ??
+                              MainTask();
+                          newMainTask = newMainTask.copyWith(jobNo: value);
+                          context
+                              .read<VariableStateHandlerCubit<MainTask>>()
+                              .update(newMainTask);
+                          ;
+                        }
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 BlocBuilder<TaskCreateBloc, TaskCreateState>(
                   builder: (context, state) {
                     return ElevatedButton(
                       onPressed: () {
                         if (_fromKey.currentState!.validate()) {
-                          var newMainTask = context
-                                  .read<VariableStateHandlerCubit<MainTask>>()
-                                  .state ??
-                              MainTask();
-                          newMainTask = newMainTask.copyWith(
-                            taskparentid: "0",
-                            taskName: _prntTaskController.text,
-                            taskDesc: _prntTaskController.text,
-                            man: _manController.text,
-                            hr: _hourController.text,
-                            stDate: DateTime.parse(_stDateController.text)
-                                .toFormatedString("dd-MMM-yyyy"),
-                            enDate: DateTime.parse(_enDateController.text)
-                                .toFormatedString("dd-MMM-yyyy"),
-                          );
-                          context
-                              .read<VariableStateHandlerCubit<MainTask>>()
-                              .update(newMainTask);
-                          context.read<TaskCreateBloc>().add(
-                                TaskCreate(
-                                  userId: loggedUser.userId,
-                                  mainTask: newMainTask,
-                                ),
-                              );
+                          log("Called");
+                          // var newMainTask = context
+                          //         .read<VariableStateHandlerCubit<MainTask>>()
+                          //         .state ??
+                          //     MainTask();
+                          // newMainTask = newMainTask.copyWith(
+                          //   taskName: _prntTaskController.text,
+                          //   taskDesc: _prntTaskController.text,
+                          //   man: _manController.text,
+                          //   hr: _hourController.text,
+                          //   stDate: DateTime.parse(_stDateController.text)
+                          //       .toFormatedString("dd-MMM-yyyy"),
+                          //   enDate: DateTime.parse(_enDateController.text)
+                          //       .toFormatedString("dd-MMM-yyyy"),
+                          // );
+                          // // context
+                          // //     .read<VariableStateHandlerCubit<MainTask>>()
+                          // //     .update(newMainTask);
+                          // context.read<TaskCreateBloc>().add(
+                          //       TaskCreate(
+                          //         userId: loggedUser.userId,
+                          //         mainTask: newMainTask,
+                          //       ),
+                          //     );
                         }
                       },
                       child: Text(
