@@ -77,4 +77,8 @@ class PoJob {
         "JOB_ORDER_NO": jobOrderNo,
         "BUYER_NAME": buyerName,
       };
+  @override
+  String toString() {
+    return jobOrderNo ?? "";
+  }
 }
