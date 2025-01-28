@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -52,19 +53,6 @@ class OmC9Screen extends StatelessWidget {
   }
 }
 
-enum TaskType {
-  independent("In"),
-  dependent("De");
-
-  final String value;
-
-  const TaskType(this.value);
-  @override
-  String toString() {
-    return name;
-  }
-}
-
 class OmC9ScreenBody extends StatefulWidget {
   const OmC9ScreenBody({super.key, required this.fromName});
   final String fromName;
@@ -76,9 +64,8 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
   TextEditingController orgDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
 
-  final Map<int, VariableStateHandlerCubit<TaskType>> taskTypeCubits = {};
   final Map<int, VariableStateHandlerCubit<Task>> taskCubits = {};
-
+  final Map<int, VariableStateHandlerCubit<QrUserData>> assigneeCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -169,17 +156,16 @@ class _OmC9ScreenBodyState extends State<OmC9ScreenBody> {
                           loggedUser: loggedUser,
                           taskList: state.taskList,
                           index: index,
-                          taskTypeCubit: taskTypeCubits.putIfAbsent(
-                            data.taskNo ?? 0,
-                            () => VariableStateHandlerCubit<TaskType>()
-                              ..update(TaskType.independent),
-                          ),
                           taskCubit: taskCubits.putIfAbsent(
                             data.taskNo ?? 0,
                             () => VariableStateHandlerCubit<Task>()
                               ..update(
                                 Task(),
                               ),
+                          ),
+                          assigneeCubit: assigneeCubits.putIfAbsent(
+                            data.taskNo ?? 0,
+                            () => VariableStateHandlerCubit<QrUserData>(),
                           ),
                         );
                       },

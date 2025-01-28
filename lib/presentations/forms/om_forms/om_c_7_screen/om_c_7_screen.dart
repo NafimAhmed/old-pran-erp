@@ -59,9 +59,8 @@ class OmC7ScreenBody extends StatefulWidget {
 
 enum TaskStatusType {
   pending("Pending"),
-  completed("Completed"),
   start("Start"),
-  closed("Closed");
+  completed("Completed");
 
   const TaskStatusType(this.value);
 
@@ -619,39 +618,34 @@ class _NoteDialogContentState extends State<NoteDialogContent> {
                       );
                     }
                     if (state is TaskNoteListSuccess) {
-                      return ListView.separated(
-                        itemBuilder: (context, index) {
-                          var data = state.taskNoteList[index];
-                          return Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                color: appTheme.primary.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Column(
+                      return Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: appTheme.primary.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            var data = state.taskNoteList[index];
+                            return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  data.noteContent ?? "",
-                                  style: textTheme.bodyMedium!.copyWith(
-                                    color: appTheme.primary,
-                                  ),
-                                ),
-                                Text(
-                                  "Created By: ${data.createdBy}",
+                                  "${index + 1}. ${data.noteContent}",
                                   style: textTheme.bodyMedium!.copyWith(
                                     color: appTheme.primary,
                                   ),
                                 ),
                               ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 5,
-                          );
-                        },
-                        itemCount: state.taskNoteList.length,
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              height: 5,
+                            );
+                          },
+                          itemCount: state.taskNoteList.length,
+                        ),
                       );
                     }
                     return Container();

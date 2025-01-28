@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,11 +16,11 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/task_create_bloc.dart';
@@ -31,24 +30,21 @@ import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dar
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_assign_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/bloc/task_list_bloc.dart';
 
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/om_c_9_screen.dart';
-
 class TaskCreateWidget extends StatelessWidget {
   const TaskCreateWidget({
     super.key,
     required this.index,
-    required this.taskTypeCubit,
     required this.data,
     required this.taskList,
     required this.taskCubit,
     required this.loggedUser,
     required this.joInfo,
+    required this.assigneeCubit,
   });
   final int index;
 
-  final VariableStateHandlerCubit<TaskType> taskTypeCubit;
   final VariableStateHandlerCubit<Task> taskCubit;
-
+  final VariableStateHandlerCubit<QrUserData> assigneeCubit;
   final Task data;
   final List<Task> taskList;
   final UserInfoModel loggedUser;
@@ -58,7 +54,7 @@ class TaskCreateWidget extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(
-          value: taskTypeCubit,
+          value: assigneeCubit,
         ),
         BlocProvider.value(
           value: taskCubit,
@@ -110,6 +106,9 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
 
   @override
   Widget build(BuildContext context) {
+    var selectedAssignee = context.select(
+      (VariableStateHandlerCubit<QrUserData> cubit) => cubit.state,
+    );
     return BlocListener<TaskAssignBloc, TaskAssignState>(
       listener: (context, state) {
         if (state is TaskAssignError) {
@@ -124,10 +123,10 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
         child: Dismissible(
           key: Key(widget.data.taskNo?.toString() ?? ""),
           dismissThresholds: const {DismissDirection.startToEnd: 0.8},
-          // direction: _saveValidation()
-          //     ? DismissDirection.startToEnd
-          //     : DismissDirection.none,
-          direction: DismissDirection.startToEnd,
+          direction: selectedAssignee != null
+              ? DismissDirection.startToEnd
+              : DismissDirection.none,
+          // direction: DismissDirection.startToEnd,
           confirmDismiss: (direction) async {
             var result = await showDialog<bool>(
                   context: context,
@@ -157,7 +156,6 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                 false;
 
             if (result && context.mounted) {
-              log(widget.joInfo.jobId.toString());
               context.read<TaskAssignBloc>().add(
                     TaskAssign(
                       tskasgne: widget.loggedUser.userId,
@@ -205,9 +203,6 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             return false;
           },
           onDismissed: (direction) {
-            context
-                .read<VariableStateHandlerCubit<TaskType>>()
-                .update(TaskType.independent);
             context.read<VariableStateHandlerCubit<Task>>().update(Task());
 
             context.read<TaskListBloc>().add(removeTask(index: widget.index));
@@ -223,8 +218,8 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                 );
           },
           background: Container(
-            decoration: BoxDecoration(
-              color: Colors.pink.shade800,
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 106, 165, 66),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -240,13 +235,13 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             ),
           ),
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [
-                  Colors.pink.shade800,
-                  Colors.pink.shade800,
+                  Color.fromARGB(255, 106, 165, 66),
+                  Color.fromARGB(255, 106, 165, 66),
                 ],
               ),
             ),
@@ -265,97 +260,6 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                   ),
                   const SizedBox(
                     height: 5,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: SegmentedButton<TaskType>(
-                            style: SegmentedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            showSelectedIcon: false,
-                            selected: <TaskType>{
-                              context
-                                  .watch<VariableStateHandlerCubit<TaskType>>()
-                                  .state!
-                            },
-                            onSelectionChanged: (Set<TaskType> newSelection) {
-                              context
-                                  .read<VariableStateHandlerCubit<TaskType>>()
-                                  .update(newSelection.first);
-                              if (newSelection.first == TaskType.independent) {
-                                var stateTask = context
-                                    .read<VariableStateHandlerCubit<Task>>()
-                                    .state!;
-                                context
-                                    .read<VariableStateHandlerCubit<Task>>()
-                                    .update(
-                                      stateTask.copyWith(pId: 0),
-                                    );
-                              }
-                            },
-                            segments: <ButtonSegment<TaskType>>[
-                              ...TaskType.values.map((e) {
-                                return ButtonSegment<TaskType>(
-                                  label: Text(e.value),
-                                  value: e,
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      BlocBuilder<VariableStateHandlerCubit<TaskType>,
-                          TaskType?>(
-                        builder: (context, state) {
-                          if (state == TaskType.dependent) {
-                            return Expanded(
-                              child: CommonDropdownButton<Task>(
-                                hintText: "Select Parent Task",
-                                items: widget.taskList.where(
-                                  (element) {
-                                    return widget.data != element;
-                                  },
-                                ).toList(),
-                                value: widget.taskList.firstWhereOrNull(
-                                  (element) {
-                                    return element.taskNo ==
-                                        context
-                                            .read<
-                                                VariableStateHandlerCubit<
-                                                    Task>>()
-                                            .state
-                                            ?.pId;
-                                  },
-                                ),
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    var stateTask = context
-                                        .read<VariableStateHandlerCubit<Task>>()
-                                        .state!;
-                                    context
-                                        .read<VariableStateHandlerCubit<Task>>()
-                                        .update(
-                                          stateTask.copyWith(pId: value.taskNo),
-                                        );
-                                  }
-                                },
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
                   ),
                   Row(
                     children: [
@@ -384,155 +288,61 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                       )
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // BlocBuilder<VariableStateHandlerCubit<NewTask>, NewTask?>(
-                      //   builder: (context, state) {
-                      //     if (state != null &&
-                      //         (state.stDate?.isNotEmpty ?? false) &&
-                      //         (state.enDate?.isNotEmpty ?? false) &&
-                      //         (state.manPower?.isNotEmpty ?? false) &&
-                      //         (state.hour?.isNotEmpty ?? false) &&
-                      //         (state.dept?.isNotEmpty ?? false) &&
-                      //         (state.buyer?.isNotEmpty ?? false) &&
-                      //         (state.userId?.isNotEmpty ?? false)) {
-                      //       return Column(
-                      //         children: [
-                      //           const SizedBox(
-                      //             height: 10,
-                      //           ),
-                      //           Container(
-                      //             padding: const EdgeInsets.all(5),
-                      //             decoration: BoxDecoration(
-                      //               color: Colors.indigo.shade100,
-                      //               borderRadius: BorderRadius.circular(5),
-                      //             ),
-                      //             child: Column(
-                      //               crossAxisAlignment:
-                      //                   CrossAxisAlignment.start,
-                      //               children: [
-                      //                 Text(
-                      //                   textAlign: TextAlign.right,
-                      //                   state.taskName ?? "",
-                      //                 ),
-                      //                 Row(
-                      //                   crossAxisAlignment:
-                      //                       CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     Expanded(
-                      //                       child: Text(
-                      //                         textAlign: TextAlign.left,
-                      //                         state.stDate != null &&
-                      //                                 state.stDate!.isNotEmpty
-                      //                             ? DateTime.parse(
-                      //                                 state.stDate ?? "",
-                      //                               ).toFormatedString(
-                      //                                 "dd-MMM-yyyy")
-                      //                             : "",
-                      //                       ),
-                      //                     ),
-                      //                     const Text("--"),
-                      //                     Expanded(
-                      //                       child: Text(
-                      //                         textAlign: TextAlign.right,
-                      //                         state.enDate != null &&
-                      //                                 state.enDate!.isNotEmpty
-                      //                             ? DateTime.parse(
-                      //                                 state.enDate ?? "",
-                      //                               ).toFormatedString(
-                      //                                 "dd-MMM-yyyy")
-                      //                             : "",
-                      //                       ),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //                 Row(
-                      //                   crossAxisAlignment:
-                      //                       CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     Expanded(
-                      //                       child: Text(
-                      //                         textAlign: TextAlign.left,
-                      //                         "${state.manPower ?? ""}-Man",
-                      //                       ),
-                      //                     ),
-                      //                     const Text("--"),
-                      //                     Expanded(
-                      //                       child: Text(
-                      //                         textAlign: TextAlign.right,
-                      //                         "${state.hour ?? ""}-hr",
-                      //                       ),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //                 Row(
-                      //                   crossAxisAlignment:
-                      //                       CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     Expanded(
-                      //                       child: Text(
-                      //                         textAlign: TextAlign.left,
-                      //                         "Dept: ${state.dept ?? ""}",
-                      //                       ),
-                      //                     ),
-                      //                     const Text("--"),
-                      //                     Expanded(
-                      //                       child: Text(
-                      //                         textAlign: TextAlign.right,
-                      //                         "Buyer: ${state.buyer ?? ""}",
-                      //                       ),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //                 Text(
-                      //                   textAlign: TextAlign.left,
-                      //                   "Assigned To: ${state.userName ?? ""}(${state.userId})",
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       );
-                      //     }
-                      //     return const SizedBox.shrink();
-                      //   },
-                      // ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        height: 30.0,
-                        width: 30.0,
-                        child: IconButton.filled(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            Icons.add_sharp,
-                            color: appTheme.white,
-                          ),
-                          onPressed: () async {
-                            var result = await AppModal.showCustomModal<bool>(
-                                  context,
-                                  content: NewTaskWidget(
-                                    blocContext: context,
-                                    widget: widget,
-                                  ),
-                                ) ??
-                                false;
-                            if (result && context.mounted) {
-                              var loggedUser =
-                                  context.read<LoggedUserInfoCubit>().state!;
-                              context.read<TaskListBloc>().add(
-                                    GetTaskList(
-                                      userId: loggedUser.userId,
-                                    ),
-                                  );
-                            }
-                          },
-                        ),
-                      ),
-                    ],
+                  const SizedBox(
+                    height: 5,
                   ),
+                  BlocBuilder<QrUserBloc, QrUserState>(
+                    builder: (context, state) {
+                      return CustomDropdownSearch<QrUserData>(
+                        hintText: "Assignee",
+                        value: selectedAssignee,
+                        items: state is QrUserSuccess ? state.qrUsers : [],
+                        onChanged: (value) {
+                          if (value != null) {
+                            context
+                                .read<VariableStateHandlerCubit<QrUserData>>()
+                                .update(value);
+                          }
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return "Please Enter Assignee";
+                          }
+                          return null;
+                        },
+                      );
+                    },
+                  ),
+                  // SizedBox(
+                  //   height: 30.0,
+                  //   width: 30.0,
+                  //   child: IconButton.filled(
+                  //     padding: EdgeInsets.zero,
+                  //     icon: Icon(
+                  //       Icons.add_sharp,
+                  //       color: appTheme.white,
+                  //     ),
+                  //     onPressed: () async {
+                  //       var result = await AppModal.showCustomModal<bool>(
+                  //             context,
+                  //             content: NewTaskWidget(
+                  //               blocContext: context,
+                  //               widget: widget,
+                  //             ),
+                  //           ) ??
+                  //           false;
+                  //       if (result && context.mounted) {
+                  //         var loggedUser =
+                  //             context.read<LoggedUserInfoCubit>().state!;
+                  //         context.read<TaskListBloc>().add(
+                  //               GetTaskList(
+                  //                 userId: loggedUser.userId,
+                  //               ),
+                  //             );
+                  //       }
+                  //     },
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -541,16 +351,6 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
       ),
     );
   }
-
-  // bool _saveValidation() {
-  //   if (context.watch<VariableStateHandlerCubit<Task>>().state != null &&
-  //       context.watch<VariableStateHandlerCubit<Task>>().state!.sdate != null &&
-  //       context.watch<VariableStateHandlerCubit<Task>>().state!.tdate != null) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
 }
 
 class NewTaskWidget extends StatefulWidget {
