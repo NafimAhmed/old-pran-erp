@@ -38,6 +38,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
@@ -1070,7 +1071,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/parebtTaskList?userid=$userId&projectid=$projectId'));
+            '${appConfig.baseUrl}/ords/rpro/taskapi/parentTaskList?userid=$userId&projectid=$projectId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
@@ -1089,5 +1090,34 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: PoJobListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> addTaskNote(
+      {required String userId,
+      required int taskId,
+      required String tasknote}) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskNoteApi?userid=$userId&taskid=$taskId&tasknote=$tasknote'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<TaskNoteListResponse> getTaskNoteList({
+    required String userId,
+    required int taskId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskNoteData?userid=$userId&taskid=$taskId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: TaskNoteListResponse.fromJson);
   }
 }

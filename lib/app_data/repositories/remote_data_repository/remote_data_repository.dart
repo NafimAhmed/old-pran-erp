@@ -35,6 +35,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
@@ -338,5 +339,14 @@ abstract class RemoteDataRepository {
   Future<PoJobListResponse> getPoJobList({
     required String userId,
     required String jobpono,
+  });
+  Future<GenericResponse> addTaskNote({
+    required String userId,
+    required int taskId,
+    required String tasknote,
+  });
+  Future<TaskNoteListResponse> getTaskNoteList({
+    required String userId,
+    required int taskId,
   });
 }

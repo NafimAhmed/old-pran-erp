@@ -35,6 +35,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
@@ -1010,5 +1011,33 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.message);
     }
     return response.poJobList ?? [];
+  }
+
+  @override
+  Future<void> addTaskNote({
+    required String userId,
+    required int taskId,
+    required String tasknote,
+  }) async {
+    var response = await remoteDataRepository.addTaskNote(
+        userId: userId, taskId: taskId, tasknote: tasknote);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
+  Future<List<TaskNote>> getTaskNoteList({
+    required String userId,
+    required int taskId,
+  }) async {
+    var response = await remoteDataRepository.getTaskNoteList(
+      userId: userId,
+      taskId: taskId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.taskNoteList ?? [];
   }
 }
