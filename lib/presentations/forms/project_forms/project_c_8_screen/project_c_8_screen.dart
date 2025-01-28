@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
@@ -510,11 +511,12 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                                   .read<VariableStateHandlerCubit<MainTask>>()
                                   .state ??
                               MainTask();
-                          newMainTask = newMainTask.copyWith(jobNo: value);
+                          newMainTask = newMainTask.copyWith(
+                              jobNo: value,
+                              taskparentid: newMainTask.taskparentid);
                           context
                               .read<VariableStateHandlerCubit<MainTask>>()
                               .update(newMainTask);
-                          ;
                         }
                       },
                     );
@@ -528,30 +530,30 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
                     return ElevatedButton(
                       onPressed: () {
                         if (_fromKey.currentState!.validate()) {
-                          log("Called");
-                          // var newMainTask = context
-                          //         .read<VariableStateHandlerCubit<MainTask>>()
-                          //         .state ??
-                          //     MainTask();
-                          // newMainTask = newMainTask.copyWith(
-                          //   taskName: _prntTaskController.text,
-                          //   taskDesc: _prntTaskController.text,
-                          //   man: _manController.text,
-                          //   hr: _hourController.text,
-                          //   stDate: DateTime.parse(_stDateController.text)
-                          //       .toFormatedString("dd-MMM-yyyy"),
-                          //   enDate: DateTime.parse(_enDateController.text)
-                          //       .toFormatedString("dd-MMM-yyyy"),
-                          // );
-                          // // context
-                          // //     .read<VariableStateHandlerCubit<MainTask>>()
-                          // //     .update(newMainTask);
-                          // context.read<TaskCreateBloc>().add(
-                          //       TaskCreate(
-                          //         userId: loggedUser.userId,
-                          //         mainTask: newMainTask,
-                          //       ),
-                          //     );
+                          var newMainTask = context
+                                  .read<VariableStateHandlerCubit<MainTask>>()
+                                  .state ??
+                              MainTask();
+                          newMainTask = newMainTask.copyWith(
+                            taskName: _prntTaskController.text,
+                            taskDesc: _prntTaskController.text,
+                            man: _manController.text,
+                            hr: _hourController.text,
+                            stDate: DateTime.parse(_stDateController.text)
+                                .toFormatedString("dd-MMM-yyyy"),
+                            enDate: DateTime.parse(_enDateController.text)
+                                .toFormatedString("dd-MMM-yyyy"),
+                            taskparentid: newMainTask.taskparentid,
+                          );
+                          context
+                              .read<VariableStateHandlerCubit<MainTask>>()
+                              .update(newMainTask);
+                          context.read<TaskCreateBloc>().add(
+                                TaskCreate(
+                                  userId: loggedUser.userId,
+                                  mainTask: newMainTask,
+                                ),
+                              );
                         }
                       },
                       child: Text(
