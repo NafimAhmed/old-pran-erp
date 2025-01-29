@@ -17,7 +17,6 @@ class CustomDropdownSearch<T> extends StatelessWidget {
     this.hintStyle,
     this.value,
     this.validator,
-    this.height,
     this.enabled = true,
   });
 
@@ -30,7 +29,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
 
   final T? value;
   final String? Function(dynamic value)? validator;
-  final double? height;
+
   final double? width;
   final double? popupHeight;
   final InputBorder? borderDecoration;
@@ -42,6 +41,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       items: items,
       selectedItem: value,
       enabled: enabled,
+
       dropdownDecoratorProps: DropDownDecoratorProps(
         dropdownSearchDecoration: InputDecoration(
           hintText: hintText,
