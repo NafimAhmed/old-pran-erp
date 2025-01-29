@@ -304,13 +304,10 @@ abstract class DataService {
     required String userId,
   });
   Future<void> taskAssign({
-    required String jobId,
-    required int? pId,
-    required String tsknm,
-    required String tskdesc,
-    required String tskasgne,
-    required String startDate,
-    required String endDate,
+    required String userId,
+    required String assigneeId,
+    required String department,
+    required String taskId,
   });
   Future<BatchStatusCheck> getBatchStatus({
     required String userId,

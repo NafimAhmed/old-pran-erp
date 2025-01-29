@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
@@ -11,7 +9,6 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
-
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
@@ -20,7 +17,6 @@ import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/task_create_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
@@ -39,11 +35,13 @@ class TaskCreateWidget extends StatelessWidget {
     required this.loggedUser,
     required this.joInfo,
     required this.assigneeCubit,
+    required this.departmentCubit,
   });
   final int index;
 
   final VariableStateHandlerCubit<Task> taskCubit;
   final VariableStateHandlerCubit<QrUserData> assigneeCubit;
+  final VariableStateHandlerCubit<Department> departmentCubit;
   final Task data;
   final List<Task> taskList;
   final UserInfoModel loggedUser;
@@ -54,6 +52,9 @@ class TaskCreateWidget extends StatelessWidget {
       providers: [
         BlocProvider.value(
           value: assigneeCubit,
+        ),
+        BlocProvider.value(
+          value: departmentCubit,
         ),
         BlocProvider.value(
           value: taskCubit,
@@ -105,9 +106,10 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedAssignee = context.select(
-      (VariableStateHandlerCubit<QrUserData> cubit) => cubit.state,
-    );
+    var selectedAssignee =
+        context.watch<VariableStateHandlerCubit<QrUserData>>().state;
+    var selectedDepartment =
+        context.watch<VariableStateHandlerCubit<Department>>().state;
     return BlocListener<TaskAssignBloc, TaskAssignState>(
       listener: (context, state) {
         if (state is TaskAssignError) {
@@ -122,7 +124,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
         child: Dismissible(
           key: Key(widget.data.taskNo?.toString() ?? ""),
           dismissThresholds: const {DismissDirection.startToEnd: 0.8},
-          direction: selectedAssignee != null
+          direction: selectedAssignee != null || selectedDepartment != null
               ? DismissDirection.startToEnd
               : DismissDirection.none,
           // direction: DismissDirection.startToEnd,
@@ -157,29 +159,10 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             if (result && context.mounted) {
               context.read<TaskAssignBloc>().add(
                     TaskAssign(
-                      tskasgne: widget.loggedUser.userId,
-                      jobId: widget.joInfo.jobId ?? "0",
-                      tsknm: widget.data.taskName ?? "",
-                      tskdesc: widget.data.taskName ?? "",
-                      pId: context
-                          .read<VariableStateHandlerCubit<Task>>()
-                          .state
-                          ?.pId,
-                      startDate: context
-                              .read<VariableStateHandlerCubit<Task>>()
-                              .state!
-                              .sdate
-                              ?.stringToDateTime()
-                              ?.toFormatedString("dd-MMM-yyyy") ??
-                          "",
-                      endDate: context
-                              .read<VariableStateHandlerCubit<Task>>()
-                              .state!
-                              .tdate
-                              ?.stringToDateTime()
-                              ?.toFormatedString("dd-MMM-yyyy") ??
-                          "",
-                    ),
+                        assigneeId: selectedAssignee?.userId ?? "",
+                        department: selectedDepartment?.taskDept ?? "",
+                        userId: widget.loggedUser.userId,
+                        taskId: widget.data.taskNo?.toString() ?? ""),
                   );
 
               // Listen to the stream of TaskAssignBloc
@@ -210,6 +193,8 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                 message: "Task Assigned Successfully",
               ),
             );
+            context.read<VariableStateHandlerCubit<QrUserData>>().reset();
+            context.read<VariableStateHandlerCubit<Department>>().reset();
             context.read<TaskListBloc>().add(
                   GetTaskList(
                     userId: widget.loggedUser.userId,
@@ -290,27 +275,55 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                   const SizedBox(
                     height: 5,
                   ),
-                  BlocBuilder<QrUserBloc, QrUserState>(
-                    builder: (context, state) {
-                      return CustomDropdownSearch<QrUserData>(
-                        hintText: "Assignee",
-                        value: selectedAssignee,
-                        items: state is QrUserSuccess ? state.qrUsers : [],
-                        onChanged: (value) {
-                          if (value != null) {
-                            context
-                                .read<VariableStateHandlerCubit<QrUserData>>()
-                                .update(value);
-                          }
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Please Enter Assignee";
-                          }
-                          return null;
-                        },
-                      );
-                    },
+                  Row(
+                    children: [
+                      Expanded(
+                        child: BlocBuilder<QrUserBloc, QrUserState>(
+                          builder: (context, state) {
+                            return CustomDropdownSearch<QrUserData>(
+                              hintText: "Assignee",
+                              value: selectedAssignee,
+                              items:
+                                  state is QrUserSuccess ? state.qrUsers : [],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              QrUserData>>()
+                                      .update(value);
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: BlocBuilder<DeptListBloc, DeptListState>(
+                          builder: (context, state) {
+                            return CommonDropdownButton<Department>(
+                              hintText: "Department",
+                              items: state is DeptListSuccess
+                                  ? state.deptList
+                                  : [],
+                              value: selectedDepartment,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<
+                                          VariableStateHandlerCubit<
+                                              Department>>()
+                                      .update(value);
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      )
+                    ],
                   ),
                   // SizedBox(
                   //   height: 30.0,

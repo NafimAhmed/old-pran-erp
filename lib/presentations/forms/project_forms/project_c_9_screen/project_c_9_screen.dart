@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
+
+import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/buyer_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
@@ -61,11 +63,11 @@ class ProjectC9ScreenBody extends StatefulWidget {
 }
 
 class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
-  TextEditingController orgDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
 
   final Map<int, VariableStateHandlerCubit<Task>> taskCubits = {};
   final Map<int, VariableStateHandlerCubit<QrUserData>> assigneeCubits = {};
+  final Map<int, VariableStateHandlerCubit<Department>> departmentCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
@@ -91,12 +93,12 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
 
   @override
   void dispose() {
-    orgDropDownTextController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var selectedJo = context.watch<VariableStateHandlerCubit<JoInfo>>().state;
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
       body: Container(
@@ -110,16 +112,13 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
             ),
             BlocBuilder<JoListBloc, JoListState>(
               builder: (context, state) {
-                return CommonDropDownMenuWidget<JoInfo>(
+                return CustomDropdownSearch<JoInfo>(
                   hintText: "Job Order No",
                   enabled: state is JoListSuccess ? true : false,
-                  controller: orgDropDownTextController,
-                  dropdownMenuEntries:
-                      state is JoListSuccess ? state.joInfoList : [],
-                  onSelected: (value) {
+                  items: state is JoListSuccess ? state.joInfoList : [],
+                  value: selectedJo,
+                  onChanged: (value) {
                     if (value != null) {
-                      // FocusScope.of(context).unfocus();
-                      FocusManager.instance.primaryFocus?.unfocus();
                       context
                           .read<VariableStateHandlerCubit<JoInfo>>()
                           .update(value);
@@ -150,9 +149,7 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
                         var data = state.taskList[index];
                         return TaskCreateWidget(
                           data: data,
-                          joInfo: context
-                              .read<VariableStateHandlerCubit<JoInfo>>()
-                              .state!,
+                          joInfo: selectedJo!,
                           loggedUser: loggedUser,
                           taskList: state.taskList,
                           index: index,
@@ -166,6 +163,10 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
                           assigneeCubit: assigneeCubits.putIfAbsent(
                             data.taskNo ?? 0,
                             () => VariableStateHandlerCubit<QrUserData>(),
+                          ),
+                          departmentCubit: departmentCubits.putIfAbsent(
+                            data.taskNo ?? 0,
+                            () => VariableStateHandlerCubit<Department>(),
                           ),
                         );
                       },

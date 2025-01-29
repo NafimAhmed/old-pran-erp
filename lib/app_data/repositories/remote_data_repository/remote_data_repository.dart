@@ -294,13 +294,10 @@ abstract class RemoteDataRepository {
     required String userId,
   });
   Future<GenericResponse> taskAssign({
-    required String jobId,
-    required int? pId,
-    required String tsknm,
-    required String tskdesc,
-    required String tskasgne,
-    required String startDate,
-    required String endDate,
+    required String userId,
+    required String assigneeId,
+    required String department,
+    required String taskId,
   });
   Future<BatchStatusCheckResponse> getBatchStatus({
     required String userId,

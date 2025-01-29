@@ -949,18 +949,15 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<GenericResponse> taskAssign({
-    required String jobId,
-    required int? pId,
-    required String tsknm,
-    required String tskdesc,
-    required String tskasgne,
-    required String startDate,
-    required String endDate,
+    required String userId,
+    required String assigneeId,
+    required String department,
+    required String taskId,
   }) async {
     var request = http.Request(
-        'POST',
+        'PUT',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?jobid=$jobId&pid=$pId&tsknm=$tsknm&tskdesc=$tskdesc&tskasgne=$tskasgne&STDT=$startDate&EDDT=$endDate&userid=$tskasgne'));
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?userid=$userId&assigneeid=$assigneeId&deptname=$department&taskid=$taskId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
