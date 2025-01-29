@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
@@ -9,6 +11,7 @@ import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -17,9 +20,10 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/add_task_note_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/Jo_list_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/task_Save_bloc.dart';
+
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_note_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_save_bloc.dart';
 
 class ProjectC2Screen extends StatelessWidget {
   const ProjectC2Screen({super.key, required this.fromName});
@@ -73,7 +77,7 @@ enum TaskStatusType {
 
 class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
   TextEditingController taskTextEditingController = TextEditingController();
-  TextEditingController orgDropDownTextController = TextEditingController();
+
   late UserInfoModel loggedUser;
   final Map<int, VariableStateHandlerCubit<TaskStatusType>>
       taskStatusTypeCubits = {};
@@ -97,6 +101,7 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
 
   @override
   Widget build(BuildContext context) {
+    var selectedJob = context.watch<VariableStateHandlerCubit<JoInfo>>().state;
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
       body: BlocListener<TaskSaveBloc, TaskSaveState>(
@@ -110,12 +115,11 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
                 message: "Successfully Saved",
               ),
             );
-            var selectedJob =
-                context.read<VariableStateHandlerCubit<JoInfo>>().state!;
+            ;
             context.read<TaskInfoBloc>().add(
                   GetTaskInfo(
                       userId: loggedUser.userId,
-                      jobOrderNo: selectedJob.jobOrderNo ?? ""),
+                      jobOrderNo: selectedJob?.jobOrderNo ?? ""),
                 );
           }
           if (state is TaskSaveError) {
@@ -137,16 +141,15 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
               ),
               BlocBuilder<JoListBloc, JoListState>(
                 builder: (context, state) {
-                  return CommonDropDownMenuWidget<JoInfo>(
+                  return CustomDropdownSearch<JoInfo>(
                     hintText: "Job Order No",
+                    value: selectedJob,
                     enabled: state is JoListSuccess ? true : false,
-                    controller: orgDropDownTextController,
-                    dropdownMenuEntries:
-                        state is JoListSuccess ? state.joInfoList : [],
-                    onSelected: (value) {
+                    items: state is JoListSuccess ? state.joInfoList : [],
+                    onChanged: (value) {
                       if (value != null) {
-                        // FocusScope.of(context).unfocus();
-                        FocusManager.instance.primaryFocus?.unfocus();
+                        // // FocusScope.of(context).unfocus();
+                        // FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<VariableStateHandlerCubit<JoInfo>>()
                             .update(value);
