@@ -15,16 +15,16 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/add_task_note_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/Jo_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/add_task_note_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/Jo_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/task_Save_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/task_info_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/bloc/task_note_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_note_list_bloc.dart';
 
-class OmC7Screen extends StatelessWidget {
-  const OmC7Screen({super.key, required this.fromName});
-  static const String routeName = "OM-C-7-SCREEN";
-  static const String routePath = "/OM-C-7-SCREEN";
+class ProjectC2Screen extends StatelessWidget {
+  const ProjectC2Screen({super.key, required this.fromName});
+  static const String routeName = "PROJECT-C-2-SCREEN";
+  static const String routePath = "/PROJECT-C-2-SCREEN";
   final String fromName;
   @override
   Widget build(BuildContext context) {
@@ -43,18 +43,18 @@ class OmC7Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<JoInfo>(),
         ),
       ],
-      child: OmC7ScreenBody(
+      child: ProjectC2ScreenBody(
         fromName: fromName,
       ),
     );
   }
 }
 
-class OmC7ScreenBody extends StatefulWidget {
-  const OmC7ScreenBody({super.key, required this.fromName});
+class ProjectC2ScreenBody extends StatefulWidget {
+  const ProjectC2ScreenBody({super.key, required this.fromName});
   final String fromName;
   @override
-  State<OmC7ScreenBody> createState() => _OmC7ScreenBodyState();
+  State<ProjectC2ScreenBody> createState() => _ProjectC2ScreenBodyState();
 }
 
 enum TaskStatusType {
@@ -71,7 +71,7 @@ enum TaskStatusType {
   }
 }
 
-class _OmC7ScreenBodyState extends State<OmC7ScreenBody> {
+class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
   TextEditingController taskTextEditingController = TextEditingController();
   TextEditingController orgDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
