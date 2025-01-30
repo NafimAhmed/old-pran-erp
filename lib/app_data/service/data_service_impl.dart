@@ -573,7 +573,7 @@ class DataServiceImpl implements DataService {
     var response = await remoteDataRepository.giveOrgAccess(
         newUserId: newUserId, userId: userId, orgId: orgId);
     if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+      throw ApiDataException(response.errorMessage);
     }
   }
 

@@ -92,6 +92,13 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
               ),
             );
           }
+          if (state is OrgAccessError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.successSnackber(
+                message: state.error.toString(),
+              ),
+            );
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(
