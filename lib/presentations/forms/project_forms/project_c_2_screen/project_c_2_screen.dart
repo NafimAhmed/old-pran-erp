@@ -115,7 +115,6 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
                 message: "Successfully Saved",
               ),
             );
-            ;
             context.read<TaskInfoBloc>().add(
                   GetTaskInfo(
                       userId: loggedUser.userId,
