@@ -152,6 +152,7 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
       (VariableStateHandlerCubit<Status> cubit) => cubit.state,
     );
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CommonAppBar(
         appBartitle: widget.fromName,
       ),
@@ -223,9 +224,9 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                           var selectedDate = await showDatePicker(
                             context: context,
                             firstDate: DateTime.now()
-                                .subtract(const Duration(days: 120)),
+                                .subtract(const Duration(days: 365)),
                             lastDate:
-                                DateTime.now().add(const Duration(days: 120)),
+                                DateTime.now().add(const Duration(days: 365)),
                             initialDate: DateTime.now(),
                           );
                           if (selectedDate != null && context.mounted) {
@@ -409,7 +410,7 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                       },
                       child: Text(
                         state is ProjectCreateLoading
-                            ? "Creating Project..!"
+                            ? "Creating Project.."
                             : "Create Project",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.white,
