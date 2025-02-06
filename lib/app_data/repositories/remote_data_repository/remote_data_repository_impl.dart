@@ -994,12 +994,17 @@ class RemoteDataRepositoryImpl
     required String pTtlPerson,
     required String pManHours,
   }) async {
+    // var request = http.Request(
+    //   'POST',
+    //   Uri.parse(
+    //     '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_project_name=$pname&v_description=$pDesc&v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_status=$pStatus&v_priority=$pPriority&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours',
+    //   ),
+    // );
+
     var request = http.Request(
-      'POST',
-      Uri.parse(
-        '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_project_name=$pname&v_description=$pDesc&v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_status=$pStatus&v_priority=$pPriority&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours',
-      ),
-    );
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_project_name=$pname&v_priority=$pPriority&v_description=$pDesc&v_status=$pStatus&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours&PROJECTS_INFO=$pDesc&v_project_company=$pClientName'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -300,6 +301,9 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                       child: CommonTextFieldWidget(
                         controller: _budgetController,
                         focusNode: _budgetFocusNode,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         labelText: "Budget",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
