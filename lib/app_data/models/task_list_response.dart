@@ -52,9 +52,10 @@ class Task {
   final String? taskDept;
   final String? sdate;
   final String? tdate;
+  final int? pId;
+  final String? jobOrderNo;
   final int? tskTp;
   final int? projectId;
-  final int? pId;
 
   Task({
     this.taskNo,
@@ -62,9 +63,10 @@ class Task {
     this.taskDept,
     this.sdate,
     this.tdate,
+    this.pId,
+    this.jobOrderNo,
     this.tskTp,
     this.projectId,
-    this.pId,
   });
 
   Task copyWith({
@@ -73,9 +75,10 @@ class Task {
     String? taskDept,
     String? sdate,
     String? tdate,
+    int? pId,
+    String? jobOrderNo,
     int? tskTp,
     int? projectId,
-    int? pId,
   }) =>
       Task(
         taskNo: taskNo ?? this.taskNo,
@@ -83,9 +86,10 @@ class Task {
         taskDept: taskDept ?? this.taskDept,
         sdate: sdate ?? this.sdate,
         tdate: tdate ?? this.tdate,
+        pId: pId ?? this.pId,
+        jobOrderNo: jobOrderNo ?? this.jobOrderNo,
         tskTp: tskTp ?? this.tskTp,
         projectId: projectId ?? this.projectId,
-        pId: pId ?? this.pId,
       );
 
   factory Task.fromJson(String str) => Task.fromMap(json.decode(str));
@@ -98,9 +102,10 @@ class Task {
         taskDept: json["task_dept"],
         sdate: json["sdate"],
         tdate: json["tdate"],
+        pId: json["p_id"],
+        jobOrderNo: json["Job_order_no"],
         tskTp: json["tsk_tp"],
         projectId: json["project_id"],
-        pId: json["p_id"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -109,8 +114,9 @@ class Task {
         "task_dept": taskDept,
         "sdate": sdate,
         "tdate": tdate,
+        "p_id": pId,
+        "Job_order_no": jobOrderNo,
         "tsk_tp": tskTp,
         "project_id": projectId,
-        "p_id": pId,
       };
 }
