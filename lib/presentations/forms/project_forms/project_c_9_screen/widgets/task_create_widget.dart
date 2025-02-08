@@ -1,26 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
-import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
-import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
-import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
-import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
-import 'package:pran_rfl_erp/core/data_class/main_task.dart';
-import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
-import 'package:pran_rfl_erp/global_blocs/bloc/task_create_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
-import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_9_screen/bloc/task_assign_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_9_screen/bloc/task_list_bloc.dart';
@@ -240,23 +231,19 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.data.jobOrderNo ?? "",
-                    style: textTheme.bodyMedium,
+                    widget.data.taskName ?? "",
+                    style: textTheme.bodyMedium!.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo.shade700,
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Task Name:",
-                        style: textTheme.bodyMedium,
-                      ),
-                      Flexible(
-                        child: Text(
-                          widget.data.taskName ?? "",
-                          style: textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    widget.data.jobOrderNo ?? "",
+                    style: textTheme.bodyMedium!.copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(
                     height: 5,
