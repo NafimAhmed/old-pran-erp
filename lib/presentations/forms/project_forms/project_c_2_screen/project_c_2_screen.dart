@@ -32,9 +32,6 @@ class ProjectC2Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => JoListBloc(getService()),
-        ),
-        BlocProvider(
           create: (context) => TaskInfoBloc(getService()),
         ),
         BlocProvider(
@@ -73,7 +70,8 @@ enum TaskStatusType {
 }
 
 class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
-  TextEditingController taskTextEditingController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   late UserInfoModel loggedUser;
   final Map<int, VariableStateHandlerCubit<TaskStatusType>>
@@ -82,9 +80,10 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
 
-    context.read<JoListBloc>().add(
-          GetJoList(
+    context.read<TaskInfoBloc>().add(
+          TaskInfoGet(
             userId: loggedUser.userId,
+            searchValue: _searchController.text,
           ),
         );
     super.initState();
@@ -92,30 +91,28 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
 
   @override
   void dispose() {
-    taskTextEditingController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var selectedJob = context.watch<VariableStateHandlerCubit<JoInfo>>().state;
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
       body: BlocListener<TaskSaveBloc, TaskSaveState>(
         listener: (context, state) {
           if (state is TaskSaveSuccess) {
-            // taskTextEditingController.clear();
-
-            // context.read<VariableStateHandlerCubit<TaskStatusType>>().reset();
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "Successfully Saved",
               ),
             );
             context.read<TaskInfoBloc>().add(
-                  GetTaskInfo(
-                      userId: loggedUser.userId,
-                      jobOrderNo: selectedJob?.jobOrderNo ?? ""),
+                  TaskInfoGet(
+                    userId: loggedUser.userId,
+                    searchValue: _searchController.text,
+                  ),
                 );
           }
           if (state is TaskSaveError) {
@@ -135,28 +132,16 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
               const SizedBox(
                 height: 10,
               ),
-              BlocBuilder<JoListBloc, JoListState>(
-                builder: (context, state) {
-                  return CustomDropdownSearch<JoInfo>(
-                    hintText: "Job Order No",
-                    value: selectedJob,
-                    enabled: state is JoListSuccess ? true : false,
-                    items: state is JoListSuccess ? state.joInfoList : [],
-                    onChanged: (value) {
-                      if (value != null) {
-                        // // FocusScope.of(context).unfocus();
-                        // FocusManager.instance.primaryFocus?.unfocus();
-                        context
-                            .read<VariableStateHandlerCubit<JoInfo>>()
-                            .update(value);
-                        context.read<TaskInfoBloc>().add(
-                              GetTaskInfo(
-                                  userId: loggedUser.userId,
-                                  jobOrderNo: value.jobOrderNo ?? ""),
-                            );
-                      }
-                    },
-                  );
+              CommonTextFieldWidget(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                hintText: "Search",
+                onChanged: (value) {
+                  context.read<TaskInfoBloc>().add(
+                        TaskInfoFilter(
+                          searchValue: value,
+                        ),
+                      );
                 },
               ),
               const SizedBox(
@@ -332,7 +317,7 @@ class TaskWidgetContent extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          data.taskName ?? "",
+                          data.parentTaskName ?? "",
                           textAlign: TextAlign.center,
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -344,12 +329,6 @@ class TaskWidgetContent extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Text(
-                //   data.taskName ?? "",
-                //   style: textTheme.bodyMedium!.copyWith(
-                //     color: appTheme.primary,
-                //   ),
-                // ),
                 Text(
                   data.jobOrderNo ?? "",
                   style: textTheme.bodyMedium!.copyWith(
@@ -360,7 +339,26 @@ class TaskWidgetContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Department",
+                      "Task:",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.primary,
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        data.taskName ?? "",
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Department:",
                       style: textTheme.bodyMedium!.copyWith(
                         color: appTheme.primary,
                       ),
@@ -379,7 +377,7 @@ class TaskWidgetContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Status",
+                      "Status:",
                       style: textTheme.bodyMedium!.copyWith(
                         color: appTheme.primary,
                       ),
@@ -398,7 +396,7 @@ class TaskWidgetContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Start Date",
+                      "Start Date:",
                       style: textTheme.bodyMedium!.copyWith(
                         color: appTheme.primary,
                       ),
@@ -406,6 +404,46 @@ class TaskWidgetContent extends StatelessWidget {
                     Flexible(
                       child: Text(
                         DateTime.parse(data.taskStartDate ?? "")
+                            .toFormatedString("dd-MMM-yyyy"),
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Complt Date:",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.primary,
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        DateTime.parse(data.taskCompletionDate ?? "")
+                            .toFormatedString("dd-MMM-yyyy"),
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Creatn Date:",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.primary,
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        DateTime.parse(data.taskCreactionDate ?? "")
                             .toFormatedString("dd-MMM-yyyy"),
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.primary,
