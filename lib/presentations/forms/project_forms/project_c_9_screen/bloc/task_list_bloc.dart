@@ -8,17 +8,24 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 @immutable
 sealed class TaskListEvent {}
 
-final class GetTaskList extends TaskListEvent {
+final class TaskListGet extends TaskListEvent {
   final String userId;
-
-  GetTaskList({
+  final String searchValue;
+  TaskListGet({
     required this.userId,
+    required this.searchValue,
   });
 }
 
-final class removeTask extends TaskListEvent {
-  removeTask({required this.index});
+final class RemoveTask extends TaskListEvent {
+  RemoveTask({required this.index});
   final int index;
+}
+
+final class TaskListFilter extends TaskListEvent {
+  final String searchValue;
+
+  TaskListFilter({required this.searchValue});
 }
 
 @immutable
@@ -43,23 +50,50 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   final DataService _dataService;
   List<Task> _dataList = [];
   TaskListBloc(this._dataService) : super(TaskListInitial()) {
-    on<GetTaskList>((event, emit) async {
+    on<TaskListGet>((event, emit) async {
       emit(TaskListLoading());
       try {
         var response = await _dataService.getTaskList(userId: event.userId);
         _dataList = response;
-        emit(
-          TaskListSuccess(taskList: _dataList),
-        );
+        if (event.searchValue.isNotEmpty) {
+          emit(TaskListSuccess(taskList: _filterList(event.searchValue)));
+        } else {
+          emit(
+            TaskListSuccess(taskList: _dataList),
+          );
+        }
       } catch (e) {
         emit(TaskListError(error: e));
       }
     });
-    on<removeTask>((event, emit) async {
+    on<RemoveTask>((event, emit) async {
       _dataList.removeAt(event.index);
       emit(
         TaskListSuccess(taskList: _dataList),
       );
     });
+    on<TaskListFilter>((event, emit) async {
+      emit(TaskListLoading());
+      try {
+        if (event.searchValue.isNotEmpty) {
+          emit(TaskListSuccess(taskList: _filterList(event.searchValue)));
+        } else {
+          emit(TaskListSuccess(taskList: _dataList));
+        }
+      } catch (error) {
+        emit(TaskListError(error: error));
+      }
+    });
+  }
+  List<Task> _filterList(String filerText) {
+    var filterlist = _dataList.where(
+      (element) {
+        return element.jobOrderNo
+                ?.toLowerCase()
+                .contains(filerText.toLowerCase()) ??
+            false;
+      },
+    ).toList();
+    return filterlist;
   }
 }

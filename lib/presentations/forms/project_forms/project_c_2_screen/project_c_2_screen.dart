@@ -396,6 +396,26 @@ class TaskWidgetContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
+                      "Creatn Date:",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: appTheme.primary,
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        DateTime.parse(data.taskCreactionDate ?? "")
+                            .toFormatedString("dd-MMM-yyyy"),
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: appTheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
                       "Start Date:",
                       style: textTheme.bodyMedium!.copyWith(
                         color: appTheme.primary,
@@ -416,7 +436,7 @@ class TaskWidgetContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Complt Date:",
+                      "StCm Date:",
                       style: textTheme.bodyMedium!.copyWith(
                         color: appTheme.primary,
                       ),
@@ -424,26 +444,6 @@ class TaskWidgetContent extends StatelessWidget {
                     Flexible(
                       child: Text(
                         DateTime.parse(data.taskCompletionDate ?? "")
-                            .toFormatedString("dd-MMM-yyyy"),
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Creatn Date:",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.primary,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        DateTime.parse(data.taskCreactionDate ?? "")
                             .toFormatedString("dd-MMM-yyyy"),
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.primary,

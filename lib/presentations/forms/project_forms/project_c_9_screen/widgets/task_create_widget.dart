@@ -33,9 +33,9 @@ class TaskCreateWidget extends StatelessWidget {
     required this.taskList,
     required this.taskCubit,
     required this.loggedUser,
-    required this.joInfo,
     required this.assigneeCubit,
     required this.departmentCubit,
+    required this.searchValue,
   });
   final int index;
 
@@ -45,7 +45,7 @@ class TaskCreateWidget extends StatelessWidget {
   final Task data;
   final List<Task> taskList;
   final UserInfoModel loggedUser;
-  final JoInfo joInfo;
+  final String searchValue;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -68,7 +68,7 @@ class TaskCreateWidget extends StatelessWidget {
         taskList: taskList,
         data: data,
         loggedUser: loggedUser,
-        joInfo: joInfo,
+        searchValue: searchValue,
       ),
     );
   }
@@ -81,13 +81,13 @@ class TaskWidgetContent extends StatefulWidget {
     required this.data,
     required this.taskList,
     required this.loggedUser,
-    required this.joInfo,
+    required this.searchValue,
   });
   final int index;
   final Task data;
   final List<Task> taskList;
   final UserInfoModel loggedUser;
-  final JoInfo joInfo;
+  final String searchValue;
 
   @override
   State<TaskWidgetContent> createState() => _TaskWidgetContentState();
@@ -187,7 +187,7 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
           onDismissed: (direction) {
             context.read<VariableStateHandlerCubit<Task>>().update(Task());
 
-            context.read<TaskListBloc>().add(removeTask(index: widget.index));
+            context.read<TaskListBloc>().add(RemoveTask(index: widget.index));
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
                 message: "Task Assigned Successfully",
@@ -196,8 +196,9 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
             context.read<VariableStateHandlerCubit<QrUserData>>().reset();
             context.read<VariableStateHandlerCubit<Department>>().reset();
             context.read<TaskListBloc>().add(
-                  GetTaskList(
+                  TaskListGet(
                     userId: widget.loggedUser.userId,
+                    searchValue: widget.searchValue,
                   ),
                 );
           },
@@ -239,8 +240,23 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.data.taskName ?? "",
+                    widget.data.jobOrderNo ?? "",
                     style: textTheme.bodyMedium,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Task Name:",
+                        style: textTheme.bodyMedium,
+                      ),
+                      Flexible(
+                        child: Text(
+                          widget.data.taskName ?? "",
+                          style: textTheme.bodyMedium,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 5,
@@ -325,394 +341,8 @@ class _TaskWidgetContentState extends State<TaskWidgetContent> {
                       )
                     ],
                   ),
-                  // SizedBox(
-                  //   height: 30.0,
-                  //   width: 30.0,
-                  //   child: IconButton.filled(
-                  //     padding: EdgeInsets.zero,
-                  //     icon: Icon(
-                  //       Icons.add_sharp,
-                  //       color: appTheme.white,
-                  //     ),
-                  //     onPressed: () async {
-                  //       var result = await AppModal.showCustomModal<bool>(
-                  //             context,
-                  //             content: NewTaskWidget(
-                  //               blocContext: context,
-                  //               widget: widget,
-                  //             ),
-                  //           ) ??
-                  //           false;
-                  //       if (result && context.mounted) {
-                  //         var loggedUser =
-                  //             context.read<LoggedUserInfoCubit>().state!;
-                  //         context.read<TaskListBloc>().add(
-                  //               GetTaskList(
-                  //                 userId: loggedUser.userId,
-                  //               ),
-                  //             );
-                  //       }
-                  //     },
-                  //   ),
-                  // ),
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class NewTaskWidget extends StatefulWidget {
-  const NewTaskWidget({
-    super.key,
-    required this.widget,
-    required this.blocContext,
-  });
-
-  final TaskWidgetContent widget;
-  final BuildContext blocContext;
-
-  @override
-  State<NewTaskWidget> createState() => _NewTaskWidgetState();
-}
-
-class _NewTaskWidgetState extends State<NewTaskWidget> {
-  late FocusNode _taskFocusNode;
-  late TextEditingController _taskNameController;
-  late FocusNode _manFocusNode;
-  late TextEditingController _manController;
-  late FocusNode _hourFocusNode;
-  late TextEditingController _hourController;
-  late TextEditingController _stDateController;
-  late TextEditingController _enDateController;
-  final GlobalKey<FormState> _fromKey = GlobalKey<FormState>();
-  Department? _selectedDept;
-  QrUserData? _selectedassigne;
-  @override
-  void initState() {
-    _taskFocusNode = FocusNode();
-    _taskNameController = TextEditingController();
-    _manFocusNode = FocusNode();
-    _manController = TextEditingController();
-    _hourFocusNode = FocusNode();
-    _hourController = TextEditingController();
-    _stDateController = TextEditingController();
-    _enDateController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _taskFocusNode.dispose();
-    _taskNameController.dispose();
-    _manFocusNode.dispose();
-    _manController.dispose();
-    _hourFocusNode.dispose();
-    _hourController.dispose();
-    _stDateController.dispose();
-    _enDateController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(
-          value: BlocProvider.of<DeptListBloc>(widget.blocContext),
-        ),
-        // BlocProvider.value(
-        //   value: BlocProvider.of<BuyerListBloc>(widget.blocContext),
-        // ),
-        BlocProvider(
-          create: (context) => TaskCreateBloc(getService()),
-        ),
-        BlocProvider.value(
-          value: BlocProvider.of<QrUserBloc>(widget.blocContext),
-        ),
-      ],
-      child: BlocListener<TaskCreateBloc, TaskCreateState>(
-        listener: (context, state) {
-          if (state is TaskCreateSuccess) {
-            _taskNameController.clear();
-
-            _manController.clear();
-
-            _hourController.clear();
-            _stDateController.clear();
-            _enDateController.clear();
-            _selectedDept = null;
-            _selectedassigne = null;
-            context.pop(true);
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          child: Form(
-            key: _fromKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CommonDialogHeader(
-                  title: widget.widget.data.taskName ?? "",
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 65,
-                  child: CommonTextFieldWidget(
-                    focusNode: _taskFocusNode,
-                    controller: _taskNameController,
-                    labelText: "New Task",
-                    expands: true,
-                    maxLines: null,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Task Name";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CommonTextFieldWidget(
-                        focusNode: _manFocusNode,
-                        controller: _manController,
-                        labelText: "Man",
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please Enter Man";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: CommonTextFieldWidget(
-                        focusNode: _hourFocusNode,
-                        controller: _hourController,
-                        labelText: "Hour",
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please Enter Hour";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: CommonTextFieldWidget(
-                        readOnly: true,
-                        hintText: "Start Date",
-                        controller: _stDateController,
-                        suffixIcon: const Icon(
-                          Icons.calendar_month,
-                        ),
-                        onTap: () async {
-                          var selectedDate = await showDatePicker(
-                            context: context,
-                            firstDate: DateTime.now()
-                                .subtract(const Duration(days: 120)),
-                            lastDate:
-                                DateTime.now().add(const Duration(days: 120)),
-                            initialDate: DateTime.now(),
-                          );
-                          if (selectedDate != null && context.mounted) {
-                            _stDateController.text = selectedDate.toString();
-                          }
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please Enter Stdate";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: CommonTextFieldWidget(
-                        readOnly: true,
-                        hintText: "End Date",
-                        controller: _enDateController,
-                        suffixIcon: const Icon(
-                          Icons.calendar_month,
-                        ),
-                        onTap: () async {
-                          var selectedDate = await showDatePicker(
-                            context: context,
-                            firstDate: DateTime.now()
-                                .subtract(const Duration(days: 120)),
-                            lastDate:
-                                DateTime.now().add(const Duration(days: 120)),
-                            initialDate: DateTime.now(),
-                          );
-                          if (selectedDate != null && context.mounted) {
-                            _enDateController.text = selectedDate.toString();
-                          }
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please Enter Endate";
-                          }
-                          return null;
-                        },
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: BlocBuilder<DeptListBloc, DeptListState>(
-                        builder: (context, state) {
-                          return CommonDropdownButton<Department>(
-                            hintText: "Department",
-                            items:
-                                state is DeptListSuccess ? state.deptList : [],
-                            value: _selectedDept,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedDept = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return "Please Enter Dept";
-                              }
-                              return null;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: BlocBuilder<QrUserBloc, QrUserState>(
-                        builder: (context, state) {
-                          return CommonDropdownButton<QrUserData>(
-                            hintText: "Assignee",
-                            value: _selectedassigne,
-                            items: state is QrUserSuccess ? state.qrUsers : [],
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedassigne = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return "Please Enter Assignee";
-                              }
-                              return null;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    // Expanded(
-                    //   child: BlocBuilder<BuyerListBloc, BuyerListState>(
-                    //     builder: (context, state) {
-                    //       return CommonDropdownButton<Buyer>(
-                    //         hintText: "Buyer",
-                    //         items: state is BuyerListSuccess ? state.buyerList : [],
-                    //         onChanged: (value) {
-                    //           var newtask = widget.blocContext
-                    //                   .read<VariableStateHandlerCubit<NewTask>>()
-                    //                   .state ??
-                    //               NewTask();
-                    //           newtask = newtask.copyWith(buyer: value?.buyerName);
-                    //           widget.blocContext
-                    //               .read<VariableStateHandlerCubit<NewTask>>()
-                    //               .update(newtask);
-                    //         },
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: BlocBuilder<TaskCreateBloc, TaskCreateState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (_fromKey.currentState!.validate()) {
-                            MainTask newChildTask = MainTask();
-                            newChildTask = newChildTask.copyWith(
-                              // taskparentid:
-                              //     widget.widget.data.taskNo?.toString() ?? "0",
-                              projectId: Project(
-                                projectId: widget.widget.data.projectId,
-                              ),
-                              taskName: _taskNameController.text,
-                              taskDesc: _taskNameController.text,
-                              man: _manController.text,
-                              hr: _hourController.text,
-                              stDate: DateTime.parse(_stDateController.text)
-                                  .toFormatedString("dd-MMM-yyyy"),
-                              enDate: DateTime.parse(_enDateController.text)
-                                  .toFormatedString("dd-MMM-yyyy"),
-                              taskDept: _selectedDept,
-                              assignee: _selectedassigne,
-                            );
-
-                            var loggedUser =
-                                context.read<LoggedUserInfoCubit>().state!;
-                            context.read<TaskCreateBloc>().add(
-                                  TaskCreate(
-                                    userId: loggedUser.userId,
-                                    mainTask: newChildTask,
-                                  ),
-                                );
-                          }
-                        },
-                        child: Text(
-                          state is TaskCreateLoading ? "Creating..." : "Create",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-              ],
             ),
           ),
         ),

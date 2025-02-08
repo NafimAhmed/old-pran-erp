@@ -7,17 +7,13 @@ import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-
-import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/buyer_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/qr_user_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/Jo_list_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_9_screen/bloc/task_list_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_9_screen/widgets/task_create_widget.dart';
 
 class ProjectC9Screen extends StatelessWidget {
@@ -30,9 +26,6 @@ class ProjectC9Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => JoListBloc(getService()),
-        ),
-        BlocProvider(
           create: (context) => TaskListBloc(getService()),
         ),
         BlocProvider(
@@ -43,9 +36,6 @@ class ProjectC9Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => QrUserBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<JoInfo>(),
         ),
       ],
       child: ProjectC9ScreenBody(
@@ -64,16 +54,18 @@ class ProjectC9ScreenBody extends StatefulWidget {
 
 class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
   late UserInfoModel loggedUser;
-
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   final Map<int, VariableStateHandlerCubit<Task>> taskCubits = {};
   final Map<int, VariableStateHandlerCubit<QrUserData>> assigneeCubits = {};
   final Map<int, VariableStateHandlerCubit<Department>> departmentCubits = {};
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
-    context.read<JoListBloc>().add(
-          GetJoList(
+    context.read<TaskListBloc>().add(
+          TaskListGet(
             userId: loggedUser.userId,
+            searchValue: _searchController.text,
           ),
         );
     context.read<DeptListBloc>().add(
@@ -93,12 +85,13 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
 
   @override
   void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var selectedJo = context.watch<VariableStateHandlerCubit<JoInfo>>().state;
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
       body: Container(
@@ -110,26 +103,16 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
             const SizedBox(
               height: 10,
             ),
-            BlocBuilder<JoListBloc, JoListState>(
-              builder: (context, state) {
-                return CustomDropdownSearch<JoInfo>(
-                  hintText: "Job Order No",
-                  enabled: state is JoListSuccess ? true : false,
-                  items: state is JoListSuccess ? state.joInfoList : [],
-                  value: selectedJo,
-                  onChanged: (value) {
-                    if (value != null) {
-                      context
-                          .read<VariableStateHandlerCubit<JoInfo>>()
-                          .update(value);
-                      context.read<TaskListBloc>().add(
-                            GetTaskList(
-                              userId: loggedUser.userId,
-                            ),
-                          );
-                    }
-                  },
-                );
+            CommonTextFieldWidget(
+              controller: _searchController,
+              focusNode: _searchFocusNode,
+              hintText: "Search",
+              onChanged: (value) {
+                context.read<TaskListBloc>().add(
+                      TaskListFilter(
+                        searchValue: _searchController.text,
+                      ),
+                    );
               },
             ),
             const SizedBox(
@@ -149,7 +132,7 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
                         var data = state.taskList[index];
                         return TaskCreateWidget(
                           data: data,
-                          joInfo: selectedJo!,
+                          searchValue: _searchController.text,
                           loggedUser: loggedUser,
                           taskList: state.taskList,
                           index: index,
