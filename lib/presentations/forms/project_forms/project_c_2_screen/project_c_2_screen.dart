@@ -8,7 +8,6 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -16,8 +15,6 @@ import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/add_task_note_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/Jo_list_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_note_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_save_bloc.dart';
