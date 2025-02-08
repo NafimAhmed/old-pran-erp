@@ -723,10 +723,10 @@ class DataServiceImpl implements DataService {
   @override
   Future<List<TaskInfo>> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   }) async {
     var response = await remoteDataRepository.getTaskInfoList(
-        userid: userid, jobOrderNo: jobOrderNo);
+      userid: userid,
+    );
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }

@@ -790,12 +790,11 @@ class RemoteDataRepositoryImpl
   @override
   Future<TaskInfoResponse> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&joborderno=$jobOrderNo'));
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid'));
 
     http.StreamedResponse response = await request.send();
     return decodeResponse(response, decoder: TaskInfoResponse.fromJson);

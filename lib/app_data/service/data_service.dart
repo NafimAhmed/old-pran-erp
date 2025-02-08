@@ -262,7 +262,6 @@ abstract class DataService {
   });
   Future<List<TaskInfo>> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   });
   Future<List<JoInfo>> getJoList({
     required String userid,

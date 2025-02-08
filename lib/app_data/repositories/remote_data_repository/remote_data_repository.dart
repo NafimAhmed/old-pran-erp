@@ -252,7 +252,6 @@ abstract class RemoteDataRepository {
   });
   Future<TaskInfoResponse> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   });
   Future<JobOrderListResponse> getJoList({
     required String userid,
