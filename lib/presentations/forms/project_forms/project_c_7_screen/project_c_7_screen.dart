@@ -5,6 +5,7 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
@@ -171,6 +172,18 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
             _manHourController.clear();
             context.read<VariableStateHandlerCubit<Priority>>().reset();
             context.read<VariableStateHandlerCubit<Status>>().reset();
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.successSnackber(
+                message: "Project Created Successfully",
+              ),
+            );
+          }
+          if (state is ProjectCreateError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.errorSnackber(
+                message: state.error.toString(),
+              ),
+            );
           }
         },
         child: Container(

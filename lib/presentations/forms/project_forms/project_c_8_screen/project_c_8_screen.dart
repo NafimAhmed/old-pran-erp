@@ -12,6 +12,7 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/dept_list_bloc.dart';
@@ -157,6 +158,18 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
             _hourController.clear();
 
             context.read<VariableStateHandlerCubit<MainTask>>().reset();
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.successSnackber(
+                message: "Task Created Successfully!",
+              ),
+            );
+          }
+          if (state is TaskCreateError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.errorSnackber(
+                message: state.error.toString(),
+              ),
+            );
           }
         },
         child: Container(
