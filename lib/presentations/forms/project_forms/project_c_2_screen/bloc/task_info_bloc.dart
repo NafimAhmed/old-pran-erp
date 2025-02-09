@@ -94,10 +94,14 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
   List<TaskInfo> _filterList(String filerText) {
     var filterlist = _taskInfoList.where(
       (element) {
-        return element.jobOrderNo
-                ?.toLowerCase()
-                .contains(filerText.toLowerCase()) ??
-            false;
+        return (element.jobOrderNo
+                    ?.toLowerCase()
+                    .contains(filerText.toLowerCase()) ??
+                false) ||
+            (element.taskName
+                    ?.toLowerCase()
+                    .contains(filerText.toLowerCase()) ??
+                false);
       },
     ).toList();
     return filterlist;
