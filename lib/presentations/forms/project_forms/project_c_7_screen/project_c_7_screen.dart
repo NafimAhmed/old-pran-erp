@@ -403,9 +403,7 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                   builder: (context, state) {
                     return ElevatedButton(
                       onPressed: () {
-                        if (_fromkey.currentState!.validate() &&
-                            selectedStatus != null &&
-                            selectedPriority != null) {
+                        if (_fromkey.currentState!.validate()) {
                           context.read<ProjectCreateBloc>().add(
                                 ProjectCreate(
                                   pname: _projectNameController.text,
@@ -417,8 +415,8 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                                   pManager: _projectManagerController.text,
                                   pClientName: _clientNameController.text,
                                   pBudget: _budgetController.text,
-                                  pStatus: selectedStatus.value,
-                                  pPriority: selectedPriority.value,
+                                  pStatus: selectedStatus?.value ?? "",
+                                  pPriority: selectedPriority?.value ?? "",
                                   pTtlPerson: _totalPersonController.text,
                                   pManHours: _manHourController.text,
                                 ),
