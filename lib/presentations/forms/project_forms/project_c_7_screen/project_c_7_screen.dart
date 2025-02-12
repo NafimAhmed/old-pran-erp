@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen.dart/bloc/Project_create_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen/bloc/project_create_bloc.dart';
 
 class ProjectC7Screen extends StatelessWidget {
   const ProjectC7Screen({super.key, required this.fromName});
@@ -152,6 +154,7 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
       (VariableStateHandlerCubit<Status> cubit) => cubit.state,
     );
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CommonAppBar(
         appBartitle: widget.fromName,
       ),
@@ -169,6 +172,18 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
             _manHourController.clear();
             context.read<VariableStateHandlerCubit<Priority>>().reset();
             context.read<VariableStateHandlerCubit<Status>>().reset();
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.successSnackber(
+                message: "Project Created Successfully",
+              ),
+            );
+          }
+          if (state is ProjectCreateError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.errorSnackber(
+                message: state.error.toString(),
+              ),
+            );
           }
         },
         child: Container(
@@ -223,9 +238,9 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                           var selectedDate = await showDatePicker(
                             context: context,
                             firstDate: DateTime.now()
-                                .subtract(const Duration(days: 120)),
+                                .subtract(const Duration(days: 365)),
                             lastDate:
-                                DateTime.now().add(const Duration(days: 120)),
+                                DateTime.now().add(const Duration(days: 365)),
                             initialDate: DateTime.now(),
                           );
                           if (selectedDate != null && context.mounted) {
@@ -299,6 +314,9 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                       child: CommonTextFieldWidget(
                         controller: _budgetController,
                         focusNode: _budgetFocusNode,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         labelText: "Budget",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -385,9 +403,7 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                   builder: (context, state) {
                     return ElevatedButton(
                       onPressed: () {
-                        if (_fromkey.currentState!.validate() &&
-                            selectedStatus != null &&
-                            selectedPriority != null) {
+                        if (_fromkey.currentState!.validate()) {
                           context.read<ProjectCreateBloc>().add(
                                 ProjectCreate(
                                   pname: _projectNameController.text,
@@ -399,8 +415,8 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                                   pManager: _projectManagerController.text,
                                   pClientName: _clientNameController.text,
                                   pBudget: _budgetController.text,
-                                  pStatus: selectedStatus.value,
-                                  pPriority: selectedPriority.value,
+                                  pStatus: selectedStatus?.value ?? "",
+                                  pPriority: selectedPriority?.value ?? "",
                                   pTtlPerson: _totalPersonController.text,
                                   pManHours: _manHourController.text,
                                 ),
@@ -409,7 +425,7 @@ class _ProjectC7ScreenBodyState extends State<ProjectC7ScreenBody> {
                       },
                       child: Text(
                         state is ProjectCreateLoading
-                            ? "Creating Project..!"
+                            ? "Creating Project.."
                             : "Create Project",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.white,

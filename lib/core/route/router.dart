@@ -5,12 +5,13 @@ import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_2_screen/inv_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_3_screen/inv_c_3_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_6_screen/inv_c_6_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_1_screen/om_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_2_screen/om_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_3_screen/om_c_3_screen.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_7_screen/om_c_7_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/project_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_8_screen/om_c_8_screen.dart';
-import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_9_screen/om_c_9_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_9_screen/project_c_9_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_10_screen/opm_c_10_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_15_screen/opm_c_15_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_17_screen/opm_c_17_screen.dart';
@@ -25,8 +26,8 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_8_screen/opm_c_8_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_9_screen/opm_c_9_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/po_c_2_screen.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen.dart/project_c_7_screen.dart';
-
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_7_screen/project_c_7_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_8_screen/project_c_8_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_1_screen/sys_admin_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_2_screen/sys_admin_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/sys_admin_forms/sys_admin_c_3_screen/sys_admin_c_3_screen.dart';
@@ -280,30 +281,10 @@ class AppNavigation {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: OmC7Screen.routePath,
-        name: OmC7Screen.routeName,
-        builder: (context, state) {
-          return OmC7Screen(
-            fromName: state.extra as String,
-          );
-        },
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
         path: OmC8Screen.routePath,
         name: OmC8Screen.routeName,
         builder: (context, state) {
           return OmC8Screen(
-            fromName: state.extra as String,
-          );
-        },
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: OmC9Screen.routePath,
-        name: OmC9Screen.routeName,
-        builder: (context, state) {
-          return OmC9Screen(
             fromName: state.extra as String,
           );
         },
@@ -334,6 +315,16 @@ class AppNavigation {
         name: InvC3Screen.routeName,
         builder: (context, state) {
           return InvC3Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: InvC6Screen.routePath,
+        name: InvC6Screen.routeName,
+        builder: (context, state) {
+          return InvC6Screen(
             fromName: state.extra as String,
           );
         },
@@ -422,6 +413,36 @@ class AppNavigation {
         name: ProjectC7Screen.routeName,
         builder: (context, state) {
           return ProjectC7Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: ProjectC8Screen.routePath,
+        name: ProjectC8Screen.routeName,
+        builder: (context, state) {
+          return ProjectC8Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: ProjectC9Screen.routePath,
+        name: ProjectC9Screen.routeName,
+        builder: (context, state) {
+          return ProjectC9Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: ProjectC2Screen.routePath,
+        name: ProjectC2Screen.routeName,
+        builder: (context, state) {
+          return ProjectC2Screen(
             fromName: state.extra as String,
           );
         },

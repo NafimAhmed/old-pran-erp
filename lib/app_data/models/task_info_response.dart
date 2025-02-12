@@ -50,8 +50,7 @@ class TaskInfo {
   final int? tasksid;
   final String? taskName;
   final String? taskDept;
-  final String? custPoNo;
-  final String? invoiceNo;
+  final String? parentTaskName;
   final String? jobOrderNo;
   final String? taskStartDate;
   final String? taskCreactionDate;
@@ -62,8 +61,7 @@ class TaskInfo {
     this.tasksid,
     this.taskName,
     this.taskDept,
-    this.custPoNo,
-    this.invoiceNo,
+    this.parentTaskName,
     this.jobOrderNo,
     this.taskStartDate,
     this.taskCreactionDate,
@@ -75,8 +73,7 @@ class TaskInfo {
     int? tasksid,
     String? taskName,
     String? taskDept,
-    String? custPoNo,
-    String? invoiceNo,
+    String? parentTaskName,
     String? jobOrderNo,
     String? taskStartDate,
     String? taskCreactionDate,
@@ -87,8 +84,7 @@ class TaskInfo {
         tasksid: tasksid ?? this.tasksid,
         taskName: taskName ?? this.taskName,
         taskDept: taskDept ?? this.taskDept,
-        custPoNo: custPoNo ?? this.custPoNo,
-        invoiceNo: invoiceNo ?? this.invoiceNo,
+        parentTaskName: parentTaskName ?? this.parentTaskName,
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
         taskStartDate: taskStartDate ?? this.taskStartDate,
         taskCreactionDate: taskCreactionDate ?? this.taskCreactionDate,
@@ -104,8 +100,7 @@ class TaskInfo {
         tasksid: json["TASKSID"],
         taskName: json["TASK_NAME"],
         taskDept: json["TASK_DEPT"],
-        custPoNo: json["CUST_PO_NO"],
-        invoiceNo: json["INVOICE_NO"],
+        parentTaskName: json["PARENT_TASK_NAME"],
         jobOrderNo: json["JOB_ORDER_NO"],
         taskStartDate: json["TASK_START_DATE"],
         taskCreactionDate: json["TASK_CREACTION_DATE"],
@@ -117,8 +112,7 @@ class TaskInfo {
         "TASKSID": tasksid,
         "TASK_NAME": taskName,
         "TASK_DEPT": taskDept,
-        "CUST_PO_NO": custPoNo,
-        "INVOICE_NO": invoiceNo,
+        "PARENT_TASK_NAME": parentTaskName,
         "JOB_ORDER_NO": jobOrderNo,
         "TASK_START_DATE": taskStartDate,
         "TASK_CREACTION_DATE": taskCreactionDate,

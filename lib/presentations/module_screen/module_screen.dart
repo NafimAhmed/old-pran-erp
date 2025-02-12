@@ -134,6 +134,7 @@ class OPMSubModuleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
+      horizontalTitleGap: 0,
       onTap: onTap,
       titleTextStyle: textTheme.bodyMedium!.copyWith(
         fontWeight: FontWeight.w600,

@@ -53,6 +53,9 @@ class Task {
   final String? sdate;
   final String? tdate;
   final int? pId;
+  final String? jobOrderNo;
+  final int? tskTp;
+  final int? projectId;
 
   Task({
     this.taskNo,
@@ -61,6 +64,9 @@ class Task {
     this.sdate,
     this.tdate,
     this.pId,
+    this.jobOrderNo,
+    this.tskTp,
+    this.projectId,
   });
 
   Task copyWith({
@@ -70,6 +76,9 @@ class Task {
     String? sdate,
     String? tdate,
     int? pId,
+    String? jobOrderNo,
+    int? tskTp,
+    int? projectId,
   }) =>
       Task(
         taskNo: taskNo ?? this.taskNo,
@@ -78,6 +87,9 @@ class Task {
         sdate: sdate ?? this.sdate,
         tdate: tdate ?? this.tdate,
         pId: pId ?? this.pId,
+        jobOrderNo: jobOrderNo ?? this.jobOrderNo,
+        tskTp: tskTp ?? this.tskTp,
+        projectId: projectId ?? this.projectId,
       );
 
   factory Task.fromJson(String str) => Task.fromMap(json.decode(str));
@@ -91,6 +103,9 @@ class Task {
         sdate: json["sdate"],
         tdate: json["tdate"],
         pId: json["p_id"],
+        jobOrderNo: json["Job_order_no"],
+        tskTp: json["tsk_tp"],
+        projectId: json["project_id"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -100,9 +115,8 @@ class Task {
         "sdate": sdate,
         "tdate": tdate,
         "p_id": pId,
+        "Job_order_no": jobOrderNo,
+        "tsk_tp": tskTp,
+        "project_id": projectId,
       };
-  @override
-  String toString() {
-    return taskName ?? "";
-  }
 }

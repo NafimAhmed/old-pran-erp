@@ -6,13 +6,19 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 @immutable
 sealed class TaskInfoEvent {}
 
-final class GetTaskInfo extends TaskInfoEvent {
+final class TaskInfoGet extends TaskInfoEvent {
   final String userId;
-  final String jobOrderNo;
-  GetTaskInfo({
+  final String searchValue;
+  TaskInfoGet({
     required this.userId,
-    required this.jobOrderNo,
+    required this.searchValue,
   });
+}
+
+final class TaskInfoFilter extends TaskInfoEvent {
+  final String searchValue;
+
+  TaskInfoFilter({required this.searchValue});
 }
 
 final class RemoveTaskInfo extends TaskInfoEvent {
@@ -44,15 +50,21 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
   final DataService _dataService;
   List<TaskInfo> _taskInfoList = [];
   TaskInfoBloc(this._dataService) : super(TaskInfoInitial()) {
-    on<GetTaskInfo>((event, emit) async {
+    on<TaskInfoGet>((event, emit) async {
       emit(TaskInfoLoading());
       try {
         var response = await _dataService.getTaskInfoList(
           userid: event.userId,
-          jobOrderNo: event.jobOrderNo,
         );
         _taskInfoList = response;
-        emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
+
+        if (event.searchValue.isNotEmpty) {
+          emit(TaskInfoSuccess(taskInfoList: _filterList(event.searchValue)));
+        } else {
+          emit(
+            TaskInfoSuccess(taskInfoList: _taskInfoList),
+          );
+        }
       } catch (e) {
         emit(TaskInfoError(error: e));
       }
@@ -66,5 +78,32 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
         emit(TaskInfoError(error: e));
       }
     });
+    on<TaskInfoFilter>((event, emit) async {
+      emit(TaskInfoLoading());
+      try {
+        if (event.searchValue.isNotEmpty) {
+          emit(TaskInfoSuccess(taskInfoList: _filterList(event.searchValue)));
+        } else {
+          emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
+        }
+      } catch (error) {
+        emit(TaskInfoError(error: error));
+      }
+    });
+  }
+  List<TaskInfo> _filterList(String filerText) {
+    var filterlist = _taskInfoList.where(
+      (element) {
+        return (element.jobOrderNo
+                    ?.toLowerCase()
+                    .contains(filerText.toLowerCase()) ??
+                false) ||
+            (element.taskName
+                    ?.toLowerCase()
+                    .contains(filerText.toLowerCase()) ??
+                false);
+      },
+    ).toList();
+    return filterlist;
   }
 }

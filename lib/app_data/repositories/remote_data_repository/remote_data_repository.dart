@@ -7,7 +7,9 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
+import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
@@ -21,6 +23,9 @@ import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
@@ -30,6 +35,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
@@ -38,6 +44,7 @@ import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 
 import '../../models/rcv_inv_org_trn_data_response.dart';
 import '../../models/user_menu_item_response.dart';
@@ -245,7 +252,6 @@ abstract class RemoteDataRepository {
   });
   Future<TaskInfoResponse> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   });
   Future<JobOrderListResponse> getJoList({
     required String userid,
@@ -287,13 +293,10 @@ abstract class RemoteDataRepository {
     required String userId,
   });
   Future<GenericResponse> taskAssign({
-    required int jobId,
-    required int? pId,
-    required String tsknm,
-    required String tskdesc,
-    required String tskasgne,
-    required String startDate,
-    required String endDate,
+    required String userId,
+    required String assigneeId,
+    required String department,
+    required String taskId,
   });
   Future<BatchStatusCheckResponse> getBatchStatus({
     required String userId,
@@ -311,5 +314,40 @@ abstract class RemoteDataRepository {
     required String pPriority,
     required String pTtlPerson,
     required String pManHours,
+  });
+  Future<DepartmentListResponse> getDeptList({
+    required String userId,
+  });
+  Future<BuyerListResponse> getBuyerList({
+    required String userId,
+  });
+  Future<ProjectListResponse> getProjectList({
+    required String userId,
+  });
+  Future<GenericResponse> createMainTask({
+    required String userId,
+    required MainTask mainTask,
+  });
+  Future<ParentTaskListResponse> getParentTaskList({
+    required String userId,
+    required int projectId,
+  });
+  Future<PoJobListResponse> getPoJobList({
+    required String userId,
+    required String jobpono,
+  });
+  Future<GenericResponse> addTaskNote({
+    required String userId,
+    required int taskId,
+    required String tasknote,
+  });
+  Future<TaskNoteListResponse> getTaskNoteList({
+    required String userId,
+    required int taskId,
+  });
+  Future<GenericResponse> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
   });
 }

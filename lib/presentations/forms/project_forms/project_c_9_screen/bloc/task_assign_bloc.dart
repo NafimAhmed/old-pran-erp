@@ -6,22 +6,17 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 sealed class TaskAssignEvent {}
 
 final class TaskAssign extends TaskAssignEvent {
-  final int jobId;
-  final int? pId;
-  final String tsknm;
-  final String tskdesc;
-  final String tskasgne;
-  final String startDate;
-  final String endDate;
+  final String userId;
+
+  final String assigneeId;
+  final String department;
+  final String taskId;
 
   TaskAssign({
-    required this.jobId,
-    required this.pId,
-    required this.tsknm,
-    required this.tskdesc,
-    required this.tskasgne,
-    required this.startDate,
-    required this.endDate,
+    required this.userId,
+    required this.assigneeId,
+    required this.department,
+    required this.taskId,
   });
 }
 
@@ -50,14 +45,10 @@ class TaskAssignBloc extends Bloc<TaskAssignEvent, TaskAssignState> {
       emit(TaskAssignLoading());
       try {
         await _dataService.taskAssign(
-          jobId: event.jobId,
-          pId: event.pId,
-          tsknm: event.tsknm,
-          tskdesc: event.tskdesc,
-          tskasgne: event.tskasgne,
-          startDate: event.startDate,
-          endDate: event.endDate,
-        );
+            userId: event.userId,
+            assigneeId: event.assigneeId,
+            department: event.department,
+            taskId: event.taskId);
 
         emit(TaskAssignSuccess());
       } catch (e) {

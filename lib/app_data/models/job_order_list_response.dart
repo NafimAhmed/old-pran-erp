@@ -48,7 +48,7 @@ class JobOrderListResponse {
 
 class JoInfo {
   final String? jobOrderNo;
-  final int? jobId;
+  final String? jobId;
 
   JoInfo({
     this.jobOrderNo,
@@ -57,7 +57,7 @@ class JoInfo {
 
   JoInfo copyWith({
     String? jobOrderNo,
-    int? jobId,
+    String? jobId,
   }) =>
       JoInfo(
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,

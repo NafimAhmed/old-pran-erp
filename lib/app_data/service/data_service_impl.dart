@@ -7,7 +7,9 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
+import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
@@ -20,6 +22,9 @@ import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -30,6 +35,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
@@ -41,6 +47,7 @@ import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_d
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
+import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 import '../../core/exceptions/custom_exception.dart';
 import '../models/user_menu_item_response.dart';
 import '../models/user_info_model.dart';
@@ -566,7 +573,7 @@ class DataServiceImpl implements DataService {
     var response = await remoteDataRepository.giveOrgAccess(
         newUserId: newUserId, userId: userId, orgId: orgId);
     if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+      throw ApiDataException(response.errorMessage);
     }
   }
 
@@ -716,10 +723,10 @@ class DataServiceImpl implements DataService {
   @override
   Future<List<TaskInfo>> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   }) async {
     var response = await remoteDataRepository.getTaskInfoList(
-        userid: userid, jobOrderNo: jobOrderNo);
+      userid: userid,
+    );
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
@@ -864,23 +871,16 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<void> taskAssign({
-    required int jobId,
-    required int? pId,
-    required String tsknm,
-    required String tskdesc,
-    required String tskasgne,
-    required String startDate,
-    required String endDate,
+    required String userId,
+    required String assigneeId,
+    required String department,
+    required String taskId,
   }) async {
     var response = await remoteDataRepository.taskAssign(
-      jobId: jobId,
-      pId: pId,
-      tsknm: tsknm,
-      tskdesc: tskdesc,
-      tskasgne: tskasgne,
-      startDate: startDate,
-      endDate: endDate,
-    );
+        userId: userId,
+        assigneeId: assigneeId,
+        department: department,
+        taskId: taskId);
     if (response.statusCode != 200) {
       throw ApiDataException(response.message);
     }
@@ -925,6 +925,125 @@ class DataServiceImpl implements DataService {
       pPriority: pPriority,
       pTtlPerson: pTtlPerson,
       pManHours: pManHours,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+  }
+
+  @override
+  Future<List<Department>> getDeptList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getDeptList(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.deptList ?? [];
+  }
+
+  @override
+  Future<List<Buyer>> getBuyerList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getBuyerList(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.buyerList ?? [];
+  }
+
+  @override
+  Future<List<Project>> getProjectList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getProjectList(userId: userId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.projectList ?? [];
+  }
+
+  @override
+  Future<void> createMainTask({
+    required String userId,
+    required MainTask mainTask,
+  }) async {
+    var response = await remoteDataRepository.createMainTask(
+        userId: userId, mainTask: mainTask);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+  }
+
+  @override
+  Future<List<ParentTask>> getParentTaskList({
+    required String userId,
+    required int projectId,
+  }) async {
+    var response = await remoteDataRepository.getParentTaskList(
+      userId: userId,
+      projectId: projectId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.parentTaskList ?? [];
+  }
+
+  @override
+  Future<List<PoJob>> getPoJobList({
+    required String userId,
+    required String jobpono,
+  }) async {
+    var response = await remoteDataRepository.getPoJobList(
+      userId: userId,
+      jobpono: jobpono,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.poJobList ?? [];
+  }
+
+  @override
+  Future<void> addTaskNote({
+    required String userId,
+    required int taskId,
+    required String tasknote,
+  }) async {
+    var response = await remoteDataRepository.addTaskNote(
+        userId: userId, taskId: taskId, tasknote: tasknote);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
+  Future<List<TaskNote>> getTaskNoteList({
+    required String userId,
+    required int taskId,
+  }) async {
+    var response = await remoteDataRepository.getTaskNoteList(
+      userId: userId,
+      taskId: taskId,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+    return response.taskNoteList ?? [];
+  }
+
+  @override
+  Future<void> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
+  }) async {
+    var response = await remoteDataRepository.locatorTranfer(
+      userid: userid,
+      torackid: torackid,
+      trnid: trnid,
     );
     if (response.statusCode != 200) {
       throw ApiDataException(response.errorMessage);

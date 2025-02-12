@@ -8,7 +8,9 @@ import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
+import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
@@ -23,6 +25,9 @@ import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
+import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -33,6 +38,7 @@ import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
@@ -44,6 +50,7 @@ import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
+import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 
 import '../../models/user_menu_item_response.dart';
 
@@ -783,12 +790,11 @@ class RemoteDataRepositoryImpl
   @override
   Future<TaskInfoResponse> getTaskInfoList({
     required String userid,
-    required String jobOrderNo,
   }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&joborderno=$jobOrderNo'));
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid'));
 
     http.StreamedResponse response = await request.send();
     return decodeResponse(response, decoder: TaskInfoResponse.fromJson);
@@ -814,9 +820,11 @@ class RemoteDataRepositoryImpl
     required int taskId,
   }) async {
     var request = http.Request(
-        'PUT',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&taskstatus=$taskStatus&tskid=$taskId'));
+      'PUT',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&taskstatus=$taskStatus&tskid=$taskId',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
@@ -928,9 +936,11 @@ class RemoteDataRepositoryImpl
     required String userId,
   }) async {
     var request = http.Request(
-        'POST',
-        Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/tasklist?userid=$userId'));
+      'POST',
+      Uri.parse(
+        '${appConfig.baseUrl}/ords/rpro/taskapi/tasklist?userid=$userId',
+      ),
+    );
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: TaskListResponse.fromJson);
@@ -938,18 +948,15 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<GenericResponse> taskAssign({
-    required int jobId,
-    required int? pId,
-    required String tsknm,
-    required String tskdesc,
-    required String tskasgne,
-    required String startDate,
-    required String endDate,
+    required String userId,
+    required String assigneeId,
+    required String department,
+    required String taskId,
   }) async {
     var request = http.Request(
-        'POST',
+        'PUT',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?jobid=$jobId&pid=$pId&tsknm=$tsknm&tskdesc=$tskdesc&tskasgne=$tskasgne&STDT=$startDate&EDDT=$endDate&userid=$tskasgne'));
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?userid=$userId&assigneeid=$assigneeId&deptname=$department&taskid=$taskId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
@@ -986,12 +993,145 @@ class RemoteDataRepositoryImpl
     required String pTtlPerson,
     required String pManHours,
   }) async {
+    // var request = http.Request(
+    //   'POST',
+    //   Uri.parse(
+    //     '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_project_name=$pname&v_description=$pDesc&v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_status=$pStatus&v_priority=$pPriority&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours',
+    //   ),
+    // );
+
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_project_name=$pname&v_priority=$pPriority&v_description=$pDesc&v_status=$pStatus&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours&PROJECTS_INFO=$pDesc&v_project_company=$pClientName'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<DepartmentListResponse> getDeptList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/deptinfo?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: DepartmentListResponse.fromJson);
+  }
+
+  @override
+  Future<BuyerListResponse> getBuyerList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/buyerinfo?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: BuyerListResponse.fromJson);
+  }
+
+  @override
+  Future<ProjectListResponse> getProjectList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/projectInfo?userid=$userId'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: ProjectListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> createMainTask({
+    required String userId,
+    required MainTask mainTask,
+  }) async {
     var request = http.Request(
       'POST',
       Uri.parse(
-        '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_project_name=$pname&v_description=$pDesc&v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_status=$pStatus&v_priority=$pPriority&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours',
-      ),
+          '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId&taskparentid=${mainTask.taskparentid?.taskId ?? "0"}&jobno=${mainTask.jobNo ?? "0"}'),
     );
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<ParentTaskListResponse> getParentTaskList({
+    required String userId,
+    required int projectId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/parentTaskList?userid=$userId&projectid=$projectId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: ParentTaskListResponse.fromJson);
+  }
+
+  @override
+  Future<PoJobListResponse> getPoJobList({
+    required String userId,
+    required String jobpono,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/poJobList?userid=$userId&jobpono=$jobpono'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: PoJobListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> addTaskNote(
+      {required String userId,
+      required int taskId,
+      required String tasknote}) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskNoteApi?userid=$userId&taskid=$taskId&tasknote=$tasknote'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<TaskNoteListResponse> getTaskNoteList({
+    required String userId,
+    required int taskId,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/taskapi/taskNoteData?userid=$userId&taskid=$taskId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: TaskNoteListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/invtran/tmplocatortrnf?userid=$userid&p_locator_id=$torackid&p_trn_id=$trnid'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
