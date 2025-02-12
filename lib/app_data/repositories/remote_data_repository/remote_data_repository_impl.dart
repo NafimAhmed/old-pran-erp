@@ -1121,4 +1121,19 @@ class RemoteDataRepositoryImpl
     return await decodeResponse(response,
         decoder: TaskNoteListResponse.fromJson);
   }
+
+  @override
+  Future<GenericResponse> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/invtran/tmplocatortrnf?userid=$userid&p_locator_id=$torackid&p_trn_id=$trnid'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
 }

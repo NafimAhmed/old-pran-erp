@@ -1033,4 +1033,20 @@ class DataServiceImpl implements DataService {
     }
     return response.taskNoteList ?? [];
   }
+
+  @override
+  Future<void> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
+  }) async {
+    var response = await remoteDataRepository.locatorTranfer(
+      userid: userid,
+      torackid: torackid,
+      trnid: trnid,
+    );
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+  }
 }

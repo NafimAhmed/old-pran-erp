@@ -355,4 +355,9 @@ abstract class DataService {
     required String userId,
     required int taskId,
   });
+  Future<void> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
+  });
 }

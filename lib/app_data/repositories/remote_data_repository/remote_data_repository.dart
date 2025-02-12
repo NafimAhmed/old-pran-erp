@@ -345,4 +345,9 @@ abstract class RemoteDataRepository {
     required String userId,
     required int taskId,
   });
+  Future<GenericResponse> locatorTranfer({
+    required String userid,
+    required String torackid,
+    required String trnid,
+  });
 }
