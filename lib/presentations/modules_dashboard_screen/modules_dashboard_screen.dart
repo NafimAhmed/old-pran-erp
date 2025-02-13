@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/cubit/app_info_cubit_cubit.dart';
+import 'package:pran_rfl_erp/presentations/user_profile/user_profile_screen/user_profile_screen.dart';
 
 class ModulesDashboardScreen extends StatelessWidget {
   const ModulesDashboardScreen({
@@ -90,22 +91,27 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 80,
-                        width: 80,
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: appTheme.white,
-                            width: 2,
-                          ),
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(
-                              ImageConstant.malePlaceholder,
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(UserProfileScreen.routeName);
+                        },
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: appTheme.white,
+                              width: 2,
                             ),
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage(
+                                ImageConstant.malePlaceholder,
+                              ),
+                            ),
+                            shape: BoxShape.circle,
                           ),
-                          shape: BoxShape.circle,
                         ),
                       ),
                       const SizedBox(

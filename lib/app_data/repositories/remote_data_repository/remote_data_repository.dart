@@ -350,4 +350,9 @@ abstract class RemoteDataRepository {
     required String torackid,
     required String trnid,
   });
+  Future<GenericResponse> userPassChange({
+    required String userid,
+    required String oldPass,
+    required String newPass,
+  });
 }

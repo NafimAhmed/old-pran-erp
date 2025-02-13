@@ -1136,4 +1136,19 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
+
+  @override
+  Future<GenericResponse> userPassChange({
+    required String userid,
+    required String oldPass,
+    required String newPass,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/sysadmin/userPassChng?old_passw=$oldPass&new_passw=$newPass&userid=$userid'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
 }

@@ -1049,4 +1049,17 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.errorMessage);
     }
   }
+
+  @override
+  Future<void> userPassChange({
+    required String userid,
+    required String oldPass,
+    required String newPass,
+  }) async {
+    var response = await remoteDataRepository.userPassChange(
+        userid: userid, oldPass: oldPass, newPass: newPass);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+  }
 }

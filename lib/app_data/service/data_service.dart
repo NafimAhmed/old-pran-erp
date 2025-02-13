@@ -360,4 +360,9 @@ abstract class DataService {
     required String torackid,
     required String trnid,
   });
+  Future<void> userPassChange({
+    required String userid,
+    required String oldPass,
+    required String newPass,
+  });
 }

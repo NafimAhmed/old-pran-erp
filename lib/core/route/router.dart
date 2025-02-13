@@ -43,6 +43,8 @@ import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 import 'package:pran_rfl_erp/presentations/splash_screen/splash_screen.dart';
+import 'package:pran_rfl_erp/presentations/user_profile/user_profile_screen/user_profile_screen.dart';
+import 'package:pran_rfl_erp/presentations/user_profile/user_profile_update_screen/user_profile_update_screen.dart';
 
 class AppNavigation {
   AppNavigation._();
@@ -78,6 +80,26 @@ class AppNavigation {
         builder: (context, state) {
           return const ModulesDashboardScreen();
         },
+        routes: [
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: UserProfileScreen.routePath,
+            name: UserProfileScreen.routeName,
+            builder: (context, state) {
+              return const UserProfileScreen();
+            },
+            routes: [
+              GoRoute(
+                parentNavigatorKey: _rootNavigatorKey,
+                path: UserProfileUpdateScreen.routePath,
+                name: UserProfileUpdateScreen.routeName,
+                builder: (context, state) {
+                  return const UserProfileUpdateScreen();
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
