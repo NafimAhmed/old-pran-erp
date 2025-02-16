@@ -102,7 +102,7 @@ class _UserProfileScreenBodyState extends State<UserProfileScreenBody> {
                   onTap: () {
                     AppModal.showCustomModal(
                       context,
-                      content: ChangePasswordDialog(),
+                      content: const ChangePasswordDialog(),
                     );
                   },
                 ),
