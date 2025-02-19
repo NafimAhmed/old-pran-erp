@@ -123,22 +123,25 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      state != null ? state.userName : "",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.white,
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        state != null ? state.userName : "",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      "ID: ${state != null ? state.userId : ""}",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.white,
+                                      Text(
+                                        "ID: ${state != null ? state.userId : ""}",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 BlocConsumer<LoginBloc, LoginState>(
                                   listener: (context, state) {
