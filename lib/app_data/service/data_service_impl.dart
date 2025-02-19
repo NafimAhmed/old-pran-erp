@@ -419,7 +419,7 @@ class DataServiceImpl implements DataService {
       menuId: menuId,
     );
     if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+      throw ApiDataException(response.errorMessage);
     }
   }
 
