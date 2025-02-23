@@ -367,30 +367,37 @@ class TaskWidgetContent extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(
-                  data.jobOrderNo ?? "",
-                  style: textTheme.bodyMedium!.copyWith(
-                    color: appTheme.primary,
-                  ),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Task:",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.primary,
-                      ),
-                    ),
                     Flexible(
                       child: Text(
-                        data.taskName ?? "",
+                        data.jobOrderNo ?? "",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.primary,
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(
+                      child: Text(
+                        data.taskStatus ?? "",
+                        style: textTheme.bodyMedium!.copyWith(
+                          fontSize: 17,
+                          color: _getColorsStatus(data.taskStatus ?? ""),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
+                ),
+                Text(
+                  data.taskName ?? "",
+                  style: textTheme.bodyMedium!.copyWith(
+                    color: appTheme.primary,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -415,14 +422,14 @@ class TaskWidgetContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Status:",
+                      "Assigned To:",
                       style: textTheme.bodyMedium!.copyWith(
                         color: appTheme.primary,
                       ),
                     ),
                     Flexible(
                       child: Text(
-                        data.taskStatus ?? "",
+                        data.assignedTo ?? "",
                         style: textTheme.bodyMedium!.copyWith(
                           color: appTheme.primary,
                         ),
@@ -430,66 +437,139 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Table(
+                  textDirection: TextDirection.ltr,
+                  defaultVerticalAlignment: TableCellVerticalAlignment
+                      .middle, // Adjusted for better alignment
+                  border: TableBorder.all(width: 1, color: Colors.black),
                   children: [
-                    Text(
-                      "Creatn Date:",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.primary,
+                    TableRow(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 217, 224, 243),
                       ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        DateTime.parse(data.taskCreactionDate ?? "")
-                            .toFormatedString("dd-MMM-yyyy"),
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.primary,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(5.0), // Adding padding
+                          child: Text("Creatn Date"),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            DateTime.parse(data.taskCreactionDate ?? "")
+                                .toFormatedString("dd-MMM-yyyy"),
+                            style: textTheme.bodyMedium!.copyWith(
+                                // color: appTheme.primary,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 163, 176, 214),
                       ),
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Text("Start Date"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            DateTime.parse(data.taskCreactionDate ?? "")
+                                .toFormatedString("dd-MMM-yyyy"),
+                            style: textTheme.bodyMedium!.copyWith(
+                                // color: appTheme.primary,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 120, 139, 207),
+                      ),
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Text("StCm Date"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            DateTime.parse(data.taskCompletionDate ?? "")
+                                .toFormatedString("dd-MMM-yyyy"),
+                            style: textTheme.bodyMedium!.copyWith(
+                                // color: appTheme.primary,
+                                ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Start Date:",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.primary,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        DateTime.parse(data.taskStartDate ?? "")
-                            .toFormatedString("dd-MMM-yyyy"),
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "StCm Date:",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: appTheme.primary,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        DateTime.parse(data.taskCompletionDate ?? "")
-                            .toFormatedString("dd-MMM-yyyy"),
-                        style: textTheme.bodyMedium!.copyWith(
-                          color: appTheme.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                )
+
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       "Creatn Date:",
+                //       style: textTheme.bodyMedium!.copyWith(
+                //         color: appTheme.primary,
+                //       ),
+                //     ),
+                //     Flexible(
+                //       child: Text(
+                //         DateTime.parse(data.taskCreactionDate ?? "")
+                //             .toFormatedString("dd-MMM-yyyy"),
+                //         style: textTheme.bodyMedium!.copyWith(
+                //           color: appTheme.primary,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       "Start Date:",
+                //       style: textTheme.bodyMedium!.copyWith(
+                //         color: appTheme.primary,
+                //       ),
+                //     ),
+                //     Flexible(
+                //       child: Text(
+                //         DateTime.parse(data.taskStartDate ?? "")
+                //             .toFormatedString("dd-MMM-yyyy"),
+                //         style: textTheme.bodyMedium!.copyWith(
+                //           color: appTheme.primary,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       "StCm Date:",
+                //       style: textTheme.bodyMedium!.copyWith(
+                //         color: appTheme.primary,
+                //       ),
+                //     ),
+                //     Flexible(
+                //       child: Text(
+                //         DateTime.parse(data.taskCompletionDate ?? "")
+                //             .toFormatedString("dd-MMM-yyyy"),
+                //         style: textTheme.bodyMedium!.copyWith(
+                //           color: appTheme.primary,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                ,
                 const SizedBox(
                   height: 5,
                 ),
@@ -540,6 +620,16 @@ class TaskWidgetContent extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color? _getColorsStatus(String taskStatus) {
+    if (taskStatus == "Start") {
+      return Colors.green;
+    } else if (taskStatus == "Pending") {
+      return Colors.red;
+    } else {
+      return null;
+    }
   }
 }
 

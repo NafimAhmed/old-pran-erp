@@ -47,6 +47,7 @@ class TaskInfoResponse {
 }
 
 class TaskInfo {
+  final String? assignedTo;
   final int? tasksid;
   final String? taskName;
   final String? taskDept;
@@ -60,6 +61,7 @@ class TaskInfo {
   final int? refNo;
 
   TaskInfo({
+    this.assignedTo,
     this.tasksid,
     this.taskName,
     this.taskDept,
@@ -74,6 +76,7 @@ class TaskInfo {
   });
 
   TaskInfo copyWith({
+    String? assignedTo,
     int? tasksid,
     String? taskName,
     String? taskDept,
@@ -87,6 +90,7 @@ class TaskInfo {
     int? refNo,
   }) =>
       TaskInfo(
+        assignedTo: assignedTo ?? this.assignedTo,
         tasksid: tasksid ?? this.tasksid,
         taskName: taskName ?? this.taskName,
         taskDept: taskDept ?? this.taskDept,
@@ -105,6 +109,7 @@ class TaskInfo {
   String toJson() => json.encode(toMap());
 
   factory TaskInfo.fromMap(Map<String, dynamic> json) => TaskInfo(
+        assignedTo: json["Assigned_To"],
         tasksid: json["TASKSID"],
         taskName: json["TASK_NAME"],
         taskDept: json["TASK_DEPT"],
@@ -119,6 +124,7 @@ class TaskInfo {
       );
 
   Map<String, dynamic> toMap() => {
+        "Assigned_To": assignedTo,
         "TASKSID": tasksid,
         "TASK_NAME": taskName,
         "TASK_DEPT": taskDept,
