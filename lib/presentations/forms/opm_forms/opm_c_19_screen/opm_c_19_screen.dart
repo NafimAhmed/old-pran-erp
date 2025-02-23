@@ -56,14 +56,15 @@ class _OpmC19ScreenBodyState extends State<OpmC19ScreenBody> {
           BlocListener<RePrintQrBloc, RePrintQrState>(
             listener: (context, state) {
               if (state is RePrintQrSuccess) {
-                lotNoController.clear();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: const Text(
-                        "Successfully Found",
-                      ),
-                      backgroundColor: appTheme.primary),
-                );
+                if (state.rQrDataList.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: const Text(
+                          "Successfully Found",
+                        ),
+                        backgroundColor: appTheme.primary),
+                  );
+                }
               }
             },
           ),
