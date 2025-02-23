@@ -56,6 +56,8 @@ class TaskInfo {
   final String? taskCreactionDate;
   final String? taskCompletionDate;
   final String? taskStatus;
+  final String? projectName;
+  final int? refNo;
 
   TaskInfo({
     this.tasksid,
@@ -67,6 +69,8 @@ class TaskInfo {
     this.taskCreactionDate,
     this.taskCompletionDate,
     this.taskStatus,
+    this.projectName,
+    this.refNo,
   });
 
   TaskInfo copyWith({
@@ -79,6 +83,8 @@ class TaskInfo {
     String? taskCreactionDate,
     String? taskCompletionDate,
     String? taskStatus,
+    String? projectName,
+    int? refNo,
   }) =>
       TaskInfo(
         tasksid: tasksid ?? this.tasksid,
@@ -90,6 +96,8 @@ class TaskInfo {
         taskCreactionDate: taskCreactionDate ?? this.taskCreactionDate,
         taskCompletionDate: taskCompletionDate ?? this.taskCompletionDate,
         taskStatus: taskStatus ?? this.taskStatus,
+        projectName: projectName ?? this.projectName,
+        refNo: refNo ?? this.refNo,
       );
 
   factory TaskInfo.fromJson(String str) => TaskInfo.fromMap(json.decode(str));
@@ -106,6 +114,8 @@ class TaskInfo {
         taskCreactionDate: json["TASK_CREACTION_DATE"],
         taskCompletionDate: json["TASK_COMPLETION_DATE"],
         taskStatus: json["TASK_STATUS"],
+        projectName: json["PROJECT_NAME"],
+        refNo: json["REF_NO"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -118,6 +128,8 @@ class TaskInfo {
         "TASK_CREACTION_DATE": taskCreactionDate,
         "TASK_COMPLETION_DATE": taskCompletionDate,
         "TASK_STATUS": taskStatus,
+        "PROJECT_NAME": projectName,
+        "REF_NO": refNo,
       };
   @override
   String toString() {

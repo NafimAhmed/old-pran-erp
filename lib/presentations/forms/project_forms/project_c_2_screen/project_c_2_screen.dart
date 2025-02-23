@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
@@ -15,6 +17,7 @@ import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/add_task_note_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/exAuto_task_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_note_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_save_bloc.dart';
@@ -33,6 +36,9 @@ class ProjectC2Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => TaskSaveBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => ExAutoTaskSaveBloc(getService()),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<JoInfo>(),
@@ -105,6 +111,7 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
                 message: "Successfully Saved",
               ),
             );
+
             context.read<TaskInfoBloc>().add(
                   TaskInfoGet(
                     userId: loggedUser.userId,
@@ -225,8 +232,9 @@ class TaskWidgetContent extends StatelessWidget {
                 : DismissDirection.none,
         dismissThresholds: const {DismissDirection.startToEnd: 0.8},
         confirmDismiss: (direction) async {
-          return await showDialog<bool>(
+          var result = await showDialog<bool>(
                 context: context,
+                barrierDismissible: false,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("Are You Sure"),
@@ -250,20 +258,53 @@ class TaskWidgetContent extends StatelessWidget {
                 },
               ) ??
               false; // Default to false if dialog is dismissed without selection
+          if (result && context.mounted) {
+            var status = context
+                .read<VariableStateHandlerCubit<TaskStatusType>>()
+                .state!;
+            var loggedUser = context.read<LoggedUserInfoCubit>().state!;
+            context.read<TaskSaveBloc>().add(
+                  TaskSave(
+                    userId: loggedUser.userId,
+                    taskStatus: status.value,
+                    taskId: data.tasksid ?? 0,
+                  ),
+                );
+            context.read<ExAutoTaskSaveBloc>().add(
+                  ExAutoTaskSave(
+                    taskId: data.refNo ?? 0,
+                    vUser: loggedUser.userId,
+                    vCustomerPo: data.projectName ?? "",
+                    vJobOrderNo: data.jobOrderNo ?? "",
+                    vStatus: status.value,
+                    vAdate: data.taskCreactionDate ?? "",
+                    vFdate: data.taskCompletionDate ?? "",
+                    vTdate: data.taskStartDate ?? "",
+                    vNote: "",
+                  ),
+                );
+            // Listen to the stream of TaskAssignBloc
+            final completer = Completer<bool>();
+            final subscription =
+                context.read<TaskSaveBloc>().stream.listen((state) {
+              if (state is TaskSaveSuccess) {
+                completer.complete(true); // Complete with true on success
+              } else if (state is TaskSaveError) {
+                completer.complete(false); // Complete with false on failure
+              }
+            });
+
+            // Wait for the result and clean up the subscription
+            final isSuccess = await completer.future;
+            subscription.cancel();
+            return isSuccess;
+          }
+
+          return false;
         },
         onDismissed: (direction) {
           context.read<TaskInfoBloc>().add(RemoveTaskInfo(index: index));
 
-          var status =
-              context.read<VariableStateHandlerCubit<TaskStatusType>>().state!;
-          var loggedUser = context.read<LoggedUserInfoCubit>().state!;
-          context.read<TaskSaveBloc>().add(
-                TaskSave(
-                  userId: loggedUser.userId,
-                  taskStatus: status.value,
-                  taskId: data.tasksid ?? 0,
-                ),
-              );
           context.read<VariableStateHandlerCubit<TaskStatusType>>().reset();
         },
         background: Container(

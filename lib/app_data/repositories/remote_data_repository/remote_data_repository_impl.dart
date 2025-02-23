@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
@@ -825,6 +828,44 @@ class RemoteDataRepositoryImpl
         '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid&taskstatus=$taskStatus&tskid=$taskId',
       ),
     );
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> saveTaskStatusToExAuto(
+      {required String vUser,
+      required String vStatus,
+      required String vNote,
+      required int taskId,
+      required String vCustomerPo,
+      required String vJobOrderNo,
+      required String vFdate,
+      required String vTdate,
+      required String vAdate}) async {
+    var headers = {
+      'ss': 'Task',
+      'yy': 'HJDyh876Yhdsf543GDJksn',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('http://pqc.prangroup.com:8115/api/TaskUpdate'));
+    request.body = json.encode([
+      {
+        "v_customer_po": vCustomerPo,
+        "v_job_order_no": vJobOrderNo,
+        "v_fdate": vFdate,
+        "v_tdate": vTdate,
+        "v_adate": vAdate,
+        "v_user": vUser,
+        "v_status": vStatus,
+        "v_note": vNote,
+        "v_task_id": taskId
+      }
+    ]);
+    log(request.body);
+    request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
