@@ -139,8 +139,8 @@ class RqrData {
         "DELIVERY_DATE": deliveryDate,
       };
   Map<String, dynamic> toUiMap() => {
-        "Item Name": itemName,
-        "Lot No": lotNo,
+        // "Item Name": itemName,
+        // "Lot No": lotNo,
         "Job Order No": jobOrderNo,
         "Batch No": batchNo,
         "Sub Inv": subInv,

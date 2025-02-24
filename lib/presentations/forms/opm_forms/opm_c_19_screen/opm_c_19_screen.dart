@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
@@ -147,7 +148,7 @@ class _OpmC19ScreenBodyState extends State<OpmC19ScreenBody> {
                     if (state is RePrintQrSuccess) {
                       return ListView.separated(
                         itemBuilder: (context, index) {
-                          var data = state.rQrDataList[index].toUiMap();
+                          var data = state.rQrDataList[index];
                           return BlocBuilder<EnableRePrintQrBloc,
                               EnableRePrintQrState>(
                             builder: (context, state) {
@@ -159,10 +160,7 @@ class _OpmC19ScreenBodyState extends State<OpmC19ScreenBody> {
                                 btnPress: () {
                                   context.read<EnableRePrintQrBloc>().add(
                                         EnableRePrintQrData(
-                                          lotNo: data.entries
-                                              .elementAt(1)
-                                              .value
-                                              .toString(),
+                                          lotNo: data.lotNo ?? "",
                                         ),
                                       );
                                 },
@@ -195,7 +193,7 @@ class CommonListWidget extends StatelessWidget {
     required this.btnName,
     this.btnPress,
   });
-  final Map<String, dynamic> data;
+  final RqrData data;
   final String btnName;
   final Function()? btnPress;
   @override
@@ -218,35 +216,64 @@ class CommonListWidget extends StatelessWidget {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...List.generate(
-            data.length,
-            (index) {
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Text(
+            data.itemName ?? "",
+            style: textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            data.lotNo ?? "",
+            style: textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Table(
+            textDirection: TextDirection.ltr,
+            defaultVerticalAlignment: TableCellVerticalAlignment
+                .middle, // Adjusted for better alignment
+            border: TableBorder.all(width: 1, color: Colors.black),
+            children: [
+              ...List.generate(
+                data.toUiMap().length,
+                (index) {
+                  var map = data.toUiMap();
+                  return TableRow(
+                    decoration: BoxDecoration(
+                      color: index % 2 == 0
+                          ? const Color.fromARGB(255, 217, 224, 243)
+                          : const Color.fromARGB(255, 196, 203, 221),
+                    ),
                     children: [
-                      Text(
-                        data.entries.elementAt(index).key,
-                        style: textTheme.bodyMedium!,
+                      Padding(
+                        padding: const EdgeInsets.all(4.0), // Adding padding
+                        child: Text(map.entries.elementAt(index).key,
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            )),
                       ),
-                      Flexible(
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
                         child: Text(
-                          data.entries.elementAt(index).value.toString(),
+                          map.entries.elementAt(index).value.toString(),
                           style: textTheme.bodySmall!.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      )
+                      ),
                     ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  )
-                ],
-              );
-            },
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 5,
           ),
           Align(
             alignment: Alignment.centerRight,
