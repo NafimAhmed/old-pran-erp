@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
 
@@ -23,63 +22,53 @@ mixin DecoderServiceMixin {
         }
 
       case 401:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw UnauthorizedException(message: res["Status"]);
+        throw UnauthorizedException(message: await _parseMessage(response));
 
       case 400:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw BadRequestException(message: res["Status"]);
+        throw BadRequestException(message: await _parseMessage(response));
 
       case 404:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw NotFoundException(message: res["Status"]);
+        throw NotFoundException(message: await _parseMessage(response));
+
       case 405:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw MethodNotAllowedException(message: res["Status"]);
+        throw MethodNotAllowedException(message: await _parseMessage(response));
 
       case 409:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw ConflictException(message: res["Status"]);
+        throw ConflictException(message: await _parseMessage(response));
 
       case 422:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw UnprocessableEntityException(message: res["Status"]);
+        throw UnprocessableEntityException(
+            message: await _parseMessage(response));
 
       case 403:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw ForbiddenException(message: res["Status"]);
+        throw ForbiddenException(message: await _parseMessage(response));
 
       case 429:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw TooManyRequestsException(message: res["Status"]);
+        throw TooManyRequestsException(message: await _parseMessage(response));
 
       case 408:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw RequestTimeoutException(message: res["Status"]);
+        throw RequestTimeoutException(message: await _parseMessage(response));
 
       case 502:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw BadGatewayException(message: res["Status"]);
+        throw BadGatewayException(message: await _parseMessage(response));
 
       case 500:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw InternalServerErrorException(message: res["Status"]);
+        throw InternalServerErrorException(
+            message: await _parseMessage(response));
 
       default:
-        var resBody = await response.stream.bytesToString();
-        Map<String, dynamic> res = json.decode(resBody);
-        throw ApiDataException(res["Status"] ?? "");
+        throw ApiDataException(await _parseMessage(response));
+    }
+  }
+
+  /// Helper function to parse API error messages
+  Future<String> _parseMessage(http.StreamedResponse response) async {
+    try {
+      var resBody = await response.stream.bytesToString();
+      Map<String, dynamic> res = json.decode(resBody);
+      return res["Status"] ?? "Unknown error occurred";
+    } catch (e) {
+      return "Unknown error occurred";
     }
   }
 }

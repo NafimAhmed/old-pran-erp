@@ -89,3 +89,13 @@ class ApiDataException implements Exception {
   @override
   String toString() => message;
 }
+
+class ServerDownException implements Exception {
+  final String message;
+
+  const ServerDownException([String? message])
+      : message = message ?? "Couldn't Communicate With Server";
+
+  @override
+  String toString() => message;
+}

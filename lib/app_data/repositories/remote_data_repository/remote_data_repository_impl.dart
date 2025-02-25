@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
@@ -54,6 +56,8 @@ import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decode
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
+import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
+import 'package:pran_rfl_erp/core/exceptions/custom_exception.dart';
 
 import '../../models/user_menu_item_response.dart';
 
@@ -63,6 +67,19 @@ class RemoteDataRepositoryImpl
   final AppConfig appConfig;
 
   RemoteDataRepositoryImpl({required this.appConfig});
+
+  Future<http.StreamedResponse> _safeApiCall(Request request) async {
+    try {
+      http.StreamedResponse response = await request.send();
+      return response;
+    } on SocketException {
+      throw const ServerDownException();
+    } on http.ClientException {
+      throw const ServerDownException();
+    } catch (e) {
+      throw const CustomException("Something Went Wrong");
+    }
+  }
 
   @override
   Future<void> sendProdQrInfo(
@@ -78,7 +95,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/qrinfo?itemid=$itemId&BATCHID=$batchId&QTY=$qty&GOOD_QTY=$goodQty&BAD_QTY=$badQty&machine=$machine'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     await decodeResponse(response);
   }
@@ -88,7 +105,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request('GET',
         Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/temp_batch_data'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: TempBatchDataResponse.fromJson);
@@ -107,7 +124,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userbatchstock?rqty=$rqty&userid=$userid&p_trnid=$pTrnid&rackid=$rackId&split_flag=$split'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     await decodeResponse(
       response,
@@ -121,7 +138,7 @@ class RemoteDataRepositoryImpl
         'GET',
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userbatchstock?userid=$userId'));
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: TransferBatchDataResponse.fromJson);
@@ -134,7 +151,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/usermachine?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: UserMachineResponse.fromJson);
@@ -151,7 +168,7 @@ class RemoteDataRepositoryImpl
           '${appConfig.baseUrl}/ords/rpro/batch/userstocksubinvtrns?trnid=$transactId&userid=$userId&split=0'),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     await decodeResponse(
       response,
@@ -166,7 +183,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/jobhist?userid=$userId&jobno=$jobNo'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response, decoder: JobHistoryResponse.fromJson);
   }
@@ -181,7 +198,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userskttrnfdel?userid=$userId&trnsfid=$trnsfid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     await decodeResponse(response);
   }
@@ -194,7 +211,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/login?userid=$userid&passw=$passw'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: AuthenticationResponse.fromJson);
@@ -209,7 +226,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/usermenu?userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse<UserMenuItemResponse>(response,
         decoder: UserMenuItemResponse.fromJson);
@@ -224,7 +241,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userorgs?userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse<UserOrgsResponse>(response,
         decoder: UserOrgsResponse.fromJson);
@@ -241,7 +258,7 @@ class RemoteDataRepositoryImpl
           '${appConfig.baseUrl}/ords/rpro/batch/userbasicdata?userid=$userid&orgid=$orgid'),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse<UserBasicDataResponse>(response,
         decoder: UserBasicDataResponse.fromJson);
   }
@@ -259,7 +276,7 @@ class RemoteDataRepositoryImpl
           '${appConfig.baseUrl}/ords/rpro/invtran/IOTapi?userid=$userid&itemlotno=$itemlotno&tlockid=$torackid&trnid=$trnid'),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
@@ -284,7 +301,7 @@ class RemoteDataRepositoryImpl
       ),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: BatchQrDataResponse.fromJson);
@@ -300,7 +317,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userqrprint?userid=$userid&orgid=$orgid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return decodeResponse(response, decoder: UserQrPrintResponse.fromJson);
   }
@@ -314,7 +331,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userqrsave?trnlotno=$trnlotno'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
@@ -328,7 +345,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/sysmanager?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: SystemModuleResponse.fromJson);
   }
@@ -343,7 +360,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/sysmenu?userid=$userId&modulename=$moduleName'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: SystemMenuParentDataResponse.fromJson);
   }
@@ -363,7 +380,7 @@ class RemoteDataRepositoryImpl
       ),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -372,7 +389,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/sysadmin/appsuser'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response, decoder: AppsUserResponse.fromJson);
   }
@@ -393,7 +410,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/usercreation?newuserid=$newUserId&newusername=$newUserName&userid=$userId&passw=$passw&appuser=$appUser&mobileno=$mobileNo&designame=null&deptname=null'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: UserCreateResponse.fromJson);
   }
 
@@ -402,7 +419,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/sysadmin/qruser'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response, decoder: QrUserResponse.fromJson);
   }
@@ -415,7 +432,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/qrmodule?newuserid=$newUserId&creatorid=$creatorId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: QrUserMenuResponse.fromJson);
   }
 
@@ -430,7 +447,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/qrchildmenu?newuserid=$newUserId&creatorid=$creatorId&routename=$routeName'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: QrUserMenuResponse.fromJson);
   }
 
@@ -445,7 +462,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/menupermission?userid=$userId&newuserid=$newUserId&menu_id=$menuId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -459,7 +476,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/invtran/IOTstkdata?userid=$userId&racklocator=$racklocator'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: LotTrnResponse.fromJson);
   }
 
@@ -472,7 +489,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchCloseData?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: BatchCloseDataResponse.fromJson);
@@ -488,7 +505,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchComDtlData?userid=$userId&batchid=$batchid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: BatchComDtlDataResponse.fromJson);
   }
 
@@ -503,7 +520,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchComLnUpdt?userid=$userId&mtldtlid=$mtldtlid&madeqty=$madeqty'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -517,7 +534,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchComplete?userid=$userId&batchid=$batchid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -531,7 +548,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchClose?userid=$userId&batchid=$batchid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -544,7 +561,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchCompleteData?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: BatchCompDataResponse.fromJson);
@@ -561,7 +578,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/BatchRelease?userid=$userId&orgid=$orgId&batchid=$batchId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -574,7 +591,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/invtran/RcvIOTData?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response,
         decoder: RcvInvOrgTrnDataResponse.fromJson);
@@ -589,7 +606,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/invtran/IOTTrnsData?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: IotTrnDataResponse.fromJson);
   }
 
@@ -601,7 +618,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/JoborderSumHistory?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: JobOrderSumHistoryResponse.fromJson);
   }
@@ -611,7 +628,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request('POST',
         Uri.parse('${appConfig.baseUrl}/ords/rpro/sysadmin/userAnOrgs'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: OrgsResponse.fromJson);
   }
 
@@ -626,7 +643,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/OrgAccessCreation?newuserid=$newUserId&userid=$userId&orgid=$orgId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -640,7 +657,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/newMachineCreare?machinename=$machinename&userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: MachineCreateResponse.fromJson);
   }
@@ -656,7 +673,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/machineAssign?userid=$userId&orgid=$orgId&machinename=$machinename'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: MachineAssignResponse.fromJson);
   }
@@ -670,7 +687,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/subinv?orgid=$orgId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: SubInvResponse.fromJson);
   }
 
@@ -689,7 +706,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/itemRackLocatorCreate?userid=$userId&orgid=$orgId&p_subinv=$pSubInv&prow=$pRow&prack=$pRack&pbeen=$pBeen&pdesc=$pDesc'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     await decodeResponse(response);
   }
 
@@ -702,7 +719,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/qrReprintEnbl?ptrno=$pTrno'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: RePrintQrResponse.fromJson);
   }
 
@@ -715,7 +732,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/qrReprintEnbl?ptrno=$pTrno'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -729,7 +746,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userJobDtlDrillDw?userid=$userid&joborderno=$jobOrderNo'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: JobDtlDrillDwResponse.fromJson);
   }
@@ -745,7 +762,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/JOLocDrillDw?userid=$userid&joborderno=$jobOrderNo&itemcode=$itemCode'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: JoLocDrillDwResponse.fromJson);
   }
@@ -759,7 +776,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/opmDashboardSM?userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: OpmDashSmResponse.fromJson);
   }
 
@@ -773,7 +790,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/glaiml/askadd?userid=$userid&asktext=$askText'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -786,7 +803,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/glaiml/askans?userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: ChatListResponse.fromJson);
   }
 
@@ -799,7 +816,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/taskupdt?userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: TaskInfoResponse.fromJson);
   }
 
@@ -812,7 +829,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/jobtask?userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: JobOrderListResponse.fromJson);
   }
 
@@ -829,7 +846,7 @@ class RemoteDataRepositoryImpl
       ),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -867,7 +884,7 @@ class RemoteDataRepositoryImpl
     log(request.body);
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -882,7 +899,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/jobhistSum?jobno=$jobOrderNo&itemid=$itemId&userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: JobOrderInfoResponse.fromJson);
   }
@@ -892,7 +909,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'POST', Uri.parse('${appConfig.baseUrl}/ords/rpro/batch/batchShift'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
 
     return await decodeResponse(response, decoder: ShiftDataResponse.fromJson);
   }
@@ -908,7 +925,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/batchShiftChange?userid=$userId&orgid=$orgId&batchno=$batchNo'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: BatchShiftChangeResponse.fromJson);
   }
@@ -926,7 +943,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/batchShiftChange?lotno=$lotNo&userid=$userId&shiftnm=$shiftName&mcnname=$machineName&manpw=$manPower'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -939,7 +956,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/jobStatusData?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: JobOrderCompletionListResponse.fromJson);
   }
@@ -954,7 +971,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/jobStatusData?userid=$userId&joborderno=$jobOrderNo'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -967,7 +984,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/jobhistTop?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: TopJoInfoListResponse.fromJson);
   }
@@ -983,7 +1000,7 @@ class RemoteDataRepositoryImpl
       ),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: TaskListResponse.fromJson);
   }
 
@@ -999,7 +1016,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/taskassignApi?userid=$userId&assigneeid=$assigneeId&deptname=$department&taskid=$taskId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1013,7 +1030,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/batch/userBatchCheck?userid=$userId&lotno=$lotNo'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(
       response,
       decoder: BatchStatusCheckResponse.fromJson,
@@ -1046,7 +1063,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/projectAPI?v_start_date=$stDate&v_end_date=$endate&v_project_manager=$pManager&v_project_name=$pname&v_priority=$pPriority&v_description=$pDesc&v_status=$pStatus&v_client=$pClientName&v_budjet=$pBudget&v_required_person=$pTtlPerson&v_man_hour=$pManHours&PROJECTS_INFO=$pDesc&v_project_company=$pClientName'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1059,7 +1076,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/deptinfo?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: DepartmentListResponse.fromJson);
   }
@@ -1073,7 +1090,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/buyerinfo?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: BuyerListResponse.fromJson);
   }
 
@@ -1086,7 +1103,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/projectInfo?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: ProjectListResponse.fromJson);
   }
 
@@ -1101,7 +1118,7 @@ class RemoteDataRepositoryImpl
           '${appConfig.baseUrl}/ords/rpro/taskapi/newTaskParentApi?projectid=${mainTask.projectId?.projectId ?? ""}&taskname=${mainTask.taskName ?? ""}&taskdesc=${mainTask.taskDesc ?? ""}&assigneeid=${mainTask.assignee?.userId ?? ""}&stddt=${mainTask.stDate ?? ""}&enddt=${mainTask.enDate ?? ""}&taskdept=${mainTask.taskDept?.taskDept ?? ""}&userid=$userId&taskparentid=${mainTask.taskparentid?.taskId ?? "0"}&jobno=${mainTask.jobNo ?? "0"}'),
     );
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1115,7 +1132,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/parentTaskList?userid=$userId&projectid=$projectId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: ParentTaskListResponse.fromJson);
   }
@@ -1130,7 +1147,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/poJobList?userid=$userId&jobpono=$jobpono'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: PoJobListResponse.fromJson);
   }
 
@@ -1144,7 +1161,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/taskNoteApi?userid=$userId&taskid=$taskId&tasknote=$tasknote'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1158,7 +1175,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/taskNoteData?userid=$userId&taskid=$taskId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: TaskNoteListResponse.fromJson);
   }
@@ -1174,7 +1191,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/invtran/tmplocatortrnf?userid=$userid&p_locator_id=$torackid&p_trn_id=$trnid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1189,7 +1206,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/sysadmin/userPassChng?old_passw=$oldPass&new_passw=$newPass&userid=$userid'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }
