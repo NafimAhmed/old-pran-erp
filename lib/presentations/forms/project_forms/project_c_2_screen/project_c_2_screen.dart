@@ -270,19 +270,19 @@ class TaskWidgetContent extends StatelessWidget {
                     taskId: data.tasksid ?? 0,
                   ),
                 );
-            context.read<ExAutoTaskSaveBloc>().add(
-                  ExAutoTaskSave(
-                    taskId: data.refNo ?? 0,
-                    vUser: loggedUser.userId,
-                    vCustomerPo: data.projectName ?? "",
-                    vJobOrderNo: data.jobOrderNo ?? "",
-                    vStatus: status.value,
-                    vAdate: data.taskCreactionDate ?? "",
-                    vFdate: data.taskCompletionDate ?? "",
-                    vTdate: data.taskStartDate ?? "",
-                    vNote: "",
-                  ),
-                );
+            // context.read<ExAutoTaskSaveBloc>().add(
+            //       ExAutoTaskSave(
+            //         taskId: data.refNo ?? 0,
+            //         vUser: loggedUser.userId,
+            //         vCustomerPo: data.projectName ?? "",
+            //         vJobOrderNo: data.jobOrderNo ?? "",
+            //         vStatus: status.value,
+            //         vAdate: data.taskCreactionDate ?? "",
+            //         vFdate: data.taskCompletionDate ?? "",
+            //         vTdate: data.taskStartDate ?? "",
+            //         vNote: "",
+            //       ),
+            //     );
             // Listen to the stream of TaskAssignBloc
             final completer = Completer<bool>();
             final subscription =
@@ -367,6 +367,9 @@ class TaskWidgetContent extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 2,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -382,12 +385,17 @@ class TaskWidgetContent extends StatelessWidget {
                       width: 10,
                     ),
                     Flexible(
-                      child: Text(
-                        data.taskStatus ?? "",
-                        style: textTheme.bodyMedium!.copyWith(
-                          fontSize: 17,
-                          color: _getColorsStatus(data.taskStatus ?? ""),
-                          fontWeight: FontWeight.bold,
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: _getColorsStatus(data.taskStatus ?? "")),
+                        child: Text(
+                          data.taskStatus ?? "",
+                          style: textTheme.bodyMedium!.copyWith(
+                            color: appTheme.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -507,7 +515,7 @@ class TaskWidgetContent extends StatelessWidget {
                       ],
                     ),
                   ],
-                )
+                ),
 
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -569,7 +577,7 @@ class TaskWidgetContent extends StatelessWidget {
                 //     ),
                 //   ],
                 // ),
-                ,
+
                 const SizedBox(
                   height: 5,
                 ),
@@ -626,7 +634,7 @@ class TaskWidgetContent extends StatelessWidget {
     if (taskStatus == "Start") {
       return Colors.green;
     } else if (taskStatus == "Pending") {
-      return Colors.red;
+      return Colors.pink.shade500;
     } else {
       return null;
     }
