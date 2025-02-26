@@ -94,7 +94,7 @@ class ServerDownException implements Exception {
   final String message;
 
   const ServerDownException([String? message])
-      : message = message ?? "Couldn't Communicate With Server";
+      : message = message ?? "Unable to communicate with the server";
 
   @override
   String toString() => message;
