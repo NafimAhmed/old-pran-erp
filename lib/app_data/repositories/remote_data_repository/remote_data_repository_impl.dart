@@ -49,7 +49,7 @@ import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
-import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/decoder_service_mixin.dart';
@@ -248,19 +248,20 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<UserBasicDataResponse> getUserBasicData({
+  Future<ProdBatchDataResponse> getUserBasicData({
     required String userid,
     required String orgid,
+    required String jobOrderNo,
   }) async {
     var request = http.Request(
-      'POST',
+      'GET',
       Uri.parse(
-          '${appConfig.baseUrl}/ords/rpro/batch/userbasicdata?userid=$userid&orgid=$orgid'),
+          '${appConfig.baseUrl}/ords/rpro/batch/prodBatchData?userid=$userid&orgid=$orgid&job_order_no=$jobOrderNo'),
     );
 
     http.StreamedResponse response = await _safeApiCall(request);
-    return decodeResponse<UserBasicDataResponse>(response,
-        decoder: UserBasicDataResponse.fromJson);
+    return decodeResponse<ProdBatchDataResponse>(response,
+        decoder: ProdBatchDataResponse.fromJson);
   }
 
   @override

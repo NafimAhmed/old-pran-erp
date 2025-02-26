@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
-import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -17,6 +17,7 @@ import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/shift_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/prod_batch_data_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_print_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
@@ -37,6 +38,9 @@ class OpmC2Screen extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => UserBasicDataBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => ProdBatchDataBloc(getService()),
         ),
         BlocProvider(
           create: (context) => UserQrSaveBloc(getService()),
@@ -81,6 +85,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   FocusNode goodQtyFocusNode = FocusNode();
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
+  TextEditingController joDropDownTextController = TextEditingController();
   TextEditingController batchDropDownTextController = TextEditingController();
   TextEditingController orgDropDownTextController = TextEditingController();
   TextEditingController machineDropDownTextController = TextEditingController();
@@ -105,6 +110,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     goodQtyFocusNode.dispose();
     badQtyFocusNode.dispose();
     timeTextController.dispose();
+    joDropDownTextController.dispose();
     batchDropDownTextController.dispose();
     machineDropDownTextController.dispose();
     orgDropDownTextController.dispose();
@@ -161,6 +167,54 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             shiftFromTime: timeTextController.text,
           ),
         );
+  }
+
+  dynamic _onSelectOrg(UserOrg? value) {
+// FocusScope.of(context).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
+    context.read<UserQrPrintBloc>().add(
+          GetUserQrPrintData(
+            userid: loggedUser.userId,
+            orgid: value!.organizationId.toString(),
+          ),
+        );
+    context.read<VariableStateHandlerCubit<UserMachine>>().reset();
+    context.read<VariableStateHandlerCubit<UserBatch>>().reset();
+    context.read<VariableStateHandlerCubit<PendingJo>>().reset();
+    context.read<UserBasicDataBloc>().add(
+          UserBasicDataGet(
+            userId: loggedUser.userId,
+            orgid: value.organizationId!.toString(),
+          ),
+        );
+    context.read<VariableStateHandlerCubit<UserOrg>>().update(value);
+  }
+
+  dynamic _onSelectMachine(UserMachine? value) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    context.read<VariableStateHandlerCubit<UserMachine>>().update(value!);
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  dynamic _onSelectJO(PendingJo? value) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (value != null) {
+      context.read<VariableStateHandlerCubit<PendingJo>>().update(value);
+      context.read<VariableStateHandlerCubit<ShiftData>>().reset();
+      context.read<ShiftDataBloc>().add(GetShiftData());
+      var selectedOrg =
+          context.read<VariableStateHandlerCubit<UserOrg>>().state!;
+      context.read<ProdBatchDataBloc>().add(ProdBatchDataGet(
+          userId: loggedUser.userId,
+          orgid: selectedOrg.organizationId?.toString() ?? "",
+          jobOrderNo: value.jobOrderNo ?? ""));
+    }
+  }
+
+  dynamic _onSelectBatch(UserBatch? value) {
+    if (value != null) {
+      context.read<VariableStateHandlerCubit<UserBatch>>().update(value);
+    }
   }
 
   @override
@@ -245,40 +299,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   dropdownMenuEntries: state is UserOrgSuccess
                                       ? state.userOrg
                                       : [],
-                                  onSelected: (value) {
-                                    // FocusScope.of(context).unfocus();
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    context.read<UserQrPrintBloc>().add(
-                                          GetUserQrPrintData(
-                                            userid: loggedUser.userId,
-                                            orgid: value!.organizationId
-                                                .toString(),
-                                          ),
-                                        );
-                                    context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserMachine>>()
-                                        .reset();
-                                    context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserBatch>>()
-                                        .reset();
-                                    context.read<UserBasicDataBloc>().add(
-                                          UserBasicDataGet(
-                                            userId: loggedUser.userId,
-                                            orgid: value.organizationId!
-                                                .toString(),
-                                          ),
-                                        );
-                                    context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserOrg>>()
-                                        .update(value);
-                                  },
+                                  onSelected: _onSelectOrg,
                                 );
                               },
                             ),
@@ -303,18 +324,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                       ? state.userBasicData.userMachineData ??
                                           []
                                       : [],
-                                  onSelected: (value) {
-                                    // FocusScope.of(context).unfocus();
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    context
-                                        .read<
-                                            VariableStateHandlerCubit<
-                                                UserMachine>>()
-                                        .update(value!);
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  },
+                                  onSelected: _onSelectMachine,
                                 );
                               },
                             ),
@@ -332,28 +342,29 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                         ?.isNotEmpty ??
                                     false
                                 : false,
+                            controller: joDropDownTextController,
+                            hintText: "Select JO",
+                            onSelected: _onSelectJO,
+                            dropdownMenuEntries: state is UserBasicDataSuccess
+                                ? state.prodBasicData.pendingJoList ?? []
+                                : [],
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      BlocBuilder<ProdBatchDataBloc, ProdBatchDataState>(
+                        builder: (context, state) {
+                          return CommonDropDownMenuWidget<UserBatch>(
+                            enabled: state is ProdBatchDataSuccess
+                                ? state.prodBatchList.isNotEmpty
+                                : false,
                             controller: batchDropDownTextController,
                             hintText: "Select Batch",
-                            onSelected: (value) {
-                              if (value != null) {
-                                // FocusScope.of(context).unfocus();
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                context
-                                    .read<
-                                        VariableStateHandlerCubit<UserBatch>>()
-                                    .update(value);
-                                context
-                                    .read<
-                                        VariableStateHandlerCubit<ShiftData>>()
-                                    .reset();
-                                context
-                                    .read<ShiftDataBloc>()
-                                    .add(GetShiftData());
-                              }
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            dropdownMenuEntries: state is UserBasicDataSuccess
-                                ? state.userBasicData.userBatchData ?? []
+                            onSelected: _onSelectBatch,
+                            dropdownMenuEntries: state is ProdBatchDataSuccess
+                                ? state.prodBatchList
                                 : [],
                           );
                         },

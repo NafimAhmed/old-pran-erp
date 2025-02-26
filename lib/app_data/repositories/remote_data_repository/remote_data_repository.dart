@@ -41,7 +41,7 @@ import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
-import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
@@ -88,9 +88,10 @@ abstract class RemoteDataRepository {
   Future<UserOrgsResponse> getUserOrg({
     required String userid,
   });
-  Future<UserBasicDataResponse> getUserBasicData({
+  Future<ProdBatchDataResponse> getUserBasicData({
     required String userid,
     required String orgid,
+    required String jobOrderNo,
   });
 
   Future<GenericResponse> interOrgTransfer({

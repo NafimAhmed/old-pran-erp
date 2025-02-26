@@ -39,7 +39,7 @@ import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
-import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
@@ -198,16 +198,15 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<UserBasicDataResponse> getUserBasicData({
+  Future<List<UserBatch>> getUserBasicData({
     required String userid,
     required String orgid,
+    required String jobOrderNo,
   }) async {
     var response = await remoteDataRepository.getUserBasicData(
-      userid: userid,
-      orgid: orgid,
-    );
+        userid: userid, orgid: orgid, jobOrderNo: jobOrderNo);
     if (response.statusCode == 200) {
-      return response;
+      return response.prodBatchData ?? [];
     }
     throw ApiDataException(response.errmsg);
   }

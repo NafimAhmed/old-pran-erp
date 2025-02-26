@@ -1,65 +1,55 @@
 import 'dart:convert';
 
-class UserBasicDataResponse {
+class ProdBatchDataResponse {
   final int? statusCode;
   final String? message;
   final String? errmsg;
-  final List<UserMachine>? userMachineData;
-  final List<UserBatch>? userBatchData;
 
-  UserBasicDataResponse({
+  final List<UserBatch>? prodBatchData;
+
+  ProdBatchDataResponse({
     this.statusCode,
     this.message,
     this.errmsg,
-    this.userMachineData,
-    this.userBatchData,
+    this.prodBatchData,
   });
 
-  UserBasicDataResponse copyWith({
+  ProdBatchDataResponse copyWith({
     int? statusCode,
     String? message,
     String? errmsg,
-    List<UserMachine>? userMachineData,
-    List<UserBatch>? userBatchData,
+    List<UserBatch>? prodBatchData,
   }) =>
-      UserBasicDataResponse(
+      ProdBatchDataResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
         errmsg: errmsg ?? this.errmsg,
-        userMachineData: userMachineData ?? this.userMachineData,
-        userBatchData: userBatchData ?? this.userBatchData,
+        prodBatchData: prodBatchData ?? this.prodBatchData,
       );
 
-  factory UserBasicDataResponse.fromJson(String str) =>
-      UserBasicDataResponse.fromMap(json.decode(str));
+  factory ProdBatchDataResponse.fromJson(String str) =>
+      ProdBatchDataResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory UserBasicDataResponse.fromMap(Map<String, dynamic> json) =>
-      UserBasicDataResponse(
+  factory ProdBatchDataResponse.fromMap(Map<String, dynamic> json) =>
+      ProdBatchDataResponse(
         statusCode: json["status_code"],
         message: json["message"],
         errmsg: json["errmsg"],
-        userMachineData: json["user_machine_data"] == null
-            ? []
-            : List<UserMachine>.from(
-                json["user_machine_data"]!.map((x) => UserMachine.fromMap(x))),
-        userBatchData: json["user_batch_data"] == null
+        prodBatchData: json["prod_batch_data"] == null
             ? []
             : List<UserBatch>.from(
-                json["user_batch_data"]!.map((x) => UserBatch.fromMap(x))),
+                json["prod_batch_data"]!.map((x) => UserBatch.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
         "status_code": statusCode,
         "message": message,
         "errmsg": errmsg,
-        "user_machine_data": userMachineData == null
+        "prod_batch_data": prodBatchData == null
             ? []
-            : List<dynamic>.from(userMachineData!.map((x) => x.toMap())),
-        "user_batch_data": userBatchData == null
-            ? []
-            : List<dynamic>.from(userBatchData!.map((x) => x.toMap())),
+            : List<dynamic>.from(prodBatchData!.map((x) => x.toMap())),
       };
 }
 
@@ -187,55 +177,5 @@ class UserBatch {
         "SHIFT_MAN_POWER": shiftManPower,
         "LOTNO": lotNo,
         "MACHINE_NAME": machineName,
-      };
-}
-
-class UserMachine {
-  final int? orgId;
-  final String? orgCode;
-  final String? machineName;
-  final String? machineDesc;
-
-  UserMachine({
-    this.orgId,
-    this.orgCode,
-    this.machineName,
-    this.machineDesc,
-  });
-
-  UserMachine copyWith({
-    int? orgId,
-    String? orgCode,
-    String? machineName,
-    String? machineDesc,
-  }) =>
-      UserMachine(
-        orgId: orgId ?? this.orgId,
-        orgCode: orgCode ?? this.orgCode,
-        machineName: machineName ?? this.machineName,
-        machineDesc: machineDesc ?? this.machineDesc,
-      );
-
-  factory UserMachine.fromJson(String str) =>
-      UserMachine.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-  @override
-  String toString() {
-    return machineName ?? "";
-  }
-
-  factory UserMachine.fromMap(Map<String, dynamic> json) => UserMachine(
-        orgId: json["ORG_ID"],
-        orgCode: json["ORG_CODE"],
-        machineName: json["MACHINE_NAME"],
-        machineDesc: json["MACHINE_DESC"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "ORG_ID": orgId,
-        "ORG_CODE": orgCode,
-        "MACHINE_NAME": machineName,
-        "MACHINE_DESC": machineDesc,
       };
 }

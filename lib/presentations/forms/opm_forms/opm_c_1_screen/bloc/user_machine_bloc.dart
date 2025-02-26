@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
+
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
