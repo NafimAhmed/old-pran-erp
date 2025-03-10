@@ -25,6 +25,7 @@ import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -88,10 +89,14 @@ abstract class RemoteDataRepository {
   Future<UserOrgsResponse> getUserOrg({
     required String userid,
   });
-  Future<ProdBatchDataResponse> getUserBasicData({
+  Future<ProdBatchDataResponse> getUserBatchData({
     required String userid,
     required String orgid,
     required String jobOrderNo,
+  });
+  Future<ProdBasicDataResponse> getUserBasicData({
+    required String userid,
+    required String orgid,
   });
 
   Future<GenericResponse> interOrgTransfer({

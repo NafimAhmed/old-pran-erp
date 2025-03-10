@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
@@ -17,6 +16,8 @@ final class ProdBatchDataGet extends ProdBatchDataEvent {
     required this.jobOrderNo,
   });
 }
+
+final class ProdBatchDataReset extends ProdBatchDataEvent {}
 
 @immutable
 sealed class ProdBatchDataState {}
@@ -43,7 +44,7 @@ class ProdBatchDataBloc extends Bloc<ProdBatchDataEvent, ProdBatchDataState> {
     on<ProdBatchDataGet>((event, emit) async {
       emit(ProdBatchDataLoading());
       try {
-        var response = await _dataService.getUserBasicData(
+        var response = await _dataService.getProdBatchData(
           userid: event.userId,
           orgid: event.orgid,
           jobOrderNo: event.jobOrderNo,
@@ -57,6 +58,9 @@ class ProdBatchDataBloc extends Bloc<ProdBatchDataEvent, ProdBatchDataState> {
       } catch (e) {
         emit(ProdBatchDataError(error: e));
       }
+    });
+    on<ProdBatchDataReset>((event, emit) async {
+      emit(ProdBatchDataInitial());
     });
   }
 }

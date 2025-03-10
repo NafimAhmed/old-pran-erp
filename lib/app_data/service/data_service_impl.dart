@@ -24,6 +24,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -198,15 +199,30 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<UserBatch>> getUserBasicData({
+  Future<List<UserBatch>> getProdBatchData({
     required String userid,
     required String orgid,
     required String jobOrderNo,
   }) async {
-    var response = await remoteDataRepository.getUserBasicData(
+    var response = await remoteDataRepository.getUserBatchData(
         userid: userid, orgid: orgid, jobOrderNo: jobOrderNo);
     if (response.statusCode == 200) {
       return response.prodBatchData ?? [];
+    }
+    throw ApiDataException(response.errmsg);
+  }
+
+  @override
+  Future<ProdBasicDataResponse> getUserBasicData({
+    required String userid,
+    required String orgid,
+  }) async {
+    var response = await remoteDataRepository.getUserBasicData(
+      userid: userid,
+      orgid: orgid,
+    );
+    if (response.statusCode == 200) {
+      return response;
     }
     throw ApiDataException(response.errmsg);
   }

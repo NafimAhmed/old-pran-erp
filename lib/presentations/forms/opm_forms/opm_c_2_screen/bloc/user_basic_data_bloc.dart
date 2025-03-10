@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/models/user_basic_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
+
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 
 @immutable
@@ -23,9 +24,9 @@ final class UserBasicDataInitial extends UserBasicDataState {}
 final class UserBasicDataLoading extends UserBasicDataState {}
 
 final class UserBasicDataSuccess extends UserBasicDataState {
-  final UserBasicDataResponse userBasicData;
+  final ProdBasicDataResponse prodBasicData;
 
-  UserBasicDataSuccess({required this.userBasicData});
+  UserBasicDataSuccess({required this.prodBasicData});
 }
 
 final class UserBasicDataError extends UserBasicDataState {
@@ -47,7 +48,7 @@ class UserBasicDataBloc extends Bloc<UserBasicDataEvent, UserBasicDataState> {
 
         emit(
           UserBasicDataSuccess(
-            userBasicData: response,
+            prodBasicData: response,
           ),
         );
       } catch (e) {

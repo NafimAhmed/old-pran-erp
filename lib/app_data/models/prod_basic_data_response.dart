@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
-
 class ProdBasicDataResponse {
   final int? statusCode;
   final String? errmsg;

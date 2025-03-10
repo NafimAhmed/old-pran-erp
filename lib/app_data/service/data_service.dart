@@ -23,6 +23,7 @@ import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
@@ -91,10 +92,14 @@ abstract class DataService {
   Future<List<UserOrg>> getUserOrg({
     required String userid,
   });
-  Future<List<UserBatch>> getUserBasicData({
+  Future<List<UserBatch>> getProdBatchData({
     required String userid,
     required String orgid,
     required String jobOrderNo,
+  });
+  Future<ProdBasicDataResponse> getUserBasicData({
+    required String userid,
+    required String orgid,
   });
 
   Future<void> interOrgTransfer({

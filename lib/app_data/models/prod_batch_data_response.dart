@@ -57,6 +57,7 @@ class UserBatch {
   final String? organizationCode;
   final String? organizationName;
   final int? batchId;
+  final num? goodQty;
   final int? inventoryItemId;
   final int? materialDetailId;
   final String? batchNo;
@@ -64,6 +65,7 @@ class UserBatch {
   final String? itemName;
   final num? originalQty;
   final num? totalQty;
+  final num? totalPQty;
   final String? jobOrderNo;
   final String? batchStatus;
   final int? flagStatus;
@@ -76,6 +78,7 @@ class UserBatch {
     this.organizationCode,
     this.organizationName,
     this.batchId,
+    this.goodQty,
     this.inventoryItemId,
     this.materialDetailId,
     this.batchNo,
@@ -83,6 +86,7 @@ class UserBatch {
     this.itemName,
     this.originalQty,
     this.totalQty,
+    this.totalPQty,
     this.jobOrderNo,
     this.batchStatus,
     this.flagStatus,
@@ -96,6 +100,7 @@ class UserBatch {
     String? organizationCode,
     String? organizationName,
     int? batchId,
+    num? goodQty,
     int? inventoryItemId,
     int? materialDetailId,
     String? batchNo,
@@ -103,6 +108,7 @@ class UserBatch {
     String? itemName,
     num? originalQty,
     num? totalQty,
+    num? totalPQty,
     String? jobOrderNo,
     String? batchStatus,
     int? flagStatus,
@@ -115,6 +121,7 @@ class UserBatch {
         organizationCode: organizationCode ?? this.organizationCode,
         organizationName: organizationName ?? this.organizationName,
         batchId: batchId ?? this.batchId,
+        goodQty: goodQty ?? this.goodQty,
         inventoryItemId: inventoryItemId ?? this.inventoryItemId,
         materialDetailId: materialDetailId ?? this.materialDetailId,
         batchNo: batchNo ?? this.batchNo,
@@ -122,6 +129,7 @@ class UserBatch {
         itemName: itemName ?? this.itemName,
         originalQty: originalQty ?? this.originalQty,
         totalQty: totalQty ?? this.totalQty,
+        totalPQty: totalPQty ?? this.totalPQty,
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
         batchStatus: batchStatus ?? this.batchStatus,
         flagStatus: flagStatus ?? this.flagStatus,
@@ -143,6 +151,7 @@ class UserBatch {
         organizationCode: json["ORGANIZATION_CODE"],
         organizationName: json["ORGANIZATION_NAME"],
         batchId: json["batch_id"],
+        goodQty: json["GOOD_QTY"],
         inventoryItemId: json["inventory_item_id"],
         materialDetailId: json["material_detail_id"],
         batchNo: json["BATCH_NO"],
@@ -150,6 +159,7 @@ class UserBatch {
         itemName: json["ITEM_NAME"],
         originalQty: json["ORIGINAL_QTY"],
         totalQty: json["TOTAL_QTY"],
+        totalPQty: json["TOTAL_PQTY"],
         jobOrderNo: json["JOB_ORDER_NO"],
         batchStatus: json["BATCH_STATUS"],
         flagStatus: json["FLAG_STATUS"],
@@ -163,6 +173,7 @@ class UserBatch {
         "ORGANIZATION_CODE": organizationCode,
         "ORGANIZATION_NAME": organizationName,
         "batch_id": batchId,
+        "GOOD_QTY": goodQty,
         "inventory_item_id": inventoryItemId,
         "material_detail_id": materialDetailId,
         "BATCH_NO": batchNo,
@@ -170,6 +181,7 @@ class UserBatch {
         "ITEM_NAME": itemName,
         "ORIGINAL_QTY": originalQty,
         "TOTAL_QTY": totalQty,
+        "TOTAL_PQTY": totalPQty,
         "JOB_ORDER_NO": jobOrderNo,
         "BATCH_STATUS": batchStatus,
         "FLAG_STATUS": flagStatus,

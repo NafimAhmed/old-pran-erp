@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
@@ -53,6 +54,9 @@ class OpmC2Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<UserOrg>(),
+        ),
+        BlocProvider(
+          create: (context) => VariableStateHandlerCubit<PendingJo>(),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<UserMachine>(),
@@ -126,6 +130,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
       );
       return false; // Validation failed
     }
+    if (context.read<VariableStateHandlerCubit<PendingJo>>().state == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackBar.errorSnackber(
+          message: "Please Select JO",
+        ),
+      );
+      return false; // Validation failed
+    }
     if (context.read<VariableStateHandlerCubit<UserBatch>>().state == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         CustomSnackBar.errorSnackber(
@@ -181,6 +193,10 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     context.read<VariableStateHandlerCubit<UserMachine>>().reset();
     context.read<VariableStateHandlerCubit<UserBatch>>().reset();
     context.read<VariableStateHandlerCubit<PendingJo>>().reset();
+    context.read<ProdBatchDataBloc>().add(ProdBatchDataReset());
+    machineDropDownTextController.clear();
+    joDropDownTextController.clear();
+    batchDropDownTextController.clear();
     context.read<UserBasicDataBloc>().add(
           UserBasicDataGet(
             userId: loggedUser.userId,
@@ -201,6 +217,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     if (value != null) {
       context.read<VariableStateHandlerCubit<PendingJo>>().update(value);
       context.read<VariableStateHandlerCubit<ShiftData>>().reset();
+      context.read<VariableStateHandlerCubit<UserBatch>>().reset();
+      batchDropDownTextController.clear();
       context.read<ShiftDataBloc>().add(GetShiftData());
       var selectedOrg =
           context.read<VariableStateHandlerCubit<UserOrg>>().state!;
@@ -212,8 +230,15 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   }
 
   dynamic _onSelectBatch(UserBatch? value) {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (value != null) {
       context.read<VariableStateHandlerCubit<UserBatch>>().update(value);
+      goodQtyTextController.text = value.goodQty?.toString() ?? "0";
+      badQtyTextController.text = () {
+        var badQty = (value.totalQty ?? 0) - (value.goodQty ?? 0);
+        return badQty.toString();
+      }.call();
+      quantityTextController.text = value.totalQty?.toString() ?? "0";
     }
   }
 
@@ -277,7 +302,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                 const SizedBox(
                   height: 5,
                 ),
-                // const UserDetailsWidget(),
                 Form(
                   key: fromkey,
                   child: Column(
@@ -313,7 +337,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               builder: (context, state) {
                                 return CommonDropDownMenuWidget<UserMachine>(
                                   enabled: state is UserBasicDataSuccess
-                                      ? state.userBasicData.userMachineData
+                                      ? state.prodBasicData.userMachineData
                                               ?.isNotEmpty ??
                                           false
                                       : false,
@@ -321,7 +345,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                                   controller: machineDropDownTextController,
                                   dropdownMenuEntries: state
                                           is UserBasicDataSuccess
-                                      ? state.userBasicData.userMachineData ??
+                                      ? state.prodBasicData.userMachineData ??
                                           []
                                       : [],
                                   onSelected: _onSelectMachine,
@@ -336,9 +360,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       ),
                       BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
                         builder: (context, state) {
-                          return CommonDropDownMenuWidget<UserBatch>(
+                          return CommonDropDownMenuWidget<PendingJo>(
                             enabled: state is UserBasicDataSuccess
-                                ? state.userBasicData.userBatchData
+                                ? state.prodBasicData.pendingJoList
                                         ?.isNotEmpty ??
                                     false
                                 : false,
@@ -373,6 +397,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         height: 10,
                       ),
                       CommonLableWthTextField(
+                        readOnly: true,
                         lableName: "Good Qty",
                         focusNode: goodQtyFocusNode,
                         textController: goodQtyTextController,
@@ -389,20 +414,21 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          var goodQty = value.isEmpty ? 0 : int.parse(value);
-                          badQtyTextController.text = "0";
-                          var badQty = badQtyTextController.text.isEmpty
-                              ? 0
-                              : int.parse(badQtyTextController.text);
-                          quantityTextController.text =
-                              (goodQty + badQty).toString();
-                        },
+                        // onChanged: (value) {
+                        //   var goodQty = value.isEmpty ? 0 : int.parse(value);
+                        //   badQtyTextController.text = "0";
+                        //   var badQty = badQtyTextController.text.isEmpty
+                        //       ? 0
+                        //       : int.parse(badQtyTextController.text);
+                        //   quantityTextController.text =
+                        //       (goodQty + badQty).toString();
+                        // },
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       CommonLableWthTextField(
+                        readOnly: true,
                         lableName: "Bad Qty",
                         focusNode: badQtyFocusNode,
                         textController: badQtyTextController,
@@ -416,14 +442,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          var badQty = value.isEmpty ? 0 : int.parse(value);
-                          var goodQty = goodQtyTextController.text.isEmpty
-                              ? 0
-                              : int.parse(goodQtyTextController.text);
-                          quantityTextController.text =
-                              (goodQty + badQty).toString();
-                        },
+                        // onChanged: (value) {
+                        //   var badQty = value.isEmpty ? 0 : int.parse(value);
+                        //   var goodQty = goodQtyTextController.text.isEmpty
+                        //       ? 0
+                        //       : int.parse(goodQtyTextController.text);
+                        //   quantityTextController.text =
+                        //       (goodQty + badQty).toString();
+                        // },
                       ),
                       const SizedBox(
                         height: 10,
@@ -510,7 +536,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                     return const SizedBox.shrink();
                   },
                 ),
-
                 const SizedBox(
                   width: 10,
                 ),
