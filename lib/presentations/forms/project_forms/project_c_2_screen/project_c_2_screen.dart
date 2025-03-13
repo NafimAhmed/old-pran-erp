@@ -636,7 +636,7 @@ class TaskWidgetContent extends StatelessWidget {
     } else if (taskStatus == "Pending") {
       return Colors.pink.shade500;
     } else {
-      return null;
+      return Colors.pink.shade500;
     }
   }
 }
