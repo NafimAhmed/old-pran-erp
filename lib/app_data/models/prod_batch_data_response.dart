@@ -57,7 +57,7 @@ class UserBatch {
   final String? organizationCode;
   final String? organizationName;
   final int? batchId;
-  final num? goodQty;
+
   final int? inventoryItemId;
   final int? materialDetailId;
   final String? batchNo;
@@ -78,7 +78,6 @@ class UserBatch {
     this.organizationCode,
     this.organizationName,
     this.batchId,
-    this.goodQty,
     this.inventoryItemId,
     this.materialDetailId,
     this.batchNo,
@@ -100,7 +99,6 @@ class UserBatch {
     String? organizationCode,
     String? organizationName,
     int? batchId,
-    num? goodQty,
     int? inventoryItemId,
     int? materialDetailId,
     String? batchNo,
@@ -121,7 +119,6 @@ class UserBatch {
         organizationCode: organizationCode ?? this.organizationCode,
         organizationName: organizationName ?? this.organizationName,
         batchId: batchId ?? this.batchId,
-        goodQty: goodQty ?? this.goodQty,
         inventoryItemId: inventoryItemId ?? this.inventoryItemId,
         materialDetailId: materialDetailId ?? this.materialDetailId,
         batchNo: batchNo ?? this.batchNo,
@@ -151,7 +148,6 @@ class UserBatch {
         organizationCode: json["ORGANIZATION_CODE"],
         organizationName: json["ORGANIZATION_NAME"],
         batchId: json["batch_id"],
-        goodQty: json["GOOD_QTY"],
         inventoryItemId: json["inventory_item_id"],
         materialDetailId: json["material_detail_id"],
         batchNo: json["BATCH_NO"],
@@ -173,7 +169,6 @@ class UserBatch {
         "ORGANIZATION_CODE": organizationCode,
         "ORGANIZATION_NAME": organizationName,
         "batch_id": batchId,
-        "GOOD_QTY": goodQty,
         "inventory_item_id": inventoryItemId,
         "material_detail_id": materialDetailId,
         "BATCH_NO": batchNo,
