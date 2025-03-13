@@ -233,12 +233,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     FocusManager.instance.primaryFocus?.unfocus();
     if (value != null) {
       context.read<VariableStateHandlerCubit<UserBatch>>().update(value);
-      goodQtyTextController.text = value.goodQty?.toString() ?? "0";
-      badQtyTextController.text = () {
-        var badQty = (value.totalQty ?? 0) - (value.goodQty ?? 0);
-        return badQty.toString();
-      }.call();
-      quantityTextController.text = value.totalQty?.toString() ?? "0";
+      goodQtyTextController.text = value.totalPQty?.toString() ?? "0";
+      badQtyTextController.text = '0';
+      quantityTextController.text = value.totalPQty?.toString() ?? "0";
     }
   }
 
@@ -397,7 +394,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                         height: 10,
                       ),
                       CommonLableWthTextField(
-                        readOnly: true,
                         lableName: "Good Qty",
                         focusNode: goodQtyFocusNode,
                         textController: goodQtyTextController,
@@ -414,21 +410,20 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           }
                           return null;
                         },
-                        // onChanged: (value) {
-                        //   var goodQty = value.isEmpty ? 0 : int.parse(value);
-                        //   badQtyTextController.text = "0";
-                        //   var badQty = badQtyTextController.text.isEmpty
-                        //       ? 0
-                        //       : int.parse(badQtyTextController.text);
-                        //   quantityTextController.text =
-                        //       (goodQty + badQty).toString();
-                        // },
+                        onChanged: (value) {
+                          var goodQty = value.isEmpty ? 0 : int.parse(value);
+                          badQtyTextController.text = "0";
+                          var badQty = badQtyTextController.text.isEmpty
+                              ? 0
+                              : int.parse(badQtyTextController.text);
+                          quantityTextController.text =
+                              (goodQty + badQty).toString();
+                        },
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       CommonLableWthTextField(
-                        readOnly: true,
                         lableName: "Bad Qty",
                         focusNode: badQtyFocusNode,
                         textController: badQtyTextController,
@@ -442,14 +437,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           }
                           return null;
                         },
-                        // onChanged: (value) {
-                        //   var badQty = value.isEmpty ? 0 : int.parse(value);
-                        //   var goodQty = goodQtyTextController.text.isEmpty
-                        //       ? 0
-                        //       : int.parse(goodQtyTextController.text);
-                        //   quantityTextController.text =
-                        //       (goodQty + badQty).toString();
-                        // },
+                        onChanged: (value) {
+                          var badQty = value.isEmpty ? 0 : int.parse(value);
+                          var goodQty = goodQtyTextController.text.isEmpty
+                              ? 0
+                              : int.parse(goodQtyTextController.text);
+                          quantityTextController.text =
+                              (goodQty + badQty).toString();
+                        },
                       ),
                       const SizedBox(
                         height: 10,
