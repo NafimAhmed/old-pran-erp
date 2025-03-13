@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 
 class PdfService {
   static Future<Uint8List> createBatchQrPdf(
@@ -33,7 +35,6 @@ class PdfService {
               children: [
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Expanded(
                       flex: 1,
@@ -216,10 +217,10 @@ class PdfService {
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
-                      width: 85,
-                      height: 85,
+                      width: 90,
+                      height: 90,
                       data:
-                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${userBatchQrData.createdDate}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}",
+                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}\n\nhttps://ego.rflgroupbd.com:8077/ords/r/rpro/smartqr/location-wise-stock-report2?P86_JOB_ORDER=${userBatchQrData.jobno}",
                     ),
                   ],
                 ),
