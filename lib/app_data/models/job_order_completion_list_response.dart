@@ -49,30 +49,26 @@ class JobOrderCompletionListResponse {
 class JobOrderCompletion {
   final String? jobOrderNo;
   final String? buyerName;
-  final double? fpoQty;
-  final double? jobOrderQty;
+  final String? deliveryDate;
   final String? jobStatus;
 
   JobOrderCompletion({
     this.jobOrderNo,
     this.buyerName,
-    this.fpoQty,
-    this.jobOrderQty,
+    this.deliveryDate,
     this.jobStatus,
   });
 
   JobOrderCompletion copyWith({
     String? jobOrderNo,
     String? buyerName,
-    double? fpoQty,
-    double? jobOrderQty,
+    String? deliveryDate,
     String? jobStatus,
   }) =>
       JobOrderCompletion(
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
         buyerName: buyerName ?? this.buyerName,
-        fpoQty: fpoQty ?? this.fpoQty,
-        jobOrderQty: jobOrderQty ?? this.jobOrderQty,
+        deliveryDate: deliveryDate ?? this.deliveryDate,
         jobStatus: jobStatus ?? this.jobStatus,
       );
 
@@ -85,16 +81,14 @@ class JobOrderCompletion {
       JobOrderCompletion(
         jobOrderNo: json["JOB_ORDER_NO"],
         buyerName: json["BUYER_NAME"],
-        fpoQty: json["FPO_QTY"]?.toDouble(),
-        jobOrderQty: json["JOB_ORDER_QTY"]?.toDouble(),
+        deliveryDate: json["DELIVERY_DATE"],
         jobStatus: json["JOB_STATUS"],
       );
 
   Map<String, dynamic> toMap() => {
         "JOB_ORDER_NO": jobOrderNo,
         "BUYER_NAME": buyerName,
-        "FPO_QTY": fpoQty,
-        "JOB_ORDER_QTY": jobOrderQty,
+        "DELIVERY_DATE": deliveryDate,
         "JOB_STATUS": jobStatus,
       };
 }

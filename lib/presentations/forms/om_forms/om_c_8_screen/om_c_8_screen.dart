@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
@@ -241,7 +243,7 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "FPO Qty",
+                                            "Delivery Date",
                                             style:
                                                 textTheme.bodyMedium!.copyWith(
                                               color: appTheme.primary,
@@ -249,29 +251,10 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
                                           ),
                                           Flexible(
                                             child: Text(
-                                              data.fpoQty.toString(),
-                                              style: textTheme.bodyMedium!
-                                                  .copyWith(
-                                                color: appTheme.primary,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Job Order Qty",
-                                            style:
-                                                textTheme.bodyMedium!.copyWith(
-                                              color: appTheme.primary,
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              data.jobOrderQty.toString(),
+                                              DateTime.parse(
+                                                      data.deliveryDate ?? '')
+                                                  .toFormatedString(
+                                                      "dd-MMM-yyyy"),
                                               style: textTheme.bodyMedium!
                                                   .copyWith(
                                                 color: appTheme.primary,
