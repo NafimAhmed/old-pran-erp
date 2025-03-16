@@ -113,4 +113,13 @@ class PurchaseRequisitionDetail {
         "UNIT": unit,
         "QTY": qty,
       };
+  Map<String, dynamic> toTabMap() => {
+        //"HEADER_ID": headerId,
+        "Requisition No": requisitionNo,
+        "Item Id": itemId,
+        "Item Name": itemName,
+        "Unit": unit,
+        "Qty": qty,
+        "Action": "Save"
+      };
 }

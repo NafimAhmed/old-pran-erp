@@ -1,10 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_details_bloc.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -15,8 +20,19 @@ class PoC3Screen extends StatelessWidget {
   final String fromName;
   @override
   Widget build(BuildContext context) {
-    return POC3ScreenBody(
-      fromName: fromName,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              PurchaseReqBloc(getService())..add(PurchaseReqGet()),
+        ),
+        BlocProvider(
+          create: (context) => PurchaseReqDtlBloc(getService()),
+        ),
+      ],
+      child: POC3ScreenBody(
+        fromName: fromName,
+      ),
     );
   }
 }
@@ -51,52 +67,136 @@ class _POC3ScreenBodyState extends State<POC3ScreenBody> {
         ),
         child: Column(
           children: [
+            const SizedBox(
+              height: 15,
+            ),
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      AppModal.showCustomModal(
-                        context,
-                        content: const RequisitionDetailsDialog(),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: appTheme.white,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                        border: Border(
-                          bottom: BorderSide(
-                            color: appTheme.primary,
-                            width: 3,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Purchase Requisition No",
-                            style: textTheme.bodyMedium!.copyWith(
-                              color: appTheme.primary,
+              child: BlocBuilder<PurchaseReqBloc, PurchaseReqState>(
+                builder: (context, state) {
+                  if (state is PurchaseReqLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is PurchaseReqSuccess) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        var data = state.purReqList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            AppModal.showCustomModal(
+                              context,
+                              content: RequisitionDetailsDialog(
+                                headerId: data.hdrId ?? 0,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
                             ),
-                          )
-                        ],
+                            decoration: BoxDecoration(
+                              color: appTheme.white,
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: appTheme.primary,
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "ORG:",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                    Text(
+                                      data.orgCode ?? "",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "ORG Name:",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                    Text(
+                                      data.orgName ?? "",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Requisition No :",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                    Text(
+                                      data.requisitionNo ?? "",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Transaction Type :",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                    Text(
+                                      data.transactionTypeName ?? "",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 10,
                       ),
-                    ),
-                  );
+                      itemCount: state.purReqList.length,
+                    );
+                  }
+                  return Container();
                 },
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 10,
-                ),
-                itemCount: 20,
               ),
             )
           ],
@@ -106,25 +206,41 @@ class _POC3ScreenBodyState extends State<POC3ScreenBody> {
   }
 }
 
-class RequisitionDetailsDialog extends StatefulWidget {
-  const RequisitionDetailsDialog({
-    super.key,
-  });
-
+class RequisitionDetailsDialog extends StatelessWidget {
+  const RequisitionDetailsDialog({super.key, required this.headerId});
+  final int headerId;
   @override
-  State<RequisitionDetailsDialog> createState() =>
-      _RequisitionDetailsDialogState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => PurchaseReqDtlBloc(getService()),
+      child: RequisitionDetailsContent(
+        headerId: headerId,
+      ),
+    );
+  }
 }
 
-class _RequisitionDetailsDialogState extends State<RequisitionDetailsDialog> {
+class RequisitionDetailsContent extends StatefulWidget {
+  const RequisitionDetailsContent({
+    super.key,
+    required this.headerId,
+  });
+  final int headerId;
+  @override
+  State<RequisitionDetailsContent> createState() =>
+      _RequisitionDetailsContentState();
+}
+
+class _RequisitionDetailsContentState extends State<RequisitionDetailsContent> {
   late DataGridController? _dataGridController;
   late DataGridSource skuDtlSource;
   @override
   void initState() {
+    context
+        .read<PurchaseReqDtlBloc>()
+        .add(PurchaseReqDtlGet(headerId: widget.headerId));
     _dataGridController = DataGridController();
-    skuDtlSource = SkuDtlSource(skuDtlData: [
-      TestData(item: "Test Item", unit: "PS", quantity: 100),
-    ]);
+
     super.initState();
   }
 
@@ -144,84 +260,102 @@ class _RequisitionDetailsDialogState extends State<RequisitionDetailsDialog> {
           const SizedBox(
             height: 10,
           ),
-          SfDataGridTheme(
-            data: SfDataGridThemeData(
-              selectionColor: appTheme.primary.withOpacity(0.1),
-            ),
-            child: SfDataGrid(
-              source: skuDtlSource,
-              controller: _dataGridController,
-              rowHeight: 32,
-              headerRowHeight: 38,
-              columnWidthCalculationRange: ColumnWidthCalculationRange.allRows,
-              gridLinesVisibility: GridLinesVisibility.both,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              columnWidthMode: ColumnWidthMode.auto,
-              shrinkWrapRows: true,
-              onCellTap: (details) {
-                // // Ensure rowIndex is greater than 0 to avoid selecting the header.
-                // if (details.rowColumnIndex.rowIndex > 0 &&
-                //     details.rowColumnIndex.columnIndex == 7 &&
-                //     !skuDtlSource.nonEditableRows
-                //         .contains(details.rowColumnIndex.rowIndex - 1)) {
+          BlocBuilder<PurchaseReqDtlBloc, PurchaseReqDtlState>(
+            builder: (context, state) {
+              if (state is PurchaseReqDtlLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is PurchaseReqDtlSuccess) {
+                skuDtlSource = SkuDtlSource(skuDtlData: state.purReqDtlList);
+                return SfDataGridTheme(
+                  data: SfDataGridThemeData(
+                    selectionColor: appTheme.primary.withOpacity(0.1),
+                  ),
+                  child: SfDataGrid(
+                    source: skuDtlSource,
+                    controller: _dataGridController,
+                    rowHeight: 32,
+                    headerRowHeight: 38,
+                    columnWidthCalculationRange:
+                        ColumnWidthCalculationRange.allRows,
+                    gridLinesVisibility: GridLinesVisibility.both,
+                    headerGridLinesVisibility: GridLinesVisibility.none,
+                    columnWidthMode: ColumnWidthMode.auto,
+                    shrinkWrapRows: true,
+                    onCellTap: (details) {
+                      // // Ensure rowIndex is greater than 0 to avoid selecting the header.
+                      // if (details.rowColumnIndex.rowIndex > 0 &&
+                      //     details.rowColumnIndex.columnIndex == 7 &&
+                      //     !skuDtlSource.nonEditableRows
+                      //         .contains(details.rowColumnIndex.rowIndex - 1)) {
 
-                //   // log(skuDtlSource
-                //   //     ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                //   //     .materialDetailId
-                //   //     .toString());
-                //   // widget.blocContext.read<BatchCompDtlLnUpdtBloc>().add(
-                //   //       GetBatchCompDtlLnUpdt(
-                //   //         userId: loggedUser.userId,
-                //   //         mtldtlid: skuDtlSource
-                //   //             ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                //   //             .materialDetailId
-                //   //             .toString(),
-                //   //         madeqty: skuDtlSource
-                //   //             ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                //   //             .madeQty
-                //   //             .toString(),
-                //   //         details: details,
-                //   //       ),
-                //   //     );
-                // }
-              },
-              allowEditing: true,
-              editingGestureType: EditingGestureType.tap,
-              selectionMode: SelectionMode.singleDeselect,
-              navigationMode: GridNavigationMode.cell,
-              columns: [
-                ...List.generate(
-                  skuDtlSource.rows.first.getCells().length,
-                  (index) {
-                    return GridColumn(
-                      // visible: ![
-                      //   "Material Dtl Id",
-                      //   "Batch Id",
-                      //   "Edit Enable"
-                      // ].contains(
-                      //     skuDtlSource.rows.first.getCells()[index].columnName),
-                      allowEditing: [
-                        "quantity",
-                      ].contains(
-                          skuDtlSource.rows.first.getCells()[index].columnName),
-                      autoFitPadding: const EdgeInsets.all(10),
-                      columnName:
-                          skuDtlSource.rows.first.getCells()[index].columnName,
-                      label: Container(
-                        color: appTheme.primary,
-                        alignment: Alignment.center,
-                        child: Text(
-                          skuDtlSource.rows.first.getCells()[index].columnName,
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
-                          ),
-                        ),
+                      //   // log(skuDtlSource
+                      //   //     ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
+                      //   //     .materialDetailId
+                      //   //     .toString());
+                      //   // widget.blocContext.read<BatchCompDtlLnUpdtBloc>().add(
+                      //   //       GetBatchCompDtlLnUpdt(
+                      //   //         userId: loggedUser.userId,
+                      //   //         mtldtlid: skuDtlSource
+                      //   //             ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
+                      //   //             .materialDetailId
+                      //   //             .toString(),
+                      //   //         madeqty: skuDtlSource
+                      //   //             ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
+                      //   //             .madeQty
+                      //   //             .toString(),
+                      //   //         details: details,
+                      //   //       ),
+                      //   //     );
+                      // }
+                    },
+                    allowEditing: true,
+                    editingGestureType: EditingGestureType.tap,
+                    selectionMode: SelectionMode.singleDeselect,
+                    navigationMode: GridNavigationMode.cell,
+                    columns: [
+                      ...List.generate(
+                        skuDtlSource.rows.first.getCells().length,
+                        (index) {
+                          return GridColumn(
+                            // visible: ![
+                            //   "Material Dtl Id",
+                            //   "Batch Id",
+                            //   "Edit Enable"
+                            // ].contains(
+                            //     skuDtlSource.rows.first.getCells()[index].columnName),
+                            allowEditing: [
+                              "quantity",
+                            ].contains(skuDtlSource.rows.first
+                                .getCells()[index]
+                                .columnName),
+                            autoFitPadding: const EdgeInsets.all(10),
+                            columnName: skuDtlSource.rows.first
+                                .getCells()[index]
+                                .columnName,
+                            label: Container(
+                              color: appTheme.primary,
+                              alignment: Alignment.center,
+                              child: Text(
+                                skuDtlSource.rows.first
+                                    .getCells()[index]
+                                    .columnName,
+                                style: textTheme.bodyMedium!.copyWith(
+                                  color: appTheme.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
+                    ],
+                  ),
+                );
+              }
+              return Container();
+            },
           )
         ],
       ),
@@ -229,69 +363,12 @@ class _RequisitionDetailsDialogState extends State<RequisitionDetailsDialog> {
   }
 }
 
-class TestData {
-  final String item;
-  final String unit;
-  final int quantity;
-
-  TestData({
-    required this.item,
-    required this.unit,
-    required this.quantity,
-  });
-
-  TestData copyWith({
-    String? item,
-    String? unit,
-    int? quantity,
-  }) {
-    return TestData(
-      item: item ?? this.item,
-      unit: unit ?? this.unit,
-      quantity: quantity ?? this.quantity,
-    );
-  }
-
-  factory TestData.fromJson(Map<String, dynamic> json) {
-    return TestData(
-      item: json['item'],
-      unit: json['unit'],
-      quantity: json['quantity'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'item': item,
-      'unit': unit,
-      'quantity': quantity,
-    };
-  }
-
-  factory TestData.fromMap(Map<String, dynamic> map) {
-    return TestData(
-      item: map['item'],
-      unit: map['unit'],
-      quantity: map['quantity'],
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'item': item,
-      'unit': unit,
-      'quantity': quantity,
-      'Action': 'Action'
-    };
-  }
-}
-
 class SkuDtlSource extends DataGridSource {
   /// Creates the employee data source class with required details.
-  SkuDtlSource({required List<TestData> skuDtlData}) {
+  SkuDtlSource({required List<PurchaseRequisitionDetail> skuDtlData}) {
     _skuDtlData = skuDtlData;
     _skuDtlRowData = skuDtlData.map<DataGridRow>((e) {
-      Map<String, dynamic> map = e.toMap();
+      Map<String, dynamic> map = e.toTabMap();
       return DataGridRow(
         cells: [
           ...List.generate(
@@ -316,7 +393,7 @@ class SkuDtlSource extends DataGridSource {
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
   List<DataGridRow> _skuDtlRowData = [];
-  List<TestData> _skuDtlData = [];
+  List<PurchaseRequisitionDetail> _skuDtlData = [];
   List<DataGridRow> highlightRows = [];
   List<int> nonEditableRows = [];
 
@@ -326,11 +403,11 @@ class SkuDtlSource extends DataGridSource {
     final int dataRowIndex = _skuDtlRowData.indexOf(dataGridRow);
 
     if (newCellValue != null) {
-      if (column.columnName == 'quantity') {
+      if (column.columnName == 'Qty') {
         _skuDtlRowData[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-            DataGridCell<dynamic>(columnName: 'quantity', value: newCellValue);
+            DataGridCell<dynamic>(columnName: 'Qty', value: newCellValue);
         _skuDtlData[dataRowIndex] =
-            _skuDtlData[dataRowIndex].copyWith(quantity: newCellValue);
+            _skuDtlData[dataRowIndex].copyWith(qty: newCellValue);
       }
     }
   }
@@ -355,7 +432,7 @@ class SkuDtlSource extends DataGridSource {
     newCellValue = null;
 
     final bool isNumericType = [
-      "quantity",
+      "Qty",
     ].contains(column.columnName);
 
     return Container(
@@ -394,7 +471,7 @@ class SkuDtlSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _skuDtlRowData;
 
-  List<TestData> get rawList => _skuDtlData;
+  List<PurchaseRequisitionDetail> get rawList => _skuDtlData;
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final int rowIndex = effectiveRows.indexOf(row);
@@ -441,10 +518,10 @@ class SkuDtlSource extends DataGridSource {
                       ),
                     )
                   : Container(
-                      alignment: ["quantity"]
-                              .contains(row.getCells()[index].columnName)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                      alignment:
+                          ["Qty"].contains(row.getCells()[index].columnName)
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
                       padding: const EdgeInsets.all(8.0),
                       child:
                           ["Action"].contains(row.getCells()[index].columnName)
