@@ -27,6 +27,8 @@ import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
@@ -371,5 +373,9 @@ abstract class RemoteDataRepository {
     required String userid,
     required String oldPass,
     required String newPass,
+  });
+  Future<PurchaseRequisitionListResponse> getPurchaseRequisitionList();
+  Future<PurchaseRequisitionDetailsResponse> getPurchaseRequisitionDetails({
+    required int headerId,
   });
 }

@@ -26,6 +26,8 @@ import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -1103,5 +1105,26 @@ class DataServiceImpl implements DataService {
     if (response.statusCode != 200) {
       throw ApiDataException(response.errorMessage);
     }
+  }
+
+  @override
+  Future<List<PurchaseRequisition>> getPurchaseRequisitionList() async {
+    var response = await remoteDataRepository.getPurchaseRequisitionList();
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errmsg);
+    }
+    return response.purchaseRequisition ?? [];
+  }
+
+  @override
+  Future<List<PurchaseRequisitionDetail>> getPurchaseRequisitionDetails({
+    required int headerId,
+  }) async {
+    var response = await remoteDataRepository.getPurchaseRequisitionDetails(
+        headerId: headerId);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errmsg);
+    }
+    return response.purchaseRequisitionDetails ?? [];
   }
 }

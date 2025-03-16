@@ -34,6 +34,8 @@ import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
+import 'package:pran_rfl_erp/app_data/models/purchase_requisition_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -1225,5 +1227,28 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<PurchaseRequisitionListResponse> getPurchaseRequisitionList() async {
+    var request = http.Request('GET',
+        Uri.parse('${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionList'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: PurchaseRequisitionListResponse.fromJson);
+  }
+
+  @override
+  Future<PurchaseRequisitionDetailsResponse> getPurchaseRequisitionDetails(
+      {required int headerId}) async {
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionDetails?header_id=$headerId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response,
+        decoder: PurchaseRequisitionDetailsResponse.fromJson);
   }
 }
