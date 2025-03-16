@@ -9,6 +9,7 @@ import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_6_screen/inv_c_
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_1_screen/om_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_2_screen/om_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_3_screen/om_c_3_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/po_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/project_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_8_screen/om_c_8_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_9_screen/project_c_9_screen.dart';
@@ -425,6 +426,16 @@ class AppNavigation {
         name: PoC2Screen.routeName,
         builder: (context, state) {
           return PoC2Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: PoC3Screen.routePath,
+        name: PoC3Screen.routeName,
+        builder: (context, state) {
+          return PoC3Screen(
             fromName: state.extra as String,
           );
         },
