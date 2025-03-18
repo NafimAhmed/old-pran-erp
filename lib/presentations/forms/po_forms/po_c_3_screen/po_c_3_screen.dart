@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,10 +8,12 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_details_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_dtl_udt_bloc.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -88,6 +92,7 @@ class _POC3ScreenBodyState extends State<POC3ScreenBody> {
                               context,
                               content: RequisitionDetailsDialog(
                                 headerId: data.hdrId ?? 0,
+                                prntContext: context,
                               ),
                             );
                           },
@@ -207,14 +212,24 @@ class _POC3ScreenBodyState extends State<POC3ScreenBody> {
 }
 
 class RequisitionDetailsDialog extends StatelessWidget {
-  const RequisitionDetailsDialog({super.key, required this.headerId});
+  const RequisitionDetailsDialog(
+      {super.key, required this.headerId, required this.prntContext});
   final int headerId;
+  final BuildContext prntContext;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PurchaseReqDtlBloc(getService()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PurchaseReqDtlBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => PurchaseReqDtlUpdtBloc(getService()),
+        ),
+      ],
       child: RequisitionDetailsContent(
         headerId: headerId,
+        prntContext: prntContext,
       ),
     );
   }
@@ -224,8 +239,10 @@ class RequisitionDetailsContent extends StatefulWidget {
   const RequisitionDetailsContent({
     super.key,
     required this.headerId,
+    required this.prntContext,
   });
   final int headerId;
+  final BuildContext prntContext;
   @override
   State<RequisitionDetailsContent> createState() =>
       _RequisitionDetailsContentState();
@@ -246,128 +263,139 @@ class _RequisitionDetailsContentState extends State<RequisitionDetailsContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      height: 200,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: appTheme.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          const CommonDialogHeader(title: "Requisition Details"),
-          const SizedBox(
-            height: 10,
-          ),
-          BlocBuilder<PurchaseReqDtlBloc, PurchaseReqDtlState>(
-            builder: (context, state) {
-              if (state is PurchaseReqDtlLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is PurchaseReqDtlSuccess) {
-                skuDtlSource = SkuDtlSource(skuDtlData: state.purReqDtlList);
-                return SfDataGridTheme(
-                  data: SfDataGridThemeData(
-                    selectionColor: appTheme.primary.withOpacity(0.1),
-                  ),
-                  child: SfDataGrid(
-                    source: skuDtlSource,
-                    controller: _dataGridController,
-                    rowHeight: 32,
-                    headerRowHeight: 38,
-                    columnWidthCalculationRange:
-                        ColumnWidthCalculationRange.allRows,
-                    gridLinesVisibility: GridLinesVisibility.both,
-                    headerGridLinesVisibility: GridLinesVisibility.none,
-                    columnWidthMode: ColumnWidthMode.auto,
-                    shrinkWrapRows: true,
-                    onCellTap: (details) {
-                      // // Ensure rowIndex is greater than 0 to avoid selecting the header.
-                      // if (details.rowColumnIndex.rowIndex > 0 &&
-                      //     details.rowColumnIndex.columnIndex == 7 &&
-                      //     !skuDtlSource.nonEditableRows
-                      //         .contains(details.rowColumnIndex.rowIndex - 1)) {
+    return BlocListener<PurchaseReqDtlUpdtBloc, PurchaseReqDtlUpdtState>(
+      listener: (context, state) {
+        if (state is PurchaseReqDtlUpdtSuccess) {
+          ScaffoldMessenger.of(widget.prntContext)
+              .showSnackBar(CustomSnackBar.successSnackber(
+            message: state.response.message ?? "Successfully Updated!",
+          ));
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: appTheme.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            const CommonDialogHeader(title: "Requisition Details"),
+            const SizedBox(
+              height: 10,
+            ),
+            BlocBuilder<PurchaseReqDtlBloc, PurchaseReqDtlState>(
+              builder: (context, state) {
+                if (state is PurchaseReqDtlLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is PurchaseReqDtlSuccess) {
+                  skuDtlSource =
+                      PurReqDtlSource(purReqDtlData: state.purReqDtlList);
+                  return SfDataGridTheme(
+                    data: SfDataGridThemeData(
+                      selectionColor: appTheme.primary.withOpacity(0.1),
+                    ),
+                    child: SfDataGrid(
+                      source: skuDtlSource,
+                      controller: _dataGridController,
+                      rowHeight: 40,
+                      headerRowHeight: 38,
+                      columnWidthCalculationRange:
+                          ColumnWidthCalculationRange.allRows,
+                      gridLinesVisibility: GridLinesVisibility.both,
+                      headerGridLinesVisibility: GridLinesVisibility.none,
+                      columnWidthMode: ColumnWidthMode.auto,
+                      shrinkWrapRows: true,
+                      onCellTap: (details) {
+                        // Ensure rowIndex is greater than 0 to avoid selecting the header.
+                        var colIdx = details.rowColumnIndex.columnIndex;
+                        var rowIdx = details.rowColumnIndex.rowIndex;
+                        if (rowIdx > 0 && colIdx == 5) {
+                          var qty = skuDtlSource.rows[rowIdx - 1]
+                              .getCells()[4]
+                              .value
+                              .toString();
+                          var headerId = skuDtlSource.rows[rowIdx - 1]
+                              .getCells()[0]
+                              .value
+                              .toString();
+                          var itemId = skuDtlSource.rows[rowIdx - 1]
+                              .getCells()[1]
+                              .value
+                              .toString();
 
-                      //   // log(skuDtlSource
-                      //   //     ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                      //   //     .materialDetailId
-                      //   //     .toString());
-                      //   // widget.blocContext.read<BatchCompDtlLnUpdtBloc>().add(
-                      //   //       GetBatchCompDtlLnUpdt(
-                      //   //         userId: loggedUser.userId,
-                      //   //         mtldtlid: skuDtlSource
-                      //   //             ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                      //   //             .materialDetailId
-                      //   //             .toString(),
-                      //   //         madeqty: skuDtlSource
-                      //   //             ._skuDtlData[details.rowColumnIndex.rowIndex - 1]
-                      //   //             .madeQty
-                      //   //             .toString(),
-                      //   //         details: details,
-                      //   //       ),
-                      //   //     );
-                      // }
-                    },
-                    allowEditing: true,
-                    editingGestureType: EditingGestureType.tap,
-                    selectionMode: SelectionMode.singleDeselect,
-                    navigationMode: GridNavigationMode.cell,
-                    columns: [
-                      ...List.generate(
-                        skuDtlSource.rows.first.getCells().length,
-                        (index) {
-                          return GridColumn(
-                            // visible: ![
-                            //   "Material Dtl Id",
-                            //   "Batch Id",
-                            //   "Edit Enable"
-                            // ].contains(
-                            //     skuDtlSource.rows.first.getCells()[index].columnName),
-                            allowEditing: [
-                              "quantity",
-                            ].contains(skuDtlSource.rows.first
-                                .getCells()[index]
-                                .columnName),
-                            autoFitPadding: const EdgeInsets.all(10),
-                            columnName: skuDtlSource.rows.first
-                                .getCells()[index]
-                                .columnName,
-                            label: Container(
-                              color: appTheme.primary,
-                              alignment: Alignment.center,
-                              child: Text(
-                                skuDtlSource.rows.first
-                                    .getCells()[index]
-                                    .columnName,
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
+                          context.read<PurchaseReqDtlUpdtBloc>().add(
+                                PurchaseReqDtlUpdate(
+                                  headerId: int.parse(headerId),
+                                  itemId: int.parse(itemId),
+                                  qty: int.parse(qty),
+                                ),
+                              );
+                        }
+                      },
+                      allowEditing: true,
+                      editingGestureType: EditingGestureType.tap,
+                      selectionMode: SelectionMode.singleDeselect,
+                      navigationMode: GridNavigationMode.cell,
+                      columns: [
+                        ...List.generate(
+                          skuDtlSource.rows.first.getCells().length,
+                          (index) {
+                            return GridColumn(
+                              // visible: ![
+                              //   "Material Dtl Id",
+                              //   "Batch Id",
+                              //   "Edit Enable"
+                              // ].contains(
+                              //     skuDtlSource.rows.first.getCells()[index].columnName),
+                              allowEditing: [
+                                "Quantity",
+                              ].contains(skuDtlSource.rows.first
+                                  .getCells()[index]
+                                  .columnName),
+                              autoFitPadding: const EdgeInsets.all(10),
+                              columnName: skuDtlSource.rows.first
+                                  .getCells()[index]
+                                  .columnName,
+                              label: Container(
+                                color: appTheme.primary,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  skuDtlSource.rows.first
+                                      .getCells()[index]
+                                      .columnName,
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    color: appTheme.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return Container();
-            },
-          )
-        ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              },
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
-class SkuDtlSource extends DataGridSource {
+class PurReqDtlSource extends DataGridSource {
   /// Creates the employee data source class with required details.
-  SkuDtlSource({required List<PurchaseRequisitionDetail> skuDtlData}) {
-    _skuDtlData = skuDtlData;
-    _skuDtlRowData = skuDtlData.map<DataGridRow>((e) {
+  PurReqDtlSource({required List<PurchaseRequisitionDetail> purReqDtlData}) {
+    _PurReqDtlData = purReqDtlData;
+    _skuDtlRowData = purReqDtlData.map<DataGridRow>((e) {
       Map<String, dynamic> map = e.toTabMap();
       return DataGridRow(
         cells: [
@@ -393,7 +421,7 @@ class SkuDtlSource extends DataGridSource {
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
   List<DataGridRow> _skuDtlRowData = [];
-  List<PurchaseRequisitionDetail> _skuDtlData = [];
+  List<PurchaseRequisitionDetail> _PurReqDtlData = [];
   List<DataGridRow> highlightRows = [];
   List<int> nonEditableRows = [];
 
@@ -403,11 +431,11 @@ class SkuDtlSource extends DataGridSource {
     final int dataRowIndex = _skuDtlRowData.indexOf(dataGridRow);
 
     if (newCellValue != null) {
-      if (column.columnName == 'Qty') {
+      if (column.columnName == 'Quantity') {
         _skuDtlRowData[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-            DataGridCell<dynamic>(columnName: 'Qty', value: newCellValue);
-        _skuDtlData[dataRowIndex] =
-            _skuDtlData[dataRowIndex].copyWith(qty: newCellValue);
+            DataGridCell<dynamic>(columnName: 'Quantity', value: newCellValue);
+        _PurReqDtlData[dataRowIndex] =
+            _PurReqDtlData[dataRowIndex].copyWith(qty: newCellValue);
       }
     }
   }
@@ -432,7 +460,7 @@ class SkuDtlSource extends DataGridSource {
     newCellValue = null;
 
     final bool isNumericType = [
-      "Qty",
+      "Quantity",
     ].contains(column.columnName);
 
     return Container(
@@ -471,7 +499,7 @@ class SkuDtlSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _skuDtlRowData;
 
-  List<PurchaseRequisitionDetail> get rawList => _skuDtlData;
+  List<PurchaseRequisitionDetail> get rawList => _PurReqDtlData;
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final int rowIndex = effectiveRows.indexOf(row);
@@ -518,10 +546,10 @@ class SkuDtlSource extends DataGridSource {
                       ),
                     )
                   : Container(
-                      alignment:
-                          ["Qty"].contains(row.getCells()[index].columnName)
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
+                      alignment: ["Quantity", "Header Id", "Item Id"]
+                              .contains(row.getCells()[index].columnName)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                       padding: const EdgeInsets.all(8.0),
                       child:
                           ["Action"].contains(row.getCells()[index].columnName)

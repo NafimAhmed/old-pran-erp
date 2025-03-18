@@ -1,25 +1,25 @@
 import 'dart:convert';
 
-class PurchaseRequisitionDetailsResponse {
+class PurchaseRequDtlsResponse {
   final int? statusCode;
   final String? message;
   final String? errmsg;
   final List<PurchaseRequisitionDetail>? purchaseRequisitionDetails;
 
-  PurchaseRequisitionDetailsResponse({
+  PurchaseRequDtlsResponse({
     this.statusCode,
     this.message,
     this.errmsg,
     this.purchaseRequisitionDetails,
   });
 
-  PurchaseRequisitionDetailsResponse copyWith({
+  PurchaseRequDtlsResponse copyWith({
     int? statusCode,
     String? message,
     String? errmsg,
     List<PurchaseRequisitionDetail>? purchaseRequisitionDetails,
   }) =>
-      PurchaseRequisitionDetailsResponse(
+      PurchaseRequDtlsResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
         errmsg: errmsg ?? this.errmsg,
@@ -27,14 +27,13 @@ class PurchaseRequisitionDetailsResponse {
             purchaseRequisitionDetails ?? this.purchaseRequisitionDetails,
       );
 
-  factory PurchaseRequisitionDetailsResponse.fromJson(String str) =>
-      PurchaseRequisitionDetailsResponse.fromMap(json.decode(str));
+  factory PurchaseRequDtlsResponse.fromJson(String str) =>
+      PurchaseRequDtlsResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory PurchaseRequisitionDetailsResponse.fromMap(
-          Map<String, dynamic> json) =>
-      PurchaseRequisitionDetailsResponse(
+  factory PurchaseRequDtlsResponse.fromMap(Map<String, dynamic> json) =>
+      PurchaseRequDtlsResponse(
         statusCode: json["status_code"],
         message: json["message"],
         errmsg: json["errmsg"],
@@ -114,12 +113,12 @@ class PurchaseRequisitionDetail {
         "QTY": qty,
       };
   Map<String, dynamic> toTabMap() => {
-        //"HEADER_ID": headerId,
-        "Requisition No": requisitionNo,
+        "Header Id": headerId,
+        //"Requisition No": requisitionNo,
         "Item Id": itemId,
         "Item Name": itemName,
         "Unit": unit,
-        "Qty": qty,
+        "Quantity": qty,
         "Action": "Save"
       };
 }

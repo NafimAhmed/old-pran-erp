@@ -1,37 +1,37 @@
 import 'dart:convert';
 
-class PurchaseRequisitionListResponse {
+class PurchaseReqListResponse {
   final int? statusCode;
   final String? message;
   final String? errmsg;
   final List<PurchaseRequisition>? purchaseRequisition;
 
-  PurchaseRequisitionListResponse({
+  PurchaseReqListResponse({
     this.statusCode,
     this.message,
     this.errmsg,
     this.purchaseRequisition,
   });
 
-  PurchaseRequisitionListResponse copyWith({
+  PurchaseReqListResponse copyWith({
     int? statusCode,
     String? message,
     String? errmsg,
     List<PurchaseRequisition>? purchaseRequisition,
   }) =>
-      PurchaseRequisitionListResponse(
+      PurchaseReqListResponse(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
         purchaseRequisition: purchaseRequisition ?? this.purchaseRequisition,
       );
 
-  factory PurchaseRequisitionListResponse.fromJson(String str) =>
-      PurchaseRequisitionListResponse.fromMap(json.decode(str));
+  factory PurchaseReqListResponse.fromJson(String str) =>
+      PurchaseReqListResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory PurchaseRequisitionListResponse.fromMap(Map<String, dynamic> json) =>
-      PurchaseRequisitionListResponse(
+  factory PurchaseReqListResponse.fromMap(Map<String, dynamic> json) =>
+      PurchaseReqListResponse(
         statusCode: json["status_code"],
         message: json["message"],
         errmsg: json['errmsg'],

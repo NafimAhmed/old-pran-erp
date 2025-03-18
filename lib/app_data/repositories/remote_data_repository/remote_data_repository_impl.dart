@@ -1230,17 +1230,17 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<PurchaseRequisitionListResponse> getPurchaseRequisitionList() async {
+  Future<PurchaseReqListResponse> getPurchaseRequisitionList() async {
     var request = http.Request('GET',
         Uri.parse('${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionList'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
-        decoder: PurchaseRequisitionListResponse.fromJson);
+        decoder: PurchaseReqListResponse.fromJson);
   }
 
   @override
-  Future<PurchaseRequisitionDetailsResponse> getPurchaseRequisitionDetails(
+  Future<PurchaseRequDtlsResponse> getPurchaseRequisitionDetails(
       {required int headerId}) async {
     var request = http.Request(
         'GET',
@@ -1249,6 +1249,21 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
-        decoder: PurchaseRequisitionDetailsResponse.fromJson);
+        decoder: PurchaseRequDtlsResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> updatePurReqDtl({
+    required int headerId,
+    required int itemId,
+    required int qty,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/po/purchaseReqDtlUpdate?qty=$qty&headerId=$headerId&itemId=$itemId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

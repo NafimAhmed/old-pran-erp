@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
@@ -1126,5 +1127,19 @@ class DataServiceImpl implements DataService {
       throw ApiDataException(response.errmsg);
     }
     return response.purchaseRequisitionDetails ?? [];
+  }
+
+  @override
+  Future<GenericResponse> updatePurReqDtl({
+    required int headerId,
+    required int itemId,
+    required int qty,
+  }) async {
+    var response = await remoteDataRepository.updatePurReqDtl(
+        headerId: headerId, itemId: itemId, qty: qty);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+    return response;
   }
 }
