@@ -7,7 +7,8 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 sealed class PurchaseReqEvent {}
 
 final class PurchaseReqGet extends PurchaseReqEvent {
-  PurchaseReqGet();
+  final String userId;
+  PurchaseReqGet({required this.userId});
 }
 
 @immutable
@@ -35,7 +36,8 @@ class PurchaseReqBloc extends Bloc<PurchaseReqEvent, PurchaseReqState> {
     on<PurchaseReqGet>((event, emit) async {
       emit(PurchaseReqLoading());
       try {
-        var response = await _dataService.getPurchaseRequisitionList();
+        var response =
+            await _dataService.getPurchaseRequisitionList(userId: event.userId);
 
         emit(PurchaseReqSuccess(purReqList: response));
       } catch (e) {

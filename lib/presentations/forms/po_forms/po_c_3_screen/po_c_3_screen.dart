@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -11,6 +12,8 @@ import 'package:pran_rfl_erp/common_widgets/common_dialog_header.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/approve_pur_req_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_details_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/bloc/purchase_req_dtl_udt_bloc.dart';
@@ -27,11 +30,10 @@ class PoC3Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              PurchaseReqBloc(getService())..add(PurchaseReqGet()),
+          create: (context) => PurchaseReqBloc(getService()),
         ),
         BlocProvider(
-          create: (context) => PurchaseReqDtlBloc(getService()),
+          create: (context) => ApprovePurReqBloc(getService()),
         ),
       ],
       child: POC3ScreenBody(
@@ -50,8 +52,13 @@ class POC3ScreenBody extends StatefulWidget {
 
 class _POC3ScreenBodyState extends State<POC3ScreenBody> {
   TextEditingController orgDropDownTextController = TextEditingController();
+  late UserInfoModel loggedUser;
   @override
   void initState() {
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    context
+        .read<PurchaseReqBloc>()
+        .add(PurchaseReqGet(userId: loggedUser.userId));
     super.initState();
   }
 
@@ -65,146 +72,179 @@ class _POC3ScreenBodyState extends State<POC3ScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-        ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Expanded(
-              child: BlocBuilder<PurchaseReqBloc, PurchaseReqState>(
-                builder: (context, state) {
-                  if (state is PurchaseReqLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is PurchaseReqSuccess) {
-                    return ListView.separated(
-                      itemBuilder: (context, index) {
-                        var data = state.purReqList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            AppModal.showCustomModal(
-                              context,
-                              content: RequisitionDetailsDialog(
-                                headerId: data.hdrId ?? 0,
-                                prntContext: context,
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: appTheme.white,
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: appTheme.primary,
-                                  width: 3,
-                                ),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "ORG:",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                    Text(
-                                      data.orgCode ?? "",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "ORG Name:",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                    Text(
-                                      data.orgName ?? "",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Requisition No :",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                    Text(
-                                      data.requisitionNo ?? "",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Transaction Type :",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                    Text(
-                                      data.transactionTypeName ?? "",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: appTheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 10,
-                      ),
-                      itemCount: state.purReqList.length,
-                    );
-                  }
-                  return Container();
-                },
+      body: BlocListener<ApprovePurReqBloc, ApprovePurReqState>(
+        listener: (context, state) {
+          if (state is ApprovePurReqSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar.successSnackber(
+                message: state.response.message ?? "Successfully Updated!",
               ),
-            )
-          ],
+            );
+            context
+                .read<PurchaseReqBloc>()
+                .add(PurchaseReqGet(userId: loggedUser.userId));
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Expanded(
+                child: BlocBuilder<PurchaseReqBloc, PurchaseReqState>(
+                  builder: (context, state) {
+                    if (state is PurchaseReqLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is PurchaseReqSuccess) {
+                      return ListView.separated(
+                        itemBuilder: (context, index) {
+                          var data = state.purReqList[index];
+                          return GestureDetector(
+                            onTap: () {
+                              AppModal.showCustomModal(
+                                context,
+                                content: RequisitionDetailsDialog(
+                                  headerId: data.hdrId ?? 0,
+                                  prntContext: context,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: appTheme.white,
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: appTheme.primary,
+                                    width: 3,
+                                  ),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "ORG:",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.orgCode ?? "",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "ORG Name:",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.orgName ?? "",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Requisition No :",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.requisitionNo ?? "",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Transaction Type :",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.transactionTypeName ?? "",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  BlocBuilder<ApprovePurReqBloc,
+                                      ApprovePurReqState>(
+                                    builder: (context, state) {
+                                      return ElevatedButton(
+                                        onPressed: () {
+                                          context.read<ApprovePurReqBloc>().add(
+                                              ApprovePurReq(sl: data.sl ?? 0));
+                                        },
+                                        child: Text(
+                                          state is ApprovePurReqLoading
+                                              ? "Loading.."
+                                              : "Approve",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 10,
+                        ),
+                        itemCount: state.purReqList.length,
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

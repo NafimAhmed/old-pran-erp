@@ -386,7 +386,9 @@ abstract class DataService {
     required String newPass,
   });
 
-  Future<List<PurchaseRequisition>> getPurchaseRequisitionList();
+  Future<List<PurchaseRequisition>> getPurchaseRequisitionList({
+    required String userId,
+  });
   Future<List<PurchaseRequisitionDetail>> getPurchaseRequisitionDetails({
     required int headerId,
   });
@@ -394,5 +396,8 @@ abstract class DataService {
     required int headerId,
     required int itemId,
     required int qty,
+  });
+  Future<GenericResponse> approvePurReq({
+    required int sl,
   });
 }

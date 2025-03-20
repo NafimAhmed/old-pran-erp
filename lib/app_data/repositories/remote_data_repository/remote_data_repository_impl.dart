@@ -1230,9 +1230,13 @@ class RemoteDataRepositoryImpl
   }
 
   @override
-  Future<PurchaseReqListResponse> getPurchaseRequisitionList() async {
-    var request = http.Request('GET',
-        Uri.parse('${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionList'));
+  Future<PurchaseReqListResponse> getPurchaseRequisitionList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionList?user_id=$userId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response,
@@ -1262,6 +1266,19 @@ class RemoteDataRepositoryImpl
         'POST',
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/purchaseReqDtlUpdate?qty=$qty&headerId=$headerId&itemId=$itemId'));
+
+    http.StreamedResponse response = await request.send();
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> approvePurReq({
+    required int sl,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/po/purchaseReqApprove?sl=$sl'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

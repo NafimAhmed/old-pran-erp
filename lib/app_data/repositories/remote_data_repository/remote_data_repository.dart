@@ -374,7 +374,9 @@ abstract class RemoteDataRepository {
     required String oldPass,
     required String newPass,
   });
-  Future<PurchaseReqListResponse> getPurchaseRequisitionList();
+  Future<PurchaseReqListResponse> getPurchaseRequisitionList({
+    required String userId,
+  });
   Future<PurchaseRequDtlsResponse> getPurchaseRequisitionDetails({
     required int headerId,
   });
@@ -382,5 +384,8 @@ abstract class RemoteDataRepository {
     required int headerId,
     required int itemId,
     required int qty,
+  });
+  Future<GenericResponse> approvePurReq({
+    required int sl,
   });
 }

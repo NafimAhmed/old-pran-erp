@@ -1109,8 +1109,11 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<List<PurchaseRequisition>> getPurchaseRequisitionList() async {
-    var response = await remoteDataRepository.getPurchaseRequisitionList();
+  Future<List<PurchaseRequisition>> getPurchaseRequisitionList({
+    required String userId,
+  }) async {
+    var response =
+        await remoteDataRepository.getPurchaseRequisitionList(userId: userId);
     if (response.statusCode != 200) {
       throw ApiDataException(response.errmsg);
     }
@@ -1137,6 +1140,17 @@ class DataServiceImpl implements DataService {
   }) async {
     var response = await remoteDataRepository.updatePurReqDtl(
         headerId: headerId, itemId: itemId, qty: qty);
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.errorMessage);
+    }
+    return response;
+  }
+
+  @override
+  Future<GenericResponse> approvePurReq({
+    required int sl,
+  }) async {
+    var response = await remoteDataRepository.approvePurReq(sl: sl);
     if (response.statusCode != 200) {
       throw ApiDataException(response.errorMessage);
     }
