@@ -45,6 +45,7 @@ class CommonDialogHeader extends StatelessWidget {
                 context.pop();
               },
           child: Container(
+            width: 40,
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
               color: appTheme.primary,

@@ -62,6 +62,7 @@ class PurchaseRequisitionDetail {
   final String? itemName;
   final String? unit;
   final int? qty;
+  final int? editAble;
 
   PurchaseRequisitionDetail({
     this.headerId,
@@ -70,6 +71,7 @@ class PurchaseRequisitionDetail {
     this.itemName,
     this.unit,
     this.qty,
+    this.editAble = 0,
   });
 
   PurchaseRequisitionDetail copyWith({
@@ -79,6 +81,7 @@ class PurchaseRequisitionDetail {
     String? itemName,
     String? unit,
     int? qty,
+    int? editAble,
   }) =>
       PurchaseRequisitionDetail(
         headerId: headerId ?? this.headerId,
@@ -87,6 +90,7 @@ class PurchaseRequisitionDetail {
         itemName: itemName ?? this.itemName,
         unit: unit ?? this.unit,
         qty: qty ?? this.qty,
+        editAble: editAble ?? this.editAble,
       );
 
   factory PurchaseRequisitionDetail.fromJson(String str) =>
@@ -116,9 +120,10 @@ class PurchaseRequisitionDetail {
         "Header Id": headerId,
         //"Requisition No": requisitionNo,
         "Item Id": itemId,
-        "Item Name": itemName,
+        "Item Name": "$itemId-$itemName",
         "Unit": unit,
         "Quantity": qty,
+
         "Action": "Save"
       };
 }

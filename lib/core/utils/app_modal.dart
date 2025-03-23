@@ -13,7 +13,7 @@ class AppModal {
           borderRadius: BorderRadius.circular(10.0),
         ),
         insetPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
+          horizontal: 10,
         ),
         child: content,
       ),
