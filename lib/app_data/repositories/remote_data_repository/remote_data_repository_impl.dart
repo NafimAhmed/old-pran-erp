@@ -1273,12 +1273,14 @@ class RemoteDataRepositoryImpl
 
   @override
   Future<GenericResponse> approvePurReq({
-    required int sl,
+    required String reqNo,
+    required String userId,
+    required int orgId,
   }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/po/purchaseReqApprove?sl=$sl'));
+            '${appConfig.baseUrl}/ords/rpro/po/purchaseReqApprove?user_id=$userId&requisition_no=$reqNo&org_id=$orgId'));
 
     http.StreamedResponse response = await request.send();
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

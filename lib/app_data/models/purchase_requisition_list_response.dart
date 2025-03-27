@@ -57,7 +57,7 @@ class PurchaseRequisition {
   final String? orgName;
   final String? transactionTypeName;
   final String? requisitionNo;
-  final int? sl;
+  final int? organizationId;
 
   PurchaseRequisition(
       {this.hdrId,
@@ -65,7 +65,7 @@ class PurchaseRequisition {
       this.orgName,
       this.transactionTypeName,
       this.requisitionNo,
-      this.sl});
+      this.organizationId});
 
   PurchaseRequisition copyWith({
     int? hdrId,
@@ -81,7 +81,7 @@ class PurchaseRequisition {
           orgName: orgName ?? this.orgName,
           transactionTypeName: transactionTypeName ?? this.transactionTypeName,
           requisitionNo: requisitionNo ?? this.requisitionNo,
-          sl: sl ?? this.sl);
+          organizationId: sl ?? this.organizationId);
 
   factory PurchaseRequisition.fromJson(String str) =>
       PurchaseRequisition.fromMap(json.decode(str));
@@ -95,7 +95,7 @@ class PurchaseRequisition {
         orgName: json["ORG_NAME"],
         transactionTypeName: json["TRANSACTION_TYPE_NAME"],
         requisitionNo: json["REQUISITION_NO"],
-        sl: json["SL"],
+        organizationId: json["ORGANIZATION_ID"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -104,6 +104,6 @@ class PurchaseRequisition {
         "ORG_NAME": orgName,
         "TRANSACTION_TYPE_NAME": transactionTypeName,
         "REQUISITION_NO": requisitionNo,
-        "SL": sl,
+        "ORGANIZATION_ID": organizationId,
       };
 }

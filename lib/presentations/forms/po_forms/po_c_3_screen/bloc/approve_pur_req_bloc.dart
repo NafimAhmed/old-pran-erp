@@ -7,8 +7,11 @@ import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 sealed class ApprovePurReqEvent {}
 
 final class ApprovePurReq extends ApprovePurReqEvent {
-  final int sl;
-  ApprovePurReq({required this.sl});
+  final int orgId;
+  final String reqNo;
+  final String userId;
+  ApprovePurReq(
+      {required this.reqNo, required this.userId, required this.orgId});
 }
 
 @immutable
@@ -36,7 +39,11 @@ class ApprovePurReqBloc extends Bloc<ApprovePurReqEvent, ApprovePurReqState> {
     on<ApprovePurReq>((event, emit) async {
       emit(ApprovePurReqLoading());
       try {
-        var response = await _dataService.approvePurReq(sl: event.sl);
+        var response = await _dataService.approvePurReq(
+          reqNo: event.reqNo,
+          userId: event.userId,
+          orgId: event.orgId,
+        );
 
         emit(ApprovePurReqSuccess(response: response));
       } catch (e) {

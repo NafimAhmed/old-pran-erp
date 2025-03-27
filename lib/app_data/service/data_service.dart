@@ -398,6 +398,8 @@ abstract class DataService {
     required int qty,
   });
   Future<GenericResponse> approvePurReq({
-    required int sl,
+    required String reqNo,
+    required String userId,
+    required int orgId,
   });
 }

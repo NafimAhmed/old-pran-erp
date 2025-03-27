@@ -1148,9 +1148,12 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<GenericResponse> approvePurReq({
-    required int sl,
+    required String reqNo,
+    required String userId,
+    required int orgId,
   }) async {
-    var response = await remoteDataRepository.approvePurReq(sl: sl);
+    var response = await remoteDataRepository.approvePurReq(
+        reqNo: reqNo, userId: userId, orgId: orgId);
     if (response.statusCode != 200) {
       throw ApiDataException(response.errorMessage);
     }

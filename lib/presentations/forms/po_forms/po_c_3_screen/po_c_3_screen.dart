@@ -242,7 +242,7 @@ class _PurchaseReqContentState extends State<PurchaseReqContent> {
                   content: RequisitionDetailsDialog(
                     headerId: widget.data.hdrId ?? 0,
                     prntContext: context,
-                    sl: widget.data.sl ?? 0,
+                    purchaseRequisition: widget.data,
                     loggedUser: widget.loggedUser,
                   ),
                 );
@@ -266,12 +266,12 @@ class RequisitionDetailsDialog extends StatelessWidget {
     super.key,
     required this.headerId,
     required this.prntContext,
-    required this.sl,
+    required this.purchaseRequisition,
     required this.loggedUser,
   });
   final int headerId;
   final BuildContext prntContext;
-  final int sl;
+  final PurchaseRequisition purchaseRequisition;
   final UserInfoModel loggedUser;
   @override
   Widget build(BuildContext context) {
@@ -288,7 +288,7 @@ class RequisitionDetailsDialog extends StatelessWidget {
       child: RequisitionDetailsContent(
           headerId: headerId,
           prntContext: prntContext,
-          sl: sl,
+          purchaseRequisition: purchaseRequisition,
           loggedUser: loggedUser),
     );
   }
@@ -299,12 +299,12 @@ class RequisitionDetailsContent extends StatefulWidget {
     super.key,
     required this.headerId,
     required this.prntContext,
-    required this.sl,
+    required this.purchaseRequisition,
     required this.loggedUser,
   });
   final int headerId;
   final BuildContext prntContext;
-  final int sl;
+  final PurchaseRequisition purchaseRequisition;
   final UserInfoModel loggedUser;
   @override
   State<RequisitionDetailsContent> createState() =>
@@ -473,9 +473,10 @@ class _RequisitionDetailsContentState extends State<RequisitionDetailsContent> {
                 builder: (context, state) {
                   return ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<ApprovePurReqBloc>()
-                          .add(ApprovePurReq(sl: widget.sl));
+                      context.read<ApprovePurReqBloc>().add(ApprovePurReq(
+                          orgId: widget.purchaseRequisition.organizationId ?? 0,
+                          reqNo: widget.purchaseRequisition.requisitionNo ?? "",
+                          userId: widget.loggedUser.userId));
                     },
                     child: Text(
                       state is ApprovePurReqLoading ? "Loading" : "Approve",
