@@ -1214,6 +1214,32 @@ class DataServiceImpl implements DataService {
   }
 
   @override
+  Future<void> getGrnQrSave({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required num goodQty,
+    required num qty,
+    required num badQty,
+    required String jobOrderNo,
+    required String prId,
+  }) async {
+    var response = await remoteDataRepository.getGrnQrSave(
+      userId: userId,
+      orgId: orgId,
+      itemId: itemId,
+      goodQty: goodQty,
+      qty: qty,
+      badQty: badQty,
+      jobOrderNo: jobOrderNo,
+      prId: prId,
+    );
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+  }
+
+  @override
   Future<List<UserOrg>> getGrnOrgList({required int ouId}) async {
     var response = await remoteDataRepository.getGrnOrgList(ouId: ouId);
     if (response.statusCode != 200) {

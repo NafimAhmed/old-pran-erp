@@ -413,5 +413,15 @@ abstract class DataService {
   Future<List<GrnJO>> getGrnJOList({required String reqNo});
   Future<List<GrnPO>> getGrnPOList({required String jobOrderNo});
   Future<List<GrnQr>> getGrnQrList({required String userId});
+  Future<void> getGrnQrSave({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required num goodQty,
+    required num qty,
+    required num badQty,
+    required String jobOrderNo,
+    required String prId,
+  });
   Future<List<UserOrg>> getGrnOrgList({required int ouId});
 }

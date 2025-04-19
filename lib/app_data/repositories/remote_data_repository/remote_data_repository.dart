@@ -402,5 +402,15 @@ abstract class RemoteDataRepository {
   Future<GrnJoListResponse> getGrnJOList({required String reqNo});
   Future<GrnPOListResponse> getGrnPOList({required String jobOrderNo});
   Future<GrnQrListResponse> getGrnQrList({required String userId});
+  Future<GenericResponse> getGrnQrSave({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required num goodQty,
+    required num qty,
+    required num badQty,
+    required String jobOrderNo,
+    required String prId,
+  });
   Future<GrnOrgListResponse> getGrnOrgList({required int ouId});
 }

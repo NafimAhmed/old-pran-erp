@@ -1335,10 +1335,32 @@ class RemoteDataRepositoryImpl
   @override
   Future<GrnQrListResponse> getGrnQrList({required String userId}) async {
     var request = http.Request(
-        'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/po/GrnQRSave'));
+        'GET',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/po/GrnQRSave?userId=$userId'));
 
     http.StreamedResponse response = await request.send();
     return decodeResponse(response, decoder: GrnQrListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> getGrnQrSave({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required num goodQty,
+    required num qty,
+    required num badQty,
+    required String jobOrderNo,
+    required String prId,
+  }) async {
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/po/GrnQRSave?orgId=$orgId&itemId=$itemId&goodQty=$goodQty&jobOrder=$jobOrderNo&qty=$qty&badQty=$badQty&userId=$userId&prId=$prId'));
+
+    http.StreamedResponse response = await request.send();
+    return decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
   @override
