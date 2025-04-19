@@ -51,6 +51,7 @@ class GrnPO {
   final String? jobOrderNo;
   final String? reqNo;
   final int? reqLineNo;
+  final int? poHeaderId;
   final int? itemId;
   final String? itemDescription;
   final int? quantity;
@@ -62,6 +63,7 @@ class GrnPO {
     this.requisitionNumber,
     this.jobOrderNo,
     this.reqNo,
+    this.poHeaderId,
     this.reqLineNo,
     this.itemId,
     this.itemDescription,
@@ -75,6 +77,7 @@ class GrnPO {
     String? requisitionNumber,
     String? jobOrderNo,
     String? reqNo,
+    int? poHeaderId,
     int? reqLineNo,
     int? itemId,
     String? itemDescription,
@@ -89,6 +92,7 @@ class GrnPO {
         reqNo: reqNo ?? this.reqNo,
         reqLineNo: reqLineNo ?? this.reqLineNo,
         itemId: itemId ?? this.itemId,
+        poHeaderId: poHeaderId ?? this.poHeaderId,
         itemDescription: itemDescription ?? this.itemDescription,
         quantity: quantity ?? this.quantity,
         unitMeasLookupCode: unitMeasLookupCode ?? this.unitMeasLookupCode,
@@ -105,6 +109,7 @@ class GrnPO {
         jobOrderNo: json["JOB_ORDER_NO"],
         reqNo: json["req_no"],
         reqLineNo: json["req_line_no"],
+        poHeaderId: json["po_header_id"],
         itemId: json["ITEM_ID"],
         itemDescription: json["ITEM_DESCRIPTION"],
         quantity: json["QUANTITY"],
@@ -118,6 +123,7 @@ class GrnPO {
         "JOB_ORDER_NO": jobOrderNo,
         "req_no": reqNo,
         "req_line_no": reqLineNo,
+        "po_header_id": poHeaderId,
         "ITEM_ID": itemId,
         "ITEM_DESCRIPTION": itemDescription,
         "QUANTITY": quantity,
