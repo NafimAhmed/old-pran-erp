@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
@@ -22,6 +23,7 @@ import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_purchase_req_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_save_bloc.dart';
+import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/print_grn_qr_screen.dart';
 
 class PoC2Screen extends StatelessWidget {
   const PoC2Screen({super.key, required this.fromName});
@@ -98,7 +100,7 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
     context.read<OperationUnitBloc>().add(OperationUnitGet());
 
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
-    context.read<GrnQrListBloc>().add(GrnQrListGet(userId: loggedUser.userId));
+
     super.initState();
   }
 
@@ -217,6 +219,9 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                             VariableStateHandlerCubit<
                                                 UserOrg>>()
                                         .update(value);
+                                    context.read<GrnQrListBloc>().add(
+                                        GrnQrListGet(
+                                            userId: loggedUser.userId));
                                   }
                                 },
                                 validator: (value) {
@@ -542,7 +547,21 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                           appTheme.tertiary,
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        UserOrg userOrg = context
+                                            .read<
+                                                VariableStateHandlerCubit<
+                                                    UserOrg>>()
+                                            .state!;
+                                        context.pushNamed(
+                                          PrintGrnQrScreen.routeName,
+                                          extra: {
+                                            "grnQrData": data,
+                                            "grnQrPrintBlocCtx": context,
+                                            "userOrg": userOrg
+                                          },
+                                        );
+                                      },
                                       child: Row(
                                         children: [
                                           Text(

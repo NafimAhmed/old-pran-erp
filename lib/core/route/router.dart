@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
@@ -41,6 +42,7 @@ import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_dash_details_screen.dart/opm_dash_details_screen.dart';
 import 'package:pran_rfl_erp/presentations/opm_prod_supervisor_screen/opm_prod_supervisor_screen.dart';
 import 'package:pran_rfl_erp/presentations/module_screen/module_screen.dart';
+import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/print_grn_qr_screen.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
 import 'package:pran_rfl_erp/presentations/splash_screen/splash_screen.dart';
@@ -122,6 +124,19 @@ class AppNavigation {
           return PrintQrScreen(
             userBatchQrData: map["userBatchQrData"] as UserBatchQrData,
             userQrPrintBlocCtx: map["userQrPrintBlocCtx"] as BuildContext,
+            userOrg: map["userOrg"] as UserOrg,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: PrintGrnQrScreen.routePath,
+        name: PrintGrnQrScreen.routeName,
+        builder: (context, state) {
+          var map = state.extra as Map<String, dynamic>;
+          return PrintGrnQrScreen(
+            grnQrData: map["grnQrData"] as GrnQr,
+            grnQrPrintBlocCtx: map["grnQrPrintBlocCtx"] as BuildContext,
             userOrg: map["userOrg"] as UserOrg,
           );
         },
