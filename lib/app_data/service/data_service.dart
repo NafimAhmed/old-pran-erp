@@ -11,6 +11,10 @@ import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
@@ -21,6 +25,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
@@ -402,4 +407,11 @@ abstract class DataService {
     required String userId,
     required int orgId,
   });
+  Future<List<OperationUnit>> getOperationUnit();
+  Future<List<GrnPurchaseReqNumber>> getGrnPurchaseReqList(
+      {required int ordId});
+  Future<List<GrnJO>> getGrnJOList({required String reqNo});
+  Future<List<GrnPO>> getGrnPOList({required String jobOrderNo});
+  Future<List<GrnQr>> getGrnQrList({required String userId});
+  Future<List<UserOrg>> getGrnOrgList({required int ouId});
 }

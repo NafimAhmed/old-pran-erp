@@ -220,7 +220,7 @@ class PdfService {
                       width: 90,
                       height: 90,
                       data:
-                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}\n\nhttps://ego.rflgroupbd.com:8077/ords/r/rpro/smartqr/location-wise-stock-report2?P86_JOB_ORDER=${userBatchQrData.jobno}",
+                          "${userBatchQrData.itemname}\n${userBatchQrData.buyername}\n${DateTime.parse(userBatchQrData.createdDate ?? '').toFormatedString("dd/MM/yyyy")}\n${userBatchQrData.jobno}\n${userBatchQrData.locLocator}\n${"Good Qty:${userBatchQrData.goodQty}"}\n${userBatchQrData.toQrJson()}\nhttps://ego.rflgroupbd.com:8077/ords/r/rpro/smartqr/location-wise-stock-report2?P86_JOB_ORDER=${userBatchQrData.jobno}",
                     ),
                   ],
                 ),

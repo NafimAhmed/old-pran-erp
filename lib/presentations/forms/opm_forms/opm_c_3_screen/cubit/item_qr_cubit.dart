@@ -24,10 +24,9 @@ class ItemQrCubit extends Cubit<ItemQrState> {
   void setItemData({required String itemQrData}) {
     try {
       var list = itemQrData.split("\n");
-      var userBatchQrData = UserBatchQrData.fromJson(list[5]);
+      var userBatchQrData = UserBatchQrData.fromJson(list[6]);
       var newOb = userBatchQrData.copyWith(
-          itemname: list[0], goodQty: int.parse(list[4].split(":").last));
-
+          itemname: list[0], goodQty: int.parse(list[5].split(":").last));
       emit(ItemQrDataLoaded(userBatchQrData: newOb));
     } catch (error) {
       emit(ItemQrDataError(error: error));

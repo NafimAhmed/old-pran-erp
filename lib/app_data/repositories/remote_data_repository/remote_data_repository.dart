@@ -11,6 +11,11 @@ import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_org_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
@@ -21,6 +26,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
@@ -390,4 +396,11 @@ abstract class RemoteDataRepository {
     required String userId,
     required int orgId,
   });
+  Future<OperationUnitListResponse> getOperationUnit();
+  Future<GrnPurchaseReqListResponse> getGrnPurchaseReqList(
+      {required int ordId});
+  Future<GrnJoListResponse> getGrnJOList({required String reqNo});
+  Future<GrnPOListResponse> getGrnPOList({required String jobOrderNo});
+  Future<GrnQrListResponse> getGrnQrList({required String userId});
+  Future<GrnOrgListResponse> getGrnOrgList({required int ouId});
 }
