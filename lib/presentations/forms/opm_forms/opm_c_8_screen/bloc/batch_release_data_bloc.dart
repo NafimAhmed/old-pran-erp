@@ -42,7 +42,7 @@ class BatchReleaseDataBloc
     on<GetBatchReleaseData>((event, emit) async {
       emit(BatchReleaseDataLoading());
       try {
-        var response = await _dataService.getBatchReleaseData(
+        await _dataService.getBatchReleaseData(
             userId: event.userId, orgId: event.orgId, batchId: event.batchId);
         emit(BatchReleaseDataSuccess(btchRelsDataList: const []));
       } catch (e) {
