@@ -275,17 +275,7 @@ abstract class RemoteDataRepository {
     required String taskStatus,
     required int taskId,
   });
-  Future<GenericResponse> saveTaskStatusToExAuto({
-    required String vUser,
-    required String vStatus,
-    required String vNote,
-    required int taskId,
-    required String vCustomerPo,
-    required String vJobOrderNo,
-    required String vFdate,
-    required String vTdate,
-    required String vAdate,
-  });
+
   Future<JobOrderInfoResponse> getJobOrderInfo({
     required String userId,
     required String itemId,

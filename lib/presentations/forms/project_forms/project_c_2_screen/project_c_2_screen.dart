@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
@@ -17,7 +16,6 @@ import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/add_task_note_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/exAuto_task_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_note_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_save_bloc.dart';
@@ -36,9 +34,6 @@ class ProjectC2Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => TaskSaveBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => ExAutoTaskSaveBloc(getService()),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<JoInfo>(),
@@ -270,19 +265,7 @@ class TaskWidgetContent extends StatelessWidget {
                     taskId: data.tasksid ?? 0,
                   ),
                 );
-            // context.read<ExAutoTaskSaveBloc>().add(
-            //       ExAutoTaskSave(
-            //         taskId: data.refNo ?? 0,
-            //         vUser: loggedUser.userId,
-            //         vCustomerPo: data.projectName ?? "",
-            //         vJobOrderNo: data.jobOrderNo ?? "",
-            //         vStatus: status.value,
-            //         vAdate: data.taskCreactionDate ?? "",
-            //         vFdate: data.taskCompletionDate ?? "",
-            //         vTdate: data.taskStartDate ?? "",
-            //         vNote: "",
-            //       ),
-            //     );
+
             // Listen to the stream of TaskAssignBloc
             final completer = Completer<bool>();
             final subscription =
