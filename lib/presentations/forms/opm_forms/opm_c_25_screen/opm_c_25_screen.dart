@@ -19,8 +19,8 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/bloc/prod_rack_transact_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/bloc/prod_transfer_batch_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/bloc/prod_transfered_batch_data_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/widgets/split_qty_dialog_widget.dart';
 
 class OpmC25Screen extends StatelessWidget {

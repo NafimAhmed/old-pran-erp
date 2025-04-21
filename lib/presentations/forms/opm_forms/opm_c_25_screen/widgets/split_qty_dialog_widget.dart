@@ -6,8 +6,8 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfer_batch_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/bloc/transfered_batch_data_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 
 class SplitQtyDialog extends StatelessWidget {
   SplitQtyDialog({

@@ -11,8 +11,8 @@ import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_2_screen/bloc/rcv_iot_data_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/opm_c_3_screen.dart';
 
 class InvC2Screen extends StatelessWidget {

@@ -17,8 +17,8 @@ import 'package:pran_rfl_erp/global_blocs/bloc/check_batch_status_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/bloc/lot_trn_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_6_screen/bloc/locator_transfer_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/rack_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 
 class InvC6Screen extends StatelessWidget {
   const InvC6Screen({super.key, required this.fromName});

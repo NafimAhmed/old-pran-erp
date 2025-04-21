@@ -10,7 +10,7 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/cubit/item_qr_cubit.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/item_qr_cubit.dart';
 
 class OpmC24Screen extends StatelessWidget {
   const OpmC24Screen({super.key, required this.fromName});
