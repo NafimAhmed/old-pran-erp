@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/exAuto_task_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/widgets/task_widget.dart';
@@ -23,6 +24,9 @@ class ProjectC2Screen extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => TaskInfoBloc(getService()),
+        ),
+        BlocProvider(
+          create: (context) => ExAutoTaskSaveBloc(getService()),
         ),
         BlocProvider(
           create: (context) => TaskSaveBloc(getService()),

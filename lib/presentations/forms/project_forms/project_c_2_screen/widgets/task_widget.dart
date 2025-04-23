@@ -8,6 +8,7 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/exAuto_task_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/bloc/task_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/project_c_2_screen.dart';
@@ -92,7 +93,19 @@ class TaskWidgetContent extends StatelessWidget {
                     taskId: data.tasksid ?? 0,
                   ),
                 );
-
+            context.read<ExAutoTaskSaveBloc>().add(
+                  ExAutoTaskSave(
+                    taskId: data.refNo ?? 0,
+                    vUser: loggedUser.userId,
+                    vCustomerPo: data.projectName ?? "",
+                    vJobOrderNo: data.jobOrderNo ?? "",
+                    vStatus: status.value,
+                    vAdate: data.taskCreactionDate ?? "",
+                    vFdate: data.taskCompletionDate ?? "",
+                    vTdate: data.taskStartDate ?? "",
+                    vNote: "",
+                  ),
+                );
             // Listen to the stream of TaskAssignBloc
             final completer = Completer<bool>();
             final subscription =

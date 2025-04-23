@@ -784,6 +784,34 @@ class DataServiceImpl implements DataService {
   }
 
   @override
+  Future<void> saveTaskStatusToExAuto({
+    required String vUser,
+    required String vStatus,
+    required String vNote,
+    required int taskId,
+    required String vCustomerPo,
+    required String vJobOrderNo,
+    required String vFdate,
+    required String vTdate,
+    required String vAdate,
+  }) async {
+    var response = await remoteDataRepository.saveTaskStatusToExAuto(
+        vUser: vUser,
+        vStatus: vStatus,
+        vNote: vNote,
+        taskId: taskId,
+        vCustomerPo: vCustomerPo,
+        vJobOrderNo: vJobOrderNo,
+        vFdate: vFdate,
+        vTdate: vTdate,
+        vAdate: vAdate);
+
+    if (response.statusCode != 200) {
+      throw ApiDataException(response.message);
+    }
+  }
+
+  @override
   Future<List<JobOrderInfo>> getJobOrderInfo({
     required String userId,
     required String itemId,

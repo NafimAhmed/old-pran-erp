@@ -286,7 +286,17 @@ abstract class DataService {
     required String taskStatus,
     required int taskId,
   });
-
+  Future<void> saveTaskStatusToExAuto({
+    required String vUser,
+    required String vStatus,
+    required String vNote,
+    required int taskId,
+    required String vCustomerPo,
+    required String vJobOrderNo,
+    required String vFdate,
+    required String vTdate,
+    required String vAdate,
+  });
   Future<List<JobOrderInfo>> getJobOrderInfo({
     required String userId,
     required String itemId,
