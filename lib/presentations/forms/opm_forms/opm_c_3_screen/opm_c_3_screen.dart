@@ -326,7 +326,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
                       context.read<RackQrCubit>().setrackData(rackQrData: data);
                     }
                   } catch (e) {
-                    log('Error');
+                    log(e.toString());
                   }
                 },
               ),
