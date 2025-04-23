@@ -183,7 +183,49 @@ class TaskWidgetContent extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Item",
+                          style: textTheme.bodyMedium!.copyWith(
+                            color: appTheme.white,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              data.item ?? "",
+                              style: textTheme.bodySmall!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            ),
+                            Text(
+                              "  X ",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            ),
+                            Text(
+                              data.qty.toString(),
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: appTheme.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,6 +237,7 @@ class TaskWidgetContent extends StatelessWidget {
                           Text(
                             "Assigned to",
                             style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
                               color: appTheme.white,
                             ),
                           ),
@@ -214,6 +257,7 @@ class TaskWidgetContent extends StatelessWidget {
                           Text(
                             "Requested by",
                             style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
                               color: appTheme.white,
                             ),
                           ),
@@ -241,6 +285,7 @@ class TaskWidgetContent extends StatelessWidget {
                           Text(
                             "Requested Org",
                             style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
                               color: appTheme.white,
                             ),
                           ),
@@ -260,6 +305,7 @@ class TaskWidgetContent extends StatelessWidget {
                           Text(
                             "Given Org",
                             style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
                               color: appTheme.white,
                             ),
                           ),
