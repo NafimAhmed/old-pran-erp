@@ -25,6 +25,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/mo_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
@@ -414,4 +415,9 @@ abstract class DataService {
     required String prId,
   });
   Future<List<UserOrg>> getGrnOrgList({required int ouId});
+  Future<List<MOReqTask>> getMOReqList({required String userId});
+  Future<void> moReqSave({
+    required String taskStatus,
+    required int taskId,
+  });
 }

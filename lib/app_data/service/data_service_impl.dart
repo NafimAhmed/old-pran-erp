@@ -26,6 +26,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/mo_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
@@ -1219,5 +1220,26 @@ class DataServiceImpl implements DataService {
       throw const ApiDataException();
     }
     return response.grnOrg ?? [];
+  }
+
+  @override
+  Future<List<MOReqTask>> getMOReqList({required String userId}) async {
+    var response = await remoteDataRepository.getMOReqList(userId: userId);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+    return response.moReqTaskList ?? [];
+  }
+
+  @override
+  Future<void> moReqSave({
+    required String taskStatus,
+    required int taskId,
+  }) async {
+    var response = await remoteDataRepository.moReqSave(
+        taskStatus: taskStatus, taskId: taskId);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
   }
 }

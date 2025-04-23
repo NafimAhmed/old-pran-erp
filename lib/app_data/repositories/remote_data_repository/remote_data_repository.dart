@@ -26,6 +26,7 @@ import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
+import 'package:pran_rfl_erp/app_data/models/mo_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
@@ -403,4 +404,9 @@ abstract class RemoteDataRepository {
     required String prId,
   });
   Future<GrnOrgListResponse> getGrnOrgList({required int ouId});
+  Future<MOReqListResponse> getMOReqList({required String userId});
+  Future<GenericResponse> moReqSave({
+    required String taskStatus,
+    required int taskId,
+  });
 }
