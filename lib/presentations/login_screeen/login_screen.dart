@@ -111,9 +111,6 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                               focusNode: staffIDFocusNode,
                               controller: staffIDTextController,
                               keyboardType: TextInputType.phone,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
                               labelText: "Staff Id",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
