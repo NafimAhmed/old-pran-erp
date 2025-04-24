@@ -8,8 +8,11 @@ sealed class UserOrgEvent {}
 
 final class UserOrgGet extends UserOrgEvent {
   final String userId;
-
-  UserOrgGet({required this.userId});
+  final String orgType;
+  UserOrgGet({
+    required this.userId,
+    required this.orgType,
+  });
 }
 
 @immutable
@@ -38,7 +41,13 @@ class UserOrgBloc extends Bloc<UserOrgEvent, UserOrgState> {
     on<UserOrgGet>((event, emit) async {
       emit(UserOrgLoading());
       try {
-        var response = await _dataService.getUserOrg(userid: event.userId);
+        List<UserOrg> response = List.empty();
+        if (event.orgType == "prod") {
+          response = await _dataService.getUserOrg(userid: event.userId);
+        } else if (event.orgType == "rcving") {
+          response = await _dataService.getRcvingOrgs();
+        }
+
         _userOrg.clear();
         _userOrg = response;
         emit(UserOrgSuccess(userOrg: _userOrg));
