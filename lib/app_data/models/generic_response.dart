@@ -3,8 +3,10 @@ import 'dart:convert';
 class GenericResponse {
   final int? statusCode;
   final String? message;
+  final String? info;
   final String? errorMessage;
-  GenericResponse({this.statusCode, this.message, this.errorMessage});
+  GenericResponse(
+      {this.statusCode, this.message, this.errorMessage, this.info});
 
   GenericResponse copyWith({
     int? statusCode,
@@ -25,12 +27,14 @@ class GenericResponse {
   factory GenericResponse.fromMap(Map<String, dynamic> json) => GenericResponse(
         statusCode: json["status_code"],
         message: json["message"],
+        info: json['info'],
         errorMessage: json["error_message"],
       );
 
   Map<String, dynamic> toMap() => {
         "status_code": statusCode,
         "message": message,
+        "info": info,
         "error_message": errorMessage,
       };
 }

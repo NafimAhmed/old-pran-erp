@@ -15,6 +15,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -253,6 +254,16 @@ class RemoteDataRepositoryImpl
 
     http.StreamedResponse response = await _safeApiCall(request);
 
+    return await decodeResponse<UserOrgsResponse>(response,
+        decoder: UserOrgsResponse.fromJson);
+  }
+
+  @override
+  Future<UserOrgsResponse> getRcvingOrgs() async {
+    var request = http.Request('GET',
+        Uri.parse('${appConfig.baseUrl}/ords/rpro/opm/batch/rcvingOrgs'));
+
+    http.StreamedResponse response = await request.send();
     return await decodeResponse<UserOrgsResponse>(response,
         decoder: UserOrgsResponse.fromJson);
   }
@@ -1250,7 +1261,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionList?user_id=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: PurchaseReqListResponse.fromJson);
   }
@@ -1263,7 +1274,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/purchaseRequisitionDetails?header_id=$headerId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: PurchaseRequDtlsResponse.fromJson);
   }
@@ -1279,7 +1290,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/purchaseReqDtlUpdate?qty=$qty&headerId=$headerId&itemId=$itemId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1294,7 +1305,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/purchaseReqApprove?user_id=$userId&requisition_no=$reqNo&org_id=$orgId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1303,7 +1314,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request(
         'GET', Uri.parse('${appConfig.baseUrl}/ords/rpro/po/OUList'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: OperationUnitListResponse.fromJson);
   }
@@ -1314,7 +1325,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request('GET',
         Uri.parse('${appConfig.baseUrl}/ords/rpro/po/PRList?orgId=$ordId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response,
         decoder: GrnPurchaseReqListResponse.fromJson);
   }
@@ -1325,7 +1336,7 @@ class RemoteDataRepositoryImpl
         'GET',
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/GrnPOList?jobOrderNo=$jobOrderNo'));
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GrnPOListResponse.fromJson);
   }
 
@@ -1334,7 +1345,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request('GET',
         Uri.parse('${appConfig.baseUrl}/ords/rpro/po/JOList?reqNo=$reqNo'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: GrnJoListResponse.fromJson);
   }
 
@@ -1345,7 +1356,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/GrnQRSave?userId=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: GrnQrListResponse.fromJson);
   }
 
@@ -1365,7 +1376,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/po/GrnQRSave?orgId=$orgId&itemId=$itemId&goodQty=$goodQty&jobOrder=$jobOrderNo&qty=$qty&badQty=$badQty&userId=$userId&prId=$prId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 
@@ -1374,7 +1385,7 @@ class RemoteDataRepositoryImpl
     var request = http.Request('GET',
         Uri.parse('${appConfig.baseUrl}/ords/rpro/po/GrnOrgList?ouid=$ouId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return decodeResponse(response, decoder: GrnOrgListResponse.fromJson);
   }
 
@@ -1385,7 +1396,7 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/dlivyTaskUdtList?userid=$userId'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: MOReqListResponse.fromJson);
   }
 
@@ -1399,7 +1410,59 @@ class RemoteDataRepositoryImpl
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/taskapi/dlivyTaskUdtList?tskid=$taskId&taskstatus=$taskStatus'));
 
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<CustomerListResponse> getCustomerList({
+    required String searchV,
+  }) async {
+    var request = http.Request(
+      'GET',
+      Uri.parse(
+          '${appConfig.baseUrl}/ords/rpro/opm/batch/customerList?searchV=$searchV'),
+    );
+
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(
+      response,
+      decoder: CustomerListResponse.fromJson,
+    );
+  }
+
+  @override
+  Future<GenericResponse> smplColHdrSave({
+    required int rcvOrg,
+    required String customerCode,
+    required String customerName,
+    required String rcvDate,
+    required String smplSender,
+    required String note,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrSave?rcvOrg=$rcvOrg&customerCode=$customerCode&customerName=$customerName&rcvDate=$rcvDate&smplSender=$smplSender&note=$note'));
+
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> smplColHdrDtlSave({
+    required int headerId,
+    required String itemCode,
+    required String itemName,
+    required num qty,
+    required String unit,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrDtlSave?headerId=$headerId&itemCode=$itemCode&itemName=$itemName&qty=$qty&unit=$unit'));
+
+    http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
 }

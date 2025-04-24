@@ -9,13 +9,13 @@ import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
-
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
@@ -201,6 +201,15 @@ class DataServiceImpl implements DataService {
     required String userid,
   }) async {
     var response = await remoteDataRepository.getUserOrg(userid: userid);
+    if (response.statusCode == 200) {
+      return response.userOrgs ?? [];
+    }
+    throw ApiDataException(response.errmsg);
+  }
+
+  @override
+  Future<List<UserOrg>> getRcvingOrgs() async {
+    var response = await remoteDataRepository.getRcvingOrgs();
     if (response.statusCode == 200) {
       return response.userOrgs ?? [];
     }
@@ -1266,6 +1275,58 @@ class DataServiceImpl implements DataService {
   }) async {
     var response = await remoteDataRepository.moReqSave(
         taskStatus: taskStatus, taskId: taskId);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+  }
+
+  @override
+  Future<List<Customer>> getCustomerList({
+    required String searchV,
+  }) async {
+    var response = await remoteDataRepository.getCustomerList(searchV: searchV);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+    return response.customerList ?? [];
+  }
+
+  @override
+  Future<String> smplColHdrSave({
+    required int rcvOrg,
+    required String customerCode,
+    required String customerName,
+    required String rcvDate,
+    required String smplSender,
+    required String note,
+  }) async {
+    var response = await remoteDataRepository.smplColHdrSave(
+        rcvOrg: rcvOrg,
+        customerCode: customerCode,
+        customerName: customerName,
+        rcvDate: rcvDate,
+        smplSender: smplSender,
+        note: note);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+    return response.info ?? "";
+  }
+
+  @override
+  Future<void> smplColHdrDtlSave({
+    required int headerId,
+    required String itemCode,
+    required String itemName,
+    required num qty,
+    required String unit,
+  }) async {
+    var response = await remoteDataRepository.smplColHdrDtlSave(
+        headerId: headerId,
+        itemCode: itemCode,
+        itemName: itemName,
+        qty: qty,
+        unit: unit);
     if (response.statusCode != 200) {
       throw const ApiDataException();
     }

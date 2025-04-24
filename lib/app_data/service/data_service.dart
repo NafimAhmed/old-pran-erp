@@ -9,6 +9,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
@@ -101,6 +102,7 @@ abstract class DataService {
   Future<List<UserOrg>> getUserOrg({
     required String userid,
   });
+  Future<List<UserOrg>> getRcvingOrgs();
   Future<List<UserBatch>> getProdBatchData({
     required String userid,
     required String orgid,
@@ -429,5 +431,23 @@ abstract class DataService {
   Future<void> moReqSave({
     required String taskStatus,
     required int taskId,
+  });
+  Future<List<Customer>> getCustomerList({
+    required String searchV,
+  });
+  Future<String> smplColHdrSave({
+    required int rcvOrg,
+    required String customerCode,
+    required String customerName,
+    required String rcvDate,
+    required String smplSender,
+    required String note,
+  });
+  Future<void> smplColHdrDtlSave({
+    required int headerId,
+    required String itemCode,
+    required String itemName,
+    required num qty,
+    required String unit,
   });
 }
