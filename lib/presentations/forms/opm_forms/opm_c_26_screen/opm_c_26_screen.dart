@@ -19,6 +19,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/smpl_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/sample_item_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/widget/sample_success_widget.dart';
 import 'package:pran_rfl_erp/presentations/smpl_qr_list_screen/smpl_qr_list_screen.dart';
 
 class OpmC26Screen extends StatelessWidget {
@@ -343,6 +344,23 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                         const SizedBox(
                           width: 10,
                         ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Material(
+                          elevation: 5,
+                          shape: const CircleBorder(),
+                          shadowColor: const Color.fromARGB(115, 78, 76, 76),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            child: const Center(
+                              child: Icon(
+                                Icons.qr_code,
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                     const SizedBox(
@@ -647,20 +665,6 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.pushNamed(SmplQrListScreen.routeName);
-                          },
-                          child: Text(
-                            "Print List",
-                            style: textTheme.bodyMedium!.copyWith(
-                              color: appTheme.white,
-                            ),
-                          ),
-                        )
                       ],
                     ),
                     const SizedBox(
@@ -762,65 +766,6 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
           },
         ),
       ),
-    );
-  }
-}
-
-class SampleSuccessWidget extends StatelessWidget {
-  const SampleSuccessWidget({
-    super.key,
-    required this.headerId,
-  });
-  final String headerId;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.check_circle,
-            size: 60, color: const Color.fromRGBO(0, 74, 173, 1)),
-        const SizedBox(height: 16),
-        Text(
-          "Success!",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: const Color.fromRGBO(29, 64, 110, 1),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          "Your request has been submitted.",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: const Color.fromRGBO(8, 105, 236, 1),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          "Request No: $headerId",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: const Color.fromRGBO(0, 74, 173, 1),
-          ),
-        ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromRGBO(0, 74, 173, 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12),
-            child: Text("OK", style: TextStyle(color: Colors.white)),
-          ),
-        ),
-      ],
     );
   }
 }
