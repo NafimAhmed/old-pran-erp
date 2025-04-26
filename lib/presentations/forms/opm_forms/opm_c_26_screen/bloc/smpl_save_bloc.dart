@@ -14,6 +14,7 @@ final class SmplSave extends SmplSaveEvent {
   final String rcvDate;
   final String smplSender;
   final String note;
+  final String assignee;
   final List<SampleItem> items;
   SmplSave({
     required this.rcvOrg,
@@ -23,6 +24,7 @@ final class SmplSave extends SmplSaveEvent {
     required this.smplSender,
     required this.note,
     required this.items,
+    required this.assignee,
   });
 }
 
@@ -34,7 +36,8 @@ final class SmplSaveInitial extends SmplSaveState {}
 final class SmplSaveLoading extends SmplSaveState {}
 
 final class SmplSaveSuccess extends SmplSaveState {
-  SmplSaveSuccess();
+  final String headerId;
+  SmplSaveSuccess({required this.headerId});
 }
 
 final class SmplSaveError extends SmplSaveState {
@@ -51,13 +54,13 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
       emit(SmplSaveLoading());
       try {
         var headerId = await _dataService.smplColHdrSave(
-          customerCode: event.customerCode,
-          customerName: event.customerName,
-          note: event.note,
-          rcvDate: event.rcvDate,
-          rcvOrg: event.rcvOrg,
-          smplSender: event.smplSender,
-        );
+            customerCode: event.customerCode,
+            customerName: event.customerName,
+            note: event.note,
+            rcvDate: event.rcvDate,
+            rcvOrg: event.rcvOrg,
+            smplSender: event.smplSender,
+            assignee: event.assignee);
         if (headerId.isNotEmpty) {
           for (int i = 0; i < event.items.length; i++) {
             await _dataService.smplColHdrDtlSave(
@@ -68,7 +71,7 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
                 unit: event.items[i].unit);
           }
         }
-        emit(SmplSaveSuccess());
+        emit(SmplSaveSuccess(headerId: headerId));
       } catch (e) {
         emit(SmplSaveError(error: e));
       }

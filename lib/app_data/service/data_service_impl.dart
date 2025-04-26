@@ -1299,14 +1299,17 @@ class DataServiceImpl implements DataService {
     required String rcvDate,
     required String smplSender,
     required String note,
+    required String assignee,
   }) async {
     var response = await remoteDataRepository.smplColHdrSave(
-        rcvOrg: rcvOrg,
-        customerCode: customerCode,
-        customerName: customerName,
-        rcvDate: rcvDate,
-        smplSender: smplSender,
-        note: note);
+      rcvOrg: rcvOrg,
+      customerCode: customerCode,
+      customerName: customerName,
+      rcvDate: rcvDate,
+      smplSender: smplSender,
+      note: note,
+      assignee: assignee,
+    );
     if (response.statusCode != 200) {
       throw const ApiDataException();
     }

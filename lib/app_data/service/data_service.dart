@@ -442,6 +442,7 @@ abstract class DataService {
     required String rcvDate,
     required String smplSender,
     required String note,
+    required String assignee,
   });
   Future<void> smplColHdrDtlSave({
     required int headerId,

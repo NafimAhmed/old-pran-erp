@@ -10,6 +10,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/customer_list_bloc.dart';
@@ -63,6 +64,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
   late TextEditingController _rcvDateController;
 
   late TextEditingController _noteController;
+  late TextEditingController _assigneeController;
   late TextEditingController _itemNameController;
   late TextEditingController _itemCodeController;
 
@@ -73,6 +75,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
   late FocusNode _smplSenderFocusNode;
 
   late FocusNode _noteFocusNode;
+  late FocusNode _assigneeFocusNode;
   late FocusNode _itemNameFocusNode;
   late FocusNode _itemCodeFocusNode;
 
@@ -154,12 +157,15 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                       data.customerNumber ?? "";
                                   _hideOverlay();
                                 },
-                                child: Text(
-                                  "${data.customerNumber}-${data.customerName}",
-                                  style: textTheme.bodySmall!.copyWith(
-                                    color: appTheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "${data.customerNumber}-${data.customerName}",
+                                    style: textTheme.bodySmall!.copyWith(
+                                      color: appTheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               );
@@ -198,6 +204,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _smplSenderController = TextEditingController();
     _rcvDateController = TextEditingController();
     _noteController = TextEditingController();
+    _assigneeController = TextEditingController();
     _itemNameController = TextEditingController();
     _itemCodeController = TextEditingController();
     _qtyController = TextEditingController();
@@ -205,6 +212,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _custNameFocusNode = FocusNode();
     _smplSenderFocusNode = FocusNode();
     _noteFocusNode = FocusNode();
+    _assigneeFocusNode = FocusNode();
     _itemNameFocusNode = FocusNode();
     _itemCodeFocusNode = FocusNode();
     _qtyFocusNode = FocusNode();
@@ -219,6 +227,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _smplSenderController.dispose();
     _rcvDateController.dispose();
     _noteController.dispose();
+    _assigneeController.dispose();
     _itemNameController.dispose();
     _itemCodeController.dispose();
     _qtyController.dispose();
@@ -226,6 +235,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _custNameFocusNode.dispose();
     _smplSenderFocusNode.dispose();
     _noteFocusNode.dispose();
+    _assigneeFocusNode.dispose();
     _itemNameFocusNode.dispose();
     _itemCodeFocusNode.dispose();
     _qtyFocusNode.dispose();
@@ -251,17 +261,28 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
             _smplSenderController.clear();
             _rcvDateController.clear();
             _noteController.clear();
+            _assigneeController.clear();
             _itemCodeController.clear();
             _itemNameController.clear();
             _qtyController.clear();
             _unitController.clear();
             context.read<VariableStateHandlerCubit<UserOrg>>().reset();
+            context.read<SampleItemBloc>().add(
+                  SampleItemClearAll(),
+                );
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.successSnackber(
-                message: "Project Created Successfully",
+            AppModal.showCustomModal(
+              context,
+              content: SampleSuccessWidget(
+                headerId: state.headerId,
               ),
             );
+
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   CustomSnackBar.successSnackber(
+            //     message: "Created Successfully",
+            //   ),
+            // );
           }
           if (state is SmplSaveError) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -303,6 +324,12 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                                 UserOrg>>()
                                         .update(value);
                                   }
+                                },
+                                validator: (value) {
+                                  if (value == null) {
+                                    return "Please Enter ORG";
+                                  }
+                                  return null;
                                 },
                               );
                             },
@@ -423,16 +450,38 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                     const SizedBox(
                       height: 10,
                     ),
-                    CommonTextFieldWidget(
-                      controller: _noteController,
-                      focusNode: _noteFocusNode,
-                      labelText: "Note",
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Enter Note Manager";
-                        }
-                        return null;
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CommonTextFieldWidget(
+                            controller: _noteController,
+                            focusNode: _noteFocusNode,
+                            labelText: "Note",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter Note";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: CommonTextFieldWidget(
+                            controller: _assigneeController,
+                            focusNode: _assigneeFocusNode,
+                            labelText: "Assignee",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter Assignee";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 10,
@@ -504,7 +553,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                             labelText: "Unit",
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Enter Man Hours";
+                                return "Enter Unit";
                               }
                               return null;
                             },
@@ -518,43 +567,54 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        BlocBuilder<SmplSaveBloc, SmplSaveState>(
+                        BlocBuilder<SampleItemBloc, SampleItemState>(
                           builder: (context, state) {
-                            return ElevatedButton(
-                              onPressed: () {
-                                if (_fromkey.currentState!.validate()) {
-                                  var rcvOrg = context
-                                          .read<
-                                              VariableStateHandlerCubit<
-                                                  UserOrg>>()
-                                          .state!
-                                          .organizationId ??
-                                      0;
-                                  context.read<SmplSaveBloc>().add(
-                                        SmplSave(
-                                          rcvOrg: rcvOrg,
-                                          customerCode:
-                                              _custCodeController.text,
-                                          customerName:
-                                              _custNameController.text,
-                                          rcvDate: _rcvDateController.text,
-                                          smplSender:
-                                              _smplSenderController.text,
-                                          note: _noteController.text,
-                                          items: _sampleItem,
-                                        ),
-                                      );
-                                }
-                              },
-                              child: Text(
-                                state is SmplSaveLoading
-                                    ? "Creating.."
-                                    : "Create",
-                                style: textTheme.bodyMedium!.copyWith(
-                                  color: appTheme.white,
-                                ),
-                              ),
-                            );
+                            if (state is SampleItemSuccess &&
+                                state.sampleItem.isNotEmpty) {
+                              return BlocBuilder<SmplSaveBloc, SmplSaveState>(
+                                builder: (context, state) {
+                                  return ElevatedButton(
+                                    onPressed: () {
+                                      if (_fromkey.currentState!.validate()) {
+                                        var rcvOrg = context
+                                                .read<
+                                                    VariableStateHandlerCubit<
+                                                        UserOrg>>()
+                                                .state!
+                                                .organizationId ??
+                                            0;
+                                        context.read<SmplSaveBloc>().add(
+                                              SmplSave(
+                                                rcvOrg: rcvOrg,
+                                                customerCode:
+                                                    _custCodeController.text,
+                                                customerName:
+                                                    _custNameController.text,
+                                                rcvDate:
+                                                    _rcvDateController.text,
+                                                smplSender:
+                                                    _smplSenderController.text,
+                                                note: _noteController.text,
+                                                assignee:
+                                                    _assigneeController.text,
+                                                items: _sampleItem,
+                                              ),
+                                            );
+                                      }
+                                    },
+                                    child: Text(
+                                      state is SmplSaveLoading
+                                          ? "Creating.."
+                                          : "Create",
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        color: appTheme.white,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            return Container();
                           },
                         ),
                         const SizedBox(
@@ -582,6 +642,9 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                           ),
                         )
                       ],
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                     Expanded(
                       child: BlocBuilder<SampleItemBloc, SampleItemState>(
@@ -641,6 +704,26 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                             ),
                                           ],
                                         ),
+                                        SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: IconButton.outlined(
+                                            iconSize: 15,
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              context
+                                                  .read<SampleItemBloc>()
+                                                  .add(
+                                                    SampleItemRemove(
+                                                      sampleItem: item,
+                                                    ),
+                                                  );
+                                            },
+                                            icon: const Icon(
+                                              Icons.remove,
+                                            ),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -659,6 +742,65 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
           },
         ),
       ),
+    );
+  }
+}
+
+class SampleSuccessWidget extends StatelessWidget {
+  const SampleSuccessWidget({
+    super.key,
+    required this.headerId,
+  });
+  final String headerId;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.check_circle,
+            size: 60, color: const Color.fromRGBO(0, 74, 173, 1)),
+        const SizedBox(height: 16),
+        Text(
+          "Success!",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: const Color.fromRGBO(29, 64, 110, 1),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          "Your request has been submitted.",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 16,
+            color: const Color.fromRGBO(8, 105, 236, 1),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          "Request No: $headerId",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: const Color.fromRGBO(0, 74, 173, 1),
+          ),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(0, 74, 173, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12),
+            child: Text("OK", style: TextStyle(color: Colors.white)),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -433,6 +433,7 @@ abstract class RemoteDataRepository {
     required String rcvDate,
     required String smplSender,
     required String note,
+    required String assignee,
   });
   Future<GenericResponse> smplColHdrDtlSave({
     required int headerId,

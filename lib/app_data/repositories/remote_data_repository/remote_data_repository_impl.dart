@@ -1439,11 +1439,12 @@ class RemoteDataRepositoryImpl
     required String rcvDate,
     required String smplSender,
     required String note,
+    required String assignee,
   }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrSave?rcvOrg=$rcvOrg&customerCode=$customerCode&customerName=$customerName&rcvDate=$rcvDate&smplSender=$smplSender&note=$note'));
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrSave?rcvOrg=$rcvOrg&customerCode=$customerCode&customerName=$customerName&rcvDate=$rcvDate&smplSender=$smplSender&note=$note&assignee=$assignee'));
 
     http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

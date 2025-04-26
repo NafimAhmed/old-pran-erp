@@ -13,6 +13,16 @@ final class SampleItemAdd extends SampleItemEvent {
   });
 }
 
+final class SampleItemRemove extends SampleItemEvent {
+  final SampleItem sampleItem;
+
+  SampleItemRemove({
+    required this.sampleItem,
+  });
+}
+
+final class SampleItemClearAll extends SampleItemEvent {}
+
 @immutable
 sealed class SampleItemState {}
 
@@ -38,6 +48,22 @@ class SampleItemBloc extends Bloc<SampleItemEvent, SampleItemState> {
     on<SampleItemAdd>((event, emit) async {
       try {
         _sampleItem.add(event.sampleItem);
+        emit(SampleItemSuccess(sampleItem: _sampleItem));
+      } catch (e) {
+        emit(SampleItemError(error: e));
+      }
+    });
+    on<SampleItemRemove>((event, emit) async {
+      try {
+        _sampleItem.remove(event.sampleItem);
+        emit(SampleItemSuccess(sampleItem: _sampleItem));
+      } catch (e) {
+        emit(SampleItemError(error: e));
+      }
+    });
+    on<SampleItemClearAll>((event, emit) async {
+      try {
+        _sampleItem.clear();
         emit(SampleItemSuccess(sampleItem: _sampleItem));
       } catch (e) {
         emit(SampleItemError(error: e));
