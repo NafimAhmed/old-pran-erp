@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -12,11 +13,13 @@ import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
+import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/customer_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/smpl_save_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/sample_item.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/sample_item_bloc.dart';
+import 'package:pran_rfl_erp/presentations/smpl_qr_list_screen/smpl_qr_list_screen.dart';
 
 class OpmC26Screen extends StatelessWidget {
   const OpmC26Screen({super.key, required this.fromName});
@@ -58,6 +61,7 @@ class OpmC26ScreenBody extends StatefulWidget {
 }
 
 class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
+  late UserInfoModel loggedUser;
   late TextEditingController _custNameController;
   late TextEditingController _custCodeController;
   late TextEditingController _smplSenderController;
@@ -197,6 +201,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
 
   @override
   void initState() {
+    loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<UserOrgBloc>().add(UserOrgGet(userId: "", orgType: "rcving"));
     _fromkey = GlobalKey<FormState>();
     _custNameController = TextEditingController();
@@ -597,6 +602,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                                 note: _noteController.text,
                                                 assignee:
                                                     _assigneeController.text,
+                                                userId: loggedUser.userId,
                                                 items: _sampleItem,
                                               ),
                                             );
@@ -636,6 +642,20 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                           },
                           child: Text(
                             "Item Add",
+                            style: textTheme.bodyMedium!.copyWith(
+                              color: appTheme.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.pushNamed(SmplQrListScreen.routeName);
+                          },
+                          child: Text(
+                            "Print List",
                             style: textTheme.bodyMedium!.copyWith(
                               color: appTheme.white,
                             ),

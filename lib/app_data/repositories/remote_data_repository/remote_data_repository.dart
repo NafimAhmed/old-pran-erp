@@ -41,6 +41,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -434,6 +435,7 @@ abstract class RemoteDataRepository {
     required String smplSender,
     required String note,
     required String assignee,
+    required String userId,
   });
   Future<GenericResponse> smplColHdrDtlSave({
     required int headerId,
@@ -441,5 +443,11 @@ abstract class RemoteDataRepository {
     required String itemName,
     required num qty,
     required String unit,
+  });
+  Future<SmplQrListResponse> getSmplColQrList({
+    required String userId,
+  });
+  Future<GenericResponse> updateSmplColQrList({
+    required int id,
   });
 }

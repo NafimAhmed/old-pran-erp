@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/sample_item.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 
 @immutable
 sealed class SampleItemEvent {}

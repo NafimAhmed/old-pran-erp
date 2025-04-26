@@ -49,6 +49,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -1440,11 +1441,12 @@ class RemoteDataRepositoryImpl
     required String smplSender,
     required String note,
     required String assignee,
+    required String userId,
   }) async {
     var request = http.Request(
         'POST',
         Uri.parse(
-            '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrSave?rcvOrg=$rcvOrg&customerCode=$customerCode&customerName=$customerName&rcvDate=$rcvDate&smplSender=$smplSender&note=$note&assignee=$assignee'));
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrSave?rcvOrg=$rcvOrg&customerCode=$customerCode&customerName=$customerName&rcvDate=$rcvDate&smplSender=$smplSender&note=$note&assignee=$assignee&userId=$userId'));
 
     http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
@@ -1462,6 +1464,32 @@ class RemoteDataRepositoryImpl
         'POST',
         Uri.parse(
             '${appConfig.baseUrl}/ords/rpro/opm/batch/smplColHdrDtlSave?headerId=$headerId&itemCode=$itemCode&itemName=$itemName&qty=$qty&unit=$unit'));
+
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
+
+  @override
+  Future<SmplQrListResponse> getSmplColQrList({
+    required String userId,
+  }) async {
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/smlColQrList?userId=$userId'));
+
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response, decoder: SmplQrListResponse.fromJson);
+  }
+
+  @override
+  Future<GenericResponse> updateSmplColQrList({
+    required int id,
+  }) async {
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            '${appConfig.baseUrl}/ords/rpro/opm/batch/smlColQrList?id=$id'));
 
     http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);

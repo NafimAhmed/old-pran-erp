@@ -40,6 +40,7 @@ import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -1300,6 +1301,7 @@ class DataServiceImpl implements DataService {
     required String smplSender,
     required String note,
     required String assignee,
+    required String userId,
   }) async {
     var response = await remoteDataRepository.smplColHdrSave(
       rcvOrg: rcvOrg,
@@ -1309,6 +1311,7 @@ class DataServiceImpl implements DataService {
       smplSender: smplSender,
       note: note,
       assignee: assignee,
+      userId: userId,
     );
     if (response.statusCode != 200) {
       throw const ApiDataException();
@@ -1330,6 +1333,27 @@ class DataServiceImpl implements DataService {
         itemName: itemName,
         qty: qty,
         unit: unit);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+  }
+
+  @override
+  Future<List<SampleColQr>> getSmplColQrList({
+    required String userId,
+  }) async {
+    var response = await remoteDataRepository.getSmplColQrList(userId: userId);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+    return response.sampleColQr ?? [];
+  }
+
+  @override
+  Future<void> updateSmplColQrList({
+    required int id,
+  }) async {
+    var response = await remoteDataRepository.updateSmplColQrList(id: id);
     if (response.statusCode != 200) {
       throw const ApiDataException();
     }

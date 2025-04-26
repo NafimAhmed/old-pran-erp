@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/sample_item.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 
 @immutable
 sealed class SmplSaveEvent {}
@@ -15,17 +15,18 @@ final class SmplSave extends SmplSaveEvent {
   final String smplSender;
   final String note;
   final String assignee;
+  final String userId;
   final List<SampleItem> items;
-  SmplSave({
-    required this.rcvOrg,
-    required this.customerCode,
-    required this.customerName,
-    required this.rcvDate,
-    required this.smplSender,
-    required this.note,
-    required this.items,
-    required this.assignee,
-  });
+  SmplSave(
+      {required this.rcvOrg,
+      required this.customerCode,
+      required this.customerName,
+      required this.rcvDate,
+      required this.smplSender,
+      required this.note,
+      required this.items,
+      required this.assignee,
+      required this.userId});
 }
 
 @immutable
@@ -54,13 +55,15 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
       emit(SmplSaveLoading());
       try {
         var headerId = await _dataService.smplColHdrSave(
-            customerCode: event.customerCode,
-            customerName: event.customerName,
-            note: event.note,
-            rcvDate: event.rcvDate,
-            rcvOrg: event.rcvOrg,
-            smplSender: event.smplSender,
-            assignee: event.assignee);
+          customerCode: event.customerCode,
+          customerName: event.customerName,
+          note: event.note,
+          rcvDate: event.rcvDate,
+          rcvOrg: event.rcvOrg,
+          smplSender: event.smplSender,
+          assignee: event.assignee,
+          userId: event.userId,
+        );
         if (headerId.isNotEmpty) {
           for (int i = 0; i < event.items.length; i++) {
             await _dataService.smplColHdrDtlSave(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
@@ -13,6 +14,8 @@ import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_2_screen/om_c_2_s
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_3_screen/om_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/opm_c_25_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/opm_c_26_screen.dart';
+import 'package:pran_rfl_erp/presentations/print_smpl_qr_screen/print_smpl_qr_screen.dart';
+import 'package:pran_rfl_erp/presentations/smpl_qr_list_screen/smpl_qr_list_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/po_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/project_forms/project_c_2_screen/project_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_8_screen/om_c_8_screen.dart';
@@ -118,6 +121,14 @@ class AppNavigation {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
+        path: SmplQrListScreen.routePath,
+        name: SmplQrListScreen.routeName,
+        builder: (context, state) {
+          return const SmplQrListScreen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: PrintQrScreen.routePath,
         name: PrintQrScreen.routeName,
         builder: (context, state) {
@@ -127,6 +138,19 @@ class AppNavigation {
             userBatchQrData: map["userBatchQrData"] as UserBatchQrData,
             userQrPrintBlocCtx: map["userQrPrintBlocCtx"] as BuildContext,
             userOrg: map["userOrg"] as UserOrg,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: PrintSmplQrScreen.routePath,
+        name: PrintSmplQrScreen.routeName,
+        builder: (context, state) {
+          var map = state.extra as Map<String, dynamic>;
+
+          return PrintSmplQrScreen(
+            sampleColQr: map["sampleColQr"] as SampleColQr,
+            qrPrintListBlocCtx: map["qrPrintListBlocCtx"] as BuildContext,
           );
         },
       ),
