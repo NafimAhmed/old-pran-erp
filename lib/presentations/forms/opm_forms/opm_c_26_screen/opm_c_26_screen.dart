@@ -344,19 +344,21 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                         const SizedBox(
                           width: 10,
                         ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Material(
-                          elevation: 5,
-                          shape: const CircleBorder(),
-                          shadowColor: const Color.fromARGB(115, 78, 76, 76),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            child: const Center(
-                              child: Icon(
-                                Icons.qr_code,
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(SmplQrListScreen.routeName);
+                          },
+                          child: Material(
+                            elevation: 5,
+                            shape: const CircleBorder(),
+                            shadowColor: const Color.fromARGB(115, 78, 76, 76),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.qr_code,
+                                ),
                               ),
                             ),
                           ),
