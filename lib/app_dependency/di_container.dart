@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:pran_rfl_erp/app_data/api_service/http_service.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository_impl.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_database_service.dart';
@@ -53,9 +54,9 @@ abstract class DIContainer {
       () => LocalDataRepositoryImpl(localDatabase: localdatabase),
     );
 
-    // getIt.registerLazySingleton<ConnectivityService>(
-    //   () => ConnectivityService(),
-    // );
+    getIt.registerLazySingleton<HttpService>(
+      () => HttpService(appConfig: getIt<AppConfig>()),
+    );
 
     // getIt.registerLazySingleton<DeviceInfoService>(
     //   () => DeviceInfoService(),
@@ -65,6 +66,7 @@ abstract class DIContainer {
       () => DataServiceImpl(
         remoteDataRepository: getIt<RemoteDataRepository>(),
         localDataRepository: getIt<LocalDataRepository>(),
+        httpService: getIt<HttpService>(),
       ),
     );
   }
