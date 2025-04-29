@@ -773,20 +773,24 @@ class DataServiceImpl implements DataService {
   Future<List<RqrData>> getRePrintData({
     required String pTrno,
   }) async {
-    var response = await remoteDataRepository.getRePrintData(pTrno: pTrno);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getRePrintData, parameters: {"ptrno": pTrno});
+    var decodedRes = RePrintQrResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.rqrData ?? [];
+    return decodedRes.rqrData ?? [];
   }
 
   @override
   Future<void> enableRePrint({
     required String pTrno,
   }) async {
-    var response = await remoteDataRepository.enableRePrint(pTrno: pTrno);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.getRePrintData, parameters: {"ptrno": pTrno});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
   }
 
@@ -795,12 +799,14 @@ class DataServiceImpl implements DataService {
     required String userid,
     required String jobOrderNo,
   }) async {
-    var response = await remoteDataRepository.getJobDtlDrillDw(
-        userid: userid, jobOrderNo: jobOrderNo);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getJobDtlDrillDw,
+        parameters: {"userid": userid, "joborderno": jobOrderNo});
+    var decodedRes = JobDtlDrillDwResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.jobDetails ?? [];
+    return decodedRes.jobDetails ?? [];
   }
 
   @override
@@ -809,23 +815,32 @@ class DataServiceImpl implements DataService {
     required String jobOrderNo,
     required String itemCode,
   }) async {
-    var response = await remoteDataRepository.getJobLocDrillDw(
-        userid: userid, jobOrderNo: jobOrderNo, itemCode: itemCode);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getJobLocDrillDw,
+        parameters: {
+          "userid": userid,
+          "joborderno": jobOrderNo,
+          "itemcode": itemCode
+        });
+    var decodedRes = JoLocDrillDwResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.jobLocatorInfo ?? [];
+    return decodedRes.jobLocatorInfo ?? [];
   }
 
   @override
   Future<OpmDashSmResponse> getOpmDashboardSM({
     required String userid,
   }) async {
-    var response = await remoteDataRepository.getOpmDashboardSM(userid: userid);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getOpmDashboardSM,
+        parameters: {"userid": userid});
+    var decoderRes = OpmDashSmResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response;
+    return decoderRes;
   }
 
   @override
@@ -833,10 +848,12 @@ class DataServiceImpl implements DataService {
     required String userid,
     required String askText,
   }) async {
-    var response =
-        await remoteDataRepository.askAdd(userid: userid, askText: askText);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.askAdd,
+        parameters: {"userid": userid, "asktext": askText});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
   }
 
@@ -844,39 +861,39 @@ class DataServiceImpl implements DataService {
   Future<List<GptInfo>> getMessages({
     required String userid,
   }) async {
-    var response = await remoteDataRepository.getMessages(
-      userid: userid,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getMessages, parameters: {"userid": userid});
+    var decodedRes = ChatListResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.gptInfo ?? [];
+    return decodedRes.gptInfo ?? [];
   }
 
   @override
   Future<List<TaskInfo>> getTaskInfoList({
     required String userid,
   }) async {
-    var response = await remoteDataRepository.getTaskInfoList(
-      userid: userid,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getTaskInfoList, parameters: {"userid": userid});
+    var decodedRes = TaskInfoResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.taskInfo ?? [];
+    return decodedRes.taskInfo ?? [];
   }
 
   @override
   Future<List<JoInfo>> getJoList({
     required String userid,
   }) async {
-    var response = await remoteDataRepository.getJoList(
-      userid: userid,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getJoList, parameters: {"userid": userid});
+    var decodedRes = JobOrderListResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.taskJoInfo ?? [];
+    return decodedRes.taskJoInfo ?? [];
   }
 
   @override
@@ -885,10 +902,16 @@ class DataServiceImpl implements DataService {
     required String taskStatus,
     required int taskId,
   }) async {
-    var response = await remoteDataRepository.saveTaskStatus(
-        userid: userid, taskStatus: taskStatus, taskId: taskId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.saveTaskStatus,
+        parameters: {
+          "userid": userid,
+          "taskstatus": taskStatus,
+          "tskid": taskId
+        });
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
   }
 
@@ -926,21 +949,26 @@ class DataServiceImpl implements DataService {
     required String itemId,
     required String jobOrderNo,
   }) async {
-    var response = await remoteDataRepository.getJobOrderInfo(
-        userId: userId, itemId: itemId, jobOrderNo: jobOrderNo);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getJobOrderInfo,
+        parameters: {"jobno": jobOrderNo, "itemid": itemId, "userid": userId});
+
+    var decodedRes = JobOrderInfoResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.jobOrderInfo ?? [];
+    return decodedRes.jobOrderInfo ?? [];
   }
 
   @override
   Future<List<ShiftData>> getShiftData() async {
-    var response = await remoteDataRepository.getShiftData();
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService
+        .postCall(endPoint: ApiEndPoints.getShiftData, parameters: {});
+    var decodedRes = ShiftDataResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.shiftData ?? [];
+    return decodedRes.shiftData ?? [];
   }
 
   @override
@@ -949,15 +977,14 @@ class DataServiceImpl implements DataService {
     required int orgId,
     required String batchNo,
   }) async {
-    var response = await remoteDataRepository.getBatchShiftData(
-      userId: userId,
-      orgId: orgId,
-      batchNo: batchNo,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getBatchShiftData,
+        parameters: {"userid": userId, "orgid": orgId, "batchno": batchNo});
+    var decodedRes = BatchShiftChangeResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response;
+    return decodedRes;
   }
 
   @override
@@ -968,14 +995,17 @@ class DataServiceImpl implements DataService {
     required String machineName,
     required String manPower,
   }) async {
-    var response = await remoteDataRepository.batchShiftChange(
-        userId: userId,
-        lotNo: lotNo,
-        shiftName: shiftName,
-        machineName: machineName,
-        manPower: manPower);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService
+        .putCall(endPoint: ApiEndPoints.batchShiftChange, parameters: {
+      "lotno": lotNo,
+      "userid": userId,
+      "shiftnm": shiftName,
+      "mcnname": machineName,
+      "manpw": manPower
+    });
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
   }
 
@@ -983,13 +1013,13 @@ class DataServiceImpl implements DataService {
   Future<List<JobOrderCompletion>> getJoComplList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getJoComplList(
-      userId: userId,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getJoComplList, parameters: {"userid": userId});
+    var decodedRes = JobOrderCompletionListResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.jobData ?? [];
+    return decodedRes.jobData ?? [];
   }
 
   @override
@@ -997,10 +1027,12 @@ class DataServiceImpl implements DataService {
     required String userId,
     required String jobOrderNo,
   }) async {
-    var response = await remoteDataRepository.completeJO(
-        userId: userId, jobOrderNo: jobOrderNo);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.completeJO,
+        parameters: {"userid": userId, "joborderno": jobOrderNo});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
   }
 

@@ -48,4 +48,19 @@ class ApiEndPoints {
   static const String getSubInv = "/ords/rpro/sysadmin/subinv";
   static const String createLocator =
       "/ords/rpro/sysadmin/itemRackLocatorCreate";
+  static const String getRePrintData = "/ords/rpro/opm/batch/qrReprintEnbl";
+  static const String getJobDtlDrillDw = "/ords/rpro/batch/userJobDtlDrillDw";
+  static const String getJobLocDrillDw = "/ords/rpro/batch/JOLocDrillDw";
+  static const String getOpmDashboardSM = "/ords/rpro/batch/opmDashboardSM";
+  static const String askAdd = "/ords/rpro/glaiml/askadd";
+  static const String getMessages = "/ords/rpro/glaiml/askans";
+  static const String getTaskInfoList = "/ords/rpro/taskapi/taskupdt";
+  static const String getJoList = "/ords/rpro/taskapi/jobtask";
+  static const String saveTaskStatus = "/ords/rpro/taskapi/taskupdt";
+  static const String getJobOrderInfo = "/ords/rpro/batch/jobhistSum";
+  static const String getShiftData = "/ords/rpro/batch/batchShift";
+  static const String getBatchShiftData = "/ords/rpro/batch/batchShiftChange";
+  static const String batchShiftChange = "/ords/rpro/batch/batchShiftChange";
+  static const String getJoComplList = "/ords/rpro/opm/batch/jobStatusData";
+  static const String completeJO = "/ords/rpro/opm/batch/jobStatusData";
 }
