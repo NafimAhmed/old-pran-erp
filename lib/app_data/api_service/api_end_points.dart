@@ -99,4 +99,5 @@ class ApiEndPoints {
       "/ords/rpro/opm/batch/smplColHdrDtlSave";
   static const String getSmplColQrList = "/ords/rpro/opm/batch/smlColQrList";
   static const String updateSmplColQrList = "/ords/rpro/opm/batch/smlColQrList";
+  static const String updateGrnQrList = "/ords/rpro/po/GrnQRSave";
 }

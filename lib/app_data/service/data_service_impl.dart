@@ -1577,8 +1577,10 @@ class DataServiceImpl implements DataService {
   Future<void> updateGrnQrList({
     required String trnId,
   }) async {
-    var response = await remoteDataRepository.updateGrnQrList(trnId: trnId);
-    if (response.statusCode != 200) {
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.updateGrnQrList, parameters: {"trnId": trnId});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
       throw const ApiDataException();
     }
   }
