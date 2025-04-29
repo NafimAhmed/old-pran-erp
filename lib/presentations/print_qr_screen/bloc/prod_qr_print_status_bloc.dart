@@ -16,6 +16,11 @@ final class SmplQrPrintStatusUpdate extends ProdQrPrintStatusEvent {
 
   SmplQrPrintStatusUpdate({required this.id});
 }
+// final class GrnQrPrintStatusUpdate extends ProdQrPrintStatusEvent {
+//   final int id;
+
+//   SmplQrPrintStatusUpdate({required this.id});
+// }
 
 @immutable
 sealed class ProdQrPrintStatusState {}
