@@ -3,8 +3,6 @@ import 'package:pran_rfl_erp/app_data/api_service/http_service.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository_impl.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_database_service.dart';
-import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
-import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository_impl.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service_impl.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
@@ -29,26 +27,11 @@ abstract class DIContainer {
         getIt.registerSingleton<AppConfig>(AppConfigImpl.instance);
         break;
     }
-// // get the application documents directory
-//     var dir = await getApplicationDocumentsDirectory();
-// // make sure it exists
-//     await dir.create(recursive: true);
-// // build the database path
-//     var dbPath = join(dir.path, 'hospital_booking_system.db');
-// // open the database
-//     var db = await databaseFactoryIo.openDatabase(dbPath);
 
-//     getIt.registerLazySingleton<LocalDataSource>(
-//       () => LocalDataSourceImpl(database: db),
-//     );
     getIt.registerLazySingleton<LocalDatabase>(
       () => LocalDatabase.instance,
     );
-    getIt.registerLazySingleton<RemoteDataRepository>(
-      () => RemoteDataRepositoryImpl(
-        appConfig: getIt<AppConfig>(),
-      ),
-    );
+
     Database localdatabase = await getIt<LocalDatabase>().database;
     getIt.registerLazySingleton<LocalDataRepository>(
       () => LocalDataRepositoryImpl(localDatabase: localdatabase),
@@ -58,13 +41,8 @@ abstract class DIContainer {
       () => HttpService(appConfig: getIt<AppConfig>()),
     );
 
-    // getIt.registerLazySingleton<DeviceInfoService>(
-    //   () => DeviceInfoService(),
-    // );
-
     getIt.registerLazySingleton<DataService>(
       () => DataServiceImpl(
-        remoteDataRepository: getIt<RemoteDataRepository>(),
         localDataRepository: getIt<LocalDataRepository>(),
         httpService: getIt<HttpService>(),
       ),

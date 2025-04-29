@@ -62,7 +62,6 @@ import 'package:pran_rfl_erp/app_data/models/user_machine_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
-import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/remote_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
@@ -72,11 +71,10 @@ import '../models/user_info_model.dart';
 
 class DataServiceImpl implements DataService {
   final LocalDataRepository localDataRepository;
-  final RemoteDataRepository remoteDataRepository;
+
   final HttpService httpService;
   DataServiceImpl({
     required this.localDataRepository,
-    required this.remoteDataRepository,
     required this.httpService,
   });
   @override
