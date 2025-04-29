@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:pran_rfl_erp/app_data/api_service/api_end_points.dart';
 import 'package:pran_rfl_erp/app_data/api_service/http_service.dart';
 import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
@@ -928,19 +930,31 @@ class DataServiceImpl implements DataService {
     required String vTdate,
     required String vAdate,
   }) async {
-    var response = await remoteDataRepository.saveTaskStatusToExAuto(
-        vUser: vUser,
-        vStatus: vStatus,
-        vNote: vNote,
-        taskId: taskId,
-        vCustomerPo: vCustomerPo,
-        vJobOrderNo: vJobOrderNo,
-        vFdate: vFdate,
-        vTdate: vTdate,
-        vAdate: vAdate);
-
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.manualCall(
+        url: "http://pqc.prangroup.com:8115/api/TaskUpdate",
+        method: "POST",
+        pathParameters: {},
+        headers: {
+          'ss': 'Task',
+          'yy': 'HJDyh876Yhdsf543GDJksn',
+          'Content-Type': 'application/json'
+        },
+        body: json.encode([
+          {
+            "v_customer_po": vCustomerPo,
+            "v_job_order_no": vJobOrderNo,
+            "v_fdate": vFdate,
+            "v_tdate": vTdate,
+            "v_adate": vAdate,
+            "v_user": vUser,
+            "v_status": vStatus,
+            "v_note": vNote,
+            "v_task_id": taskId
+          }
+        ]));
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
   }
 

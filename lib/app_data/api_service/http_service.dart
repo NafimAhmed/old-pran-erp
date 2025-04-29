@@ -83,4 +83,23 @@ class HttpService with HttpDecoderServiceMixin {
     http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response);
   }
+
+  Future<String> manualCall({
+    required String url,
+    required String method,
+    required Map<String, dynamic> pathParameters,
+    required Map<String, String> headers,
+    required String body,
+  }) async {
+    String finalUrl = url;
+    if (pathParameters.isNotEmpty) {
+      finalUrl +=
+          "?${pathParameters.entries.map((e) => "${e.key}=${e.value}").join("&")}";
+    }
+    var request = http.Request(method.toUpperCase(), Uri.parse(finalUrl));
+    request.body = body;
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response);
+  }
 }
