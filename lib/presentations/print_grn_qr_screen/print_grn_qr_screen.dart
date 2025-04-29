@@ -19,7 +19,8 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/bloc/grn_qr_print_status_bloc.dart';
-import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/cubit/grn_qr_generate_cubit.dart';
+import 'package:pran_rfl_erp/presentations/print_qr_screen/bloc/prod_qr_print_status_bloc.dart';
+import 'package:pran_rfl_erp/presentations/print_qr_screen/cubit/qr_generate_cubit.dart';
 
 import 'package:printing/printing.dart';
 
@@ -39,7 +40,7 @@ class PrintGrnQrScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GrnQrGenerateCubit(),
+          create: (context) => QrGenerateCubit(),
         ),
         BlocProvider(
           create: (context) => GrnQrPrintStatusBloc(getService()),
@@ -74,7 +75,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    context.read<GrnQrGenerateCubit>().generateQr(widget.grnQrData);
+    context.read<QrGenerateCubit>().generatGrnQr(widget.grnQrData);
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
     super.initState();
   }
@@ -85,7 +86,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
       appBar: const CommonAppBar(appBartitle: "Print Qr Code"),
       body: Column(
         children: [
-          BlocBuilder<GrnQrGenerateCubit, Uint8List?>(
+          BlocBuilder<QrGenerateCubit, Uint8List?>(
             builder: (context, state) {
               if (state != null) {
                 return Container(

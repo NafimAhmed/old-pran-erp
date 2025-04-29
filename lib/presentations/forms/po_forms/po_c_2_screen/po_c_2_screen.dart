@@ -507,7 +507,7 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                           return Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: const Color.fromARGB(255, 209, 222, 245),
                               // color: index % 2 == 0
                               //     ? const Color.fromARGB(255, 115, 134, 240)
                               //     : const Color.fromARGB(255, 136, 152, 247),
@@ -520,15 +520,107 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Flexible(
-                                      child: Text(
-                                        data.inventoryItemId.toString(),
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.primary,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Item Name",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 15,
+                                            color: appTheme.primary,
+                                          ),
                                         ),
-                                      ),
+                                        Text(
+                                          data.itemName.toString(),
+                                          style: textTheme.bodySmall!.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Pr No",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 15,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          data.jobOrderNo ?? "",
+                                          style: textTheme.bodySmall!.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Job Order",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 15,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          data.batchId.toString(),
+                                          style: textTheme.bodySmall!.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "Organization",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 15,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${data.organizationCode}-${data.organizationName}",
+                                          style: textTheme.bodySmall!.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
                                     ElevatedButton(
                                       style:
                                           ElevatedButton.styleFrom().copyWith(
@@ -578,21 +670,6 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                             size: 20,
                                           ),
                                         ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        data.jobOrderNo ?? "",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 14,
-                                          color: appTheme.primary,
-                                        ),
                                       ),
                                     ),
                                   ],

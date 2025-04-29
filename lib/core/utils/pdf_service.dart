@@ -428,7 +428,7 @@ class PdfService {
     return data;
   }
 
-  static Future<Uint8List> generateSmplQr(SampleColQr sampleColQr) async {
+  static Future<Uint8List> createSmplQr(SampleColQr sampleColQr) async {
     final pdf = pw.Document();
 
     pdf.addPage(

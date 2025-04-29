@@ -48,12 +48,18 @@ class GrnQrListResponse {
 
 class GrnQr {
   final int? orgId;
+  final String? organizationCode;
+  final String? organizationName;
+  final String? itemName;
   final int? inventoryItemId;
   final String? batchId;
   final String? jobOrderNo;
 
   GrnQr({
     this.orgId,
+    this.organizationCode,
+    this.organizationName,
+    this.itemName,
     this.inventoryItemId,
     this.batchId,
     this.jobOrderNo,
@@ -61,12 +67,18 @@ class GrnQr {
 
   GrnQr copyWith({
     int? orgId,
+    String? organizationCode,
+    String? organizationName,
+    String? itemName,
     int? inventoryItemId,
     String? batchId,
     String? jobOrderNo,
   }) =>
       GrnQr(
         orgId: orgId ?? this.orgId,
+        organizationCode: organizationCode ?? this.organizationCode,
+        organizationName: organizationName ?? this.organizationName,
+        itemName: itemName ?? this.itemName,
         inventoryItemId: inventoryItemId ?? this.inventoryItemId,
         batchId: batchId ?? this.batchId,
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
@@ -78,6 +90,9 @@ class GrnQr {
 
   factory GrnQr.fromMap(Map<String, dynamic> json) => GrnQr(
         orgId: json["ORG_ID"],
+        itemName: json["Item_Name"],
+        organizationCode: json["ORGANIZATION_CODE"],
+        organizationName: json["ORGANIZATION_NAME"],
         inventoryItemId: json["INVENTORY_ITEM_ID"],
         batchId: json["BATCH_ID"],
         jobOrderNo: json["JOB_ORDER_NO"],
@@ -85,6 +100,9 @@ class GrnQr {
 
   Map<String, dynamic> toMap() => {
         "ORG_ID": orgId,
+        "ITEM_NAME": itemName,
+        "ORGANIZATION_CODE": organizationCode,
+        "ORGANIZATION_NAME": organizationName,
         "INVENTORY_ITEM_ID": inventoryItemId,
         "BATCH_ID": batchId,
         "JOB_ORDER_NO": jobOrderNo,

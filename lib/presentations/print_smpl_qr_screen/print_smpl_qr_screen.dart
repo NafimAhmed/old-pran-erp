@@ -123,7 +123,7 @@ class _PrintSmplQrScreenBodyState extends State<PrintSmplQrScreenBody> {
               try {
                 var status = await Printing.layoutPdf(
                   onLayout: (format) =>
-                      PdfService.generateSmplQr(widget.sampleColQr),
+                      PdfService.createSmplQr(widget.sampleColQr),
                 );
                 if (!context.mounted) return;
                 if (status) {
