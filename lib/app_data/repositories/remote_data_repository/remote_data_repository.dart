@@ -450,4 +450,7 @@ abstract class RemoteDataRepository {
   Future<GenericResponse> updateSmplColQrList({
     required int id,
   });
+  Future<GenericResponse> updateGrnQrList({
+    required String trnId,
+  });
 }

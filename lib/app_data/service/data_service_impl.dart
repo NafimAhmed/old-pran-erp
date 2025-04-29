@@ -1358,4 +1358,14 @@ class DataServiceImpl implements DataService {
       throw const ApiDataException();
     }
   }
+
+  @override
+  Future<void> updateGrnQrList({
+    required String trnId,
+  }) async {
+    var response = await remoteDataRepository.updateGrnQrList(trnId: trnId);
+    if (response.statusCode != 200) {
+      throw const ApiDataException();
+    }
+  }
 }

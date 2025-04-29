@@ -459,4 +459,7 @@ abstract class DataService {
   Future<void> updateSmplColQrList({
     required int id,
   });
+  Future<void> updateGrnQrList({
+    required String trnId,
+  });
 }

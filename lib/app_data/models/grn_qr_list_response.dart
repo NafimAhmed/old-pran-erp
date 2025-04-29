@@ -54,6 +54,7 @@ class GrnQr {
   final int? inventoryItemId;
   final String? batchId;
   final String? jobOrderNo;
+  final String? trnId;
 
   GrnQr({
     this.orgId,
@@ -63,6 +64,7 @@ class GrnQr {
     this.inventoryItemId,
     this.batchId,
     this.jobOrderNo,
+    this.trnId,
   });
 
   GrnQr copyWith({
@@ -73,6 +75,7 @@ class GrnQr {
     int? inventoryItemId,
     String? batchId,
     String? jobOrderNo,
+    String? trnId,
   }) =>
       GrnQr(
         orgId: orgId ?? this.orgId,
@@ -82,6 +85,7 @@ class GrnQr {
         inventoryItemId: inventoryItemId ?? this.inventoryItemId,
         batchId: batchId ?? this.batchId,
         jobOrderNo: jobOrderNo ?? this.jobOrderNo,
+        trnId: trnId ?? this.trnId,
       );
 
   factory GrnQr.fromJson(String str) => GrnQr.fromMap(json.decode(str));
@@ -89,14 +93,14 @@ class GrnQr {
   String toJson() => json.encode(toMap());
 
   factory GrnQr.fromMap(Map<String, dynamic> json) => GrnQr(
-        orgId: json["ORG_ID"],
-        itemName: json["Item_Name"],
-        organizationCode: json["ORGANIZATION_CODE"],
-        organizationName: json["ORGANIZATION_NAME"],
-        inventoryItemId: json["INVENTORY_ITEM_ID"],
-        batchId: json["BATCH_ID"],
-        jobOrderNo: json["JOB_ORDER_NO"],
-      );
+      orgId: json["ORG_ID"],
+      itemName: json["Item_Name"],
+      organizationCode: json["ORGANIZATION_CODE"],
+      organizationName: json["ORGANIZATION_NAME"],
+      inventoryItemId: json["INVENTORY_ITEM_ID"],
+      batchId: json["BATCH_ID"],
+      jobOrderNo: json["JOB_ORDER_NO"],
+      trnId: json["TRNID"]);
 
   Map<String, dynamic> toMap() => {
         "ORG_ID": orgId,
@@ -106,5 +110,6 @@ class GrnQr {
         "INVENTORY_ITEM_ID": inventoryItemId,
         "BATCH_ID": batchId,
         "JOB_ORDER_NO": jobOrderNo,
+        "TRNID": trnId,
       };
 }

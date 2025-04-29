@@ -619,8 +619,30 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Trn Id",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 15,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          data.trnId ?? "",
+                                          style: textTheme.bodySmall!.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     ElevatedButton(
                                       style:
                                           ElevatedButton.styleFrom().copyWith(

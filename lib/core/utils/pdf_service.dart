@@ -242,7 +242,7 @@ class PdfService {
       pw.Page(
         orientation: pw.PageOrientation.landscape,
         pageFormat: PdfPageFormat.standard.copyWith(
-          height: 5.6 * PdfPageFormat.cm,
+          height: 2.6 * PdfPageFormat.cm,
           width: 10.41 * PdfPageFormat.cm,
           marginBottom: 0.05 * PdfPageFormat.cm,
           marginLeft: 0.05 * PdfPageFormat.cm,
@@ -292,9 +292,10 @@ class PdfService {
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
                             buildQrDetails(
-                                lable: "ItemName",
-                                //value: grnQrData.itemname ?? "",
-                                value: "ItemName"),
+                              lable: "ItemName",
+                              value:
+                                  "${grnQrData.inventoryItemId ?? ""}-${grnQrData.itemName ?? ""}",
+                            ),
                             pw.Divider(
                               color: PdfColors.black,
                               height: 5,
@@ -302,8 +303,8 @@ class PdfService {
                               endIndent: 0,
                             ),
                             buildQrDetails(
-                              lable: "Iteam Code",
-                              value: grnQrData.inventoryItemId.toString(),
+                              lable: "Trn Id",
+                              value: "Trn Id: ${grnQrData.trnId}",
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -411,10 +412,10 @@ class PdfService {
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
-                      width: 90,
-                      height: 90,
+                      width: 50,
+                      height: 50,
                       data:
-                          "${grnQrData.inventoryItemId}\n${grnQrData.jobOrderNo}\n${grnQrData.batchId}",
+                          "${grnQrData.inventoryItemId}\n${grnQrData.itemName}\n${grnQrData.jobOrderNo}\n${grnQrData.batchId}\n${grnQrData.trnId}",
                     ),
                   ],
                 ),

@@ -1494,4 +1494,15 @@ class RemoteDataRepositoryImpl
     http.StreamedResponse response = await _safeApiCall(request);
     return await decodeResponse(response, decoder: GenericResponse.fromJson);
   }
+
+  @override
+  Future<GenericResponse> updateGrnQrList({
+    required String trnId,
+  }) async {
+    var request = http.Request('POST',
+        Uri.parse('${appConfig.baseUrl}/ords/rpro/po/GrnQRSave?trnId=$trnId'));
+
+    http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response, decoder: GenericResponse.fromJson);
+  }
 }

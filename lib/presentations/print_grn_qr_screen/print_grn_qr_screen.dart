@@ -1,24 +1,18 @@
 import 'dart:developer';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:pdfrx/pdfrx.dart' as pdfview;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
-
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
-
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/pdf_service.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_list_bloc.dart';
-import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/bloc/grn_qr_print_status_bloc.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/bloc/prod_qr_print_status_bloc.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/cubit/qr_generate_cubit.dart';
 
@@ -43,7 +37,7 @@ class PrintGrnQrScreen extends StatelessWidget {
           create: (context) => QrGenerateCubit(),
         ),
         BlocProvider(
-          create: (context) => GrnQrPrintStatusBloc(getService()),
+          create: (context) => ProdQrPrintStatusBloc(getService()),
         ),
         BlocProvider.value(
           value: BlocProvider.of<GrnQrListBloc>(grnQrPrintBlocCtx),
@@ -137,15 +131,14 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                 );
                 if (!context.mounted) return;
                 if (status) {
-                  // context.read<ProdQrPrintStatusBloc>().add(
-                  //       ProdQrPrintStatusUpdate(
-                  //         trnlotno: widget.grnQrData.lotno!,
-                  //       ),
-                  //     );
+                  context.read<ProdQrPrintStatusBloc>().add(
+                        GrnQrPrintStatusUpdate(
+                          trnId: widget.grnQrData.trnId ?? "",
+                        ),
+                      );
                   widget.grnQrPrintBlocCtx.read<GrnQrListBloc>().add(
                         GrnQrListGet(
                           userId: loggedUser.userId,
-                          //orgid: widget.userOrg.organizationId.toString(),
                         ),
                       );
                 }
@@ -164,13 +157,4 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
       ),
     );
   }
-
-  // Future<void> requestPermission() async {
-  //   final permission = Permission.bluetooth.status;
-
-  //   if (await permission.isDenied) {
-
-  //     log(statuses.toString());
-  //   }
-  // }
 }

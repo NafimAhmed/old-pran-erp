@@ -16,11 +16,12 @@ final class SmplQrPrintStatusUpdate extends ProdQrPrintStatusEvent {
 
   SmplQrPrintStatusUpdate({required this.id});
 }
-// final class GrnQrPrintStatusUpdate extends ProdQrPrintStatusEvent {
-//   final int id;
 
-//   SmplQrPrintStatusUpdate({required this.id});
-// }
+final class GrnQrPrintStatusUpdate extends ProdQrPrintStatusEvent {
+  final String trnId;
+
+  GrnQrPrintStatusUpdate({required this.trnId});
+}
 
 @immutable
 sealed class ProdQrPrintStatusState {}
@@ -54,6 +55,15 @@ class ProdQrPrintStatusBloc
       emit(ProdPrintStatusLoading());
       try {
         await _dataService.updateSmplColQrList(id: event.id);
+        emit(ProdPrintStatusSuccess());
+      } catch (e) {
+        emit(ProdPrintStatusError(error: e));
+      }
+    });
+    on<GrnQrPrintStatusUpdate>((event, emit) async {
+      emit(ProdPrintStatusLoading());
+      try {
+        await _dataService.updateGrnQrList(trnId: event.trnId);
         emit(ProdPrintStatusSuccess());
       } catch (e) {
         emit(ProdPrintStatusError(error: e));
