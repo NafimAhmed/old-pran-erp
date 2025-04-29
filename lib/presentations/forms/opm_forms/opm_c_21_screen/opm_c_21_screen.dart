@@ -275,7 +275,7 @@ class ReceivedMessage extends StatelessWidget {
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
             ),
-            child: Image.asset(ImageConstant.superUser),
+            child: Image.asset(ImageConstant.malePlaceholder),
           ),
         ),
         const SizedBox(width: 10),
