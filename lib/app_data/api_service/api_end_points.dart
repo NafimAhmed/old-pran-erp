@@ -63,4 +63,40 @@ class ApiEndPoints {
   static const String batchShiftChange = "/ords/rpro/batch/batchShiftChange";
   static const String getJoComplList = "/ords/rpro/opm/batch/jobStatusData";
   static const String completeJO = "/ords/rpro/opm/batch/jobStatusData";
+  static const String getTopJOInfoList = "/ords/rpro/batch/jobhistTop";
+  static const String getTaskList = "/ords/rpro/taskapi/tasklist";
+  static const String taskAssign = "/ords/rpro/taskapi/taskassignApi";
+  static const String getBatchStatus = "/ords/rpro/batch/userBatchCheck";
+  static const String createProject = "/ords/rpro/taskapi/projectAPI";
+  static const String getDeptList = "/ords/rpro/taskapi/deptinfo";
+  static const String getBuyerList = "/ords/rpro/taskapi/buyerinfo";
+  static const String getProjectList = "/ords/rpro/taskapi/projectInfo";
+  static const String createMainTask = "/ords/rpro/taskapi/newTaskParentApi";
+  static const String getParentTaskList = "/ords/rpro/taskapi/parentTaskList";
+  static const String getPoJobList = "/ords/rpro/taskapi/poJobList";
+  static const String addTaskNote = "/ords/rpro/taskapi/taskNoteApi";
+  static const String getTaskNoteList = "/ords/rpro/taskapi/taskNoteData";
+  static const String locatorTranfer = "/ords/rpro/invtran/tmplocatortrnf";
+  static const String userPassChange = "/ords/rpro/sysadmin/userPassChng";
+  static const String getPurchaseRequisitionList =
+      "/ords/rpro/po/purchaseRequisitionList";
+  static const String getPurchaseRequisitionDetails =
+      "/ords/rpro/po/purchaseRequisitionDetails";
+  static const String updatePurReqDtl = "/ords/rpro/po/purchaseReqDtlUpdate";
+  static const String approvePurReq = "/ords/rpro/po/purchaseReqApprove";
+  static const String getOperationUnit = "/ords/rpro/po/OUList";
+  static const String getGrnJOList = "/ords/rpro/po/JOList";
+  static const String getGrnPurchaseReqList = "/ords/rpro/po/PRList";
+  static const String getGrnPOList = "/ords/rpro/po/GrnPOList";
+  static const String getGrnQrList = "/ords/rpro/po/GrnQRSave";
+  static const String getGrnQrSave = "/ords/rpro/po/GrnQRSave";
+  static const String getGrnOrgList = "/ords/rpro/po/GrnOrgList";
+  static const String getMOReqList = "/ords/rpro/taskapi/dlivyTaskUdtList";
+  static const String moReqSave = "/ords/rpro/taskapi/dlivyTaskUdtList";
+  static const String getCustomerList = "/ords/rpro/opm/batch/customerList";
+  static const String smplColHdrSave = "/ords/rpro/opm/batch/smplColHdrSave";
+  static const String smplColHdrDtlSave =
+      "/ords/rpro/opm/batch/smplColHdrDtlSave";
+  static const String getSmplColQrList = "/ords/rpro/opm/batch/smlColQrList";
+  static const String updateSmplColQrList = "/ords/rpro/opm/batch/smlColQrList";
 }

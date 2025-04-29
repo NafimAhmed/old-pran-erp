@@ -15,6 +15,7 @@ import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_org_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
@@ -1040,26 +1041,27 @@ class DataServiceImpl implements DataService {
   Future<List<TopJoInfo>> getTopJOInfoList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getTopJOInfoList(
-      userId: userId,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getTopJOInfoList,
+        parameters: {"userid": userId});
+    var decoderRes = TopJoInfoListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.topJoInfo ?? [];
+    return decoderRes.topJoInfo ?? [];
   }
 
   @override
   Future<List<Task>> getTaskList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getTaskList(
-      userId: userId,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getTaskList, parameters: {"userid": userId});
+    var decodedRes = TaskListResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
     }
-    return response.allTaskList ?? [];
+    return decodedRes.allTaskList ?? [];
   }
 
   @override
@@ -1069,13 +1071,16 @@ class DataServiceImpl implements DataService {
     required String department,
     required String taskId,
   }) async {
-    var response = await remoteDataRepository.taskAssign(
-        userId: userId,
-        assigneeId: assigneeId,
-        department: department,
-        taskId: taskId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService
+        .putCall(endPoint: ApiEndPoints.taskAssign, parameters: {
+      "userid": userId,
+      "assigneeid": assigneeId,
+      "deptname": department,
+      "taskid": taskId
+    });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
   }
 
@@ -1084,12 +1089,14 @@ class DataServiceImpl implements DataService {
     required String userId,
     required String lotNo,
   }) async {
-    var response =
-        await remoteDataRepository.getBatchStatus(userId: userId, lotNo: lotNo);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getBatchStatus,
+        parameters: {"userid": userId, "lotno": lotNo});
+    var decoderRes = BatchStatusCheckResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.batchStatusCk?.first ?? BatchStatusCheck();
+    return decoderRes.batchStatusCk?.first ?? BatchStatusCheck();
   }
 
   @override
@@ -1106,21 +1113,25 @@ class DataServiceImpl implements DataService {
     required String pTtlPerson,
     required String pManHours,
   }) async {
-    var response = await remoteDataRepository.createProject(
-      pname: pname,
-      pDesc: pDesc,
-      stDate: stDate,
-      endate: endate,
-      pManager: pManager,
-      pClientName: pClientName,
-      pBudget: pBudget,
-      pStatus: pStatus,
-      pPriority: pPriority,
-      pTtlPerson: pTtlPerson,
-      pManHours: pManHours,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage);
+    var response = await httpService
+        .postCall(endPoint: ApiEndPoints.createProject, parameters: {
+      "v_start_date": stDate,
+      "v_end_date": endate,
+      "v_project_manager": pManager,
+      "v_project_name": pname,
+      "v_priority": pPriority,
+      "v_description": pDesc,
+      "v_status": pStatus,
+      "v_client": pClientName,
+      "v_budjet": pBudget,
+      "v_required_person": pTtlPerson,
+      "v_man_hour": pManHours,
+      "PROJECTS_INFO": pDesc,
+      "v_project_company": pClientName
+    });
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -1128,33 +1139,39 @@ class DataServiceImpl implements DataService {
   Future<List<Department>> getDeptList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getDeptList(userId: userId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getDeptList, parameters: {"userid": userId});
+    var decoderRes = DepartmentListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.deptList ?? [];
+    return decoderRes.deptList ?? [];
   }
 
   @override
   Future<List<Buyer>> getBuyerList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getBuyerList(userId: userId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getBuyerList, parameters: {"userid": userId});
+    var decoderRes = BuyerListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.buyerList ?? [];
+    return decoderRes.buyerList ?? [];
   }
 
   @override
   Future<List<Project>> getProjectList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getProjectList(userId: userId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getProjectList, parameters: {"userid": userId});
+    var decoderRes = ProjectListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.projectList ?? [];
+    return decoderRes.projectList ?? [];
   }
 
   @override
@@ -1162,10 +1179,22 @@ class DataServiceImpl implements DataService {
     required String userId,
     required MainTask mainTask,
   }) async {
-    var response = await remoteDataRepository.createMainTask(
-        userId: userId, mainTask: mainTask);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage);
+    var response = await httpService
+        .postCall(endPoint: ApiEndPoints.createMainTask, parameters: {
+      "projectid": mainTask.projectId?.projectId ?? "",
+      "taskname": mainTask.taskName ?? "",
+      "taskdesc": mainTask.taskDesc ?? "",
+      "assigneeid": mainTask.assignee?.userId ?? "",
+      "stddt": mainTask.stDate ?? "",
+      "enddt": mainTask.enDate ?? "",
+      "taskdept": mainTask.taskDept?.taskDept ?? "",
+      "userid": userId,
+      "taskparentid": mainTask.taskparentid?.taskId ?? "0",
+      "jobno": mainTask.jobNo ?? "0"
+    });
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -1174,14 +1203,14 @@ class DataServiceImpl implements DataService {
     required String userId,
     required int projectId,
   }) async {
-    var response = await remoteDataRepository.getParentTaskList(
-      userId: userId,
-      projectId: projectId,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getParentTaskList,
+        parameters: {"userid": userId, "projectid": projectId});
+    var decoderRes = ParentTaskListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.parentTaskList ?? [];
+    return decoderRes.parentTaskList ?? [];
   }
 
   @override
@@ -1189,14 +1218,14 @@ class DataServiceImpl implements DataService {
     required String userId,
     required String jobpono,
   }) async {
-    var response = await remoteDataRepository.getPoJobList(
-      userId: userId,
-      jobpono: jobpono,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getPoJobList,
+        parameters: {"userid": userId, "jobpono": jobpono});
+    var decoderRes = PoJobListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.poJobList ?? [];
+    return decoderRes.poJobList ?? [];
   }
 
   @override
@@ -1205,10 +1234,12 @@ class DataServiceImpl implements DataService {
     required int taskId,
     required String tasknote,
   }) async {
-    var response = await remoteDataRepository.addTaskNote(
-        userId: userId, taskId: taskId, tasknote: tasknote);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.addTaskNote,
+        parameters: {"userid": userId, "taskid": taskId, "tasknote": tasknote});
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
   }
 
@@ -1217,14 +1248,14 @@ class DataServiceImpl implements DataService {
     required String userId,
     required int taskId,
   }) async {
-    var response = await remoteDataRepository.getTaskNoteList(
-      userId: userId,
-      taskId: taskId,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.message);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.getTaskNoteList,
+        parameters: {"userid": userId, "taskid": taskId});
+    var decoderRes = TaskNoteListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.message);
     }
-    return response.taskNoteList ?? [];
+    return decoderRes.taskNoteList ?? [];
   }
 
   @override
@@ -1233,13 +1264,16 @@ class DataServiceImpl implements DataService {
     required String torackid,
     required String trnid,
   }) async {
-    var response = await remoteDataRepository.locatorTranfer(
-      userid: userid,
-      torackid: torackid,
-      trnid: trnid,
-    );
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage);
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.locatorTranfer,
+        parameters: {
+          "userid": userid,
+          "p_locator_id": torackid,
+          "p_trn_id": trnid
+        });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.errorMessage);
     }
   }
 
@@ -1249,10 +1283,16 @@ class DataServiceImpl implements DataService {
     required String oldPass,
     required String newPass,
   }) async {
-    var response = await remoteDataRepository.userPassChange(
-        userid: userid, oldPass: oldPass, newPass: newPass);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage);
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.userPassChange,
+        parameters: {
+          "old_passw": oldPass,
+          "new_passw": newPass,
+          "userid": userid
+        });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.errorMessage);
     }
   }
 
@@ -1260,24 +1300,28 @@ class DataServiceImpl implements DataService {
   Future<List<PurchaseRequisition>> getPurchaseRequisitionList({
     required String userId,
   }) async {
-    var response =
-        await remoteDataRepository.getPurchaseRequisitionList(userId: userId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errmsg);
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getPurchaseRequisitionList,
+        parameters: {"user_id": userId});
+    var decoderRes = PurchaseReqListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.errmsg);
     }
-    return response.purchaseRequisition ?? [];
+    return decoderRes.purchaseRequisition ?? [];
   }
 
   @override
   Future<List<PurchaseRequisitionDetail>> getPurchaseRequisitionDetails({
     required int headerId,
   }) async {
-    var response = await remoteDataRepository.getPurchaseRequisitionDetails(
-        headerId: headerId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errmsg);
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getPurchaseRequisitionDetails,
+        parameters: {"header_id": headerId});
+    var decodedRes = PurchaseRequDtlsResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.errmsg);
     }
-    return response.purchaseRequisitionDetails ?? [];
+    return decodedRes.purchaseRequisitionDetails ?? [];
   }
 
   @override
@@ -1286,12 +1330,14 @@ class DataServiceImpl implements DataService {
     required int itemId,
     required int qty,
   }) async {
-    var response = await remoteDataRepository.updatePurReqDtl(
-        headerId: headerId, itemId: itemId, qty: qty);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.updatePurReqDtl,
+        parameters: {"qty": qty, "headerId": headerId, "itemId": itemId});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.errorMessage);
     }
-    return response;
+    return decodedRes;
   }
 
   @override
@@ -1300,60 +1346,76 @@ class DataServiceImpl implements DataService {
     required String userId,
     required int orgId,
   }) async {
-    var response = await remoteDataRepository.approvePurReq(
-        reqNo: reqNo, userId: userId, orgId: orgId);
-    if (response.statusCode != 200) {
-      throw ApiDataException(response.errorMessage);
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.approvePurReq,
+        parameters: {
+          "user_id": userId,
+          "requisition_no": reqNo,
+          "org_id": orgId
+        });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.errorMessage);
     }
-    return response;
+    return decoderRes;
   }
 
   @override
   Future<List<OperationUnit>> getOperationUnit() async {
-    var response = await remoteDataRepository.getOperationUnit();
-    if (response.statusCode != 200) {
+    var response = await httpService
+        .getCall(endPoint: ApiEndPoints.getOperationUnit, parameters: {});
+    var decoderRes = OperationUnitListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.operationUnitList ?? [];
+    return decoderRes.operationUnitList ?? [];
   }
 
   @override
   Future<List<GrnPurchaseReqNumber>> getGrnPurchaseReqList(
       {required int ordId}) async {
-    var response =
-        await remoteDataRepository.getGrnPurchaseReqList(ordId: ordId);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getGrnPurchaseReqList,
+        parameters: {"orgId": ordId});
+    var decoderRes = GrnPurchaseReqListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.purchaseReqList ?? [];
+    return decoderRes.purchaseReqList ?? [];
   }
 
   @override
   Future<List<GrnJO>> getGrnJOList({required String reqNo}) async {
-    var response = await remoteDataRepository.getGrnJOList(reqNo: reqNo);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getGrnJOList, parameters: {"reqNo": reqNo});
+    var decoderRes = GrnJoListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.grnJoList ?? [];
+    return decoderRes.grnJoList ?? [];
   }
 
   @override
   Future<List<GrnPO>> getGrnPOList({required String jobOrderNo}) async {
-    var response =
-        await remoteDataRepository.getGrnPOList(jobOrderNo: jobOrderNo);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getGrnPOList,
+        parameters: {"jobOrderNo": jobOrderNo});
+    var decoderRes = GrnPOListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.poList ?? [];
+    return decoderRes.poList ?? [];
   }
 
   @override
   Future<List<GrnQr>> getGrnQrList({required String userId}) async {
-    var response = await remoteDataRepository.getGrnQrList(userId: userId);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getGrnQrList, parameters: {"userId": userId});
+    var decoderRes = GrnQrListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.grnQrList ?? [];
+    return decoderRes.grnQrList ?? [];
   }
 
   @override
@@ -1367,37 +1429,43 @@ class DataServiceImpl implements DataService {
     required String jobOrderNo,
     required String prId,
   }) async {
-    var response = await remoteDataRepository.getGrnQrSave(
-      userId: userId,
-      orgId: orgId,
-      itemId: itemId,
-      goodQty: goodQty,
-      qty: qty,
-      badQty: badQty,
-      jobOrderNo: jobOrderNo,
-      prId: prId,
-    );
-    if (response.statusCode != 200) {
+    var response = await httpService
+        .putCall(endPoint: ApiEndPoints.getGrnQrSave, parameters: {
+      "orgId": orgId,
+      "itemId": itemId,
+      "goodQty": goodQty,
+      "jobOrder": jobOrderNo,
+      "qty": qty,
+      "badQty": badQty,
+      "userId": userId,
+      "prId": prId
+    });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
   }
 
   @override
   Future<List<UserOrg>> getGrnOrgList({required int ouId}) async {
-    var response = await remoteDataRepository.getGrnOrgList(ouId: ouId);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getGrnOrgList, parameters: {"ouid": ouId});
+    var decoderRes = GrnOrgListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.grnOrg ?? [];
+    return decoderRes.grnOrg ?? [];
   }
 
   @override
   Future<List<MOReqTask>> getMOReqList({required String userId}) async {
-    var response = await remoteDataRepository.getMOReqList(userId: userId);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getMOReqList, parameters: {"userid": userId});
+    var decoderRes = MOReqListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.moReqTaskList ?? [];
+    return decoderRes.moReqTaskList ?? [];
   }
 
   @override
@@ -1405,9 +1473,11 @@ class DataServiceImpl implements DataService {
     required String taskStatus,
     required int taskId,
   }) async {
-    var response = await remoteDataRepository.moReqSave(
-        taskStatus: taskStatus, taskId: taskId);
-    if (response.statusCode != 200) {
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.moReqSave,
+        parameters: {"tskid": taskId, "taskstatus": taskStatus});
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
   }
@@ -1416,11 +1486,14 @@ class DataServiceImpl implements DataService {
   Future<List<Customer>> getCustomerList({
     required String searchV,
   }) async {
-    var response = await remoteDataRepository.getCustomerList(searchV: searchV);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getCustomerList,
+        parameters: {"searchV": searchV});
+    var decoderRes = CustomerListResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.customerList ?? [];
+    return decoderRes.customerList ?? [];
   }
 
   @override
@@ -1434,20 +1507,22 @@ class DataServiceImpl implements DataService {
     required String assignee,
     required String userId,
   }) async {
-    var response = await remoteDataRepository.smplColHdrSave(
-      rcvOrg: rcvOrg,
-      customerCode: customerCode,
-      customerName: customerName,
-      rcvDate: rcvDate,
-      smplSender: smplSender,
-      note: note,
-      assignee: assignee,
-      userId: userId,
-    );
-    if (response.statusCode != 200) {
+    var response = await httpService
+        .postCall(endPoint: ApiEndPoints.smplColHdrSave, parameters: {
+      "rcvOrg": rcvOrg,
+      "customerCode": customerCode,
+      "customerName": customerName,
+      "rcvDate": rcvDate,
+      "smplSender": smplSender,
+      "note": note,
+      "assignee": assignee,
+      "userId": userId
+    });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.info ?? "";
+    return decoderRes.info ?? "";
   }
 
   @override
@@ -1458,13 +1533,16 @@ class DataServiceImpl implements DataService {
     required num qty,
     required String unit,
   }) async {
-    var response = await remoteDataRepository.smplColHdrDtlSave(
-        headerId: headerId,
-        itemCode: itemCode,
-        itemName: itemName,
-        qty: qty,
-        unit: unit);
-    if (response.statusCode != 200) {
+    var response = await httpService
+        .postCall(endPoint: ApiEndPoints.smplColHdrDtlSave, parameters: {
+      "headerId": headerId,
+      "itemCode": itemCode,
+      "itemName": itemName,
+      "qty": qty,
+      "unit": unit
+    });
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
       throw const ApiDataException();
     }
   }
@@ -1473,19 +1551,24 @@ class DataServiceImpl implements DataService {
   Future<List<SampleColQr>> getSmplColQrList({
     required String userId,
   }) async {
-    var response = await remoteDataRepository.getSmplColQrList(userId: userId);
-    if (response.statusCode != 200) {
+    var response = await httpService.getCall(
+        endPoint: ApiEndPoints.getSmplColQrList,
+        parameters: {"userId": userId});
+    var decodedRes = SmplQrListResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
       throw const ApiDataException();
     }
-    return response.sampleColQr ?? [];
+    return decodedRes.sampleColQr ?? [];
   }
 
   @override
   Future<void> updateSmplColQrList({
     required int id,
   }) async {
-    var response = await remoteDataRepository.updateSmplColQrList(id: id);
-    if (response.statusCode != 200) {
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.updateSmplColQrList, parameters: {"id": id});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
       throw const ApiDataException();
     }
   }
