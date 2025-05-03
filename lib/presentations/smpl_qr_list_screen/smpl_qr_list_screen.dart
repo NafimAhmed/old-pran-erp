@@ -124,6 +124,81 @@ class _SmplQrListScreenBodyState extends State<SmplQrListScreenBody> {
                                       ),
                                     ),
                                   ),
+                                  sample.picture != "null"
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        "Image Preview",
+                                                        style: textTheme
+                                                            .titleMedium,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 10),
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        child: Image.network(
+                                                          "http://swift.prangroup.com:8521/Alphan/UploadedImages/${sample.picture}",
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (context,
+                                                                  error,
+                                                                  stackTrace) =>
+                                                              const Icon(Icons
+                                                                  .broken_image),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 10),
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(),
+                                                        child:
+                                                            const Text("Close"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 47, 112, 187),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "View Image",
+                                                style: textTheme.bodySmall!
+                                                    .copyWith(
+                                                  color: appTheme.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
                                   GestureDetector(
                                     onTap: () {
                                       context.pushNamed(

@@ -21,6 +21,7 @@ import 'package:pran_rfl_erp/app_data/models/grn_org_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/image_upload_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
@@ -1544,6 +1545,7 @@ class DataServiceImpl implements DataService {
     required String itemName,
     required num qty,
     required String unit,
+    String? picture,
   }) async {
     var response = await httpService
         .postCall(endPoint: ApiEndPoints.smplColHdrDtlSave, parameters: {
@@ -1551,7 +1553,8 @@ class DataServiceImpl implements DataService {
       "itemCode": itemCode,
       "itemName": itemName,
       "qty": qty,
-      "unit": unit
+      "unit": unit,
+      "picture": picture
     });
     var decoderRes = GenericResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
@@ -1594,6 +1597,27 @@ class DataServiceImpl implements DataService {
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
       throw const ApiDataException();
+    }
+  }
+
+  @override
+  Future<void> uploadPicture({
+    required String filePath,
+  }) async {
+    var response = await httpService.manualCallForFile(
+      url: 'http://swift.prangroup.com:8521/alphan/ImageUpload/upload',
+      method: 'POST',
+      pathParameters: {},
+      headers: {},
+      body: "",
+      fields: {'challanno': '1111', 'dbid': 'RFL'},
+      filePath: filePath,
+    );
+    final List<dynamic> decodedList = json.decode(response);
+    final List<ImageUploadResponse> responseList =
+        decodedList.map((item) => ImageUploadResponse.fromMap(item)).toList();
+    if (responseList[0].status != "Y") {
+      throw const ApiDataException("Couldn't Upload Image");
     }
   }
 }

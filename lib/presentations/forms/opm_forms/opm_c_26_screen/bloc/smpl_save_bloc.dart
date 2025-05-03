@@ -67,11 +67,17 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
         if (headerId.isNotEmpty) {
           for (int i = 0; i < event.items.length; i++) {
             await _dataService.smplColHdrDtlSave(
-                headerId: int.parse(headerId),
-                itemCode: event.items[i].itemCode,
-                itemName: event.items[i].itemName,
-                qty: event.items[i].qty,
-                unit: event.items[i].unit);
+              headerId: int.parse(headerId),
+              itemCode: event.items[i].itemCode,
+              itemName: event.items[i].itemName,
+              qty: event.items[i].qty,
+              unit: event.items[i].unit,
+              picture: event.items[i].imageFile?.name,
+            );
+            if (event.items[i].imageFile != null) {
+              await _dataService.uploadPicture(
+                  filePath: event.items[i].imageFile!.path);
+            }
           }
         }
         emit(SmplSaveSuccess(headerId: headerId));

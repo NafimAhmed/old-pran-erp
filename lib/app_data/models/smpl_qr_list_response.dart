@@ -53,6 +53,7 @@ class SampleColQr {
   final String? itemCode;
   final int? qty;
   final String? unit;
+  final String? picture;
 
   SampleColQr({
     this.id,
@@ -61,6 +62,7 @@ class SampleColQr {
     this.itemCode,
     this.qty,
     this.unit,
+    this.picture,
   });
 
   SampleColQr copyWith({
@@ -70,15 +72,16 @@ class SampleColQr {
     String? itemCode,
     int? qty,
     String? unit,
+    String? picture,
   }) =>
       SampleColQr(
-        id: id ?? this.id,
-        headerId: headerId ?? this.headerId,
-        itemName: itemName ?? this.itemName,
-        itemCode: itemCode ?? this.itemCode,
-        qty: qty ?? this.qty,
-        unit: unit ?? this.unit,
-      );
+          id: id ?? this.id,
+          headerId: headerId ?? this.headerId,
+          itemName: itemName ?? this.itemName,
+          itemCode: itemCode ?? this.itemCode,
+          qty: qty ?? this.qty,
+          unit: unit ?? this.unit,
+          picture: picture ?? this.picture);
 
   factory SampleColQr.fromJson(String str) =>
       SampleColQr.fromMap(json.decode(str));
@@ -92,6 +95,7 @@ class SampleColQr {
         itemCode: json["ITEM_CODE"],
         qty: json["QTY"],
         unit: json["UNIT"],
+        picture: json["PICTURE"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -101,5 +105,6 @@ class SampleColQr {
         "ITEM_CODE": itemCode,
         "QTY": qty,
         "UNIT": unit,
+        "PICTURE": picture
       };
 }

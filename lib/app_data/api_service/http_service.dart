@@ -97,9 +97,47 @@ class HttpService with HttpDecoderServiceMixin {
           "?${pathParameters.entries.map((e) => "${e.key}=${e.value}").join("&")}";
     }
     var request = http.Request(method.toUpperCase(), Uri.parse(finalUrl));
-    request.body = body;
-    request.headers.addAll(headers);
+
+    if (body.isNotEmpty) {
+      request.body = body;
+    }
+
+    if (headers.isNotEmpty) {
+      request.headers.addAll(headers);
+    }
+
     http.StreamedResponse response = await _safeApiCall(request);
+    return await decodeResponse(response);
+  }
+
+  Future<String> manualCallForFile({
+    required String url,
+    required String method, // should be 'POST' or 'PUT' for multipart
+    required Map<String, dynamic> pathParameters,
+    required Map<String, String> headers,
+    required Map<String, String> fields,
+    required String filePath,
+    required String body,
+  }) async {
+    String finalUrl = url;
+    if (pathParameters.isNotEmpty) {
+      finalUrl +=
+          "?${pathParameters.entries.map((e) => "${e.key}=${e.value}").join("&")}";
+    }
+
+    var request =
+        http.MultipartRequest(method.toUpperCase(), Uri.parse(finalUrl));
+
+    if (fields.isNotEmpty) {
+      request.fields.addAll(fields);
+    }
+
+    request.files.add(await http.MultipartFile.fromPath('files', filePath));
+
+    if (headers.isNotEmpty) {
+      request.headers.addAll(headers);
+    }
+    http.StreamedResponse response = await request.send();
     return await decodeResponse(response);
   }
 }

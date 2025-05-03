@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -12,6 +15,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
+import 'package:pran_rfl_erp/core/utils/image_picker_helper.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
@@ -87,6 +91,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
   late FocusNode _qtyFocusNode;
   late FocusNode _unitFocusNode;
   late GlobalKey<FormState> _fromkey;
+  late GlobalKey<FormState> _fromkey2;
   List<UserOrg> orgList = List.empty();
   List<SampleItem> _sampleItem = List.empty();
   late OverlayEntry _overlayEntry;
@@ -205,6 +210,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<UserOrgBloc>().add(UserOrgGet(userId: "", orgType: "rcving"));
     _fromkey = GlobalKey<FormState>();
+    _fromkey2 = GlobalKey<FormState>();
     _custNameController = TextEditingController();
     _custCodeController = TextEditingController();
     _smplSenderController = TextEditingController();
@@ -283,12 +289,6 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                 headerId: state.headerId,
               ),
             );
-
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   CustomSnackBar.successSnackber(
-            //     message: "Created Successfully",
-            //   ),
-            // );
           }
           if (state is SmplSaveError) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -511,80 +511,87 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            controller: _itemCodeController,
-                            focusNode: _itemCodeFocusNode,
-                            labelText: "Item Code",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Item Code";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: CommonTextFieldWidget(
-                            controller: _itemNameController,
-                            focusNode: _itemNameFocusNode,
-                            labelText: "Item Name",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Item Name";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            controller: _qtyController,
-                            focusNode: _qtyFocusNode,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'(^\d*\.?\d{0,2})'),
-                              )
+                    Form(
+                      key: _fromkey2,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CommonTextFieldWidget(
+                                  controller: _itemCodeController,
+                                  focusNode: _itemCodeFocusNode,
+                                  labelText: "Item Code",
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter Item Code";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: CommonTextFieldWidget(
+                                  controller: _itemNameController,
+                                  focusNode: _itemNameFocusNode,
+                                  labelText: "Item Name",
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter Item Name";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
                             ],
-                            labelText: "Quantity",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Quantity";
-                              }
-                              return null;
-                            },
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            controller: _unitController,
-                            focusNode: _unitFocusNode,
-                            labelText: "Unit",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Unit";
-                              }
-                              return null;
-                            },
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CommonTextFieldWidget(
+                                  controller: _qtyController,
+                                  focusNode: _qtyFocusNode,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'(^\d*\.?\d{0,2})'),
+                                    )
+                                  ],
+                                  labelText: "Quantity",
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter Quantity";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: CommonTextFieldWidget(
+                                  controller: _unitController,
+                                  focusNode: _unitFocusNode,
+                                  labelText: "Unit",
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter Unit";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -648,7 +655,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            if (_fromkey.currentState!.validate()) {
+                            if (_fromkey2.currentState!.validate()) {
                               var sampleItem = SampleItem(
                                 itemCode: _itemCodeController.text,
                                 itemName: _itemNameController.text,
@@ -659,6 +666,10 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                     SampleItemAdd(sampleItem: sampleItem),
                                   );
                             }
+                            _itemCodeController.clear();
+                            _itemNameController.clear();
+                            _qtyController.clear();
+                            _unitController.clear();
                           },
                           child: Text(
                             "Item Add",
@@ -685,75 +696,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                               ),
                               itemBuilder: (context, index) {
                                 var item = state.sampleItem[index];
-                                return Card(
-                                  elevation: 3,
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Item Code: ${item.itemCode}",
-                                              style: textTheme.bodySmall!
-                                                  .copyWith(),
-                                            ),
-                                            Text(
-                                              item.itemName,
-                                              style: textTheme.bodySmall!
-                                                  .copyWith(),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              "Quantity: ${item.qty}",
-                                              style: textTheme.bodySmall!
-                                                  .copyWith(),
-                                            ),
-                                            Text(
-                                              item.unit,
-                                              style: textTheme.bodySmall!
-                                                  .copyWith(),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: IconButton.outlined(
-                                            iconSize: 15,
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              context
-                                                  .read<SampleItemBloc>()
-                                                  .add(
-                                                    SampleItemRemove(
-                                                      sampleItem: item,
-                                                    ),
-                                                  );
-                                            },
-                                            icon: const Icon(
-                                              Icons.remove,
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
+                                return SampleItemCard(item: item);
                               },
                             );
                           }
@@ -761,11 +704,149 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                         },
                       ),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    )
                   ],
                 ),
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class SampleItemCard extends StatefulWidget {
+  const SampleItemCard({
+    super.key,
+    required this.item,
+  });
+
+  final SampleItem item;
+
+  @override
+  State<SampleItemCard> createState() => _SampleItemCardState();
+}
+
+class _SampleItemCardState extends State<SampleItemCard> {
+  XFile? imagefile;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Item Code: ${widget.item.itemCode}",
+                      style: textTheme.bodySmall!.copyWith(),
+                    ),
+                    Text(
+                      widget.item.itemName,
+                      style: textTheme.bodySmall!.copyWith(),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Quantity: ${widget.item.qty}",
+                      style: textTheme.bodySmall!.copyWith(),
+                    ),
+                    Text(
+                      widget.item.unit,
+                      style: textTheme.bodySmall!.copyWith(),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                      width: 25,
+                      child: IconButton.filled(
+                        iconSize: 15,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          imagefile = await selectImage(ImageSource.camera);
+                          if (imagefile != null) {
+                            var updateItem =
+                                widget.item.copyWith(imageFile: imagefile);
+
+                            if (context.mounted) {
+                              context.read<SampleItemBloc>().add(
+                                    SampleItemUpdate(sampleItem: updateItem),
+                                  );
+                            }
+
+                            setState(() {});
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.camera_alt,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: IconButton.outlined(
+                        iconSize: 15,
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          context.read<SampleItemBloc>().add(
+                                SampleItemRemove(
+                                  sampleItem: widget.item,
+                                ),
+                              );
+                        },
+                        icon: const Icon(
+                          Icons.remove,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            imagefile != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Image file Attached",
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.attach_file_sharp,
+                            size: 15,
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Container(),
+          ],
         ),
       ),
     );

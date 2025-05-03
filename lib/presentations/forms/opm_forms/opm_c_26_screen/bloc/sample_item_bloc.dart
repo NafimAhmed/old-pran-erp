@@ -21,6 +21,14 @@ final class SampleItemRemove extends SampleItemEvent {
   });
 }
 
+final class SampleItemUpdate extends SampleItemEvent {
+  final SampleItem sampleItem;
+
+  SampleItemUpdate({
+    required this.sampleItem,
+  });
+}
+
 final class SampleItemClearAll extends SampleItemEvent {}
 
 @immutable
@@ -59,6 +67,24 @@ class SampleItemBloc extends Bloc<SampleItemEvent, SampleItemState> {
         emit(SampleItemSuccess(sampleItem: _sampleItem));
       } catch (e) {
         emit(SampleItemError(error: e));
+      }
+    });
+    on<SampleItemUpdate>((event, emit) async {
+      try {
+        final index = _sampleItem.indexWhere(
+          (item) => item.itemCode == event.sampleItem.itemCode,
+        );
+
+        if (index != -1) {
+          _sampleItem[index] = event.sampleItem;
+          emit(SampleItemSuccess(
+              sampleItem:
+                  List.from(_sampleItem))); // Important: new list instance
+        } else {
+          emit(SampleItemError(error: 'Item not found'));
+        }
+      } catch (e) {
+        emit(SampleItemError(error: e.toString()));
       }
     });
     on<SampleItemClearAll>((event, emit) async {

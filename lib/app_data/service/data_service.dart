@@ -452,6 +452,7 @@ abstract class DataService {
     required String itemName,
     required num qty,
     required String unit,
+    String? picture,
   });
   Future<List<SampleColQr>> getSmplColQrList({
     required String userId,
@@ -461,5 +462,8 @@ abstract class DataService {
   });
   Future<void> updateGrnQrList({
     required String trnId,
+  });
+  Future<void> uploadPicture({
+    required String filePath,
   });
 }
