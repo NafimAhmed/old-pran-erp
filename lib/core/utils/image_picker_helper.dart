@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -8,8 +9,15 @@ Future<XFile?> selectImage(ImageSource imageSource) async {
       source: imageSource,
       imageQuality: 50,
     );
+
+    // if (imageFile == null) {
+    //   throw Exception("Image picking returned null");
+    // }
+
+    // File(imageFile.path).renameSync(imageName);
     return imageFile;
   } catch (e) {
-    log("Could't able to pick image");
+    log("Couldn't pick image: $e");
+    return null;
   }
 }

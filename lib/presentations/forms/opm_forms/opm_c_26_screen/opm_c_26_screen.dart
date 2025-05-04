@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -781,7 +779,9 @@ class _SampleItemCardState extends State<SampleItemCard> {
                         iconSize: 15,
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          imagefile = await selectImage(ImageSource.camera);
+                          imagefile = await selectImage(
+                            ImageSource.camera,
+                          );
                           if (imagefile != null) {
                             var updateItem =
                                 widget.item.copyWith(imageFile: imagefile);

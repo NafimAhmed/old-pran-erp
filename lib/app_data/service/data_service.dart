@@ -457,6 +457,10 @@ abstract class DataService {
   Future<List<SampleColQr>> getSmplColQrList({
     required String userId,
   });
+  Future<void> smplItemRcv({
+    required int id,
+    required String rackId,
+  });
   Future<void> updateSmplColQrList({
     required int id,
   });

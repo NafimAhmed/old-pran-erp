@@ -1581,7 +1581,21 @@ class DataServiceImpl implements DataService {
     required int id,
   }) async {
     var response = await httpService.postCall(
-        endPoint: ApiEndPoints.updateSmplColQrList, parameters: {"id": id});
+        endPoint: ApiEndPoints.getSmplColQrList, parameters: {"id": id});
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw const ApiDataException();
+    }
+  }
+
+  @override
+  Future<void> smplItemRcv({
+    required int id,
+    required String rackId,
+  }) async {
+    var response = await httpService.putCall(
+        endPoint: ApiEndPoints.getSmplColQrList,
+        parameters: {"id": id, "rackId": rackId});
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
       throw const ApiDataException();

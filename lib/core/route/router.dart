@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_2_screen/om_c_2_s
 import 'package:pran_rfl_erp/presentations/forms/om_forms/om_c_3_screen/om_c_3_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/opm_c_25_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/opm_c_26_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_27_screen/opm_c_27_screen.dart';
 import 'package:pran_rfl_erp/presentations/print_smpl_qr_screen/print_smpl_qr_screen.dart';
 import 'package:pran_rfl_erp/presentations/smpl_qr_list_screen/smpl_qr_list_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_3_screen/po_c_3_screen.dart';
@@ -329,6 +330,16 @@ class AppNavigation {
         name: OpmC26Screen.routeName,
         builder: (context, state) {
           return OpmC26Screen(
+            fromName: state.extra as String,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: OpmC27Screen.routePath,
+        name: OpmC27Screen.routeName,
+        builder: (context, state) {
+          return OpmC27Screen(
             fromName: state.extra as String,
           );
         },

@@ -51,7 +51,7 @@ class SampleColQr {
   final int? headerId;
   final String? itemName;
   final String? itemCode;
-  final int? qty;
+  final num? qty;
   final String? unit;
   final String? picture;
 
@@ -70,7 +70,7 @@ class SampleColQr {
     int? headerId,
     String? itemName,
     String? itemCode,
-    int? qty,
+    num? qty,
     String? unit,
     String? picture,
   }) =>
