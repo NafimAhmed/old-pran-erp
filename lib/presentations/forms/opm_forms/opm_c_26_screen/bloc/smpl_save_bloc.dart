@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/app_data/service/data_service.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 
@@ -17,16 +17,17 @@ final class SmplSave extends SmplSaveEvent {
   final String assignee;
   final String userId;
   final List<SampleItem> items;
-  SmplSave(
-      {required this.rcvOrg,
-      required this.customerCode,
-      required this.customerName,
-      required this.rcvDate,
-      required this.smplSender,
-      required this.note,
-      required this.items,
-      required this.assignee,
-      required this.userId});
+  SmplSave({
+    required this.rcvOrg,
+    required this.customerCode,
+    required this.customerName,
+    required this.rcvDate,
+    required this.smplSender,
+    required this.note,
+    required this.items,
+    required this.assignee,
+    required this.userId,
+  });
 }
 
 @immutable
@@ -73,10 +74,12 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
               qty: event.items[i].qty,
               unit: event.items[i].unit,
               picture: event.items[i].imageFile?.name,
+              colorCode: event.items[i].color?.toHex(leadingHashSign: false),
             );
             if (event.items[i].imageFile != null) {
               await _dataService.uploadPicture(
-                  filePath: event.items[i].imageFile!.path);
+                filePath: event.items[i].imageFile!.path,
+              );
             }
           }
         }

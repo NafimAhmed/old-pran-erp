@@ -453,6 +453,7 @@ abstract class DataService {
     required num qty,
     required String unit,
     String? picture,
+    String? colorCode,
   });
   Future<List<SampleColQr>> getSmplColQrList({
     required String userId,

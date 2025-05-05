@@ -96,12 +96,29 @@ class _SmplQrListScreenBodyState extends State<SmplQrListScreenBody> {
                                   )
                                 ],
                               ),
-                              Text(
-                                "${sample.itemCode}-${sample.itemName}",
-                                style: textTheme.bodySmall!.copyWith(
-                                  color: appTheme.tertiary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "${sample.itemCode}-${sample.itemName}",
+                                      style: textTheme.bodySmall!.copyWith(
+                                        color: appTheme.tertiary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      "${sample.customerCode}-${sample.customerName}",
+                                      style: textTheme.bodySmall!.copyWith(
+                                        color: appTheme.tertiary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 10,
@@ -120,9 +137,33 @@ class _SmplQrListScreenBodyState extends State<SmplQrListScreenBody> {
                                     child: Center(
                                       child: Text(
                                         sample.unit ?? "",
-                                        style: textTheme.bodySmall,
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Color",
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Container(
+                                        height: 20,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            color: Color(int.parse(
+                                                "0x${sample.colorCode}")),
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                      ),
+                                    ],
                                   ),
                                   sample.picture != "null"
                                       ? GestureDetector(

@@ -1,8 +1,8 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -13,7 +13,6 @@ import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
-import 'package:pran_rfl_erp/core/utils/image_picker_helper.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
@@ -21,6 +20,7 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/smpl_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/bloc/sample_item_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/widget/sample_item_card_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/widget/sample_success_widget.dart';
 import 'package:pran_rfl_erp/presentations/smpl_qr_list_screen/smpl_qr_list_screen.dart';
 
@@ -259,6 +259,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
 
   @override
   Widget build(BuildContext context) {
+    log("I am Building");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CommonAppBar(
@@ -272,10 +273,10 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
             _rcvDateController.clear();
             _noteController.clear();
             _assigneeController.clear();
-            _itemCodeController.clear();
-            _itemNameController.clear();
-            _qtyController.clear();
-            _unitController.clear();
+            // _itemCodeController.clear();
+            // _itemNameController.clear();
+            // _qtyController.clear();
+            // _unitController.clear();
             context.read<VariableStateHandlerCubit<UserOrg>>().reset();
             context.read<SampleItemBloc>().add(
                   SampleItemClearAll(),
@@ -710,143 +711,6 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class SampleItemCard extends StatefulWidget {
-  const SampleItemCard({
-    super.key,
-    required this.item,
-  });
-
-  final SampleItem item;
-
-  @override
-  State<SampleItemCard> createState() => _SampleItemCardState();
-}
-
-class _SampleItemCardState extends State<SampleItemCard> {
-  XFile? imagefile;
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Item Code: ${widget.item.itemCode}",
-                      style: textTheme.bodySmall!.copyWith(),
-                    ),
-                    Text(
-                      widget.item.itemName,
-                      style: textTheme.bodySmall!.copyWith(),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Quantity: ${widget.item.qty}",
-                      style: textTheme.bodySmall!.copyWith(),
-                    ),
-                    Text(
-                      widget.item.unit,
-                      style: textTheme.bodySmall!.copyWith(),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                      width: 25,
-                      child: IconButton.filled(
-                        iconSize: 15,
-                        padding: EdgeInsets.zero,
-                        onPressed: () async {
-                          imagefile = await selectImage(
-                            ImageSource.camera,
-                          );
-                          if (imagefile != null) {
-                            var updateItem =
-                                widget.item.copyWith(imageFile: imagefile);
-
-                            if (context.mounted) {
-                              context.read<SampleItemBloc>().add(
-                                    SampleItemUpdate(sampleItem: updateItem),
-                                  );
-                            }
-
-                            setState(() {});
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.camera_alt,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: IconButton.outlined(
-                        iconSize: 15,
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          context.read<SampleItemBloc>().add(
-                                SampleItemRemove(
-                                  sampleItem: widget.item,
-                                ),
-                              );
-                        },
-                        icon: const Icon(
-                          Icons.remove,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            imagefile != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Image file Attached",
-                            style: textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Icon(
-                            Icons.attach_file_sharp,
-                            size: 15,
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                : Container(),
-          ],
         ),
       ),
     );

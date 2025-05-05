@@ -54,7 +54,9 @@ class SampleColQr {
   final num? qty;
   final String? unit;
   final String? picture;
-
+  final String? colorCode;
+  final String? customerCode;
+  final String? customerName;
   SampleColQr({
     this.id,
     this.headerId,
@@ -63,6 +65,9 @@ class SampleColQr {
     this.qty,
     this.unit,
     this.picture,
+    this.colorCode,
+    this.customerCode,
+    this.customerName,
   });
 
   SampleColQr copyWith({
@@ -73,15 +78,22 @@ class SampleColQr {
     num? qty,
     String? unit,
     String? picture,
+    String? colorCode,
+    String? customerCode,
+    String? customerName,
   }) =>
       SampleColQr(
-          id: id ?? this.id,
-          headerId: headerId ?? this.headerId,
-          itemName: itemName ?? this.itemName,
-          itemCode: itemCode ?? this.itemCode,
-          qty: qty ?? this.qty,
-          unit: unit ?? this.unit,
-          picture: picture ?? this.picture);
+        id: id ?? this.id,
+        headerId: headerId ?? this.headerId,
+        itemName: itemName ?? this.itemName,
+        itemCode: itemCode ?? this.itemCode,
+        qty: qty ?? this.qty,
+        unit: unit ?? this.unit,
+        picture: picture ?? this.picture,
+        colorCode: colorCode ?? this.colorCode,
+        customerCode: customerCode ?? this.customerCode,
+        customerName: customerName ?? this.customerName,
+      );
 
   factory SampleColQr.fromJson(String str) =>
       SampleColQr.fromMap(json.decode(str));
@@ -96,6 +108,9 @@ class SampleColQr {
         qty: json["QTY"],
         unit: json["UNIT"],
         picture: json["PICTURE"],
+        colorCode: json["COLOR_CODE"],
+        customerCode: json["CUSTOMER_CODE"],
+        customerName: json["CUSTOMER_NAME"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -105,6 +120,9 @@ class SampleColQr {
         "ITEM_CODE": itemCode,
         "QTY": qty,
         "UNIT": unit,
-        "PICTURE": picture
+        "PICTURE": picture,
+        "COLOR_CODE": colorCode,
+        "CUSTOMER_CODE": customerCode,
+        "CUSTOMER_NAME": customerName,
       };
 }

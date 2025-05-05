@@ -485,10 +485,23 @@ class PdfService {
                         child: pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            buildQrDetails(
-                              lable: "ItemName",
-                              value:
-                                  "${sampleColQr.itemCode}-${sampleColQr.itemName}",
+                            pw.Row(
+                              children: [
+                                pw.Flexible(
+                                  child: buildQrDetails(
+                                    lable: "ItemName",
+                                    value:
+                                        "${sampleColQr.itemCode}-${sampleColQr.itemName}",
+                                  ),
+                                ),
+                                pw.Flexible(
+                                  child: buildQrDetails(
+                                    lable: "Cust",
+                                    value:
+                                        "${sampleColQr.customerCode}-${sampleColQr.customerName}",
+                                  ),
+                                ),
+                              ],
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -590,19 +603,6 @@ pw.Widget buildQrDetails({required String lable, required String value}) {
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
-      // pw.Flexible(
-      //   child: pw.Text(
-      //     lable,
-      //     textAlign: pw.TextAlign.left,
-      //     style: const pw.TextStyle(
-      //       fontSize: 8,
-      //       color: PdfColors.black,
-      //     ),
-      //   ),
-      // ),
-      // pw.SizedBox(
-      //   width: 5,
-      // ),
       pw.Flexible(
         flex: 2,
         child: pw.Text(

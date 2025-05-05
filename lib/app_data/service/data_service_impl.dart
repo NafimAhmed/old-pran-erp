@@ -1546,6 +1546,7 @@ class DataServiceImpl implements DataService {
     required num qty,
     required String unit,
     String? picture,
+    String? colorCode,
   }) async {
     var response = await httpService
         .postCall(endPoint: ApiEndPoints.smplColHdrDtlSave, parameters: {
@@ -1554,7 +1555,8 @@ class DataServiceImpl implements DataService {
       "itemName": itemName,
       "qty": qty,
       "unit": unit,
-      "picture": picture
+      "picture": picture,
+      "colorCode": colorCode
     });
     var decoderRes = GenericResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {

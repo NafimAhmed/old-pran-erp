@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:image_picker/image_picker.dart';
 
 class SampleItem {
@@ -6,6 +8,7 @@ class SampleItem {
   final num qty;
   final String unit;
   final XFile? imageFile;
+  final Color? color;
 
   SampleItem({
     required this.itemCode,
@@ -13,6 +16,7 @@ class SampleItem {
     required this.qty,
     required this.unit,
     this.imageFile,
+    this.color,
   });
 
   SampleItem copyWith({
@@ -21,6 +25,7 @@ class SampleItem {
     num? qty,
     String? unit,
     XFile? imageFile,
+    Color? color,
   }) {
     return SampleItem(
       itemCode: itemCode ?? this.itemCode,
@@ -28,6 +33,7 @@ class SampleItem {
       qty: qty ?? this.qty,
       unit: unit ?? this.unit,
       imageFile: imageFile ?? this.imageFile,
+      color: color ?? this.color,
     );
   }
 }
