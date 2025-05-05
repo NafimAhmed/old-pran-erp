@@ -436,7 +436,7 @@ class PdfService {
       pw.Page(
         orientation: pw.PageOrientation.landscape,
         pageFormat: PdfPageFormat.standard.copyWith(
-          height: 2.2 * PdfPageFormat.cm,
+          height: 2.6 * PdfPageFormat.cm,
           width: 10.41 * PdfPageFormat.cm,
           marginBottom: 0.05 * PdfPageFormat.cm,
           marginLeft: 0.05 * PdfPageFormat.cm,
@@ -504,7 +504,7 @@ class PdfService {
                               ],
                             ),
                             pw.Divider(
-                              color: PdfColors.black,
+                              color: PdfColors.grey400,
                               height: 5,
                               indent: 0,
                               endIndent: 0,
@@ -580,10 +580,10 @@ class PdfService {
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
-                      width: 40,
-                      height: 40,
+                      width: 60,
+                      height: 60,
                       data:
-                          "${sampleColQr.itemCode}-${sampleColQr.itemName}\n${sampleColQr.qty}\n${sampleColQr.unit}\n${sampleColQr.id}",
+                          "${sampleColQr.itemCode}-${sampleColQr.itemName}\n${sampleColQr.qty}\n${sampleColQr.unit}\n${sampleColQr.id}\nhttps://ego.rflgroupbd.com:8077/ords/r/rpro/smartqr/sample-design-report-for-qr?P116_HEADER_ID=${sampleColQr.headerId}",
                     ),
                   ],
                 ),
