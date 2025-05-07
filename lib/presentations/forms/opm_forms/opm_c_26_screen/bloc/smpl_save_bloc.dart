@@ -73,12 +73,15 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
               itemName: event.items[i].itemName,
               qty: event.items[i].qty,
               unit: event.items[i].unit,
-              picture: event.items[i].imageFile?.name,
-              colorCode: event.items[i].color?.toHex(leadingHashSign: false),
+              picture: event.items[i].imageFile == null
+                  ? ""
+                  : event.items[i].imageFile?.name,
+              colorCode:
+                  event.items[i].color?.toHex(leadingHashSign: false) ?? "",
             );
             if (event.items[i].imageFile != null) {
               await _dataService.uploadPicture(
-                filePath: event.items[i].imageFile!.path,
+                filePath: event.items[i].imageFile?.path ?? "",
               );
             }
           }

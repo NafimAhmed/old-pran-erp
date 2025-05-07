@@ -259,7 +259,6 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    log("I am Building");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CommonAppBar(

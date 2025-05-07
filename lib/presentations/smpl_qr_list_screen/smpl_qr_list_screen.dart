@@ -40,6 +40,15 @@ class _SmplQrListScreenBodyState extends State<SmplQrListScreenBody> {
     super.initState();
   }
 
+  Color? parseColor(String? colorCode) {
+    try {
+      if (colorCode == null || colorCode.isEmpty) return null;
+      return Color(int.parse("0x$colorCode"));
+    } catch (_) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,29 +152,33 @@ class _SmplQrListScreenBodyState extends State<SmplQrListScreenBody> {
                                       ),
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Color",
-                                        style: textTheme.bodySmall!.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 20,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                            color: Color(int.parse(
-                                                "0x${sample.colorCode}")),
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                      ),
-                                    ],
-                                  ),
-                                  sample.picture != "null"
+                                  sample.colorCode != null
+                                      ? Row(
+                                          children: [
+                                            Text(
+                                              "Color",
+                                              style:
+                                                  textTheme.bodySmall!.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Container(
+                                              height: 20,
+                                              width: 40,
+                                              decoration: BoxDecoration(
+                                                color: parseColor(
+                                                    sample.colorCode),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
+                                  sample.picture != null
                                       ? GestureDetector(
                                           onTap: () {
                                             showDialog(
