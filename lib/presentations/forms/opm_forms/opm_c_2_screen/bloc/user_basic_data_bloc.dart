@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class UserBasicDataEvent {}
@@ -36,7 +36,7 @@ final class UserBasicDataError extends UserBasicDataState {
 }
 
 class UserBasicDataBloc extends Bloc<UserBasicDataEvent, UserBasicDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   UserBasicDataBloc(this._dataService) : super(UserBasicDataInitial()) {
     on<UserBasicDataGet>((event, emit) async {
       emit(UserBasicDataLoading());

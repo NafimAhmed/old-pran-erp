@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class OperationUnitEvent {}
@@ -30,7 +30,7 @@ final class OperationUnitError extends OperationUnitState {
 }
 
 class OperationUnitBloc extends Bloc<OperationUnitEvent, OperationUnitState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<OperationUnit> _operationUnit = [];
   OperationUnitBloc(this._dataService) : super(OperationUnitInitial()) {
     on<OperationUnitGet>((event, emit) async {

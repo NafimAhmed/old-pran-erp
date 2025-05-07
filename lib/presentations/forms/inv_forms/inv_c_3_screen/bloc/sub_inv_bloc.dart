@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class SubInvEvent {}
@@ -32,7 +32,7 @@ final class SubInvError extends SubInvState {
 }
 
 class SubInvBloc extends Bloc<SubInvEvent, SubInvState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   SubInvBloc(this._dataService) : super(SubInvInitial()) {
     on<SubInvGet>((event, emit) async {
       emit(SubInvLoading());

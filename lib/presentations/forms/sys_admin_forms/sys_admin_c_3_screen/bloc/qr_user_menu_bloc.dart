@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class QrUserMenuEvent {}
@@ -33,7 +33,7 @@ final class QrUserMenuError extends QrUserMenuState {
 }
 
 class QrUserMenuBloc extends Bloc<QrUserMenuEvent, QrUserMenuState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   QrUserMenuBloc(this._dataService) : super(QrUserMenuInitial()) {
     on<GetQrUserMenu>((event, emit) async {
       emit(QrUserMenuLoading());

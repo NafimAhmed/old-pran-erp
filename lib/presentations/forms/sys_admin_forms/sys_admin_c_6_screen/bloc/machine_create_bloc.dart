@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class MachineCreateEvent {}
@@ -46,7 +46,7 @@ final class MachineCreateError extends MachineCreateState {
 }
 
 class MachineCreateBloc extends Bloc<MachineCreateEvent, MachineCreateState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   MachineCreateBloc(this._dataService) : super(MachineCreateInitial()) {
     on<CreateMachine>((event, emit) async {
       emit(MachineCreateLoading(

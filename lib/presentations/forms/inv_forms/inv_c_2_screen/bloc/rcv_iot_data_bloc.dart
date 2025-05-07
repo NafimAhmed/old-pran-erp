@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class RcvIotDataEvent {}
@@ -32,7 +32,7 @@ final class RcvIotDataError extends RcvIotDataState {
 }
 
 class RcvIotDataBloc extends Bloc<RcvIotDataEvent, RcvIotDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   RcvIotDataBloc(this._dataService) : super(RcvIotDataInitial()) {
     on<GetRcvIotData>((event, emit) async {
       emit(RcvIotDataLoading());

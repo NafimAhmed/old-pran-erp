@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 sealed class BuyerListEvent {}
 
@@ -29,7 +29,7 @@ final class BuyerListError extends BuyerListState {
 }
 
 class BuyerListBloc extends Bloc<BuyerListEvent, BuyerListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   BuyerListBloc(this._dataService) : super(BuyerListInitial()) {
     on<BuyerListGet>((event, emit) async {
       emit(BuyerListLoading());

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class JoComplListEvent {}
@@ -46,7 +46,7 @@ final class JoComplListError extends JoComplListState {
 }
 
 class JoComplListBloc extends Bloc<JoComplListEvent, JoComplListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<JobOrderCompletion> _dataList = [];
   JoComplListBloc(this._dataService) : super(JoComplListInitial()) {
     on<GetJoComplList>((event, emit) async {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class JobOrderHistoryEvent {}
@@ -33,7 +33,7 @@ final class JobOrderHistoryError extends JobOrderHistoryState {
 
 class JobOrderHistoryBloc
     extends Bloc<JobOrderHistoryEvent, JobOrderHistoryState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   JobOrderHistoryBloc(this._dataService) : super(JobOrderHistoryInitial()) {
     on<GetJobOrderHistory>((event, emit) async {
       emit(JobOrderHistoryLoading());

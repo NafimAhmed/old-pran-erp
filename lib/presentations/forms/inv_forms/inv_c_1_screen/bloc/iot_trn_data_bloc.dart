@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class IotTrnDataEvent {}
@@ -32,7 +32,7 @@ final class IotTrnDataError extends IotTrnDataState {
 }
 
 class IotTrnDataBloc extends Bloc<IotTrnDataEvent, IotTrnDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   IotTrnDataBloc(this._dataService) : super(IotTrnDataInitial()) {
     on<GetIotTrnData>((event, emit) async {
       emit(IotTrnDataLoading());

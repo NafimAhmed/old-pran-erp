@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/mo_req_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class MOReqListEvent {}
@@ -47,7 +47,7 @@ final class MOReqListError extends MOReqListState {
 }
 
 class MOReqListBloc extends Bloc<MOReqListEvent, MOReqListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<MOReqTask> _moReqList = [];
   MOReqListBloc(this._dataService) : super(MOReqListInitial()) {
     on<MOReqListGet>((event, emit) async {

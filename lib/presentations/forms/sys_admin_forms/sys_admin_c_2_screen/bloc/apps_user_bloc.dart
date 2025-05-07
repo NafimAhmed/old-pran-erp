@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class AppsUserEvent {}
@@ -28,7 +28,7 @@ final class AppsUserError extends AppsUserState {
 }
 
 class AppsUserBloc extends Bloc<AppsUserEvent, AppsUserState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   AppsUserBloc(this._dataService) : super(AppsUserInitial()) {
     on<GetAppsUserEvent>((event, emit) async {
       emit(AppsUserLoading());

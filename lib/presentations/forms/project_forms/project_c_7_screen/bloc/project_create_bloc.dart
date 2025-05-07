@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class ProjectCreateEvent {}
@@ -51,7 +51,7 @@ final class ProjectCreateError extends ProjectCreateState {
 }
 
 class ProjectCreateBloc extends Bloc<ProjectCreateEvent, ProjectCreateState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
 
   ProjectCreateBloc(this._dataService) : super(ProjectCreateInitial()) {
     on<ProjectCreate>((event, emit) async {

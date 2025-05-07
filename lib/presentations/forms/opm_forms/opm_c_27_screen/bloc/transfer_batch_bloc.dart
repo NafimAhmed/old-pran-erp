@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class SmplItemRcvEvent {}
@@ -31,7 +31,7 @@ final class SmplItemRcvError extends SmplItemRcvState {
 }
 
 class SmplItemRcvBloc extends Bloc<SmplItemRcvEvent, SmplItemRcvState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   SmplItemRcvBloc(this._dataService) : super(SmplItemRcvInitial()) {
     on<SmplItemRcv>((event, emit) async {
       emit(SmplItemRcvLoading());

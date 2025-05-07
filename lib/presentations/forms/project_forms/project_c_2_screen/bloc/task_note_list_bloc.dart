@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class TaskNoteListEvent {}
@@ -34,7 +34,7 @@ final class TaskNoteListError extends TaskNoteListState {
 }
 
 class TaskNoteListBloc extends Bloc<TaskNoteListEvent, TaskNoteListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   TaskNoteListBloc(this._dataService) : super(TaskNoteListInitial()) {
     on<TaskNoteListGet>((event, emit) async {
       emit(TaskNoteListLoading());

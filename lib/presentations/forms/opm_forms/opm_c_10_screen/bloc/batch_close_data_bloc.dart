@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class BatchCloseDataEvent {}
@@ -33,7 +33,7 @@ final class BatchCloseDataError extends BatchCloseDataState {
 
 class BatchCloseDataBloc
     extends Bloc<BatchCloseDataEvent, BatchCloseDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   BatchCloseDataBloc(this._dataService) : super(BatchCloseDataInitial()) {
     on<GetBatchCloseData>((event, emit) async {
       emit(BatchCloseDataLoading());

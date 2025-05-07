@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 import 'package:pran_rfl_erp/core/data_class/main_task.dart';
 
 @immutable
@@ -33,7 +33,7 @@ final class TaskCreateError extends TaskCreateState {
 }
 
 class TaskCreateBloc extends Bloc<TaskCreateEvent, TaskCreateState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
 
   TaskCreateBloc(this._dataService) : super(TaskCreateInitial()) {
     on<TaskCreate>((event, emit) async {

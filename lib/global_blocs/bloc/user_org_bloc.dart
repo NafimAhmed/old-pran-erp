@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class UserOrgEvent {}
@@ -35,7 +35,7 @@ final class UserOrgError extends UserOrgState {
 }
 
 class UserOrgBloc extends Bloc<UserOrgEvent, UserOrgState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<UserOrg> _userOrg = [];
   UserOrgBloc(this._dataService) : super(UserOrgInitial()) {
     on<UserOrgGet>((event, emit) async {

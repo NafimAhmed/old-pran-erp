@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class LoginEvent {}
@@ -35,7 +35,7 @@ final class LoginError extends LoginState {
 }
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   LoginBloc(this._dataService) : super(LoginInitial()) {
     on<Login>((event, emit) async {
       emit(LoginLoading());

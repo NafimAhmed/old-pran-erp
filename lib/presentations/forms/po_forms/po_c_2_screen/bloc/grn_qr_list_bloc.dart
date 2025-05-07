@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class GrnQrListEvent {}
@@ -31,7 +31,7 @@ final class GrnQrListError extends GrnQrListState {
 }
 
 class GrnQrListBloc extends Bloc<GrnQrListEvent, GrnQrListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<GrnQr> _grnQr = [];
   GrnQrListBloc(this._dataService) : super(GrnQrListInitial()) {
     on<GrnQrListGet>((event, emit) async {

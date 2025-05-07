@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class TaskInfoEvent {}
@@ -47,7 +47,7 @@ final class TaskInfoError extends TaskInfoState {
 }
 
 class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<TaskInfo> _taskInfoList = [];
   TaskInfoBloc(this._dataService) : super(TaskInfoInitial()) {
     on<TaskInfoGet>((event, emit) async {

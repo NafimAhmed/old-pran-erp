@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class BatchCompDtlDataEvent {}
@@ -40,7 +40,7 @@ final class BatchCompDtlDataError extends BatchCompDtlDataState {
 
 class BatchCompDtlDataBloc
     extends Bloc<BatchCompDtlDataEvent, BatchCompDtlDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   BatchCompDtlDataBloc(this._dataService) : super(BatchCompDtlDataInitial()) {
     on<GetBatchCompDtlData>((event, emit) async {
       emit(BatchCompDtlDataLoading(listIndex: event.listIndex));

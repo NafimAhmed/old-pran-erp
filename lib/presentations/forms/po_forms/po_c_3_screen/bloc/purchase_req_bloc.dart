@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/purchase_requisition_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class PurchaseReqEvent {}
@@ -31,7 +31,7 @@ final class PurchaseReqError extends PurchaseReqState {
 }
 
 class PurchaseReqBloc extends Bloc<PurchaseReqEvent, PurchaseReqState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   PurchaseReqBloc(this._dataService) : super(PurchaseReqInitial()) {
     on<PurchaseReqGet>((event, emit) async {
       emit(PurchaseReqLoading());

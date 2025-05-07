@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/core/extentions/extentions.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_26_screen/model/sample_item.dart';
 
 @immutable
@@ -49,7 +49,7 @@ final class SmplSaveError extends SmplSaveState {
 }
 
 class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
 
   SmplSaveBloc(this._dataService) : super(SmplSaveInitial()) {
     on<SmplSave>((event, emit) async {

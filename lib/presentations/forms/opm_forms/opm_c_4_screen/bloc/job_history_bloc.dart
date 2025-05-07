@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class JobHistoryEvent {}
@@ -32,7 +32,7 @@ final class JobHistoryError extends JobHistoryState {
 }
 
 class JobHistoryBloc extends Bloc<JobHistoryEvent, JobHistoryState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<JobHistory> _jobHistoryList = [];
   JobHistoryBloc(this._dataService) : super(JobHistoryInitial()) {
     on<JobHistoryGet>((event, emit) async {

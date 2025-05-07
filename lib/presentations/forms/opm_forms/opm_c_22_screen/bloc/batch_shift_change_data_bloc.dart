@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class BatchShiftChangeDataEvent {}
@@ -35,7 +35,7 @@ final class BatchShiftChangeDataError extends BatchShiftChangeDataState {
 
 class BatchShiftChangeDataBloc
     extends Bloc<BatchShiftChangeDataEvent, BatchShiftChangeDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   BatchShiftChangeDataBloc(this._dataService)
       : super(BatchShiftChangeDataInitial()) {
     on<GetBatch>((event, emit) async {

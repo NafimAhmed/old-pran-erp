@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class GrnPOListEvent {}
@@ -31,7 +31,7 @@ final class GrnPOListError extends GrnPOListState {
 }
 
 class GrnPOListBloc extends Bloc<GrnPOListEvent, GrnPOListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   List<GrnPO> _grnPOList = [];
   GrnPOListBloc(this._dataService) : super(GrnPOListInitial()) {
     on<GrnPOListGet>((event, emit) async {

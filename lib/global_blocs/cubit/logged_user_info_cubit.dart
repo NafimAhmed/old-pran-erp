@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 import '../../app_data/models/user_info_model.dart';
 
 class LoggedUserInfoCubit extends Cubit<UserInfoModel?> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   LoggedUserInfoCubit(this._dataService) : super(null);
   void checkLoggedUser() async {
     try {

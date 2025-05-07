@@ -3,8 +3,8 @@ import 'package:pran_rfl_erp/app_data/api_service/http_service.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository_impl.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_database_service.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service_impl.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo_impl.dart';
 import 'package:pran_rfl_erp/config/app_config.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -41,8 +41,8 @@ abstract class DIContainer {
       () => HttpService(appConfig: getIt<AppConfig>()),
     );
 
-    getIt.registerLazySingleton<DataService>(
-      () => DataServiceImpl(
+    getIt.registerLazySingleton<DataRepo>(
+      () => DataRepoImpl(
         localDataRepository: getIt<LocalDataRepository>(),
         httpService: getIt<HttpService>(),
       ),

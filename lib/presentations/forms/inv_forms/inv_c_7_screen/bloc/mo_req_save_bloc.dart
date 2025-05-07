@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class MOReqSaveEvent {}
@@ -36,7 +36,7 @@ final class MOReqSaveError extends MOReqSaveState {
 }
 
 class MOReqSaveBloc extends Bloc<MOReqSaveEvent, MOReqSaveState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   MOReqSaveBloc(this._dataService) : super(MOReqSaveInitial()) {
     on<MOReqSave>((event, emit) async {
       emit(MOReqSaveLoading());

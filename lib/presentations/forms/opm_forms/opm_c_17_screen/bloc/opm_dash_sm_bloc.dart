@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class OpmDashSmEvent {}
@@ -32,7 +32,7 @@ final class OpmDashSmError extends OpmDashSmState {
 }
 
 class OpmDashSmBloc extends Bloc<OpmDashSmEvent, OpmDashSmState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   OpmDashSmBloc(this._dataService) : super(OpmDashSmInitial()) {
     on<GetOpmDashSm>((event, emit) async {
       emit(OpmDashSmLoading());

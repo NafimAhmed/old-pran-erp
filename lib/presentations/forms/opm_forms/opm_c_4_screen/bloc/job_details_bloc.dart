@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class JobDetailsEvent {}
@@ -33,7 +33,7 @@ final class JobDetailsError extends JobDetailsState {
 }
 
 class JobDetailsBloc extends Bloc<JobDetailsEvent, JobDetailsState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   JobDetailsBloc(this._dataService) : super(JobDetailsInitial()) {
     on<JobDetailsGet>((event, emit) async {
       emit(JobDetailsLoading());

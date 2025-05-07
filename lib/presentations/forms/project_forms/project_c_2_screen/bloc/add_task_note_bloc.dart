@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class AddTaskNoteEvent {}
@@ -36,7 +36,7 @@ final class AddTaskNoteError extends AddTaskNoteState {
 }
 
 class AddTaskNoteBloc extends Bloc<AddTaskNoteEvent, AddTaskNoteState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   AddTaskNoteBloc(this._dataService) : super(AddTaskNoteInitial()) {
     on<AddTaskNote>((event, emit) async {
       emit(AddTaskNoteLoading());

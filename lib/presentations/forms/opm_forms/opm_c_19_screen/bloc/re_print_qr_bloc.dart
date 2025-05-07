@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class RePrintQrEvent {}
@@ -34,7 +34,7 @@ final class RePrintQrError extends RePrintQrState {
 }
 
 class RePrintQrBloc extends Bloc<RePrintQrEvent, RePrintQrState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   RePrintQrBloc(this._dataService) : super(RePrintQrInitial()) {
     on<GetRePrintQrData>((event, emit) async {
       emit(RePrintQrLoading());

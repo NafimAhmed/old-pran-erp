@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class TransferedBatchDataEvent {}
@@ -39,7 +39,7 @@ final class TransferedBatchDataError extends TransferedBatchDataState {
 
 class TransferedBatchDataBloc
     extends Bloc<TransferedBatchDataEvent, TransferedBatchDataState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   TransferedBatchDataBloc(this._dataService)
       : super(TransferedBatchDataInitial()) {
     on<TransferBatchDataGet>((event, emit) async {

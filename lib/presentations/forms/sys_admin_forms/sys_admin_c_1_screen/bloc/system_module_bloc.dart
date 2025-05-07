@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class SystemModuleEvent {}
@@ -31,7 +31,7 @@ final class SystemModuleError extends SystemModuleState {
 }
 
 class SystemModuleBloc extends Bloc<SystemModuleEvent, SystemModuleState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   SystemModuleBloc(this._dataService) : super(SystemModuleInitial()) {
     on<GetSystemModule>((event, emit) async {
       emit(SystemModuleLoading());

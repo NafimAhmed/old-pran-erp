@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class LocatorEvent {}
@@ -41,7 +41,7 @@ final class LocatorError extends LocatorState {
 }
 
 class LocatorBloc extends Bloc<LocatorEvent, LocatorState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   LocatorBloc(this._dataService) : super(LocatorInitial()) {
     on<CreateLocator>((event, emit) async {
       emit(LocatorLoading());

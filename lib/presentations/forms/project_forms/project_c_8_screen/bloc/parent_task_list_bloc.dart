@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class PrntTaskListEvent {}
@@ -39,7 +39,7 @@ final class PrntTaskListError extends PrntTaskListState {
 }
 
 class PrntTaskListBloc extends Bloc<PrntTaskListEvent, PrntTaskListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
 
   PrntTaskListBloc(this._dataService) : super(PrntTaskListInitial()) {
     on<PrntTaskListGet>((event, emit) async {

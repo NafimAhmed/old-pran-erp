@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 @immutable
 sealed class ChatListEvent {}
@@ -34,7 +34,7 @@ final class ChatListError extends ChatListState {
 }
 
 class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   ChatListBloc(this._dataService) : super(ChatInitial()) {
     on<GetConversation>((event, emit) async {
       emit(ChatListLoading());

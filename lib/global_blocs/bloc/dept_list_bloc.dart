@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
-import 'package:pran_rfl_erp/app_data/service/data_service.dart';
+import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 sealed class DeptListEvent {}
 
@@ -29,7 +29,7 @@ final class DeptListError extends DeptListState {
 }
 
 class DeptListBloc extends Bloc<DeptListEvent, DeptListState> {
-  final DataService _dataService;
+  final DataRepo _dataService;
   DeptListBloc(this._dataService) : super(DeptListInitial()) {
     on<DeptListGet>((event, emit) async {
       emit(DeptListLoading());
