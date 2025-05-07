@@ -6,7 +6,6 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
-import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/job_details_bloc.dart';
@@ -15,7 +14,6 @@ import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/j
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/bloc/top_jo_info_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/job_details_table_widget.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_4_screen/widgets/top_jo_Info_dialog.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class OpmC4Screen extends StatelessWidget {
@@ -65,9 +63,6 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
     context.read<TopJoInfoBloc>().add(TopJoInfoGet(userId: loggedUser.userId));
-    // context
-    //     .read<JobHistoryBloc>()
-    //     .add(JobHistoryGet(userId: loggedUser.userId));
     super.initState();
   }
 
@@ -148,30 +143,6 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
                             },
                           ),
                         ),
-                        SfCartesianChart(
-                          zoomPanBehavior: ZoomPanBehavior(
-                            enablePinching: true,
-                            zoomMode: ZoomMode.x,
-                            enablePanning: true,
-                          ),
-                          primaryYAxis: const NumericAxis(
-                            interval: 10000,
-                          ),
-                          primaryXAxis: CategoryAxis(
-                            labelRotation: 90,
-                            labelStyle: textTheme.bodySmall,
-                          ),
-                          series: <CartesianSeries<_ChartData, String>>[
-                            ColumnSeries<_ChartData, String>(
-                              dataSource: chartData,
-                              xValueMapper: (_ChartData data, _) => data.x,
-                              yValueMapper: (_ChartData data, _) => data.y,
-                              isVisibleInLegend: true,
-                              width: 1,
-                              spacing: 0.2,
-                            )
-                          ],
-                        )
                       ],
                     );
                   }
