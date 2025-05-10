@@ -9,15 +9,11 @@ final class ProdTransferBatch extends ProdTransferBatchEvent {
   final String pTrnid;
   final String userid;
   final String rackId;
-  final String rqty;
-  final String split;
 
   ProdTransferBatch({
     required this.pTrnid,
     required this.userid,
     required this.rackId,
-    required this.rqty,
-    required this.split,
   });
 }
 
@@ -26,11 +22,7 @@ sealed class ProdTransferBatchState {}
 
 final class ProdTransferBatchInitial extends ProdTransferBatchState {}
 
-final class ProdTransferBatchLoading extends ProdTransferBatchState {
-  final String splitFlag;
-
-  ProdTransferBatchLoading({required this.splitFlag});
-}
+final class ProdTransferBatchLoading extends ProdTransferBatchState {}
 
 final class ProdTransferBatchSuccess extends ProdTransferBatchState {}
 
@@ -45,14 +37,12 @@ class ProdTransferBatchBloc
   final DataRepo _dataService;
   ProdTransferBatchBloc(this._dataService) : super(ProdTransferBatchInitial()) {
     on<ProdTransferBatch>((event, emit) async {
-      emit(ProdTransferBatchLoading(splitFlag: event.split));
+      emit(ProdTransferBatchLoading());
       try {
-        await _dataService.transferBatch(
-          pTrnid: event.pTrnid,
-          userid: event.userid,
+        await _dataService.prodTransfer(
+          pTrnId: event.pTrnid,
           rackId: event.rackId,
-          rqty: event.rqty,
-          split: event.split,
+          userId: event.userid,
         );
         emit(ProdTransferBatchSuccess());
       } catch (error) {

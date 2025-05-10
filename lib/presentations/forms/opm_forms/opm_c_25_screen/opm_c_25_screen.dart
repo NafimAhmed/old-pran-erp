@@ -16,9 +16,9 @@ import 'package:pran_rfl_erp/core/utils/app_modal.dart';
 import 'package:pran_rfl_erp/core/utils/healper_functions.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/check_batch_status_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/bloc/prod_rack_transact_bloc.dart';
+
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/bloc/prod_transfer_batch_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_25_screen/bloc/prod_transfered_batch_data_bloc.dart';
+
 import 'package:pran_rfl_erp/global_blocs/cubit/item_qr_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_3_screen/widgets/split_qty_dialog_widget.dart';
@@ -40,15 +40,6 @@ class OpmC25Screen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProdTransferBatchBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => ProdTransferedBatchDataBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => ProdRackTransactBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => CheckBatchStatusBloc(getService()),
         ),
       ],
       child: OpmC25ScreenBody(
@@ -75,9 +66,7 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
-    context.read<ProdTransferedBatchDataBloc>().add(
-          ProdTransferBatchDataGet(userId: loggedUser.userId),
-        );
+
     super.initState();
   }
 
@@ -98,11 +87,6 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
                     ),
                     backgroundColor: appTheme.primary),
               );
-              context.read<ProdTransferedBatchDataBloc>().add(
-                    ProdTransferBatchDataGet(
-                      userId: loggedUser.userId,
-                    ),
-                  );
             }
             if (state is ProdTransferBatchError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -111,24 +95,6 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
                     state.error.toString(),
                   ),
                   backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
-        ),
-        BlocListener<ProdRackTransactBloc, ProdRackTransactState>(
-          listener: (context, state) {
-            if (state is ProdRackTransactSuccess) {
-              context.read<ProdTransferedBatchDataBloc>().add(
-                    ProdTransferBatchDataGet(
-                      userId: loggedUser.userId,
-                    ),
-                  );
-            }
-            if (state is ProdRackTransactError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                CustomSnackBar.errorSnackber(
-                  message: state.error.toString(),
                 ),
               );
             }
@@ -162,17 +128,6 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
             }
           },
         ),
-        BlocListener<CheckBatchStatusBloc, CheckBatchStatusState>(
-          listener: (context, state) {
-            if (state is CheckBatchStatusSuccess) {
-              var data = state.batchStatus;
-              AppModal.showCustomModal(
-                context,
-                content: BatchStatusDialog(data: data),
-              );
-            }
-          },
-        )
       ],
       child: Scaffold(
         appBar: CommonAppBar(appBartitle: widget.fromName),
@@ -412,16 +367,9 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
                   //   width: 10,
                   // ),
                   Flexible(
-                    child: BlocSelector<ProdTransferBatchBloc,
-                        ProdTransferBatchState, String>(
-                      selector: (state) {
-                        return state is ProdTransferBatchLoading
-                            ? state.splitFlag == "0"
-                                ? "Saving.."
-                                : "Save"
-                            : "Save";
-                      },
-                      builder: (context, selectorstate) {
+                    child: BlocBuilder<ProdTransferBatchBloc,
+                        ProdTransferBatchState>(
+                      builder: (context, state) {
                         return ElevatedButton(
                           onPressed: () {
                             if (itemQrData != null && rackQrData.isNotEmpty) {
@@ -430,14 +378,14 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
                                       pTrnid: itemQrData?.lotno ?? "",
                                       userid: loggedUser.userId,
                                       rackId: rackQrData[0],
-                                      rqty: "0",
-                                      split: "0",
                                     ),
                                   );
                             }
                           },
                           child: Text(
-                            selectorstate,
+                            state is ProdTransferBatchLoading
+                                ? "Saving.."
+                                : "Save",
                             style: textTheme.bodyMedium!.copyWith(
                               color: appTheme.white,
                             ),
@@ -450,268 +398,6 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
               ),
               const SizedBox(
                 height: 15,
-              ),
-              Expanded(
-                child: BlocBuilder<ProdTransferedBatchDataBloc,
-                    ProdTransferedBatchDataState>(
-                  builder: (context, state) {
-                    if (state is ProdTransferedBatchDataLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (state is ProdTransferedBatchDataSuccess) {
-                      return ListView.separated(
-                        itemBuilder: (context, index) {
-                          TransferBatchData transferBatchData =
-                              state.transferBatchDataList[index];
-                          return Container(
-                            padding: const EdgeInsets.all(
-                              5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: appTheme.primary.withOpacity(0.4),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton.filled(
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 151, 14, 5),
-                                      ),
-                                      onPressed: () {
-                                        context
-                                            .read<ProdTransferedBatchDataBloc>()
-                                            .add(
-                                              ProdTransferBatchDataDelete(
-                                                trnsfid: transferBatchData
-                                                        .transactId ??
-                                                    0,
-                                                userId: loggedUser.userId,
-                                              ),
-                                            );
-                                      },
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: appTheme.white,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Flexible(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Batch No:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              transferBatchData.batchno ?? "",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    BlocBuilder<ProdRackTransactBloc,
-                                        ProdRackTransactState>(
-                                      builder: (context, state) {
-                                        return ElevatedButton(
-                                          onPressed: state
-                                                  is ProdRackTransactLoading
-                                              ? () {}
-                                              : () {
-                                                  context
-                                                      .read<
-                                                          ProdRackTransactBloc>()
-                                                      .add(
-                                                        ProdRackTransact(
-                                                          transactId:
-                                                              transferBatchData
-                                                                      .transactId ??
-                                                                  0,
-                                                          userId:
-                                                              loggedUser.userId,
-                                                        ),
-                                                      );
-                                                },
-                                          child: Text(
-                                            state is ProdRackTransactLoading
-                                                ? state.transactId ==
-                                                        transferBatchData
-                                                            .transactId
-                                                    ? "Transacting..."
-                                                    : "Transact"
-                                                : "Transact",
-                                            style:
-                                                textTheme.bodyMedium!.copyWith(
-                                              color: appTheme.white,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: appTheme.primary.withOpacity(0.4),
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                      color: appTheme.primary,
-                                      width: 1.2,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "Item Name:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                                transferBatchData.itemName ??
-                                                    ""),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "Item Code:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                                transferBatchData.itemCode ??
-                                                    ""),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "Originar Qty:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              transferBatchData.originalQty
-                                                  .toString(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "Total Qty:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              transferBatchData.totalQty
-                                                  .toString(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: appTheme.primary.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                      color: appTheme.primary,
-                                      width: 1.2,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "Rack Org Name:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                                transferBatchData.rackOrgName ??
-                                                    ""),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "Rack Locator:",
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                                transferBatchData.rackLocator ??
-                                                    ""),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 10,
-                          );
-                        },
-                        itemCount: state.transferBatchDataList.length,
-                      );
-                    }
-                    return Container();
-                  },
-                ),
               ),
             ],
           ),

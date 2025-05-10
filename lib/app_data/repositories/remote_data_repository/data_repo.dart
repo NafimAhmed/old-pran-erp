@@ -471,4 +471,9 @@ abstract class DataRepo {
   Future<void> uploadPicture({
     required String filePath,
   });
+  Future<void> prodTransfer({
+    required String userId,
+    required String pTrnId,
+    required String rackId,
+  });
 }

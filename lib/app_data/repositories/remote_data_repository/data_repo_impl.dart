@@ -1617,6 +1617,25 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<void> prodTransfer({
+    required String userId,
+    required String pTrnId,
+    required String rackId,
+  }) async {
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.prodTransfer,
+        parameters: {
+          "v_userid": userId,
+          "v_tlockid": rackId,
+          "v_itemlotno": pTrnId
+        });
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.errorMessage);
+    }
+  }
+
+  @override
   Future<void> uploadPicture({
     required String filePath,
   }) async {
