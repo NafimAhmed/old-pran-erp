@@ -41,6 +41,9 @@ class OpmC25Screen extends StatelessWidget {
         BlocProvider(
           create: (context) => ProdTransferBatchBloc(getService()),
         ),
+        BlocProvider(
+          create: (context) => CheckBatchStatusBloc(getService()),
+        ),
       ],
       child: OpmC25ScreenBody(
         fromName: fromName,
@@ -128,6 +131,17 @@ class _OpmC25ScreenBodyState extends State<OpmC25ScreenBody> {
             }
           },
         ),
+        BlocListener<CheckBatchStatusBloc, CheckBatchStatusState>(
+          listener: (context, state) {
+            if (state is CheckBatchStatusSuccess) {
+              var data = state.batchStatus;
+              AppModal.showCustomModal(
+                context,
+                content: BatchStatusDialog(data: data),
+              );
+            }
+          },
+        )
       ],
       child: Scaffold(
         appBar: CommonAppBar(appBartitle: widget.fromName),
