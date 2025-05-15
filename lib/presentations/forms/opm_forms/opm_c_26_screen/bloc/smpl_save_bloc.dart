@@ -12,7 +12,7 @@ final class SmplSave extends SmplSaveEvent {
   final String customerCode;
   final String customerName;
   final String rcvDate;
-  final String smplSender;
+
   final String note;
   final String assignee;
   final String userId;
@@ -22,7 +22,6 @@ final class SmplSave extends SmplSaveEvent {
     required this.customerCode,
     required this.customerName,
     required this.rcvDate,
-    required this.smplSender,
     required this.note,
     required this.items,
     required this.assignee,
@@ -59,9 +58,8 @@ class SmplSaveBloc extends Bloc<SmplSaveEvent, SmplSaveState> {
           customerCode: event.customerCode,
           customerName: event.customerName,
           note: event.note,
-          rcvDate: event.rcvDate,
-          rcvOrg: event.rcvOrg,
-          smplSender: event.smplSender,
+          crtDate: event.rcvDate,
+          crtOrg: event.rcvOrg,
           assignee: event.assignee,
           userId: event.userId,
         );

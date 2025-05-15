@@ -66,8 +66,8 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
   late UserInfoModel loggedUser;
   late TextEditingController _custNameController;
   late TextEditingController _custCodeController;
-  late TextEditingController _smplSenderController;
-  late TextEditingController _rcvDateController;
+
+  late TextEditingController _crtDateController;
 
   late TextEditingController _noteController;
   late TextEditingController _assigneeController;
@@ -78,7 +78,6 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
   late TextEditingController _unitController;
 
   late FocusNode _custNameFocusNode;
-  late FocusNode _smplSenderFocusNode;
 
   late FocusNode _noteFocusNode;
   late FocusNode _assigneeFocusNode;
@@ -210,8 +209,8 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _fromkey2 = GlobalKey<FormState>();
     _custNameController = TextEditingController();
     _custCodeController = TextEditingController();
-    _smplSenderController = TextEditingController();
-    _rcvDateController = TextEditingController();
+
+    _crtDateController = TextEditingController();
     _noteController = TextEditingController();
     _assigneeController = TextEditingController();
     _itemNameController = TextEditingController();
@@ -219,7 +218,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _qtyController = TextEditingController();
     _unitController = TextEditingController();
     _custNameFocusNode = FocusNode();
-    _smplSenderFocusNode = FocusNode();
+
     _noteFocusNode = FocusNode();
     _assigneeFocusNode = FocusNode();
     _itemNameFocusNode = FocusNode();
@@ -233,8 +232,8 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
   void dispose() {
     _custNameController.dispose();
     _custCodeController.dispose();
-    _smplSenderController.dispose();
-    _rcvDateController.dispose();
+
+    _crtDateController.dispose();
     _noteController.dispose();
     _assigneeController.dispose();
     _itemNameController.dispose();
@@ -242,7 +241,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
     _qtyController.dispose();
     _unitController.dispose();
     _custNameFocusNode.dispose();
-    _smplSenderFocusNode.dispose();
+
     _noteFocusNode.dispose();
     _assigneeFocusNode.dispose();
     _itemNameFocusNode.dispose();
@@ -267,8 +266,8 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
         listener: (context, state) {
           if (state is SmplSaveSuccess) {
             _custNameController.clear();
-            _smplSenderController.clear();
-            _rcvDateController.clear();
+
+            _crtDateController.clear();
             _noteController.clear();
             _assigneeController.clear();
             // _itemCodeController.clear();
@@ -316,7 +315,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                               UserOrg?>(
                             builder: (context, state) {
                               return CustomDropdownSearch<UserOrg>(
-                                hintText: "Receiving ORG",
+                                hintText: "Creating ORG",
                                 value: state,
                                 items: orgList,
                                 onChanged: (value) {
@@ -424,8 +423,8 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                         Expanded(
                           child: CommonTextFieldWidget(
                             readOnly: true,
-                            controller: _rcvDateController,
-                            hintText: "Rcv Date",
+                            controller: _crtDateController,
+                            hintText: "Create Date",
                             suffixIcon: const Icon(
                               Icons.calendar_month,
                             ),
@@ -439,29 +438,13 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                 initialDate: DateTime.now(),
                               );
                               if (selectedDate != null && context.mounted) {
-                                _rcvDateController.text =
+                                _crtDateController.text =
                                     selectedDate.toFormatedString("dd/MM/yyyy");
                               }
                             },
                             validator: (value) {
                               if (value == null) {
                                 return " Please Select Date";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextFieldWidget(
-                            controller: _smplSenderController,
-                            focusNode: _smplSenderFocusNode,
-                            labelText: "Sample Sender",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter Sample Sender";
                               }
                               return null;
                             },
@@ -494,10 +477,10 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                           child: CommonTextFieldWidget(
                             controller: _assigneeController,
                             focusNode: _assigneeFocusNode,
-                            labelText: "Assignee",
+                            labelText: "Send To",
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Enter Assignee";
+                                return "Enter Send To";
                               }
                               return null;
                             },
@@ -620,9 +603,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                                                 customerName:
                                                     _custNameController.text,
                                                 rcvDate:
-                                                    _rcvDateController.text,
-                                                smplSender:
-                                                    _smplSenderController.text,
+                                                    _crtDateController.text,
                                                 note: _noteController.text,
                                                 assignee:
                                                     _assigneeController.text,

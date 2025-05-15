@@ -437,11 +437,10 @@ abstract class DataRepo {
     required String searchV,
   });
   Future<String> smplColHdrSave({
-    required int rcvOrg,
+    required int crtOrg,
     required String customerCode,
     required String customerName,
-    required String rcvDate,
-    required String smplSender,
+    required String crtDate,
     required String note,
     required String assignee,
     required String userId,
