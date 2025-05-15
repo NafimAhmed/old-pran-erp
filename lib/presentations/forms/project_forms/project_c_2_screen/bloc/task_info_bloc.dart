@@ -17,8 +17,8 @@ final class TaskInfoGet extends TaskInfoEvent {
 
 final class TaskInfoFilter extends TaskInfoEvent {
   final String searchValue;
-
-  TaskInfoFilter({required this.searchValue});
+  final String filterValue;
+  TaskInfoFilter({required this.searchValue, this.filterValue = "All"});
 }
 
 final class RemoveTaskInfo extends TaskInfoEvent {
@@ -35,9 +35,10 @@ final class TaskInfoInitial extends TaskInfoState {}
 final class TaskInfoLoading extends TaskInfoState {}
 
 final class TaskInfoSuccess extends TaskInfoState {
+  final List<TaskInfo> taskInfoFilterList;
   final List<TaskInfo> taskInfoList;
-
-  TaskInfoSuccess({required this.taskInfoList});
+  TaskInfoSuccess(
+      {required this.taskInfoFilterList, required this.taskInfoList});
 }
 
 final class TaskInfoError extends TaskInfoState {
@@ -58,13 +59,15 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
         );
         _taskInfoList = response;
 
-        if (event.searchValue.isNotEmpty) {
-          emit(TaskInfoSuccess(taskInfoList: _filterList(event.searchValue)));
-        } else {
-          emit(
-            TaskInfoSuccess(taskInfoList: _taskInfoList),
-          );
-        }
+        emit(
+          TaskInfoSuccess(
+            taskInfoList: _taskInfoList,
+            taskInfoFilterList: _filterList(
+              event.searchValue,
+              "All",
+            ),
+          ),
+        );
       } catch (e) {
         emit(TaskInfoError(error: e));
       }
@@ -73,37 +76,64 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
       emit(TaskInfoLoading());
       try {
         _taskInfoList.removeAt(event.index);
-        emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
+        emit(TaskInfoSuccess(
+            taskInfoList: _taskInfoList, taskInfoFilterList: _taskInfoList));
       } catch (e) {
         emit(TaskInfoError(error: e));
       }
     });
     on<TaskInfoFilter>((event, emit) async {
-      emit(TaskInfoLoading());
+      //emit(TaskInfoLoading());
       try {
-        if (event.searchValue.isNotEmpty) {
-          emit(TaskInfoSuccess(taskInfoList: _filterList(event.searchValue)));
-        } else {
-          emit(TaskInfoSuccess(taskInfoList: _taskInfoList));
-        }
+        emit(TaskInfoSuccess(
+            taskInfoList: _taskInfoList,
+            taskInfoFilterList:
+                _filterList(event.searchValue, event.filterValue)));
       } catch (error) {
         emit(TaskInfoError(error: error));
       }
     });
   }
-  List<TaskInfo> _filterList(String filerText) {
-    var filterlist = _taskInfoList.where(
-      (element) {
-        return (element.jobOrderNo
-                    ?.toLowerCase()
-                    .contains(filerText.toLowerCase()) ??
-                false) ||
-            (element.taskName
-                    ?.toLowerCase()
-                    .contains(filerText.toLowerCase()) ??
-                false);
-      },
-    ).toList();
-    return filterlist;
+  List<TaskInfo> _filterList(String filerText, String filterValue) {
+    if (filterValue != "All") {
+      var filterlist = _taskInfoList.where(
+        (element) {
+          return (element.parentTaskName
+                  ?.toLowerCase()
+                  .contains(filterValue.toLowerCase()) ??
+              false);
+        },
+      ).toList();
+      if (filerText.isNotEmpty) {
+        filterlist = filterlist.where(
+          (element) {
+            return (element.jobOrderNo
+                        ?.toLowerCase()
+                        .contains(filerText.toLowerCase()) ??
+                    false) ||
+                (element.taskName
+                        ?.toLowerCase()
+                        .contains(filerText.toLowerCase()) ??
+                    false);
+          },
+        ).toList();
+      }
+
+      return filterlist;
+    } else {
+      var filterlist = _taskInfoList.where(
+        (element) {
+          return (element.jobOrderNo
+                      ?.toLowerCase()
+                      .contains(filerText.toLowerCase()) ??
+                  false) ||
+              (element.taskName
+                      ?.toLowerCase()
+                      .contains(filerText.toLowerCase()) ??
+                  false);
+        },
+      ).toList();
+      return filterlist;
+    }
   }
 }
