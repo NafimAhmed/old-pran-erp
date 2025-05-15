@@ -9,9 +9,11 @@ sealed class TaskInfoEvent {}
 final class TaskInfoGet extends TaskInfoEvent {
   final String userId;
   final String searchValue;
+  final String filterValue;
   TaskInfoGet({
     required this.userId,
     required this.searchValue,
+    required this.filterValue,
   });
 }
 
@@ -64,7 +66,7 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
             taskInfoList: _taskInfoList,
             taskInfoFilterList: _filterList(
               event.searchValue,
-              "All",
+              event.filterValue,
             ),
           ),
         );

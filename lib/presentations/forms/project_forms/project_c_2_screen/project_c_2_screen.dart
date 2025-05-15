@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
-import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -82,11 +79,12 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state!;
-
+    var filterValue = context.read<VariableStateHandlerCubit<String>>().state!;
     context.read<TaskInfoBloc>().add(
           TaskInfoGet(
             userId: loggedUser.userId,
             searchValue: _searchController.text,
+            filterValue: filterValue,
           ),
         );
     super.initState();
@@ -111,11 +109,13 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
                 message: "Successfully Saved",
               ),
             );
-
+            var filterValue =
+                context.read<VariableStateHandlerCubit<String>>().state!;
             context.read<TaskInfoBloc>().add(
                   TaskInfoGet(
                     userId: loggedUser.userId,
                     searchValue: _searchController.text,
+                    filterValue: filterValue,
                   ),
                 );
           }
