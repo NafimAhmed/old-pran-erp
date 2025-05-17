@@ -177,7 +177,7 @@ class _OpmC27ScreenBodyState extends State<OpmC27ScreenBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            itemQrData?.id?.toString() ?? "",
+                            "#ID :${itemQrData?.id?.toString() ?? ""}",
                             style: textTheme.bodyMedium,
                           ),
                           Text(
@@ -207,6 +207,9 @@ class _OpmC27ScreenBodyState extends State<OpmC27ScreenBody> {
                                     ),
                                   ],
                                 ),
+                              ),
+                              const SizedBox(
+                                width: 5,
                               ),
                               Flexible(
                                 child: Row(
