@@ -348,7 +348,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                             elevation: 5,
                             shape: const CircleBorder(),
                             shadowColor: const Color.fromARGB(115, 78, 76, 76),
-                            child: Container(
+                            child: SizedBox(
                               width: 40,
                               height: 40,
                               child: const Center(

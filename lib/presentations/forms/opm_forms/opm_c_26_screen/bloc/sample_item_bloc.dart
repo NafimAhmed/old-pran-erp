@@ -52,34 +52,34 @@ final class SampleItemError extends SampleItemState {
 
 class SampleItemBloc extends Bloc<SampleItemEvent, SampleItemState> {
   SampleItemBloc() : super(SampleItemInitial()) {
-    List<SampleItem> _sampleItem = List.empty(growable: true);
+    List<SampleItem> sampleItem = List.empty(growable: true);
     on<SampleItemAdd>((event, emit) async {
       try {
-        _sampleItem.add(event.sampleItem);
-        emit(SampleItemSuccess(sampleItem: _sampleItem));
+        sampleItem.add(event.sampleItem);
+        emit(SampleItemSuccess(sampleItem: sampleItem));
       } catch (e) {
         emit(SampleItemError(error: e));
       }
     });
     on<SampleItemRemove>((event, emit) async {
       try {
-        _sampleItem.remove(event.sampleItem);
-        emit(SampleItemSuccess(sampleItem: _sampleItem));
+        sampleItem.remove(event.sampleItem);
+        emit(SampleItemSuccess(sampleItem: sampleItem));
       } catch (e) {
         emit(SampleItemError(error: e));
       }
     });
     on<SampleItemUpdate>((event, emit) async {
       try {
-        final index = _sampleItem.indexWhere(
+        final index = sampleItem.indexWhere(
           (item) => item.itemCode == event.sampleItem.itemCode,
         );
 
         if (index != -1) {
-          _sampleItem[index] = event.sampleItem;
+          sampleItem[index] = event.sampleItem;
           emit(SampleItemSuccess(
               sampleItem:
-                  List.from(_sampleItem))); // Important: new list instance
+                  List.from(sampleItem))); // Important: new list instance
         } else {
           emit(SampleItemError(error: 'Item not found'));
         }
@@ -89,8 +89,8 @@ class SampleItemBloc extends Bloc<SampleItemEvent, SampleItemState> {
     });
     on<SampleItemClearAll>((event, emit) async {
       try {
-        _sampleItem.clear();
-        emit(SampleItemSuccess(sampleItem: _sampleItem));
+        sampleItem.clear();
+        emit(SampleItemSuccess(sampleItem: sampleItem));
       } catch (e) {
         emit(SampleItemError(error: e));
       }

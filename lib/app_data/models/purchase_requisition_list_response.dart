@@ -73,7 +73,7 @@ class PurchaseRequisition {
     String? orgName,
     String? transactionTypeName,
     String? requisitionNo,
-    int? sl,
+    int? organizationId,
   }) =>
       PurchaseRequisition(
           hdrId: hdrId ?? this.hdrId,
@@ -81,7 +81,7 @@ class PurchaseRequisition {
           orgName: orgName ?? this.orgName,
           transactionTypeName: transactionTypeName ?? this.transactionTypeName,
           requisitionNo: requisitionNo ?? this.requisitionNo,
-          organizationId: sl ?? this.organizationId);
+          organizationId: organizationId ?? this.organizationId);
 
   factory PurchaseRequisition.fromJson(String str) =>
       PurchaseRequisition.fromMap(json.decode(str));
