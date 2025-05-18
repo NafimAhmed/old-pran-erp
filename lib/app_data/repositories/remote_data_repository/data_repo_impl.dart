@@ -310,6 +310,7 @@ class DataRepoImpl implements DataRepo {
     required String qty,
     required String shiftnm,
     required String shiftFromTime,
+    num? hr,
   }) async {
     var response = await httpService
         .postCall(endPoint: ApiEndPoints.userQrSave, parameters: {
@@ -322,7 +323,8 @@ class DataRepoImpl implements DataRepo {
       "badqty": badQty,
       "qty": qty,
       "shiftnm": shiftnm,
-      "shiftFromTime": shiftFromTime
+      "shiftFromTime": shiftFromTime,
+      "hr": hr
     });
     var decoderRes = BatchQrDataResponse.fromJson(response);
     if (decoderRes.statusCode == 200) {

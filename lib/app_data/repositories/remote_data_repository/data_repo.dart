@@ -132,6 +132,7 @@ abstract class DataRepo {
     required String qty,
     required String shiftnm,
     required String shiftFromTime,
+    num? hr,
   });
 
   Future<List<UserBatchQrData>> getUserQrPrintData({

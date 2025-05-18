@@ -17,6 +17,7 @@ final class UserQrSave extends UserQrSaveEvent {
   final String qty;
   final String shiftnm;
   final String shiftFromTime;
+  final num? hr;
   UserQrSave({
     required this.userid,
     required this.itemid,
@@ -28,6 +29,7 @@ final class UserQrSave extends UserQrSaveEvent {
     required this.qty,
     required this.shiftnm,
     required this.shiftFromTime,
+    this.hr,
   });
 }
 
@@ -67,6 +69,7 @@ class UserQrSaveBloc extends Bloc<UserQrSaveEvent, UserQrSaveState> {
           qty: event.qty,
           shiftnm: event.shiftnm,
           shiftFromTime: event.shiftFromTime,
+          hr: event.hr,
         );
         emit(UserQrSaveSuccess(batchQrDataList: response));
       } catch (e) {

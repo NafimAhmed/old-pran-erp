@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,7 +96,8 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   TextEditingController orgDropDownTextController = TextEditingController();
   TextEditingController machineDropDownTextController = TextEditingController();
   TextEditingController timeTextController = TextEditingController();
-
+  TextEditingController hrTextController = TextEditingController();
+  FocusNode hrFocusNode = FocusNode();
   List<UserMachine> machineList = [];
   GlobalKey<FormState> fromkey = GlobalKey();
   late UserInfoModel loggedUser;
@@ -114,6 +117,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     goodQtyFocusNode.dispose();
     badQtyFocusNode.dispose();
     timeTextController.dispose();
+    hrTextController.dispose();
     joDropDownTextController.dispose();
     batchDropDownTextController.dispose();
     machineDropDownTextController.dispose();
@@ -177,6 +181,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             qty: quantityTextController.text,
             shiftnm: seletedShift?.shiftName ?? "",
             shiftFromTime: timeTextController.text,
+            hr: num.parse(hrTextController.text),
           ),
         );
   }
@@ -478,6 +483,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       return Row(
                         children: [
                           Expanded(
+                            flex: 2,
                             child: CommonDropdownButton<ShiftData>(
                               hintText: "Change Shift",
                               value: context
@@ -507,22 +513,42 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                               readOnly: true,
                               textAlign: TextAlign.center,
                               onTap: () async {
-                                var shiftL = timeTextController.text
-                                    .split(":")
-                                    .map(
-                                      (e) => int.parse(e),
-                                    )
-                                    .toList();
-                                var pickedTime = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay(
-                                      hour: shiftL.first, minute: shiftL.last),
-                                );
-                                if (pickedTime != null && context.mounted) {
-                                  timeTextController.text =
-                                      "${pickedTime.hour.toString().padLeft(2, "0")}:${pickedTime.minute.toString().padLeft(2, "0")}";
+                                try {
+                                  var shiftL = timeTextController.text
+                                      .split(":")
+                                      .map(
+                                        (e) => int.parse(e),
+                                      )
+                                      .toList();
+                                  var pickedTime = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay(
+                                        hour: shiftL.first,
+                                        minute: shiftL.last),
+                                  );
+                                  if (pickedTime != null && context.mounted) {
+                                    timeTextController.text =
+                                        "${pickedTime.hour.toString().padLeft(2, "0")}:${pickedTime.minute.toString().padLeft(2, "0")}";
+                                  }
+                                } catch (e) {
+                                  log(e.toString());
                                 }
                               },
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CommonTextFieldWidget(
+                              hintText: "Enter Hr",
+                              controller: hrTextController,
+                              focusNode: hrFocusNode,
+                              textAlign: TextAlign.center,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              onTap: () {},
                             ),
                           ),
                         ],
