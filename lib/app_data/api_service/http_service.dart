@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -51,6 +52,7 @@ class HttpService with HttpDecoderServiceMixin {
     }
     var request = http.Request('POST', Uri.parse(finalUrl));
     http.StreamedResponse response = await _safeApiCall(request);
+    log(request.toString());
     return await decodeResponse(response);
   }
 

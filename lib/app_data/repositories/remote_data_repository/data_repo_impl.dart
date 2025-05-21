@@ -299,6 +299,27 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<void> ebsInterOrgTransfer({
+    required String userid,
+    required String itemlotno,
+    required String torackid,
+    required String trnid,
+  }) async {
+    var response = await httpService.postCall(
+        endPoint: ApiEndPoints.ebsInterOrgTransfer,
+        parameters: {
+          "userid": userid,
+          "itemlotno": itemlotno,
+          "tlockid": torackid,
+          "trnid": trnid
+        });
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
+    }
+  }
+
+  @override
   Future<List<BatchQrData>> userQrSave({
     required String userid,
     required String itemid,
@@ -324,7 +345,7 @@ class DataRepoImpl implements DataRepo {
       "qty": qty,
       "shiftnm": shiftnm,
       "shiftFromTime": shiftFromTime,
-      "hr": hr
+      "hr": hr,
     });
     var decoderRes = BatchQrDataResponse.fromJson(response);
     if (decoderRes.statusCode == 200) {

@@ -120,6 +120,12 @@ abstract class DataRepo {
     required String torackid,
     required String trnid,
   });
+  Future<void> ebsInterOrgTransfer({
+    required String userid,
+    required String itemlotno,
+    required String torackid,
+    required String trnid,
+  });
 
   Future<List<BatchQrData>> userQrSave({
     required String userid,
