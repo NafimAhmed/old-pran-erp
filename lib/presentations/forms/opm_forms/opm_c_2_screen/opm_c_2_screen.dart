@@ -181,7 +181,9 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
             qty: quantityTextController.text,
             shiftnm: seletedShift?.shiftName ?? "",
             shiftFromTime: timeTextController.text,
-            hr: num.parse(hrTextController.text),
+            hr: hrTextController.text.isEmpty
+                ? 0
+                : num.parse(hrTextController.text),
           ),
         );
   }
