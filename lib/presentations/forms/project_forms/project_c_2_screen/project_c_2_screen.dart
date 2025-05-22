@@ -78,7 +78,7 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
       taskStatusTypeCubits = {};
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     var filterValue = context.read<VariableStateHandlerCubit<String>>().state!;
     context.read<TaskInfoBloc>().add(
           TaskInfoGet(

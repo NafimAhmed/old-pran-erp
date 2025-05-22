@@ -33,7 +33,7 @@ class _SmplQrListScreenBodyState extends State<SmplQrListScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context
         .read<SmplQrListBloc>()
         .add(SmplQrListGet(userId: loggedUser.userId));

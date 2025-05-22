@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/company_model.dart';
 import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -194,6 +195,37 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<UserInfoModel?> getLoggedUser() async {
+    var response = await localDataRepository.getLoggedUser();
+    return response;
+  }
+
+  @override
+  Future<void> clearUserFrmLocal() async {
+    await localDataRepository.clearUserFrmLocal();
+  }
+
+  @override
+  Future<void> clearCompanyFrmLocal() async {
+    await localDataRepository.clearCompanyFrmLocal();
+  }
+
+  @override
+  Future<CompanyModel?> getCompany() async {
+    var response = await localDataRepository.getCompany();
+    return response;
+  }
+
+  @override
+  Future<void> saveCompanyToLocal({required CompanyModel comModel}) async {
+    try {
+      await localDataRepository.saveCompanyToLocal(comModel: comModel);
+    } catch (e) {
+      throw const CustomException("Failed To Save User Information");
+    }
+  }
+
+  @override
   Future<List<UserMenuItem>> getUserMenu({
     required String userid,
   }) async {
@@ -205,17 +237,6 @@ class DataRepoImpl implements DataRepo {
       return decodedRes.userMenuItems ?? [];
     }
     throw ApiDataException(decodedRes.errmsg);
-  }
-
-  @override
-  Future<UserInfoModel?> getLoggedUser() async {
-    var response = await localDataRepository.getLoggedUser();
-    return response;
-  }
-
-  @override
-  Future<void> clearUserFrmLocal() async {
-    await localDataRepository.clearUserFrmLocal();
   }
 
   @override

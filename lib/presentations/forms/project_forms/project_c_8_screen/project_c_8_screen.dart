@@ -111,7 +111,7 @@ class _ProjectC8ScreenBodyState extends State<ProjectC8ScreenBody> {
     _hourController = TextEditingController();
     _hourFocusNode = FocusNode();
 
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
 
     context.read<DeptListBloc>().add(
           DeptListGet(

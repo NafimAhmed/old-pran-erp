@@ -70,7 +70,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
   @override
   void initState() {
     context.read<QrGenerateCubit>().generatGrnQr(widget.grnQrData);
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     super.initState();
   }
 

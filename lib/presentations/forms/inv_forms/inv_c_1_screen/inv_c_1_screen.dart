@@ -76,7 +76,7 @@ class _InterOrgTransferBodyState extends State<InterOrgTransferBody> {
 
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<IotTrnDataBloc>().add(
           GetIotTrnData(
             userId: loggedUser.userId,

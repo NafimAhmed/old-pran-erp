@@ -75,7 +75,7 @@ class _InvC3ScreenBodyState extends State<InvC3ScreenBody> {
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<OrgBloc>().add(OrgGet());
     super.initState();
   }

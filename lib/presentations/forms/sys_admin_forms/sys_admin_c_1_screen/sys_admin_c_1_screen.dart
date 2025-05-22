@@ -82,7 +82,7 @@ class _SysAdminC1ScreenBodyState extends State<SysAdminC1ScreenBody> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<SystemModuleBloc>().add(
           GetSystemModule(
             userId: loggedUser.userId,

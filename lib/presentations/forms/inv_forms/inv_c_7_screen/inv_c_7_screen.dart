@@ -67,7 +67,7 @@ class _InvC7ScreenBodyState extends State<InvC7ScreenBody> {
       taskStatusTypeCubits = {};
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
 
     context.read<MOReqListBloc>().add(
           MOReqListGet(

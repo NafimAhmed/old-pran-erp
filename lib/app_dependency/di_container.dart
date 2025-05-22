@@ -15,27 +15,18 @@ T getService<T extends Object>() {
 }
 
 abstract class DIContainer {
-  static Future<void> configureServices({String env = "test"}) async {
+  static Future<void> configureRemoteServices({String env = ""}) async {
     switch (env) {
-      case 'prod':
-        getIt.registerSingleton<AppConfig>(AppConfigImplProd.instance);
+      case 'PRAN':
+        getIt.registerSingleton<AppConfig>(AppConfigImplPran.instance);
         break;
-      case 'test':
-        getIt.registerSingleton<AppConfig>(AppConfigImplTest.instance);
+      case 'RFL':
+        getIt.registerSingleton<AppConfig>(AppConfigImplRfl.instance);
         break;
       default:
         getIt.registerSingleton<AppConfig>(AppConfigImpl.instance);
         break;
     }
-
-    getIt.registerLazySingleton<LocalDatabase>(
-      () => LocalDatabase.instance,
-    );
-
-    Database localdatabase = await getIt<LocalDatabase>().database;
-    getIt.registerLazySingleton<LocalDataRepository>(
-      () => LocalDataRepositoryImpl(localDatabase: localdatabase),
-    );
 
     getIt.registerLazySingleton<HttpService>(
       () => HttpService(appConfig: getIt<AppConfig>()),
@@ -46,6 +37,17 @@ abstract class DIContainer {
         localDataRepository: getIt<LocalDataRepository>(),
         httpService: getIt<HttpService>(),
       ),
+    );
+  }
+
+  static Future<void> configureLocalServices() async {
+    getIt.registerLazySingleton<LocalDatabase>(
+      () => LocalDatabase.instance,
+    );
+
+    Database localdatabase = await getIt<LocalDatabase>().database;
+    getIt.registerLazySingleton<LocalDataRepository>(
+      () => LocalDataRepositoryImpl(localDatabase: localdatabase),
     );
   }
 

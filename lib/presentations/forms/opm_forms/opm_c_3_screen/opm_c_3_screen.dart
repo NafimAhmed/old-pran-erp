@@ -74,7 +74,7 @@ class _TransferScreenBodyState extends State<TransferScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<TransferedBatchDataBloc>().add(
           TransferBatchDataGet(userId: loggedUser.userId),
         );

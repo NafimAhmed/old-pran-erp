@@ -99,7 +99,7 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
   void initState() {
     context.read<OperationUnitBloc>().add(OperationUnitGet());
 
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
 
     super.initState();
   }

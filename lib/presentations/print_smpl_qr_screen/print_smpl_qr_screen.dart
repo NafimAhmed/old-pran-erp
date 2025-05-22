@@ -67,7 +67,7 @@ class _PrintSmplQrScreenBodyState extends State<PrintSmplQrScreenBody> {
   @override
   void initState() {
     context.read<QrGenerateCubit>().generateSmplQr(widget.sampleColQr);
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     super.initState();
   }
 

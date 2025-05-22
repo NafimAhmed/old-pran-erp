@@ -4,6 +4,7 @@ import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_qr_print_response.dart';
+import 'package:pran_rfl_erp/presentations/company_select_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_2_screen/inv_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_3_screen/inv_c_3_screen.dart';
@@ -81,6 +82,14 @@ class AppNavigation {
         name: LoginScreen.routeName,
         builder: (context, state) {
           return const LoginScreen();
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: CompanySelectScreen.routePath,
+        name: CompanySelectScreen.routeName,
+        builder: (context, state) {
+          return const CompanySelectScreen();
         },
       ),
       GoRoute(

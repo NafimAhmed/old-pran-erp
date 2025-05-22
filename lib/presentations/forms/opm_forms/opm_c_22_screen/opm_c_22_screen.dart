@@ -71,7 +71,7 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     orgDropDownTextController = TextEditingController();
     batchNoController = TextEditingController();
     machineDropDownTextController = TextEditingController();

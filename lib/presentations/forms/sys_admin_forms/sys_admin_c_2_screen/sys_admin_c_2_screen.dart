@@ -73,7 +73,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   TextEditingController dropDownTextController = TextEditingController();
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<AppsUserBloc>().add(GetAppsUserEvent());
     context.read<VariableStateHandlerCubit<bool>>().update(true);
     super.initState();

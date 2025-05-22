@@ -203,7 +203,7 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
 
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<UserOrgBloc>().add(UserOrgGet(userId: "", orgType: "rcving"));
     _fromkey = GlobalKey<FormState>();
     _fromkey2 = GlobalKey<FormState>();

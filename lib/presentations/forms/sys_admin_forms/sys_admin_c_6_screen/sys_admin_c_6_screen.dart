@@ -64,7 +64,7 @@ class _SysAdminC6ScreenBodyState extends State<SysAdminC6ScreenBody> {
   GlobalKey<FormState> fromKey2 = GlobalKey<FormState>();
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<MachineCreateBloc>().add(
           CreateMachine(
             machinename: "XXXXXX",

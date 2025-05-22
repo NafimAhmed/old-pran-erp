@@ -59,7 +59,7 @@ class _OpmC24ScreenBodyState extends State<OpmC24ScreenBody> {
 
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
 
     super.initState();
   }

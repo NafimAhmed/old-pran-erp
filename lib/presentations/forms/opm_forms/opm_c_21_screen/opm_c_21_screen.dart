@@ -48,7 +48,7 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
   @override
   void initState() {
     chatScroll = ScrollController();
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     askTextController = TextEditingController();
     context.read<ChatListBloc>().add(
           GetConversation(

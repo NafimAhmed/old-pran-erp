@@ -51,7 +51,7 @@ class _POC3ScreenBodyState extends State<POC3ScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context
         .read<PurchaseReqBloc>()
         .add(PurchaseReqGet(userId: loggedUser.userId));

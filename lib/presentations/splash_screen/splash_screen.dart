@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
+import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 
 import 'package:pran_rfl_erp/core/utils/image_constant.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
+import 'package:pran_rfl_erp/presentations/company_select_screen.dart';
 import 'package:pran_rfl_erp/presentations/login_screeen/login_screen.dart';
 import 'package:pran_rfl_erp/presentations/modules_dashboard_screen/modules_dashboard_screen.dart';
 
@@ -34,12 +35,22 @@ class _SplashScreenBodyState extends State<SplashScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoggedUserInfoCubit, UserInfoModel?>(
-      listener: (context, state) {
-        if (state != null) {
-          context.pushReplacementNamed(ModulesDashboardScreen.routeName);
+    return BlocListener<LoggedUserInfoCubit, LoggedUserState>(
+      listener: (context, state) async {
+        if (state.userInfoModel != null && state.companyModel != null) {
+          await DIContainer.configureRemoteServices(
+              env: state.companyModel!.comName);
+          if (context.mounted) {
+            context.pushReplacementNamed(ModulesDashboardScreen.routeName);
+          }
+        } else if (state.userInfoModel == null && state.companyModel != null) {
+          await DIContainer.configureRemoteServices(
+              env: state.companyModel!.comName);
+          if (context.mounted) {
+            context.pushReplacementNamed(LoginScreen.routeName);
+          }
         } else {
-          context.pushReplacementNamed(LoginScreen.routeName);
+          context.pushReplacementNamed(CompanySelectScreen.routeName);
         }
       },
       child: Scaffold(

@@ -85,7 +85,8 @@ class TaskWidgetContent extends StatelessWidget {
             var status = context
                 .read<VariableStateHandlerCubit<TaskStatusType>>()
                 .state!;
-            var loggedUser = context.read<LoggedUserInfoCubit>().state!;
+            var loggedUser =
+                context.read<LoggedUserInfoCubit>().state.userInfoModel!;
             context.read<TaskSaveBloc>().add(
                   TaskSave(
                     userId: loggedUser.userId,
@@ -366,8 +367,10 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                     IconButton.filledTonal(
                       onPressed: () {
-                        var loggedUser =
-                            context.read<LoggedUserInfoCubit>().state!;
+                        var loggedUser = context
+                            .read<LoggedUserInfoCubit>()
+                            .state
+                            .userInfoModel!;
                         AppModal.showCustomModal(
                           context,
                           content: NoteDialogWidget(

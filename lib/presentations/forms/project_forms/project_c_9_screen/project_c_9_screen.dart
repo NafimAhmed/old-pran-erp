@@ -60,7 +60,7 @@ class _ProjectC9ScreenBodyState extends State<ProjectC9ScreenBody> {
   final Map<int, VariableStateHandlerCubit<Department>> departmentCubits = {};
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<TaskListBloc>().add(
           TaskListGet(
             userId: loggedUser.userId,

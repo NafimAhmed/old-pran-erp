@@ -55,7 +55,7 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<UserMenuBloc>().add(UserMenuGet(userId: loggedUser.userId));
     context
         .read<UserOrgBloc>()
@@ -120,7 +120,8 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                         width: 10,
                       ),
                       Expanded(
-                        child: BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
+                        child:
+                            BlocBuilder<LoggedUserInfoCubit, LoggedUserState>(
                           builder: (context, state) {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,13 +132,15 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        state != null ? state.userName : "",
+                                        state.userInfoModel != null
+                                            ? state.userInfoModel!.userName
+                                            : "",
                                         style: textTheme.bodyMedium!.copyWith(
                                           color: appTheme.white,
                                         ),
                                       ),
                                       Text(
-                                        "ID: ${state != null ? state.userId : ""}",
+                                        "ID: ${state.userInfoModel != null ? state.userInfoModel!.userId : ""}",
                                         style: textTheme.bodyMedium!.copyWith(
                                           color: appTheme.white,
                                         ),

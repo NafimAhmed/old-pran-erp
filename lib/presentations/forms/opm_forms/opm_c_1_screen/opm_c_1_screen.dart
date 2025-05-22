@@ -69,7 +69,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
 
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<UserMachineBloc>().add(
           UserMachineGet(userId: loggedUser!.userId),
         );

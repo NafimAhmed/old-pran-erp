@@ -64,7 +64,7 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
   void initState() {
     context.read<QrUserBloc>().add(GetQrUsers());
     context.read<OrgBloc>().add(OrgGet());
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     super.initState();
   }
 

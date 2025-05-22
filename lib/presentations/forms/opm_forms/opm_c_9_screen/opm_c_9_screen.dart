@@ -62,7 +62,7 @@ class _OpmC9ScreenBodyState extends State<OpmC9ScreenBody>
   @override
   void initState() {
     _tabController = TabController(initialIndex: 2, length: 3, vsync: this);
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     super.initState();
   }
 
@@ -147,7 +147,7 @@ class _CompleteTabState extends State<CompleteTab> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<BatchCompDataBloc>().add(
           GetBatchCompData(
             userId: loggedUser.userId,
@@ -518,7 +518,8 @@ class _BatchCompSkuDtlWidgetState extends State<BatchCompSkuDtlWidget> {
                                         onTap: () {
                                           var loggedUser = context
                                               .read<LoggedUserInfoCubit>()
-                                              .state!;
+                                              .state
+                                              .userInfoModel!;
                                           var eMadeQty = context
                                               .read<
                                                   VariableStateHandlerCubit<

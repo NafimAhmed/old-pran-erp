@@ -61,7 +61,7 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<TopJoInfoBloc>().add(TopJoInfoGet(userId: loggedUser.userId));
     super.initState();
   }

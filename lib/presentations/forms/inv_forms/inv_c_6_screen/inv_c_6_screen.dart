@@ -68,7 +68,7 @@ class _InvC6ScreenBodyState extends State<InvC6ScreenBody> {
 
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     // context.read<IotTrnDataBloc>().add(
     //       GetIotTrnData(
     //         userId: loggedUser.userId,

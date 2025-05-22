@@ -37,9 +37,12 @@ class _UserDetailsWidgetState extends State<UserDetailsWidget> {
                     width: 10,
                   ),
                   Flexible(
-                    child: Text(
-                        context.read<LoggedUserInfoCubit>().state?.userName ??
-                            ""),
+                    child: Text(context
+                            .read<LoggedUserInfoCubit>()
+                            .state
+                            .userInfoModel
+                            ?.userName ??
+                        ""),
                   )
                 ],
               ),

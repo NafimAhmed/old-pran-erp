@@ -57,7 +57,7 @@ class _InvC2ScreenBodyState extends State<InvC2ScreenBody> {
   List<String> rackQrData = [];
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<RcvIotDataBloc>().add(
           GetRcvIotData(
             userId: loggedUser.userId,

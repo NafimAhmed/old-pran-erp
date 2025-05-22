@@ -47,7 +47,7 @@ class _OmC8ScreenBodyState extends State<OmC8ScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<JoComplListBloc>().add(
           GetJoComplList(
             userId: loggedUser.userId,

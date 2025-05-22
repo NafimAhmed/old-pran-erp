@@ -96,8 +96,10 @@ class _BatchCompSkuDtlWidgetState extends State<BatchCompSkuDtlWidget> {
                         details.rowColumnIndex.columnIndex == 7 &&
                         !skuDtlSource.nonEditableRows
                             .contains(details.rowColumnIndex.rowIndex - 1)) {
-                      var loggedUser =
-                          context.read<LoggedUserInfoCubit>().state!;
+                      var loggedUser = context
+                          .read<LoggedUserInfoCubit>()
+                          .state
+                          .userInfoModel!;
 
                       widget.blocContext.read<BatchCompDtlLnUpdtBloc>().add(
                             GetBatchCompDtlLnUpdt(
@@ -174,8 +176,10 @@ class _BatchCompSkuDtlWidgetState extends State<BatchCompSkuDtlWidget> {
                 child: BlocConsumer<CompBatchBloc, CompBatchState>(
                   listener: (context, state) {
                     if (state is CompBatchSuccess) {
-                      var loggedUser =
-                          context.read<LoggedUserInfoCubit>().state!;
+                      var loggedUser = context
+                          .read<LoggedUserInfoCubit>()
+                          .state
+                          .userInfoModel!;
                       widget.blocContext.read<BatchCompDataBloc>().add(
                             GetBatchCompData(
                               userId: loggedUser.userId,
@@ -192,8 +196,10 @@ class _BatchCompSkuDtlWidgetState extends State<BatchCompSkuDtlWidget> {
                         ),
                       ),
                       onPressed: () {
-                        var loggedUser =
-                            context.read<LoggedUserInfoCubit>().state!;
+                        var loggedUser = context
+                            .read<LoggedUserInfoCubit>()
+                            .state
+                            .userInfoModel!;
                         widget.blocContext.read<CompBatchBloc>().add(
                               BatchComplete(
                                 userId: loggedUser.userId,

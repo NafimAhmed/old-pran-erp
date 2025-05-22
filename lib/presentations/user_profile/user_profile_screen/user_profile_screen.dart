@@ -67,19 +67,21 @@ class _UserProfileScreenBodyState extends State<UserProfileScreenBody> {
                     shape: BoxShape.circle,
                   ),
                 ),
-                BlocBuilder<LoggedUserInfoCubit, UserInfoModel?>(
+                BlocBuilder<LoggedUserInfoCubit, LoggedUserState>(
                   builder: (context, state) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          state != null ? state.userName : "",
+                          state.userInfoModel != null
+                              ? state.userInfoModel!.userName
+                              : "",
                           style: textTheme.bodyMedium!.copyWith(
                             color: appTheme.white,
                           ),
                         ),
                         Text(
-                          "ID: ${state != null ? state.userId : ""}",
+                          "ID: ${state.userInfoModel != null ? state.userInfoModel!.userId : ""}",
                           style: textTheme.bodyMedium!.copyWith(
                             color: appTheme.white,
                           ),
@@ -153,7 +155,7 @@ class _ChangePasswordDialogContentState
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     _oldPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
     _conPasswordController = TextEditingController();

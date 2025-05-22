@@ -46,7 +46,7 @@ class _OpmC15ScreenBodyState extends State<OpmC15ScreenBody> {
   @override
   void initState() {
     _tooltip = TooltipBehavior(enable: true);
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context
         .read<JobOrderHistoryBloc>()
         .add(GetJobOrderHistory(userId: loggedUser.userId));

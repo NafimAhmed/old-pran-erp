@@ -11,7 +11,7 @@ import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  await DIContainer.configureServices(env: "test");
+  await DIContainer.configureLocalServices();
 
   runApp(const MyApp());
 }

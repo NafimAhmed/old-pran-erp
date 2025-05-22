@@ -43,7 +43,7 @@ class _OpmC10ScreenBodyState extends State<OpmC10ScreenBody> {
 
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<BatchCloseDataBloc>().add(
           GetBatchCloseData(
             userId: loggedUser.userId,

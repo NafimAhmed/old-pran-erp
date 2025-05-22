@@ -6,7 +6,7 @@ class LocalDatabase {
   LocalDatabase._constructor();
 
   static const _dbName = 'expressErp.db';
-  static const _dbVersion = 1;
+  static const _dbVersion = 2;
 
   Database? _database;
   Future<Database> get database async {
@@ -34,8 +34,26 @@ class LocalDatabase {
       userDept       TEXT NOT NULL
       )
       ''');
+        await db.execute('''
+      CREATE TABLE company (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      baseUrl          TEXT NOT NULL,
+      comName          TEXT NOT NULL
+      )
+      ''');
       },
       onConfigure: (db) {},
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < newVersion) {
+          await db.execute('''
+      CREATE TABLE company (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      baseUrl          TEXT NOT NULL,
+      comName          TEXT NOT NULL
+      )
+      ''');
+        }
+      },
     );
   }
 }

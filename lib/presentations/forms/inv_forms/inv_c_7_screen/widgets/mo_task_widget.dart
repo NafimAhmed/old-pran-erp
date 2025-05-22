@@ -82,7 +82,8 @@ class TaskWidgetContent extends StatelessWidget {
             var status = context
                 .read<VariableStateHandlerCubit<TaskStatusType>>()
                 .state!;
-            var loggedUser = context.read<LoggedUserInfoCubit>().state!;
+            var loggedUser =
+                context.read<LoggedUserInfoCubit>().state.userInfoModel!;
             context.read<MOReqSaveBloc>().add(
                   MOReqSave(
                     userId: loggedUser.userId,

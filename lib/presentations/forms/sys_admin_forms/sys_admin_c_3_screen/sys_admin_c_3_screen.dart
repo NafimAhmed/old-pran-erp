@@ -75,7 +75,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   @override
   void initState() {
     context.read<QrUserBloc>().add(GetQrUsers());
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     super.initState();
   }
 

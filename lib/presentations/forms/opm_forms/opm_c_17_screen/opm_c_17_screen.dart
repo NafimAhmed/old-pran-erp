@@ -35,7 +35,7 @@ class _OpmC17ScreenBodyState extends State<OpmC17ScreenBody> {
   late UserInfoModel loggedUser;
   @override
   void initState() {
-    loggedUser = context.read<LoggedUserInfoCubit>().state!;
+    loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<OpmDashSmBloc>().add(GetOpmDashSm(userId: loggedUser.userId));
     super.initState();
   }

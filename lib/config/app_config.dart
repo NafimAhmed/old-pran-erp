@@ -18,26 +18,26 @@ class AppConfigImpl extends AppConfig {
   static AppConfigImpl get instance => _instance;
 }
 
-class AppConfigImplProd extends AppConfig {
-  AppConfigImplProd._({
+class AppConfigImplPran extends AppConfig {
+  AppConfigImplPran._({
     required super.baseUrl,
   });
 
   // Create a singleton
-  static final AppConfigImplProd _instance = AppConfigImplProd._(
-    baseUrl: '',
+  static final AppConfigImplPran _instance = AppConfigImplPran._(
+    baseUrl: 'https://bpro.prangroup.com:8022',
   );
-  static AppConfigImplProd get instance => _instance;
+  static AppConfigImplPran get instance => _instance;
 }
 
-class AppConfigImplTest extends AppConfig {
-  AppConfigImplTest._({
+class AppConfigImplRfl extends AppConfig {
+  AppConfigImplRfl._({
     required super.baseUrl,
   });
 
   // Create a singleton
-  static final AppConfigImplTest _instance = AppConfigImplTest._(
+  static final AppConfigImplRfl _instance = AppConfigImplRfl._(
     baseUrl: 'https://ego.rflgroupbd.com:8077',
   );
-  static AppConfigImplTest get instance => _instance;
+  static AppConfigImplRfl get instance => _instance;
 }

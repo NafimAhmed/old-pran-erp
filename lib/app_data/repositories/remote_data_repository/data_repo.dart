@@ -9,6 +9,7 @@ import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
 import 'package:pran_rfl_erp/app_data/models/buyer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/company_model.dart';
 import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
@@ -64,6 +65,11 @@ abstract class DataRepo {
   });
   Future<void> clearUserFrmLocal();
   Future<UserInfoModel?> getLoggedUser();
+  Future<void> saveCompanyToLocal({
+    required CompanyModel comModel,
+  });
+  Future<void> clearCompanyFrmLocal();
+  Future<CompanyModel?> getCompany();
 
   Future<void> sendProdQrInfo(
     String itemId,
