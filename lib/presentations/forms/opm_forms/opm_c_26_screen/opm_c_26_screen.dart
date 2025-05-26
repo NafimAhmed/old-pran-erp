@@ -344,14 +344,14 @@ class _OpmC26ScreenBodyState extends State<OpmC26ScreenBody> {
                           onTap: () {
                             context.pushNamed(SmplQrListScreen.routeName);
                           },
-                          child: Material(
+                          child: const Material(
                             elevation: 5,
-                            shape: const CircleBorder(),
-                            shadowColor: const Color.fromARGB(115, 78, 76, 76),
+                            shape: CircleBorder(),
+                            shadowColor: Color.fromARGB(115, 78, 76, 76),
                             child: SizedBox(
                               width: 40,
                               height: 40,
-                              child: const Center(
+                              child: Center(
                                 child: Icon(
                                   Icons.qr_code,
                                 ),

@@ -445,7 +445,8 @@ class DataRepoImpl implements DataRepo {
       "P_menu_name": pMenuName,
       "P_menu_type": pMenuType,
       "P_module": pModule,
-      "P_parent": pParent
+      "P_parent": pParent,
+      "appMnu": "EXPERP"
     });
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {

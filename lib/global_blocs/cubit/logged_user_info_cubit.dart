@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/company_model.dart';
 import 'package:pran_rfl_erp/app_data/repositories/local_data_repository/local_data_repository.dart';
-import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_repo.dart';
 
 import '../../app_data/models/user_info_model.dart';
 
