@@ -145,6 +145,12 @@ class _DashboardScreenBodyState extends State<DashboardScreenBody> {
                                           color: appTheme.white,
                                         ),
                                       ),
+                                      Text(
+                                        "Company: ${state.companyModel != null ? state.companyModel!.comName : ""}",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: appTheme.white,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
