@@ -336,7 +336,7 @@ class DataRepoImpl implements DataRepo {
         });
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw ApiDataException(decodedRes.message);
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -1424,7 +1424,7 @@ class DataRepoImpl implements DataRepo {
         .getCall(endPoint: ApiEndPoints.getOperationUnit, parameters: {});
     var decoderRes = OperationUnitListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.operationUnitList ?? [];
   }
@@ -1437,7 +1437,7 @@ class DataRepoImpl implements DataRepo {
         parameters: {"orgId": ordId});
     var decoderRes = GrnPurchaseReqListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.purchaseReqList ?? [];
   }
@@ -1448,7 +1448,7 @@ class DataRepoImpl implements DataRepo {
         endPoint: ApiEndPoints.getGrnJOList, parameters: {"reqNo": reqNo});
     var decoderRes = GrnJoListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.grnJoList ?? [];
   }
@@ -1460,7 +1460,7 @@ class DataRepoImpl implements DataRepo {
         parameters: {"jobOrderNo": jobOrderNo});
     var decoderRes = GrnPOListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.poList ?? [];
   }
@@ -1471,7 +1471,7 @@ class DataRepoImpl implements DataRepo {
         endPoint: ApiEndPoints.getGrnQrList, parameters: {"userId": userId});
     var decoderRes = GrnQrListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.grnQrList ?? [];
   }
@@ -1500,7 +1500,7 @@ class DataRepoImpl implements DataRepo {
     });
     var decoderRes = GenericResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.errorMessage);
     }
   }
 
@@ -1510,7 +1510,7 @@ class DataRepoImpl implements DataRepo {
         endPoint: ApiEndPoints.getGrnOrgList, parameters: {"ouid": ouId});
     var decoderRes = GrnOrgListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.grnOrg ?? [];
   }
@@ -1521,7 +1521,7 @@ class DataRepoImpl implements DataRepo {
         endPoint: ApiEndPoints.getMOReqList, parameters: {"userid": userId});
     var decoderRes = MOReqListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.moReqTaskList ?? [];
   }
@@ -1536,7 +1536,7 @@ class DataRepoImpl implements DataRepo {
         parameters: {"tskid": taskId, "taskstatus": taskStatus});
     var decoderRes = GenericResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.errorMessage);
     }
   }
 
@@ -1549,7 +1549,7 @@ class DataRepoImpl implements DataRepo {
         parameters: {"searchV": searchV});
     var decoderRes = CustomerListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.message);
     }
     return decoderRes.customerList ?? [];
   }
@@ -1576,7 +1576,7 @@ class DataRepoImpl implements DataRepo {
     });
     var decoderRes = GenericResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.errorMessage);
     }
     return decoderRes.info ?? "";
   }
@@ -1603,7 +1603,7 @@ class DataRepoImpl implements DataRepo {
     });
     var decoderRes = GenericResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decoderRes.errorMessage);
     }
   }
 
@@ -1616,7 +1616,7 @@ class DataRepoImpl implements DataRepo {
         parameters: {"userId": userId});
     var decodedRes = SmplQrListResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decodedRes.message);
     }
     return decodedRes.sampleColQr ?? [];
   }
@@ -1629,7 +1629,7 @@ class DataRepoImpl implements DataRepo {
         endPoint: ApiEndPoints.getSmplColQrList, parameters: {"id": id});
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -1643,7 +1643,7 @@ class DataRepoImpl implements DataRepo {
         parameters: {"id": id, "rackId": rackId});
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -1655,7 +1655,7 @@ class DataRepoImpl implements DataRepo {
         endPoint: ApiEndPoints.updateGrnQrList, parameters: {"trnId": trnId});
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw const ApiDataException();
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
