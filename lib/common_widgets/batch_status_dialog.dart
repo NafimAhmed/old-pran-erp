@@ -115,7 +115,7 @@ class BatchStatusDialog extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Cur.Location"),
+              const Text("Cur.Location: "),
               Expanded(
                 child: Text(
                   textAlign: TextAlign.right,
@@ -131,7 +131,7 @@ class BatchStatusDialog extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Cur.Stock"),
+              const Text("Cur.Stock: "),
               Expanded(
                 child: Text(
                   textAlign: TextAlign.right,
