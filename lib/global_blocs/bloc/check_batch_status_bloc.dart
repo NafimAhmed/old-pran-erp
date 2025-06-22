@@ -25,7 +25,7 @@ final class CheckBatchStatusInitial extends CheckBatchStatusState {}
 final class CheckBatchStatusLoading extends CheckBatchStatusState {}
 
 final class CheckBatchStatusSuccess extends CheckBatchStatusState {
-  final BatchStatusCheck batchStatus;
+  final BatchStatusCheckResponse batchStatus;
 
   CheckBatchStatusSuccess({required this.batchStatus});
 }

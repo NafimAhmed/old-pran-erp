@@ -1143,7 +1143,7 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<BatchStatusCheck> getBatchStatus({
+  Future<BatchStatusCheckResponse> getBatchStatus({
     required String userId,
     required String lotNo,
   }) async {
@@ -1152,9 +1152,9 @@ class DataRepoImpl implements DataRepo {
         parameters: {"userid": userId, "lotno": lotNo});
     var decoderRes = BatchStatusCheckResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
-      throw ApiDataException(decoderRes.message);
+      throw ApiDataException(decoderRes.errmsg);
     }
-    return decoderRes.batchStatusCk?.first ?? BatchStatusCheck();
+    return decoderRes;
   }
 
   @override

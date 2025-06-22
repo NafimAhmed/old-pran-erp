@@ -350,7 +350,7 @@ abstract class DataRepo {
     required String department,
     required String taskId,
   });
-  Future<BatchStatusCheck> getBatchStatus({
+  Future<BatchStatusCheckResponse> getBatchStatus({
     required String userId,
     required String lotNo,
   });

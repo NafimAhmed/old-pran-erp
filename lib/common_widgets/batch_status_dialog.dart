@@ -9,7 +9,7 @@ class BatchStatusDialog extends StatelessWidget {
     required this.data,
   });
 
-  final BatchStatusCheck data;
+  final BatchStatusCheckResponse data;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,11 @@ class BatchStatusDialog extends StatelessWidget {
               Expanded(
                 child: Text(
                   textAlign: TextAlign.right,
-                  data.batchStatus ?? "",
+                  data.batchStatusCk?.first.batchStatus ?? "",
                   style: textTheme.bodyMedium!.copyWith(
                     fontSize: 17,
-                    color: ["Closed", "Completed"].contains(data.batchStatus)
+                    color: ["Closed", "Completed"]
+                            .contains(data.batchStatusCk?.first.batchStatus)
                         ? appTheme.green
                         : const Color.fromARGB(255, 252, 62, 62),
                     fontWeight: FontWeight.bold,
@@ -48,7 +49,7 @@ class BatchStatusDialog extends StatelessWidget {
                     Expanded(
                       child: Text(
                         textAlign: TextAlign.right,
-                        data.batchNo ?? "",
+                        data.batchStatusCk?.first.batchNo ?? "",
                         style: textTheme.bodyMedium!.copyWith(
                             // fontWeight: FontWeight.bold,
                             ),
@@ -68,7 +69,7 @@ class BatchStatusDialog extends StatelessWidget {
                     Expanded(
                       child: Text(
                         textAlign: TextAlign.right,
-                        data.organizationCode ?? "",
+                        data.batchStatusCk?.first.organizationCode ?? "",
                         style: textTheme.bodyMedium!.copyWith(
                             // fontWeight: FontWeight.bold,
                             ),
@@ -86,7 +87,7 @@ class BatchStatusDialog extends StatelessWidget {
               Expanded(
                 child: Text(
                   textAlign: TextAlign.right,
-                  data.userName ?? "",
+                  data.batchStatusCk?.first.userName ?? "",
                   style: textTheme.bodyMedium!.copyWith(
                       // fontSize: 17,
                       // fontWeight: FontWeight.bold,
@@ -102,7 +103,39 @@ class BatchStatusDialog extends StatelessWidget {
               Expanded(
                 child: Text(
                   textAlign: TextAlign.right,
-                  data.organizationName ?? "",
+                  data.batchStatusCk?.first.organizationName ?? "",
+                  style: textTheme.bodyMedium!.copyWith(
+                      // fontSize: 17,
+                      // fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Cur.Location"),
+              Expanded(
+                child: Text(
+                  textAlign: TextAlign.right,
+                  data.batchLocation?.description ?? "",
+                  style: textTheme.bodyMedium!.copyWith(
+                      // fontSize: 17,
+                      // fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Cur.Stock"),
+              Expanded(
+                child: Text(
+                  textAlign: TextAlign.right,
+                  "${data.batchLocation?.stock ?? "-"}",
                   style: textTheme.bodyMedium!.copyWith(
                       // fontSize: 17,
                       // fontWeight: FontWeight.bold,
