@@ -39,24 +39,12 @@ class OpmC28Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => UserBasicDataBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => ProdBatchDataBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => UserQrSaveBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => UserQrPrintBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => ShiftDataBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<UserOrg>(),
-        ),
+        BlocProvider(create: (context) => UserBasicDataBloc(getService())),
+        BlocProvider(create: (context) => ProdBatchDataBloc(getService())),
+        BlocProvider(create: (context) => UserQrSaveBloc(getService())),
+        BlocProvider(create: (context) => UserQrPrintBloc(getService())),
+        BlocProvider(create: (context) => ShiftDataBloc(getService())),
+        BlocProvider(create: (context) => VariableStateHandlerCubit<UserOrg>()),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<PendingJo>(),
         ),
@@ -70,9 +58,7 @@ class OpmC28Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<ShiftData>(),
         ),
       ],
-      child: OpmC28ScreenBody(
-        fromName: fromName,
-      ),
+      child: OpmC28ScreenBody(fromName: fromName),
     );
   }
 }
@@ -121,33 +107,25 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
   bool _customValidator() {
     if (context.read<VariableStateHandlerCubit<UserOrg>>().state == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar.errorSnackber(
-          message: "Please Select Org",
-        ),
+        CustomSnackBar.errorSnackber(message: "Please Select Org"),
       );
       return false; // Validation failed
     }
     if (context.read<VariableStateHandlerCubit<PendingJo>>().state == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar.errorSnackber(
-          message: "Please Select JO",
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(CustomSnackBar.errorSnackber(message: "Please Select JO"));
       return false; // Validation failed
     }
     if (context.read<VariableStateHandlerCubit<UserBatch>>().state == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar.errorSnackber(
-          message: "Please Select Batch",
-        ),
+        CustomSnackBar.errorSnackber(message: "Please Select Batch"),
       );
       return false; // Validation failed
     }
     if (context.read<VariableStateHandlerCubit<UserMachine>>().state == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar.errorSnackber(
-          message: "Please Select Machine",
-        ),
+        CustomSnackBar.errorSnackber(message: "Please Select Machine"),
       );
       return false; // Validation failed
     }
@@ -156,51 +134,54 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
 
   void _userQrSave() {
     var selectedOrg = context.read<VariableStateHandlerCubit<UserOrg>>().state;
-    var selectedMachine =
-        context.read<VariableStateHandlerCubit<UserMachine>>().state;
-    var selectedBatch =
-        context.read<VariableStateHandlerCubit<UserBatch>>().state;
-    var seletedShift =
-        context.read<VariableStateHandlerCubit<ShiftData>>().state;
+    var selectedMachine = context
+        .read<VariableStateHandlerCubit<UserMachine>>()
+        .state;
+    var selectedBatch = context
+        .read<VariableStateHandlerCubit<UserBatch>>()
+        .state;
+    var seletedShift = context
+        .read<VariableStateHandlerCubit<ShiftData>>()
+        .state;
     context.read<UserQrSaveBloc>().add(
-          UserQrSave(
-            userid: loggedUser.userId,
-            itemid: selectedBatch!.inventoryItemId.toString(),
-            machine: selectedMachine!.machineName!,
-            batchid: selectedBatch.batchId.toString(),
-            orgid: selectedOrg!.organizationId.toString(),
-            goodQty: goodQtyTextController.text,
-            badQty: badQtyTextController.text,
-            qty: quantityTextController.text,
-            shiftnm: seletedShift?.shiftName ?? "",
-            shiftFromTime: timeTextController.text,
-            hr: hrTextController.text.isEmpty
-                ? 0
-                : num.parse(hrTextController.text),
-          ),
-        );
+      UserQrSave(
+        userid: loggedUser.userId,
+        itemid: selectedBatch!.inventoryItemId.toString(),
+        machine: selectedMachine!.machineName!,
+        batchid: selectedBatch.batchId.toString(),
+        orgid: selectedOrg!.organizationId.toString(),
+        goodQty: goodQtyTextController.text,
+        badQty: badQtyTextController.text,
+        qty: quantityTextController.text,
+        shiftnm: seletedShift?.shiftName ?? "",
+        shiftFromTime: timeTextController.text,
+        hr: hrTextController.text.isEmpty
+            ? 0
+            : num.parse(hrTextController.text),
+      ),
+    );
   }
 
   dynamic _onSelectOrg(UserOrg? value) {
-// FocusScope.of(context).unfocus();
+    // FocusScope.of(context).unfocus();
     FocusManager.instance.primaryFocus?.unfocus();
     context.read<UserQrPrintBloc>().add(
-          GetUserQrPrintData(
-            userid: loggedUser.userId,
-            orgid: value!.organizationId.toString(),
-          ),
-        );
+      GetUserQrPrintData(
+        userid: loggedUser.userId,
+        orgid: value!.organizationId.toString(),
+      ),
+    );
     context.read<VariableStateHandlerCubit<UserMachine>>().reset();
     context.read<VariableStateHandlerCubit<UserBatch>>().reset();
     context.read<VariableStateHandlerCubit<PendingJo>>().reset();
     context.read<ProdBatchDataBloc>().add(ProdBatchDataReset());
 
     context.read<UserBasicDataBloc>().add(
-          UserBasicDataGet(
-            userId: loggedUser.userId,
-            orgid: value.organizationId!.toString(),
-          ),
-        );
+      UserBasicDataGet(
+        userId: loggedUser.userId,
+        orgid: value.organizationId!.toString(),
+      ),
+    );
     context.read<VariableStateHandlerCubit<UserOrg>>().update(value);
   }
 
@@ -218,12 +199,16 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
       context.read<VariableStateHandlerCubit<UserBatch>>().reset();
 
       context.read<ShiftDataBloc>().add(GetShiftData());
-      var selectedOrg =
-          context.read<VariableStateHandlerCubit<UserOrg>>().state!;
-      context.read<ProdBatchDataBloc>().add(ProdBatchDataGet(
+      var selectedOrg = context
+          .read<VariableStateHandlerCubit<UserOrg>>()
+          .state!;
+      context.read<ProdBatchDataBloc>().add(
+        ProdBatchDataGet(
           userId: loggedUser.userId,
           orgid: selectedOrg.organizationId?.toString() ?? "",
-          jobOrderNo: value.jobOrderNo ?? ""));
+          jobOrderNo: value.jobOrderNo ?? "",
+        ),
+      );
     }
   }
 
@@ -243,41 +228,38 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
       listener: (context, state) {
         if (state is UserQrSaveSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            CustomSnackBar.successSnackber(
-              message: "Successfully Added..",
-            ),
+            CustomSnackBar.successSnackber(message: "Successfully Added.."),
           );
           quantityTextController.clear();
           goodQtyTextController.clear();
           badQtyTextController.clear();
-          var selectedOrg =
-              context.read<VariableStateHandlerCubit<UserOrg>>().state;
+          var selectedOrg = context
+              .read<VariableStateHandlerCubit<UserOrg>>()
+              .state;
           context.read<VariableStateHandlerCubit<UserMachine>>().reset();
           context.read<VariableStateHandlerCubit<UserBatch>>().reset();
           context.read<VariableStateHandlerCubit<ShiftData>>().reset();
           context.read<ShiftDataBloc>().add(ResetShiftData());
           context.read<UserBasicDataBloc>().add(
-                UserBasicDataGet(
-                  userId: loggedUser.userId,
-                  orgid: context
-                      .read<VariableStateHandlerCubit<UserOrg>>()
-                      .state!
-                      .organizationId
-                      .toString(),
-                ),
-              );
+            UserBasicDataGet(
+              userId: loggedUser.userId,
+              orgid: context
+                  .read<VariableStateHandlerCubit<UserOrg>>()
+                  .state!
+                  .organizationId
+                  .toString(),
+            ),
+          );
           context.read<UserQrPrintBloc>().add(
-                GetUserQrPrintData(
-                  userid: loggedUser.userId,
-                  orgid: selectedOrg!.organizationId.toString(),
-                ),
-              );
+            GetUserQrPrintData(
+              userid: loggedUser.userId,
+              orgid: selectedOrg!.organizationId.toString(),
+            ),
+          );
         }
         if (state is UserQrSaveError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            CustomSnackBar.errorSnackber(
-              message: state.error.toString(),
-            ),
+            CustomSnackBar.errorSnackber(message: state.error.toString()),
           );
         }
       },
@@ -286,21 +268,15 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
         appBar: CommonAppBar(appBartitle: widget.fromName), //D-Prod screen
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 Form(
                   key: fromkey,
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Expanded(
@@ -319,86 +295,94 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                               },
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          const SizedBox(width: 10),
                           Expanded(
-                            child: BlocBuilder<UserBasicDataBloc,
-                                UserBasicDataState>(
-                              builder: (context, state) {
-                                return CustomDropdownSearch<UserMachine>(
-                                  enabled: state is UserBasicDataSuccess
-                                      ? state.prodBasicData.userMachineData
-                                              ?.isNotEmpty ??
-                                          false
-                                      : false,
-                                  hintText: "Select Machine",
-                                  items: state is UserBasicDataSuccess
-                                      ? state.prodBasicData.userMachineData ??
-                                          []
-                                      : [],
-                                  onChanged: _onSelectMachine,
-                                );
-                              },
-                            ),
+                            child:
+                                BlocBuilder<
+                                  UserBasicDataBloc,
+                                  UserBasicDataState
+                                >(
+                                  builder: (context, state) {
+                                    return CustomDropdownSearch<UserMachine>(
+                                      enabled: state is UserBasicDataSuccess
+                                          ? state
+                                                    .prodBasicData
+                                                    .userMachineData
+                                                    ?.isNotEmpty ??
+                                                false
+                                          : false,
+                                      hintText: "Select Machine",
+                                      items: state is UserBasicDataSuccess
+                                          ? state
+                                                    .prodBasicData
+                                                    .userMachineData ??
+                                                []
+                                          : [],
+                                      onChanged: _onSelectMachine,
+                                    );
+                                  },
+                                ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
-                            child: BlocBuilder<UserBasicDataBloc,
-                                UserBasicDataState>(
-                              builder: (context, state) {
-                                return CustomDropdownSearch<PendingJo>(
-                                  enabled: state is UserBasicDataSuccess
-                                      ? state.prodBasicData.pendingJoList
-                                              ?.isNotEmpty ??
-                                          false
-                                      : false,
-                                  hintText: "Select JO",
-                                  onChanged: _onSelectJO,
-                                  items: state is UserBasicDataSuccess
-                                      ? state.prodBasicData.pendingJoList ?? []
-                                      : [],
-                                );
-                              },
-                            ),
+                            child:
+                                BlocBuilder<
+                                  UserBasicDataBloc,
+                                  UserBasicDataState
+                                >(
+                                  builder: (context, state) {
+                                    return CustomDropdownSearch<PendingJo>(
+                                      enabled: state is UserBasicDataSuccess
+                                          ? state
+                                                    .prodBasicData
+                                                    .pendingJoList
+                                                    ?.isNotEmpty ??
+                                                false
+                                          : false,
+                                      hintText: "Select JO",
+                                      onChanged: _onSelectJO,
+                                      items: state is UserBasicDataSuccess
+                                          ? state.prodBasicData.pendingJoList ??
+                                                []
+                                          : [],
+                                    );
+                                  },
+                                ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          const SizedBox(width: 10),
                           Expanded(
-                            child: BlocBuilder<ProdBatchDataBloc,
-                                ProdBatchDataState>(
-                              builder: (context, state) {
-                                return CustomDropdownSearch<UserBatch>(
-                                  enabled: state is ProdBatchDataSuccess
-                                      ? state.prodBatchList.isNotEmpty
-                                      : false,
-                                  hintText: "Select Batch",
-                                  onChanged: _onSelectBatch,
-                                  items: state is ProdBatchDataSuccess
-                                      ? state.prodBatchList
-                                      : [],
-                                );
-                              },
-                            ),
+                            child:
+                                BlocBuilder<
+                                  ProdBatchDataBloc,
+                                  ProdBatchDataState
+                                >(
+                                  builder: (context, state) {
+                                    return CustomDropdownSearch<UserBatch>(
+                                      enabled: state is ProdBatchDataSuccess
+                                          ? state.prodBatchList.isNotEmpty
+                                          : false,
+                                      hintText: "Select Batch",
+                                      onChanged: _onSelectBatch,
+                                      items: state is ProdBatchDataSuccess
+                                          ? state.prodBatchList
+                                          : [],
+                                    );
+                                  },
+                                ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
                             child: BlocBuilder<UserOrgBloc, UserOrgState>(
                               builder: (context, state) {
-                                return CustomDropdownSearch<UserOrg>(
+                                return const CustomDropdownSearch<UserOrg>(
                                   hintText: "Select Sub Inv",
                                   enabled: false,
                                   items: [],
@@ -406,33 +390,32 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                               },
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          const SizedBox(width: 10),
                           Expanded(
-                            child: BlocBuilder<UserBasicDataBloc,
-                                UserBasicDataState>(
-                              builder: (context, state) {
-                                return CustomDropdownSearch<String>(
-                                  enabled: false,
-                                  hintText: "Select Locator",
-                                  items: [],
-                                );
-                              },
-                            ),
+                            child:
+                                BlocBuilder<
+                                  UserBasicDataBloc,
+                                  UserBasicDataState
+                                >(
+                                  builder: (context, state) {
+                                    return const CustomDropdownSearch<String>(
+                                      enabled: false,
+                                      hintText: "Select Locator",
+                                      items: [],
+                                    );
+                                  },
+                                ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       CommonLableWthTextField(
                         lableName: "Good Qty",
                         focusNode: goodQtyFocusNode,
                         textController: goodQtyTextController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -449,20 +432,18 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                           var badQty = badQtyTextController.text.isEmpty
                               ? 0
                               : int.parse(badQtyTextController.text);
-                          quantityTextController.text =
-                              (goodQty + badQty).toString();
+                          quantityTextController.text = (goodQty + badQty)
+                              .toString();
                         },
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       CommonLableWthTextField(
                         lableName: "Bad Qty",
                         focusNode: badQtyFocusNode,
                         textController: badQtyTextController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -475,13 +456,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                           var goodQty = goodQtyTextController.text.isEmpty
                               ? 0
                               : int.parse(goodQtyTextController.text);
-                          quantityTextController.text =
-                              (goodQty + badQty).toString();
+                          quantityTextController.text = (goodQty + badQty)
+                              .toString();
                         },
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       CommonLableWthTextField(
                         lableName: "Quantity",
                         readOnly: true,
@@ -489,7 +468,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                         textController: quantityTextController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -499,9 +478,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                         },
                         onChanged: (value) {},
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -522,8 +499,8 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                 if (value != null) {
                                   context
                                       .read<
-                                          VariableStateHandlerCubit<
-                                              ShiftData>>()
+                                        VariableStateHandlerCubit<ShiftData>
+                                      >()
                                       .update(value);
                                   timeTextController.text =
                                       value.fromShift ?? "00:00";
@@ -531,9 +508,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                               },
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: CommonTextFieldWidget(
                               hintText: "Change Time",
@@ -544,15 +519,14 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                 try {
                                   var shiftL = timeTextController.text
                                       .split(":")
-                                      .map(
-                                        (e) => int.parse(e),
-                                      )
+                                      .map((e) => int.parse(e))
                                       .toList();
                                   var pickedTime = await showTimePicker(
                                     context: context,
                                     initialTime: TimeOfDay(
-                                        hour: shiftL.first,
-                                        minute: shiftL.last),
+                                      hour: shiftL.first,
+                                      minute: shiftL.last,
+                                    ),
                                   );
                                   if (pickedTime != null && context.mounted) {
                                     timeTextController.text =
@@ -564,9 +538,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                               },
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: CommonTextFieldWidget(
                               hintText: "Enter Hr",
@@ -574,7 +546,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                               focusNode: hrFocusNode,
                               textAlign: TextAlign.center,
                               inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
+                                FilteringTextInputFormatter.digitsOnly,
                               ],
                               onTap: () {},
                             ),
@@ -585,9 +557,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                     return const SizedBox.shrink();
                   },
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 BlocBuilder<VariableStateHandlerCubit<UserBatch>, UserBatch?>(
                   builder: (context, state) {
                     if (state != null) {
@@ -623,13 +593,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                             color: appTheme.white,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment:
@@ -649,15 +617,13 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                             color: appTheme.white,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
@@ -679,13 +645,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                             color: appTheme.white,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment:
@@ -705,13 +669,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                             color: appTheme.white,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment:
@@ -731,7 +693,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                             color: appTheme.white,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -744,9 +706,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                     return Container();
                   },
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 BlocBuilder<UserQrSaveBloc, UserQrSaveState>(
                   builder: (context, state) {
                     return ElevatedButton(
@@ -768,9 +728,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                     );
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 300,
                   child: BlocBuilder<UserQrPrintBloc, UserQrPrintState>(
@@ -778,9 +736,8 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                       if (state is UserQrPrintSuccess) {
                         return ListView.separated(
                           itemCount: state.userBatchQrDataList.length,
-                          separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
-                          ),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 10),
                           itemBuilder: (context, index) {
                             var userBatchQrData =
                                 state.userBatchQrDataList[index];
@@ -795,7 +752,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                   extra: {
                                     "userBatchQrData": userBatchQrData,
                                     "userQrPrintBlocCtx": context,
-                                    "userOrg": userOrg
+                                    "userOrg": userOrg,
                                   },
                                 );
                               },
@@ -807,9 +764,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
