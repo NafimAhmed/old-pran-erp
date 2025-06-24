@@ -11,10 +11,10 @@ import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_drop_down_button_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -29,11 +29,11 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/widgets/user_qr_print_widget.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/print_qr_screen.dart';
 
-class OpmC2Screen extends StatelessWidget {
-  const OpmC2Screen({super.key, required this.fromName});
-  static const String routeName = "OPM-C-2-SCREEN";
+class OpmC28Screen extends StatelessWidget {
+  const OpmC28Screen({super.key, required this.fromName});
+  static const String routeName = "OPM-C-28-SCREEN";
 
-  static const String routePath = "/OPM-C-2-SCREEN";
+  static const String routePath = "/OPM-C-28-SCREEN";
   final String fromName;
   @override
   Widget build(BuildContext context) {
@@ -70,31 +70,27 @@ class OpmC2Screen extends StatelessWidget {
           create: (context) => VariableStateHandlerCubit<ShiftData>(),
         ),
       ],
-      child: ProductionScreenBody(
+      child: OpmC28ScreenBody(
         fromName: fromName,
       ),
     );
   }
 }
 
-class ProductionScreenBody extends StatefulWidget {
-  const ProductionScreenBody({super.key, required this.fromName});
+class OpmC28ScreenBody extends StatefulWidget {
+  const OpmC28ScreenBody({super.key, required this.fromName});
   final String fromName;
   @override
-  State<ProductionScreenBody> createState() => _ProductionScreenBodyState();
+  State<OpmC28ScreenBody> createState() => _OpmC28ScreenBodyState();
 }
 
-class _ProductionScreenBodyState extends State<ProductionScreenBody> {
+class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
   TextEditingController quantityTextController = TextEditingController();
   FocusNode quantityFocusNode = FocusNode();
   TextEditingController goodQtyTextController = TextEditingController();
   FocusNode goodQtyFocusNode = FocusNode();
   TextEditingController badQtyTextController = TextEditingController();
   FocusNode badQtyFocusNode = FocusNode();
-  TextEditingController joDropDownTextController = TextEditingController();
-  TextEditingController batchDropDownTextController = TextEditingController();
-  TextEditingController orgDropDownTextController = TextEditingController();
-  TextEditingController machineDropDownTextController = TextEditingController();
   TextEditingController timeTextController = TextEditingController();
   TextEditingController hrTextController = TextEditingController();
   FocusNode hrFocusNode = FocusNode();
@@ -118,10 +114,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     badQtyFocusNode.dispose();
     timeTextController.dispose();
     hrTextController.dispose();
-    joDropDownTextController.dispose();
-    batchDropDownTextController.dispose();
-    machineDropDownTextController.dispose();
-    orgDropDownTextController.dispose();
+
     super.dispose();
   }
 
@@ -201,9 +194,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
     context.read<VariableStateHandlerCubit<UserBatch>>().reset();
     context.read<VariableStateHandlerCubit<PendingJo>>().reset();
     context.read<ProdBatchDataBloc>().add(ProdBatchDataReset());
-    machineDropDownTextController.clear();
-    joDropDownTextController.clear();
-    batchDropDownTextController.clear();
+
     context.read<UserBasicDataBloc>().add(
           UserBasicDataGet(
             userId: loggedUser.userId,
@@ -225,7 +216,7 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
       context.read<VariableStateHandlerCubit<PendingJo>>().update(value);
       context.read<VariableStateHandlerCubit<ShiftData>>().reset();
       context.read<VariableStateHandlerCubit<UserBatch>>().reset();
-      batchDropDownTextController.clear();
+
       context.read<ShiftDataBloc>().add(GetShiftData());
       var selectedOrg =
           context.read<VariableStateHandlerCubit<UserOrg>>().state!;
@@ -259,9 +250,6 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
           quantityTextController.clear();
           goodQtyTextController.clear();
           badQtyTextController.clear();
-          batchDropDownTextController.clear();
-          machineDropDownTextController.clear();
-          orgDropDownTextController.clear();
           var selectedOrg =
               context.read<VariableStateHandlerCubit<UserOrg>>().state;
           context.read<VariableStateHandlerCubit<UserMachine>>().reset();
@@ -318,16 +306,15 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                           Expanded(
                             child: BlocBuilder<UserOrgBloc, UserOrgState>(
                               builder: (context, state) {
-                                return CommonDropDownMenuWidget<UserOrg>(
+                                return CustomDropdownSearch<UserOrg>(
                                   hintText: "Select Org",
                                   enabled: state is UserOrgSuccess
                                       ? state.userOrg.isNotEmpty
                                       : false,
-                                  controller: orgDropDownTextController,
-                                  dropdownMenuEntries: state is UserOrgSuccess
+                                  items: state is UserOrgSuccess
                                       ? state.userOrg
                                       : [],
-                                  onSelected: _onSelectOrg,
+                                  onChanged: _onSelectOrg,
                                 );
                               },
                             ),
@@ -339,20 +326,18 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                             child: BlocBuilder<UserBasicDataBloc,
                                 UserBasicDataState>(
                               builder: (context, state) {
-                                return CommonDropDownMenuWidget<UserMachine>(
+                                return CustomDropdownSearch<UserMachine>(
                                   enabled: state is UserBasicDataSuccess
                                       ? state.prodBasicData.userMachineData
                                               ?.isNotEmpty ??
                                           false
                                       : false,
                                   hintText: "Select Machine",
-                                  controller: machineDropDownTextController,
-                                  dropdownMenuEntries: state
-                                          is UserBasicDataSuccess
+                                  items: state is UserBasicDataSuccess
                                       ? state.prodBasicData.userMachineData ??
                                           []
                                       : [],
-                                  onSelected: _onSelectMachine,
+                                  onChanged: _onSelectMachine,
                                 );
                               },
                             ),
@@ -362,40 +347,81 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
                       const SizedBox(
                         height: 10,
                       ),
-                      BlocBuilder<UserBasicDataBloc, UserBasicDataState>(
-                        builder: (context, state) {
-                          return CommonDropDownMenuWidget<PendingJo>(
-                            enabled: state is UserBasicDataSuccess
-                                ? state.prodBasicData.pendingJoList
-                                        ?.isNotEmpty ??
-                                    false
-                                : false,
-                            controller: joDropDownTextController,
-                            hintText: "Select JO",
-                            onSelected: _onSelectJO,
-                            dropdownMenuEntries: state is UserBasicDataSuccess
-                                ? state.prodBasicData.pendingJoList ?? []
-                                : [],
-                          );
-                        },
+                      Row(
+                        children: [
+                          Expanded(
+                            child: BlocBuilder<UserBasicDataBloc,
+                                UserBasicDataState>(
+                              builder: (context, state) {
+                                return CustomDropdownSearch<PendingJo>(
+                                  enabled: state is UserBasicDataSuccess
+                                      ? state.prodBasicData.pendingJoList
+                                              ?.isNotEmpty ??
+                                          false
+                                      : false,
+                                  hintText: "Select JO",
+                                  onChanged: _onSelectJO,
+                                  items: state is UserBasicDataSuccess
+                                      ? state.prodBasicData.pendingJoList ?? []
+                                      : [],
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: BlocBuilder<ProdBatchDataBloc,
+                                ProdBatchDataState>(
+                              builder: (context, state) {
+                                return CustomDropdownSearch<UserBatch>(
+                                  enabled: state is ProdBatchDataSuccess
+                                      ? state.prodBatchList.isNotEmpty
+                                      : false,
+                                  hintText: "Select Batch",
+                                  onChanged: _onSelectBatch,
+                                  items: state is ProdBatchDataSuccess
+                                      ? state.prodBatchList
+                                      : [],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      BlocBuilder<ProdBatchDataBloc, ProdBatchDataState>(
-                        builder: (context, state) {
-                          return CommonDropDownMenuWidget<UserBatch>(
-                            enabled: state is ProdBatchDataSuccess
-                                ? state.prodBatchList.isNotEmpty
-                                : false,
-                            controller: batchDropDownTextController,
-                            hintText: "Select Batch",
-                            onSelected: _onSelectBatch,
-                            dropdownMenuEntries: state is ProdBatchDataSuccess
-                                ? state.prodBatchList
-                                : [],
-                          );
-                        },
+                      Row(
+                        children: [
+                          Expanded(
+                            child: BlocBuilder<UserOrgBloc, UserOrgState>(
+                              builder: (context, state) {
+                                return CustomDropdownSearch<UserOrg>(
+                                  hintText: "Select Sub Inv",
+                                  enabled: false,
+                                  items: [],
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: BlocBuilder<UserBasicDataBloc,
+                                UserBasicDataState>(
+                              builder: (context, state) {
+                                return CustomDropdownSearch<String>(
+                                  enabled: false,
+                                  hintText: "Select Locator",
+                                  items: [],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 10,
