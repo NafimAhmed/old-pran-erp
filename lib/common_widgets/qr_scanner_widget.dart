@@ -11,8 +11,8 @@ class QrScannerWidget extends StatelessWidget {
 
   final MobileScannerController? controller;
   final void Function(BarcodeCapture)? onDetect;
-  final Widget Function(BuildContext context, MobileScannerException exception,
-      Widget? widget)? errorBuilder;
+  final Widget Function(BuildContext context, MobileScannerException exception)?
+  errorBuilder;
   @override
   Widget build(BuildContext context) {
     return MobileScanner(

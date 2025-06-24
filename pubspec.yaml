@@ -7,7 +7,7 @@ publish_to: 'none'
 version: 1.1.30+1
 
 environment:
-  sdk: ^3.5.3
+  sdk: ^3.8.1
 
 
 dependencies:
@@ -17,9 +17,9 @@ dependencies:
 
   
   # cupertino_icons: ^1.0.8
-  go_router: ^14.2.7
-  flutter_bloc: ^8.1.6
-  mobile_scanner: ^6.0.3
+  go_router: ^15.2.4
+  flutter_bloc: ^9.1.1
+  mobile_scanner: ^7.0.1
   # mobile_scanner: ^7.0.0
   path_provider: ^2.1.4
   get_it: ^8.0.0
@@ -31,7 +31,7 @@ dependencies:
   syncfusion_flutter_core: ^27.1.53
   sqflite: ^2.4.0
   path: ^1.9.0
-  pdfrx: ^1.0.65
+  pdfrx: ^1.2.8
   permission_handler: ^11.3.0
   printing: ^5.13.4
   # connectivity_plus: ^6.1.0
