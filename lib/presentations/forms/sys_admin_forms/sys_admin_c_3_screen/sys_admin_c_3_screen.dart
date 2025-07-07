@@ -7,6 +7,7 @@ import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_drop_down_menu_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
@@ -27,28 +28,20 @@ class SysAdminC3Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => QrUserBloc(getService()),
-        ),
+        BlocProvider(create: (context) => QrUserBloc(getService())),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<QrUserData>(),
         ),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<QrUserChildMenu>(),
         ),
-        BlocProvider(
-          create: (context) => QrUserMenuBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => QrUserChildMenuBloc(getService()),
-        ),
+        BlocProvider(create: (context) => QrUserMenuBloc(getService())),
+        BlocProvider(create: (context) => QrUserChildMenuBloc(getService())),
         BlocProvider(
           create: (context) => QrUserMenuPermissionBloc(getService()),
         ),
       ],
-      child: SysAdminC3ScreenBody(
-        fromName: fromName,
-      ),
+      child: SysAdminC3ScreenBody(fromName: fromName),
     );
   }
 }
@@ -66,9 +59,6 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
   TextEditingController userDeptTextController = TextEditingController();
   TextEditingController apexTextController = TextEditingController();
   TextEditingController userDesgTextController = TextEditingController();
-  TextEditingController userDropDownTextController = TextEditingController();
-  TextEditingController modDropDownTextController = TextEditingController();
-  TextEditingController menuDropDownTextController = TextEditingController();
   late UserInfoModel loggedUser;
 
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
@@ -86,9 +76,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
     userDeptTextController.dispose();
     userDesgTextController.dispose();
     apexTextController.dispose();
-    userDropDownTextController.dispose();
-    modDropDownTextController.dispose();
-    menuDropDownTextController.dispose();
+
     super.dispose();
   }
 
@@ -106,51 +94,37 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
             userMobTextController.clear();
             userDeptTextController.clear();
             userDesgTextController.clear();
-            userDropDownTextController.clear();
-            modDropDownTextController.clear();
-            menuDropDownTextController.clear();
+
             ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.successSnackber(
-                message: "Permission Given..!",
-              ),
+              CustomSnackBar.successSnackber(message: "Permission Given..!"),
             );
 
             context.read<UserMenuBloc>().add(
-                  UserMenuGet(
-                    userId: loggedUser.userId,
-                  ),
-                );
+              UserMenuGet(userId: loggedUser.userId),
+            );
           }
           if (state is QrUserMenuPermissionError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.errorSnackber(
-                message: state.error.toString(),
-              ),
+              CustomSnackBar.errorSnackber(message: state.error.toString()),
             );
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Form(
             key: fromKey,
             child: Column(
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 BlocBuilder<QrUserBloc, QrUserState>(
                   builder: (context, state) {
-                    return CommonDropDownMenuWidget<QrUserData>(
+                    return CustomDropdownSearch<QrUserData>(
                       hintText: "Select User",
-                      dropdownMenuEntries:
-                          state is QrUserSuccess ? state.qrUsers : [],
+                      items: state is QrUserSuccess ? state.qrUsers : [],
                       enabled: state is QrUserSuccess
                           ? state.qrUsers.isNotEmpty
                           : false,
-                      controller: userDropDownTextController,
-                      onSelected: (value) {
+                      onChanged: (value) {
                         // FocusScope.of(context).unfocus();
                         FocusManager.instance.primaryFocus?.unfocus();
                         context
@@ -162,18 +136,16 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                         userDeptTextController.text = "";
                         userDesgTextController.text = "";
                         context.read<QrUserMenuBloc>().add(
-                              GetQrUserMenu(
-                                newUserId: value.userId!,
-                                creatorId: loggedUser.userId,
-                              ),
-                            );
+                          GetQrUserMenu(
+                            newUserId: value.userId!,
+                            creatorId: loggedUser.userId,
+                          ),
+                        );
                       },
                     );
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 BlocBuilder<VariableStateHandlerCubit<QrUserData>, QrUserData?>(
                   builder: (context, state) {
                     if (state != null) {
@@ -190,9 +162,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                   labelText: "User Name",
                                 ),
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: CommonTextFieldWidget(
                                   enabled: false,
@@ -204,9 +174,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Row(
                             children: [
                               Expanded(
@@ -218,9 +186,7 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                   labelText: "User Dept",
                                 ),
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: CommonTextFieldWidget(
                                   enabled: false,
@@ -238,24 +204,22 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                     return Container();
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
                       child: BlocBuilder<QrUserMenuBloc, QrUserMenuState>(
                         builder: (context, state) {
-                          return CommonDropDownMenuWidget<QrModuleData>(
+                          return CustomDropdownSearch<QrModuleData>(
                             hintText: "Select Module",
-                            dropdownMenuEntries: state is QrUserMenuSuccess
+                            items: state is QrUserMenuSuccess
                                 ? state.qrUserMenu
                                 : [],
-                            controller: modDropDownTextController,
+
                             enabled: state is QrUserMenuSuccess
                                 ? state.qrUserMenu.isNotEmpty
                                 : false,
-                            onSelected: (value) {
+                            onChanged: (value) {
                               // FocusScope.of(context).unfocus();
                               FocusManager.instance.primaryFocus?.unfocus();
                               var selectedUser = context
@@ -263,58 +227,62 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                   .state!;
 
                               context.read<QrUserChildMenuBloc>().add(
-                                    GetQrUserChildMenu(
-                                      newUserId: selectedUser.userId!,
-                                      creatorId: loggedUser.userId,
-                                      routeName: value?.moduleName ?? "",
-                                    ),
-                                  );
+                                GetQrUserChildMenu(
+                                  newUserId: selectedUser.userId!,
+                                  creatorId: loggedUser.userId,
+                                  routeName: value?.moduleName ?? "",
+                                ),
+                              );
                             },
                           );
                         },
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     Expanded(
-                      child: BlocBuilder<QrUserChildMenuBloc,
-                          QrUserChildMenuState>(
-                        builder: (context, state) {
-                          return CommonDropDownMenuWidget<QrUserChildMenu>(
-                            hintText: "Select Menu",
-                            dropdownMenuEntries: state is QrUserChildMenuSuccess
-                                ? state.qrUserChildMenu
-                                : [],
-                            controller: menuDropDownTextController,
-                            enabled: state is QrUserChildMenuSuccess
-                                ? state.qrUserChildMenu.isNotEmpty
-                                : false,
-                            onSelected: (value) {
-                              if (value != null) {
-                                // FocusScope.of(context).unfocus();
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                context
-                                    .read<
-                                        VariableStateHandlerCubit<
-                                            QrUserChildMenu>>()
-                                    .update(value);
-                              }
+                      child:
+                          BlocBuilder<
+                            QrUserChildMenuBloc,
+                            QrUserChildMenuState
+                          >(
+                            builder: (context, state) {
+                              return CustomDropdownSearch<QrUserChildMenu>(
+                                hintText: "Select Menu",
+                                items: state is QrUserChildMenuSuccess
+                                    ? state.qrUserChildMenu
+                                    : [],
+
+                                enabled: state is QrUserChildMenuSuccess
+                                    ? state.qrUserChildMenu.isNotEmpty
+                                    : false,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    // FocusScope.of(context).unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                    context
+                                        .read<
+                                          VariableStateHandlerCubit<
+                                            QrUserChildMenu
+                                          >
+                                        >()
+                                        .update(value);
+                                  }
+                                },
+                              );
                             },
-                          );
-                        },
-                      ),
+                          ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    BlocBuilder<QrUserMenuPermissionBloc,
-                        QrUserMenuPermissionState>(
+                    BlocBuilder<
+                      QrUserMenuPermissionBloc,
+                      QrUserMenuPermissionState
+                    >(
                       builder: (context, state) {
                         return ElevatedButton(
                           onPressed: () {
@@ -325,8 +293,8 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
 
                               var selectedChildMenu = context
                                   .read<
-                                      VariableStateHandlerCubit<
-                                          QrUserChildMenu>>()
+                                    VariableStateHandlerCubit<QrUserChildMenu>
+                                  >()
                                   .state;
 
                               if (selectedUser == null) {
@@ -346,13 +314,12 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                                 return;
                               }
                               context.read<QrUserMenuPermissionBloc>().add(
-                                    GetQrUserMenuPermission(
-                                      userId: loggedUser.userId,
-                                      newUserId: selectedUser.userId!,
-                                      menuId:
-                                          selectedChildMenu.menuId.toString(),
-                                    ),
-                                  );
+                                GetQrUserMenuPermission(
+                                  userId: loggedUser.userId,
+                                  newUserId: selectedUser.userId!,
+                                  menuId: selectedChildMenu.menuId.toString(),
+                                ),
+                              );
                             }
                           },
                           child: Text(
