@@ -18,6 +18,7 @@ import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/iot_trn_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/item_stock_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jo_loc_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_dtl_drill_dw_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.dart';
@@ -60,14 +61,10 @@ import '../../models/user_menu_item_response.dart';
 import '../../models/user_info_model.dart';
 
 abstract class DataRepo {
-  Future<void> saveUserToLocal({
-    required UserInfoModel userInfoModel,
-  });
+  Future<void> saveUserToLocal({required UserInfoModel userInfoModel});
   Future<void> clearUserFrmLocal();
   Future<UserInfoModel?> getLoggedUser();
-  Future<void> saveCompanyToLocal({
-    required CompanyModel comModel,
-  });
+  Future<void> saveCompanyToLocal({required CompanyModel comModel});
   Future<void> clearCompanyFrmLocal();
   Future<CompanyModel?> getCompany();
 
@@ -87,28 +84,23 @@ abstract class DataRepo {
     required String rqty,
     required String split,
   });
-  Future<List<TransferBatchData>> getTransferBatchData(
-      {required String userId});
+  Future<List<TransferBatchData>> getTransferBatchData({
+    required String userId,
+  });
   Future<List<UserMachine>> getUserMachine({required String userId});
-  Future<void> rackTransfer({
-    required int transactId,
+  Future<void> rackTransfer({required int transactId, required String userId});
+  Future<List<JobHistory>> getJobHistory({
     required String userId,
+    required String jobNo,
   });
-  Future<List<JobHistory>> getJobHistory(
-      {required String userId, required String jobNo});
-  Future<void> tranferDelete({
-    required int trnsfid,
-    required String userId,
+  Future<void> tranferDelete({required int trnsfid, required String userId});
+  Future<UserInfo> authenticate({
+    required String userid,
+    required String passw,
   });
-  Future<UserInfo> authenticate(
-      {required String userid, required String passw});
 
-  Future<List<UserMenuItem>> getUserMenu({
-    required String userid,
-  });
-  Future<List<UserOrg>> getUserOrg({
-    required String userid,
-  });
+  Future<List<UserMenuItem>> getUserMenu({required String userid});
+  Future<List<UserOrg>> getUserOrg({required String userid});
   Future<List<UserOrg>> getRcvingOrgs();
   Future<List<UserBatch>> getProdBatchData({
     required String userid,
@@ -152,12 +144,8 @@ abstract class DataRepo {
     required String orgid,
   });
 
-  Future<void> updateProdQrPrintStatus({
-    required String trnlotno,
-  });
-  Future<List<SysModuleData>> getSystemModule({
-    required String userId,
-  });
+  Future<void> updateProdQrPrintStatus({required String trnlotno});
+  Future<List<SysModuleData>> getSystemModule({required String userId});
   Future<List<SysMenuparentData>> getSystemMenuParent({
     required String userId,
     required String moduleName,
@@ -201,16 +189,9 @@ abstract class DataRepo {
     required String userId,
     required String racklocator,
   });
-  Future<List<BatchCloseData>> getBatchCloseData({
-    required String userId,
-  });
-  Future<void> batchClose({
-    required String userId,
-    required int batchid,
-  });
-  Future<List<BatchCompData>> getBatchCompData({
-    required String userId,
-  });
+  Future<List<BatchCloseData>> getBatchCloseData({required String userId});
+  Future<void> batchClose({required String userId, required int batchid});
+  Future<List<BatchCompData>> getBatchCompData({required String userId});
   Future<List<SkuDtlData>> getBatchCompDtlData({
     required String userId,
     required String batchid,
@@ -220,21 +201,14 @@ abstract class DataRepo {
     required String mtldtlid,
     required String madeqty,
   });
-  Future<void> completeBatch({
-    required String userId,
-    required String batchid,
-  });
+  Future<void> completeBatch({required String userId, required String batchid});
   Future<void> getBatchReleaseData({
     required String userId,
     required String orgId,
     required String batchId,
   });
-  Future<List<RcvIotData>> getRcvInvOrgTrnData({
-    required String userId,
-  });
-  Future<List<IotTrnData>> getIotTrnData({
-    required String userId,
-  });
+  Future<List<RcvIotData>> getRcvInvOrgTrnData({required String userId});
+  Future<List<IotTrnData>> getIotTrnData({required String userId});
   Future<List<JobOrderData>> getJobOrderSumHistory({required String userId});
   Future<List<UserOrg>> getOrgs();
   Future<void> giveOrgAccess({
@@ -252,9 +226,7 @@ abstract class DataRepo {
     required String userId,
     required String orgId,
   });
-  Future<List<SubInvData>> getSubInv({
-    required String orgId,
-  });
+  Future<List<SubInvData>> getSubInv({required String orgId});
   Future<void> createLocator({
     required String userId,
     required String orgId,
@@ -264,12 +236,8 @@ abstract class DataRepo {
     required String pBeen,
     required String pDesc,
   });
-  Future<List<RqrData>> getRePrintData({
-    required String pTrno,
-  });
-  Future<void> enableRePrint({
-    required String pTrno,
-  });
+  Future<List<RqrData>> getRePrintData({required String pTrno});
+  Future<void> enableRePrint({required String pTrno});
 
   Future<List<JobDetail>> getJobDtlDrillDw({
     required String userid,
@@ -281,22 +249,11 @@ abstract class DataRepo {
     required String jobOrderNo,
     required String itemCode,
   });
-  Future<OpmDashSmResponse> getOpmDashboardSM({
-    required String userid,
-  });
-  Future<void> askAdd({
-    required String userid,
-    required String askText,
-  });
-  Future<List<GptInfo>> getMessages({
-    required String userid,
-  });
-  Future<List<TaskInfo>> getTaskInfoList({
-    required String userid,
-  });
-  Future<List<JoInfo>> getJoList({
-    required String userid,
-  });
+  Future<OpmDashSmResponse> getOpmDashboardSM({required String userid});
+  Future<void> askAdd({required String userid, required String askText});
+  Future<List<GptInfo>> getMessages({required String userid});
+  Future<List<TaskInfo>> getTaskInfoList({required String userid});
+  Future<List<JoInfo>> getJoList({required String userid});
   Future<void> saveTaskStatus({
     required String userid,
     required String taskStatus,
@@ -331,19 +288,10 @@ abstract class DataRepo {
     required String machineName,
     required String manPower,
   });
-  Future<List<JobOrderCompletion>> getJoComplList({
-    required String userId,
-  });
-  Future<void> completeJO({
-    required String userId,
-    required String jobOrderNo,
-  });
-  Future<List<TopJoInfo>> getTopJOInfoList({
-    required String userId,
-  });
-  Future<List<Task>> getTaskList({
-    required String userId,
-  });
+  Future<List<JobOrderCompletion>> getJoComplList({required String userId});
+  Future<void> completeJO({required String userId, required String jobOrderNo});
+  Future<List<TopJoInfo>> getTopJOInfoList({required String userId});
+  Future<List<Task>> getTaskList({required String userId});
   Future<void> taskAssign({
     required String userId,
     required String assigneeId,
@@ -367,15 +315,9 @@ abstract class DataRepo {
     required String pTtlPerson,
     required String pManHours,
   });
-  Future<List<Department>> getDeptList({
-    required String userId,
-  });
-  Future<List<Buyer>> getBuyerList({
-    required String userId,
-  });
-  Future<List<Project>> getProjectList({
-    required String userId,
-  });
+  Future<List<Department>> getDeptList({required String userId});
+  Future<List<Buyer>> getBuyerList({required String userId});
+  Future<List<Project>> getProjectList({required String userId});
   Future<void> createMainTask({
     required String userId,
     required MainTask mainTask,
@@ -425,8 +367,9 @@ abstract class DataRepo {
     required int orgId,
   });
   Future<List<OperationUnit>> getOperationUnit();
-  Future<List<GrnPurchaseReqNumber>> getGrnPurchaseReqList(
-      {required int ordId});
+  Future<List<GrnPurchaseReqNumber>> getGrnPurchaseReqList({
+    required int ordId,
+  });
   Future<List<GrnJO>> getGrnJOList({required String reqNo});
   Future<List<GrnPO>> getGrnPOList({required String jobOrderNo});
   Future<List<GrnQr>> getGrnQrList({required String userId});
@@ -442,13 +385,8 @@ abstract class DataRepo {
   });
   Future<List<UserOrg>> getGrnOrgList({required int ouId});
   Future<List<MOReqTask>> getMOReqList({required String userId});
-  Future<void> moReqSave({
-    required String taskStatus,
-    required int taskId,
-  });
-  Future<List<Customer>> getCustomerList({
-    required String searchV,
-  });
+  Future<void> moReqSave({required String taskStatus, required int taskId});
+  Future<List<Customer>> getCustomerList({required String searchV});
   Future<String> smplColHdrSave({
     required int crtOrg,
     required String customerCode,
@@ -467,25 +405,15 @@ abstract class DataRepo {
     String? picture,
     String? colorCode,
   });
-  Future<List<SampleColQr>> getSmplColQrList({
-    required String userId,
-  });
-  Future<void> smplItemRcv({
-    required int id,
-    required String rackId,
-  });
-  Future<void> updateSmplColQrList({
-    required int id,
-  });
-  Future<void> updateGrnQrList({
-    required String trnId,
-  });
-  Future<void> uploadPicture({
-    required String filePath,
-  });
+  Future<List<SampleColQr>> getSmplColQrList({required String userId});
+  Future<void> smplItemRcv({required int id, required String rackId});
+  Future<void> updateSmplColQrList({required int id});
+  Future<void> updateGrnQrList({required String trnId});
+  Future<void> uploadPicture({required String filePath});
   Future<void> prodTransfer({
     required String userId,
     required String pTrnId,
     required String rackId,
   });
+  Future<List<ItemStock>> getItemStock({required int orgId});
 }
