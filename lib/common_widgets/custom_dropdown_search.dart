@@ -22,7 +22,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
 
   final List<T> items;
   final String? hintText;
-  final void Function(T?)? onChanged;
+  final void Function(T? value)? onChanged;
   final Widget? suffix;
   final InputBorder? border;
   final TextStyle? hintStyle;
@@ -59,17 +59,13 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       popupProps: PopupProps.dialog(
         // showSelectedItems: true,
         showSearchBox: true,
-        scrollbarProps: ScrollbarProps(
-          thumbColor: appTheme.primary,
-        ),
+        scrollbarProps: ScrollbarProps(thumbColor: appTheme.primary),
         dialogProps: const DialogProps(),
         itemBuilder: (context, item, isSelected) {
           return ListTile(
             title: Text(
               item.toString(),
-              style: textTheme.bodyMedium!.copyWith(
-                color: appTheme.primary,
-              ),
+              style: textTheme.bodyMedium!.copyWith(color: appTheme.primary),
             ),
           );
         },
