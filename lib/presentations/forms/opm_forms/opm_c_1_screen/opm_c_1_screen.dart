@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
-
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -24,22 +23,12 @@ class OpmC1Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ProdQrBloc(),
-        ),
-        BlocProvider(
-          create: (context) => ProdQrInfoBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => TempBatchDataBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => UserMachineBloc(getService()),
-        ),
+        BlocProvider(create: (context) => ProdQrBloc()),
+        BlocProvider(create: (context) => ProdQrInfoBloc(getService())),
+        BlocProvider(create: (context) => TempBatchDataBloc(getService())),
+        BlocProvider(create: (context) => UserMachineBloc(getService())),
       ],
-      child: ProductionScreenBody(
-        fromName: fromName,
-      ),
+      child: ProductionScreenBody(fromName: fromName),
     );
   }
 }
@@ -71,11 +60,11 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<UserMachineBloc>().add(
-          UserMachineGet(userId: loggedUser!.userId),
-        );
+      UserMachineGet(userId: loggedUser!.userId),
+    );
     context.read<TempBatchDataBloc>().add(
-          TempBatchDataGet(userId: loggedUser!.userId),
-        );
+      TempBatchDataGet(userId: loggedUser!.userId),
+    );
     super.initState();
   }
 
@@ -98,18 +87,14 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
       appBar: CommonAppBar(appBartitle: widget.fromName),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               // const SizedBox(
               //   height: 5,
               // ),
               // const UserDetailsWidget(),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               // BlocListener<ProdQrBloc, ProdQrState>(
               //   listener: (context, state) {
               //     if (state is ProdQrError) {
@@ -404,34 +389,28 @@ class _ProductionScreenBodyState extends State<ProductionScreenBody> {
               //     ],
               //   ),
               // ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               BlocBuilder<TempBatchDataBloc, TempBatchDataState>(
                 builder: (context, state) {
                   if (state is TempBatchDataLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   }
                   if (state is TempBatchDataSuccess) {
                     var tempBatchDataSource = TempBatchDataSource(
-                        tempBatchData: state.tempBatchDataList);
-                    tempBatchDataSource.addColumnGroup(ColumnGroup(
-                        name: "Organization", sortGroupRows: false));
+                      tempBatchData: state.tempBatchDataList,
+                    );
+                    tempBatchDataSource.addColumnGroup(
+                      ColumnGroup(name: "Organization", sortGroupRows: false),
+                    );
                     return SizedBox(
                       height: MediaQuery.of(context).size.height * 0.6,
-                      child: ProdTableWidget(
-                        source: tempBatchDataSource,
-                      ),
+                      child: ProdTableWidget(source: tempBatchDataSource),
                     );
                   }
                   return Container();
                 },
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
             ],
           ),
         ),
