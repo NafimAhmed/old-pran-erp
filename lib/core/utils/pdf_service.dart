@@ -8,7 +8,8 @@ import 'package:pran_rfl_erp/core/extentions/extentions.dart';
 
 class PdfService {
   static Future<Uint8List> createBatchQrPdf(
-      UserBatchQrData userBatchQrData) async {
+    UserBatchQrData userBatchQrData,
+  ) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -46,18 +47,10 @@ class PdfService {
                         ),
                         decoration: const pw.BoxDecoration(
                           border: pw.Border(
-                            left: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            right: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            top: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            bottom: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
+                            left: pw.BorderSide(color: PdfColors.grey),
+                            right: pw.BorderSide(color: PdfColors.grey),
+                            top: pw.BorderSide(color: PdfColors.grey),
+                            bottom: pw.BorderSide(color: PdfColors.grey),
                           ),
                           color: PdfColors.white,
                         ),
@@ -126,9 +119,7 @@ class PdfService {
                                     ],
                                   ),
                                 ),
-                                pw.SizedBox(
-                                  width: 5,
-                                ),
+                                pw.SizedBox(width: 5),
                                 pw.Expanded(
                                   child: pw.Row(
                                     crossAxisAlignment:
@@ -172,15 +163,13 @@ class PdfService {
                                     value: userBatchQrData.fpono ?? "",
                                   ),
                                 ),
-                                pw.SizedBox(
-                                  width: 7,
-                                ),
+                                pw.SizedBox(width: 7),
                                 pw.Flexible(
                                   child: buildQrDetailsWLa(
                                     lable: "Batch : ",
                                     value: userBatchQrData.batchNo ?? "",
                                   ),
-                                )
+                                ),
                               ],
                             ),
                             pw.Divider(
@@ -197,24 +186,20 @@ class PdfService {
                                     value: userBatchQrData.goodQty.toString(),
                                   ),
                                 ),
-                                pw.SizedBox(
-                                  width: 5,
-                                ),
+                                pw.SizedBox(width: 5),
                                 pw.Flexible(
                                   child: buildQrDetailsWLa(
                                     lable: "ExpDt : ",
                                     value: userBatchQrData.expdate ?? "",
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    pw.SizedBox(
-                      width: 7,
-                    ),
+                    pw.SizedBox(width: 7),
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
@@ -242,7 +227,7 @@ class PdfService {
       pw.Page(
         orientation: pw.PageOrientation.landscape,
         pageFormat: PdfPageFormat.standard.copyWith(
-          height: 2.6 * PdfPageFormat.cm,
+          height: 5.6 * PdfPageFormat.cm,
           width: 10.41 * PdfPageFormat.cm,
           marginBottom: 0.05 * PdfPageFormat.cm,
           marginLeft: 0.05 * PdfPageFormat.cm,
@@ -273,28 +258,23 @@ class PdfService {
                         ),
                         decoration: const pw.BoxDecoration(
                           border: pw.Border(
-                            left: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            right: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            top: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            bottom: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
+                            left: pw.BorderSide(color: PdfColors.black),
+                            right: pw.BorderSide(color: PdfColors.black),
+                            top: pw.BorderSide(color: PdfColors.black),
+                            bottom: pw.BorderSide(color: PdfColors.black),
                           ),
                           color: PdfColors.white,
                         ),
                         child: pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            buildQrDetails(
-                              lable: "ItemName",
-                              value:
-                                  "${grnQrData.inventoryItemId ?? ""}-${grnQrData.itemName ?? ""}",
+                            pw.Text(
+                              "${grnQrData.itemCode ?? ""}-${grnQrData.itemName ?? ""}",
+                              textAlign: pw.TextAlign.left,
+                              style: const pw.TextStyle(
+                                fontSize: 8,
+                                color: PdfColors.black,
+                              ),
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -302,9 +282,14 @@ class PdfService {
                               indent: 0,
                               endIndent: 0,
                             ),
-                            buildQrDetails(
-                              lable: "Trn Id",
-                              value: "Trn Id: ${grnQrData.trnId}",
+
+                            pw.Text(
+                              "Org: ${grnQrData.orgId}-${grnQrData.organizationCode ?? ""}",
+                              textAlign: pw.TextAlign.left,
+                              style: const pw.TextStyle(
+                                fontSize: 8,
+                                color: PdfColors.black,
+                              ),
                             ),
                             pw.Divider(
                               color: PdfColors.black,
@@ -323,7 +308,32 @@ class PdfService {
                                         pw.CrossAxisAlignment.start,
                                     children: [
                                       pw.Text(
-                                        "JO: ",
+                                        "trn Id: ",
+                                        textAlign: pw.TextAlign.left,
+                                        style: pw.TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColors.black,
+                                        ),
+                                      ),
+                                      pw.Text(
+                                        "${grnQrData.trnid}",
+                                        textAlign: pw.TextAlign.left,
+                                        style: const pw.TextStyle(
+                                          fontSize: 8,
+                                          color: PdfColors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Row(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.start,
+                                    children: [
+                                      pw.Text(
+                                        "Qty: ",
                                         textAlign: pw.TextAlign.left,
                                         style: pw.TextStyle(
                                           fontSize: 8,
@@ -333,7 +343,7 @@ class PdfService {
                                       ),
                                       pw.Expanded(
                                         child: pw.Text(
-                                          grnQrData.jobOrderNo ?? "",
+                                          grnQrData.qty?.toString() ?? "",
                                           textAlign: pw.TextAlign.left,
                                           style: const pw.TextStyle(
                                             fontSize: 8,
@@ -344,78 +354,88 @@ class PdfService {
                                     ],
                                   ),
                                 ),
-                                // pw.SizedBox(
-                                //   width: 5,
-                                // ),
-                                // pw.Expanded(
-                                //   child: pw.Row(
-                                //     crossAxisAlignment:
-                                //         pw.CrossAxisAlignment.start,
-                                //     children: [
-                                //       pw.Text(
-                                //         "LOT: ",
-                                //         textAlign: pw.TextAlign.left,
-                                //         style: pw.TextStyle(
-                                //           fontSize: 8,
-                                //           fontWeight: pw.FontWeight.bold,
-                                //           color: PdfColors.black,
-                                //         ),
-                                //       ),
-                                //       pw.Expanded(
-                                //         child: pw.Text(
-                                //           userBatchQrData.lotno ?? "",
-                                //           textAlign: pw.TextAlign.left,
-                                //           style: const pw.TextStyle(
-                                //             fontSize: 8,
-                                //             color: PdfColors.black,
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
                               ],
                             ),
-                            // pw.Divider(
-                            //   color: PdfColors.black,
-                            //   height: 5,
-                            //   indent: 0,
-                            //   endIndent: 0,
-                            // ),
 
-                            // pw.Row(
-                            //   children: [
-                            //     pw.Flexible(
-                            //       child: buildQrDetailsWLa(
-                            //         lable: "QTY : ",
-                            //         value: userBatchQrData.goodQty.toString(),
-                            //       ),
-                            //     ),
-                            //     pw.SizedBox(
-                            //       width: 5,
-                            //     ),
-                            //     pw.Flexible(
-                            //       child: buildQrDetailsWLa(
-                            //         lable: "ExpDt : ",
-                            //         value: userBatchQrData.expdate ?? "",
-                            //       ),
-                            //     )
-                            //   ],
-                            // ),
+                            pw.Divider(
+                              color: PdfColors.black,
+                              height: 5,
+                              indent: 0,
+                              endIndent: 0,
+                            ),
+                            pw.Row(
+                              mainAxisAlignment:
+                                  pw.MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Expanded(
+                                  child: pw.Row(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.start,
+                                    children: [
+                                      pw.Text(
+                                        "Sub Inv: ",
+                                        textAlign: pw.TextAlign.left,
+                                        style: pw.TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColors.black,
+                                        ),
+                                      ),
+                                      pw.Expanded(
+                                        child: pw.Text(
+                                          grnQrData.subInv ?? "",
+                                          textAlign: pw.TextAlign.left,
+                                          style: const pw.TextStyle(
+                                            fontSize: 8,
+                                            color: PdfColors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Row(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.start,
+                                    children: [
+                                      pw.Text(
+                                        "Locator: ",
+                                        textAlign: pw.TextAlign.left,
+                                        style: pw.TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColors.black,
+                                        ),
+                                      ),
+                                      pw.Expanded(
+                                        child: pw.Text(
+                                          grnQrData.locatorDesc ?? "",
+                                          textAlign: pw.TextAlign.left,
+                                          style: const pw.TextStyle(
+                                            fontSize: 8,
+                                            color: PdfColors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ),
-                    pw.SizedBox(
-                      width: 7,
-                    ),
+                    pw.SizedBox(width: 7),
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
-                      width: 50,
-                      height: 50,
+                      width: 70,
+                      height: 70,
                       data:
-                          "${grnQrData.inventoryItemId}\n${grnQrData.itemName}\n${grnQrData.jobOrderNo}\n${grnQrData.batchId}\n${grnQrData.trnId}",
+                          "${grnQrData.inventoryItemId}\n${grnQrData.itemName}\n${grnQrData.subInv}\n${grnQrData.locatorId}\n${grnQrData.trnid}",
                     ),
                   ],
                 ),
@@ -467,18 +487,10 @@ class PdfService {
                         ),
                         decoration: const pw.BoxDecoration(
                           border: pw.Border(
-                            left: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            right: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            top: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
-                            bottom: pw.BorderSide(
-                              color: PdfColors.grey,
-                            ),
+                            left: pw.BorderSide(color: PdfColors.grey),
+                            right: pw.BorderSide(color: PdfColors.grey),
+                            top: pw.BorderSide(color: PdfColors.grey),
+                            bottom: pw.BorderSide(color: PdfColors.grey),
                           ),
                           color: PdfColors.white,
                         ),
@@ -574,9 +586,7 @@ class PdfService {
                         ),
                       ),
                     ),
-                    pw.SizedBox(
-                      width: 7,
-                    ),
+                    pw.SizedBox(width: 7),
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
@@ -608,12 +618,9 @@ pw.Widget buildQrDetails({required String lable, required String value}) {
         child: pw.Text(
           value,
           textAlign: pw.TextAlign.left,
-          style: const pw.TextStyle(
-            fontSize: 8,
-            color: PdfColors.black,
-          ),
+          style: const pw.TextStyle(fontSize: 8, color: PdfColors.black),
         ),
-      )
+      ),
     ],
   );
 }
@@ -627,10 +634,7 @@ pw.Widget buildQrDetailsWLa({required String lable, required String value}) {
         child: pw.Text(
           lable,
           textAlign: pw.TextAlign.left,
-          style: const pw.TextStyle(
-            fontSize: 8,
-            color: PdfColors.black,
-          ),
+          style: const pw.TextStyle(fontSize: 8, color: PdfColors.black),
         ),
       ),
       pw.Flexible(
@@ -638,12 +642,9 @@ pw.Widget buildQrDetailsWLa({required String lable, required String value}) {
         child: pw.Text(
           value,
           textAlign: pw.TextAlign.right,
-          style: const pw.TextStyle(
-            fontSize: 8,
-            color: PdfColors.black,
-          ),
+          style: const pw.TextStyle(fontSize: 8, color: PdfColors.black),
         ),
-      )
+      ),
     ],
   );
 }

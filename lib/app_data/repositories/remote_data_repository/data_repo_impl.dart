@@ -1547,7 +1547,7 @@ class DataRepoImpl implements DataRepo {
     if (decoderRes.statusCode != 200) {
       throw ApiDataException(decoderRes.message);
     }
-    return decoderRes.grnQrList ?? [];
+    return decoderRes.grnQr ?? [];
   }
 
   @override
@@ -1555,23 +1555,19 @@ class DataRepoImpl implements DataRepo {
     required String userId,
     required int orgId,
     required int itemId,
-    required num goodQty,
     required num qty,
-    required num badQty,
-    required String jobOrderNo,
-    required String prId,
+    required String locId,
+    required String subInv,
   }) async {
     var response = await httpService.putCall(
       endPoint: ApiEndPoints.getGrnQrSave,
       parameters: {
         "orgId": orgId,
         "itemId": itemId,
-        "goodQty": goodQty,
-        "jobOrder": jobOrderNo,
+        "subInv": subInv,
+        "locId": locId,
         "qty": qty,
-        "badQty": badQty,
         "userId": userId,
-        "prId": prId,
       },
     );
     var decoderRes = GenericResponse.fromJson(response);

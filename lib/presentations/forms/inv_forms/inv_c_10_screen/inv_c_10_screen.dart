@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/item_stock_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
@@ -14,8 +15,11 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_save_bloc.dart';
 
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/item_stock_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/print_grn_qr_screen.dart';
 
 class InvC10Screen extends StatelessWidget {
   const InvC10Screen({super.key, required this.fromName});
@@ -27,6 +31,8 @@ class InvC10Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ItemStockListBloc(getService())),
+        BlocProvider(create: (context) => GrnQrSaveBloc(getService())),
+        BlocProvider(create: (context) => GrnQrListBloc(getService())),
         BlocProvider(create: (context) => VariableStateHandlerCubit<UserOrg>()),
       ],
       child: InvC10ScreenBody(fromName: fromName),
@@ -53,7 +59,9 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
-
+    context.read<GrnQrListBloc>().add(
+      GrnQrListGet(userId: loggedUser.userId.toString()),
+    );
     super.initState();
   }
 
@@ -108,6 +116,12 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                     ),
                                   );
                                 }
+                              },
+                              validator: (value) {
+                                if (value == null) {
+                                  return "Please Select Organization";
+                                }
+                                return null;
                               },
                             );
                           },
@@ -206,226 +220,252 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
               ),
             ),
 
-            ElevatedButton(
-              onPressed: () {
-                if (_fromKey.currentState!.validate()) {}
+            BlocBuilder<GrnQrSaveBloc, GrnQrSaveState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (_fromKey.currentState!.validate()) {
+                      UserOrg userOrg = context
+                          .read<VariableStateHandlerCubit<UserOrg>>()
+                          .state!;
+                      var itemStockState = context
+                          .read<ItemStockListBloc>()
+                          .state;
+                      context.read<GrnQrSaveBloc>().add(
+                        GrnQrSave(
+                          userId: loggedUser.userId.toString(),
+                          orgId: userOrg.organizationId ?? 0,
+                          itemId:
+                              itemStockState.selectedValue!.inventoryItemId ??
+                              0,
+                          qty: double.parse(qty.text),
+                          locId: locator.text,
+                          subInv: subInv.text,
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(
+                    state.isLoading ? "Saving.." : "Save",
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: appTheme.white,
+                    ),
+                  ),
+                );
               },
-              child: Text(
-                "Save",
-                style: textTheme.bodyMedium!.copyWith(color: appTheme.white),
+            ),
+            Expanded(
+              child: BlocBuilder<GrnQrListBloc, GrnQrListState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state.isSuccess) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        var data = state.grnQrList![index];
+                        return Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 209, 222, 245),
+                            // color: index % 2 == 0
+                            //     ? const Color.fromARGB(255, 115, 134, 240)
+                            //     : const Color.fromARGB(255, 136, 152, 247),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Item Name",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 15,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.itemName.toString(),
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Item Code",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 15,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.itemCode ?? "",
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Sub Inventory",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 15,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.subInv ?? "-",
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Locator",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 15,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.locatorId?.toString() ?? "-",
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Trn Id",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 15,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.trnid ?? "",
+                                        style: textTheme.bodySmall!.copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: appTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom().copyWith(
+                                      padding:
+                                          const WidgetStatePropertyAll<
+                                            EdgeInsetsGeometry
+                                          >(
+                                            EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 5,
+                                            ),
+                                          ),
+                                      minimumSize:
+                                          WidgetStateProperty.all<Size>(
+                                            const Size(80, 30),
+                                          ),
+                                      backgroundColor: WidgetStatePropertyAll(
+                                        appTheme.tertiary,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      if (_fromKey.currentState!.validate()) {
+                                        UserOrg userOrg = context
+                                            .read<
+                                              VariableStateHandlerCubit<UserOrg>
+                                            >()
+                                            .state!;
+                                        context.pushNamed(
+                                          PrintGrnQrScreen.routeName,
+                                          extra: {
+                                            "grnQrData": data,
+                                            "grnQrPrintBlocCtx": context,
+                                            "userOrg": userOrg,
+                                          },
+                                        );
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Print ",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 14,
+                                            color: appTheme.white,
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.qr_code,
+                                          color: appTheme.white,
+                                          size: 20,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(height: 10);
+                      },
+                      itemCount: state.grnQrList?.length ?? 0,
+                    );
+                  }
+                  return Container();
+                },
               ),
             ),
-            // Expanded(
-            //   child: BlocBuilder<GrnQrListBloc, GrnQrListState>(
-            //     builder: (context, state) {
-            //       if (state is GrnQrListLoading) {
-            //         return const Center(child: CircularProgressIndicator());
-            //       }
-            //       if (state is GrnQrListSuccess) {
-            //         return ListView.separated(
-            //           itemBuilder: (context, index) {
-            //             var data = state.grnQr[index];
-            //             return Container(
-            //               padding: const EdgeInsets.all(8),
-            //               decoration: BoxDecoration(
-            //                 color: const Color.fromARGB(255, 209, 222, 245),
-            //                 // color: index % 2 == 0
-            //                 //     ? const Color.fromARGB(255, 115, 134, 240)
-            //                 //     : const Color.fromARGB(255, 136, 152, 247),
-            //                 borderRadius: BorderRadius.circular(8),
-            //               ),
-            //               child: Column(
-            //                 crossAxisAlignment: CrossAxisAlignment.start,
-            //                 children: [
-            //                   Row(
-            //                     mainAxisAlignment:
-            //                         MainAxisAlignment.spaceBetween,
-            //                     children: [
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           Text(
-            //                             "Item Name",
-            //                             style: textTheme.bodyMedium!.copyWith(
-            //                               fontSize: 15,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                           Text(
-            //                             data.itemName.toString(),
-            //                             style: textTheme.bodySmall!.copyWith(
-            //                               fontSize: 10,
-            //                               fontWeight: FontWeight.bold,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                       const SizedBox(width: 10),
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           Text(
-            //                             "Pr No",
-            //                             style: textTheme.bodyMedium!.copyWith(
-            //                               fontSize: 15,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                           Text(
-            //                             data.jobOrderNo ?? "",
-            //                             style: textTheme.bodySmall!.copyWith(
-            //                               fontSize: 10,
-            //                               fontWeight: FontWeight.bold,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                     ],
-            //                   ),
-            //                   Row(
-            //                     mainAxisAlignment:
-            //                         MainAxisAlignment.spaceBetween,
-            //                     children: [
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           Text(
-            //                             "Job Order",
-            //                             style: textTheme.bodyMedium!.copyWith(
-            //                               fontSize: 15,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                           Text(
-            //                             data.batchId.toString(),
-            //                             style: textTheme.bodySmall!.copyWith(
-            //                               fontSize: 10,
-            //                               fontWeight: FontWeight.bold,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                       const SizedBox(width: 10),
-            //                       Column(
-            //                         crossAxisAlignment: CrossAxisAlignment.end,
-            //                         children: [
-            //                           Text(
-            //                             "Organization",
-            //                             style: textTheme.bodyMedium!.copyWith(
-            //                               fontSize: 15,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                           Text(
-            //                             "${data.organizationCode}-${data.organizationName}",
-            //                             style: textTheme.bodySmall!.copyWith(
-            //                               fontSize: 10,
-            //                               fontWeight: FontWeight.bold,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                     ],
-            //                   ),
-            //                   Row(
-            //                     mainAxisAlignment:
-            //                         MainAxisAlignment.spaceBetween,
-            //                     children: [
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           Text(
-            //                             "Trn Id",
-            //                             style: textTheme.bodyMedium!.copyWith(
-            //                               fontSize: 15,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                           Text(
-            //                             data.trnId ?? "",
-            //                             style: textTheme.bodySmall!.copyWith(
-            //                               fontSize: 10,
-            //                               fontWeight: FontWeight.bold,
-            //                               color: appTheme.primary,
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                       ElevatedButton(
-            //                         style: ElevatedButton.styleFrom().copyWith(
-            //                           padding:
-            //                               const WidgetStatePropertyAll<
-            //                                 EdgeInsetsGeometry
-            //                               >(
-            //                                 EdgeInsets.symmetric(
-            //                                   horizontal: 10,
-            //                                   vertical: 5,
-            //                                 ),
-            //                               ),
-            //                           minimumSize:
-            //                               WidgetStateProperty.all<Size>(
-            //                                 const Size(80, 30),
-            //                               ),
-            //                           backgroundColor: WidgetStatePropertyAll(
-            //                             appTheme.tertiary,
-            //                           ),
-            //                         ),
-            //                         onPressed: () {
-            //                           UserOrg userOrg = context
-            //                               .read<
-            //                                 VariableStateHandlerCubit<UserOrg>
-            //                               >()
-            //                               .state!;
-            //                           context.pushNamed(
-            //                             PrintGrnQrScreen.routeName,
-            //                             extra: {
-            //                               "grnQrData": data,
-            //                               "grnQrPrintBlocCtx": context,
-            //                               "userOrg": userOrg,
-            //                             },
-            //                           );
-            //                         },
-            //                         child: Row(
-            //                           children: [
-            //                             Text(
-            //                               "Print ",
-            //                               style: textTheme.bodyMedium!.copyWith(
-            //                                 fontSize: 14,
-            //                                 color: appTheme.white,
-            //                               ),
-            //                             ),
-            //                             Icon(
-            //                               Icons.qr_code,
-            //                               color: appTheme.white,
-            //                               size: 20,
-            //                             ),
-            //                           ],
-            //                         ),
-            //                       ),
-            //                     ],
-            //                   ),
-            //                 ],
-            //               ),
-            //             );
-            //           },
-            //           separatorBuilder: (context, index) {
-            //             return const SizedBox(height: 10);
-            //           },
-            //           itemCount: state.grnQr.length,
-            //         );
-            //       }
-            //       return Container();
-            //     },
-            //   ),
-            // ),
           ],
         ),
       ),

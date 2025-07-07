@@ -377,11 +377,9 @@ abstract class DataRepo {
     required String userId,
     required int orgId,
     required int itemId,
-    required num goodQty,
     required num qty,
-    required num badQty,
-    required String jobOrderNo,
-    required String prId,
+    required String locId,
+    required String subInv,
   });
   Future<List<UserOrg>> getGrnOrgList({required int ouId});
   Future<List<MOReqTask>> getMOReqList({required String userId});

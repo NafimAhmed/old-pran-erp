@@ -12,18 +12,20 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/pdf_service.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_list_bloc.dart';
+
 import 'package:pran_rfl_erp/presentations/print_qr_screen/bloc/prod_qr_print_status_bloc.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/cubit/qr_generate_cubit.dart';
 
 import 'package:printing/printing.dart';
 
 class PrintGrnQrScreen extends StatelessWidget {
-  const PrintGrnQrScreen(
-      {super.key,
-      required this.grnQrData,
-      required this.grnQrPrintBlocCtx,
-      required this.userOrg});
+  const PrintGrnQrScreen({
+    super.key,
+    required this.grnQrData,
+    required this.grnQrPrintBlocCtx,
+    required this.userOrg,
+  });
   static const String routePath = "/print-grn-qr-screen";
   static const String routeName = "print-grn-qr-screen";
   final GrnQr grnQrData;
@@ -33,12 +35,8 @@ class PrintGrnQrScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => QrGenerateCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ProdQrPrintStatusBloc(getService()),
-        ),
+        BlocProvider(create: (context) => QrGenerateCubit()),
+        BlocProvider(create: (context) => ProdQrPrintStatusBloc(getService())),
         BlocProvider.value(
           value: BlocProvider.of<GrnQrListBloc>(grnQrPrintBlocCtx),
         ),
@@ -53,11 +51,12 @@ class PrintGrnQrScreen extends StatelessWidget {
 }
 
 class PrintQrScreenBody extends StatefulWidget {
-  const PrintQrScreenBody(
-      {super.key,
-      required this.grnQrData,
-      required this.grnQrPrintBlocCtx,
-      required this.userOrg});
+  const PrintQrScreenBody({
+    super.key,
+    required this.grnQrData,
+    required this.grnQrPrintBlocCtx,
+    required this.userOrg,
+  });
   final GrnQr grnQrData;
   final BuildContext grnQrPrintBlocCtx;
   final UserOrg userOrg;
@@ -95,20 +94,18 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                       maxScale: 20,
                       loadingBannerBuilder:
                           (context, bytesDownloaded, totalBytes) => Center(
-                        child: CircularProgressIndicator(
-                          value: totalBytes != null
-                              ? bytesDownloaded / totalBytes
-                              : null,
-                          backgroundColor: appTheme.primary,
-                        ),
-                      ),
+                            child: CircularProgressIndicator(
+                              value: totalBytes != null
+                                  ? bytesDownloaded / totalBytes
+                                  : null,
+                              backgroundColor: appTheme.primary,
+                            ),
+                          ),
                     ),
                   ),
                 );
               }
-              return Container(
-                height: 190,
-              );
+              return Container(height: 190);
             },
           ),
           ElevatedButton(
@@ -118,7 +115,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                 Permission.location,
                 Permission.bluetooth,
                 Permission.bluetoothConnect,
-                Permission.bluetoothScan
+                Permission.bluetoothScan,
               ].request();
 
               // Use context to select the device after checking mounted state
@@ -132,15 +129,11 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                 if (!context.mounted) return;
                 if (status) {
                   context.read<ProdQrPrintStatusBloc>().add(
-                        GrnQrPrintStatusUpdate(
-                          trnId: widget.grnQrData.trnId ?? "",
-                        ),
-                      );
+                    GrnQrPrintStatusUpdate(trnId: widget.grnQrData.trnid ?? ""),
+                  );
                   widget.grnQrPrintBlocCtx.read<GrnQrListBloc>().add(
-                        GrnQrListGet(
-                          userId: loggedUser.userId,
-                        ),
-                      );
+                    GrnQrListGet(userId: loggedUser.userId),
+                  );
                 }
               } catch (e) {
                 log("Not Printed Due to Exception");
@@ -148,9 +141,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
             },
             child: Text(
               "Pritnt Qr",
-              style: textTheme.bodyMedium!.copyWith(
-                color: appTheme.white,
-              ),
+              style: textTheme.bodyMedium!.copyWith(color: appTheme.white),
             ),
           ),
         ],
