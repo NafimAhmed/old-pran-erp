@@ -17,7 +17,6 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_save_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/item_stock_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/print_grn_qr_screen.dart';
 
@@ -33,6 +32,7 @@ class InvC10Screen extends StatelessWidget {
         BlocProvider(create: (context) => ItemStockListBloc(getService())),
         BlocProvider(create: (context) => GrnQrSaveBloc(getService())),
         BlocProvider(create: (context) => GrnQrListBloc(getService())),
+
         BlocProvider(create: (context) => VariableStateHandlerCubit<UserOrg>()),
       ],
       child: InvC10ScreenBody(fromName: fromName),
@@ -417,21 +417,13 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      if (_fromKey.currentState!.validate()) {
-                                        UserOrg userOrg = context
-                                            .read<
-                                              VariableStateHandlerCubit<UserOrg>
-                                            >()
-                                            .state!;
-                                        context.pushNamed(
-                                          PrintGrnQrScreen.routeName,
-                                          extra: {
-                                            "grnQrData": data,
-                                            "grnQrPrintBlocCtx": context,
-                                            "userOrg": userOrg,
-                                          },
-                                        );
-                                      }
+                                      context.pushNamed(
+                                        PrintGrnQrScreen.routeName,
+                                        extra: {
+                                          "grnQrData": data,
+                                          "grnQrPrintBlocCtx": context,
+                                        },
+                                      );
                                     },
                                     child: Row(
                                       children: [

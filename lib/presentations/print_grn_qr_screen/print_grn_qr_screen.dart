@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdfrx/pdfrx.dart' as pdfview;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
-import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
@@ -13,7 +12,6 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/core/utils/pdf_service.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_list_bloc.dart';
-
 import 'package:pran_rfl_erp/presentations/print_qr_screen/bloc/prod_qr_print_status_bloc.dart';
 import 'package:pran_rfl_erp/presentations/print_qr_screen/cubit/qr_generate_cubit.dart';
 
@@ -24,13 +22,12 @@ class PrintGrnQrScreen extends StatelessWidget {
     super.key,
     required this.grnQrData,
     required this.grnQrPrintBlocCtx,
-    required this.userOrg,
   });
   static const String routePath = "/print-grn-qr-screen";
   static const String routeName = "print-grn-qr-screen";
   final GrnQr grnQrData;
   final BuildContext grnQrPrintBlocCtx;
-  final UserOrg userOrg;
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -44,7 +41,6 @@ class PrintGrnQrScreen extends StatelessWidget {
       child: PrintQrScreenBody(
         grnQrData: grnQrData,
         grnQrPrintBlocCtx: grnQrPrintBlocCtx,
-        userOrg: userOrg,
       ),
     );
   }
@@ -55,11 +51,10 @@ class PrintQrScreenBody extends StatefulWidget {
     super.key,
     required this.grnQrData,
     required this.grnQrPrintBlocCtx,
-    required this.userOrg,
   });
   final GrnQr grnQrData;
   final BuildContext grnQrPrintBlocCtx;
-  final UserOrg userOrg;
+
   @override
   State<PrintQrScreenBody> createState() => _PrintQrScreenBodyState();
 }
@@ -136,11 +131,11 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                   );
                 }
               } catch (e) {
-                log("Not Printed Due to Exception");
+                log(e.toString());
               }
             },
             child: Text(
-              "Pritnt Qr",
+              "Print Qr",
               style: textTheme.bodyMedium!.copyWith(color: appTheme.white),
             ),
           ),

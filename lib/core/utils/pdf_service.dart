@@ -244,7 +244,7 @@ class PdfService {
               bottom: 3,
             ),
             child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.start,
+              mainAxisAlignment: pw.MainAxisAlignment.center,
               children: [
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -288,6 +288,7 @@ class PdfService {
                               textAlign: pw.TextAlign.left,
                               style: const pw.TextStyle(
                                 fontSize: 8,
+
                                 color: PdfColors.black,
                               ),
                             ),
@@ -308,11 +309,11 @@ class PdfService {
                                         pw.CrossAxisAlignment.start,
                                     children: [
                                       pw.Text(
-                                        "trn Id: ",
+                                        "Lot: ",
                                         textAlign: pw.TextAlign.left,
-                                        style: pw.TextStyle(
+                                        style: const pw.TextStyle(
                                           fontSize: 8,
-                                          fontWeight: pw.FontWeight.bold,
+
                                           color: PdfColors.black,
                                         ),
                                       ),
@@ -335,9 +336,9 @@ class PdfService {
                                       pw.Text(
                                         "Qty: ",
                                         textAlign: pw.TextAlign.left,
-                                        style: pw.TextStyle(
+                                        style: const pw.TextStyle(
                                           fontSize: 8,
-                                          fontWeight: pw.FontWeight.bold,
+
                                           color: PdfColors.black,
                                         ),
                                       ),
@@ -363,66 +364,29 @@ class PdfService {
                               indent: 0,
                               endIndent: 0,
                             ),
-                            pw.Row(
-                              mainAxisAlignment:
-                                  pw.MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: [
-                                pw.Expanded(
-                                  child: pw.Row(
-                                    crossAxisAlignment:
-                                        pw.CrossAxisAlignment.start,
-                                    children: [
-                                      pw.Text(
-                                        "Sub Inv: ",
-                                        textAlign: pw.TextAlign.left,
-                                        style: pw.TextStyle(
-                                          fontSize: 8,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColors.black,
-                                        ),
-                                      ),
-                                      pw.Expanded(
-                                        child: pw.Text(
-                                          grnQrData.subInv ?? "",
-                                          textAlign: pw.TextAlign.left,
-                                          style: const pw.TextStyle(
-                                            fontSize: 8,
-                                            color: PdfColors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                pw.Expanded(
-                                  child: pw.Row(
-                                    crossAxisAlignment:
-                                        pw.CrossAxisAlignment.start,
-                                    children: [
-                                      pw.Text(
-                                        "Locator: ",
-                                        textAlign: pw.TextAlign.left,
-                                        style: pw.TextStyle(
-                                          fontSize: 8,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColors.black,
-                                        ),
-                                      ),
-                                      pw.Expanded(
-                                        child: pw.Text(
-                                          grnQrData.locatorDesc ?? "",
-                                          textAlign: pw.TextAlign.left,
-                                          style: const pw.TextStyle(
-                                            fontSize: 8,
-                                            color: PdfColors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            pw.Text(
+                              "Sub Inv: ${grnQrData.subInv ?? ""}",
+                              textAlign: pw.TextAlign.left,
+                              style: const pw.TextStyle(
+                                fontSize: 8,
+
+                                color: PdfColors.black,
+                              ),
+                            ),
+                            pw.Divider(
+                              color: PdfColors.black,
+                              height: 5,
+                              indent: 0,
+                              endIndent: 0,
+                            ),
+                            pw.Text(
+                              "Locator: ${grnQrData.locatorDesc ?? ""}",
+                              textAlign: pw.TextAlign.left,
+                              style: const pw.TextStyle(
+                                fontSize: 8,
+
+                                color: PdfColors.black,
+                              ),
                             ),
                           ],
                         ),
@@ -432,10 +396,10 @@ class PdfService {
                     pw.BarcodeWidget(
                       color: PdfColors.black,
                       barcode: pw.Barcode.qrCode(),
-                      width: 70,
-                      height: 70,
+                      width: 80,
+                      height: 80,
                       data:
-                          "${grnQrData.inventoryItemId}\n${grnQrData.itemName}\n${grnQrData.subInv}\n${grnQrData.locatorId}\n${grnQrData.trnid}",
+                          "${grnQrData.trnid}${grnQrData.inventoryItemId}\n${grnQrData.itemName}\n${grnQrData.subInv}\n${grnQrData.locatorDesc}\n",
                     ),
                   ],
                 ),

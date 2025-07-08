@@ -31,12 +31,8 @@ class PrintSmplQrScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => QrGenerateCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ProdQrPrintStatusBloc(getService()),
-        ),
+        BlocProvider(create: (context) => QrGenerateCubit()),
+        BlocProvider(create: (context) => ProdQrPrintStatusBloc(getService())),
         BlocProvider.value(
           value: BlocProvider.of<SmplQrListBloc>(qrPrintListBlocCtx),
         ),
@@ -92,20 +88,18 @@ class _PrintSmplQrScreenBodyState extends State<PrintSmplQrScreenBody> {
                       maxScale: 20,
                       loadingBannerBuilder:
                           (context, bytesDownloaded, totalBytes) => Center(
-                        child: CircularProgressIndicator(
-                          value: totalBytes != null
-                              ? bytesDownloaded / totalBytes
-                              : null,
-                          backgroundColor: appTheme.primary,
-                        ),
-                      ),
+                            child: CircularProgressIndicator(
+                              value: totalBytes != null
+                                  ? bytesDownloaded / totalBytes
+                                  : null,
+                              backgroundColor: appTheme.primary,
+                            ),
+                          ),
                     ),
                   ),
                 );
               }
-              return Container(
-                height: 190,
-              );
+              return Container(height: 190);
             },
           ),
           ElevatedButton(
@@ -115,7 +109,7 @@ class _PrintSmplQrScreenBodyState extends State<PrintSmplQrScreenBody> {
                 Permission.location,
                 Permission.bluetooth,
                 Permission.bluetoothConnect,
-                Permission.bluetoothScan
+                Permission.bluetoothScan,
               ].request();
 
               // Use context to select the device after checking mounted state
@@ -128,23 +122,19 @@ class _PrintSmplQrScreenBodyState extends State<PrintSmplQrScreenBody> {
                 if (!context.mounted) return;
                 if (status) {
                   context.read<ProdQrPrintStatusBloc>().add(
-                        SmplQrPrintStatusUpdate(id: widget.sampleColQr.id ?? 0),
-                      );
+                    SmplQrPrintStatusUpdate(id: widget.sampleColQr.id ?? 0),
+                  );
                   widget.qrPrintListBlocCtx.read<SmplQrListBloc>().add(
-                        SmplQrListGet(
-                          userId: loggedUser.userId,
-                        ),
-                      );
+                    SmplQrListGet(userId: loggedUser.userId),
+                  );
                 }
               } catch (e) {
-                log("Not Printed Due to Exception");
+                log(e.toString());
               }
             },
             child: Text(
-              "Pritnt Qr",
-              style: textTheme.bodyMedium!.copyWith(
-                color: appTheme.white,
-              ),
+              "Print Qr",
+              style: textTheme.bodyMedium!.copyWith(color: appTheme.white),
             ),
           ),
         ],

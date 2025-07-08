@@ -45,7 +45,7 @@ class GrnQrListBloc extends Bloc<GrnQrListEvent, GrnQrListState> {
     on<GrnQrListGet>((event, emit) async {
       emit(state.copyWith(isLoading: true));
       try {
-        final response = await _dataService.getGrnQrList(userId: event.userId);
+        var response = await _dataService.getGrnQrList(userId: event.userId);
         _grnQr = response;
         emit(
           state.copyWith(isLoading: false, isSuccess: true, grnQrList: _grnQr),

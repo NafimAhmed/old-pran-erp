@@ -177,7 +177,6 @@ class AppNavigation {
           return PrintGrnQrScreen(
             grnQrData: map["grnQrData"] as GrnQr,
             grnQrPrintBlocCtx: map["grnQrPrintBlocCtx"] as BuildContext,
-            userOrg: map["userOrg"] as UserOrg,
           );
         },
       ),
