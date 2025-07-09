@@ -1,20 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
-import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
-import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
-import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
+import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/global_blocs/bloc/operation_unit_bloc.dart';
-import 'package:pran_rfl_erp/global_blocs/bloc/user_org_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
-import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_list_bloc.dart';
-import 'package:pran_rfl_erp/presentations/print_grn_qr_screen/print_grn_qr_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/cubit/grn_item_qr_cubit.dart';
+
+import '../../../../core/utils/healper_functions.dart';
 
 class InvC11Screen extends StatelessWidget {
   const InvC11Screen({super.key, required this.fromName});
@@ -24,7 +23,10 @@ class InvC11Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => RackQrCubit())],
+      providers: [
+        BlocProvider(create: (context) => RackQrCubit()),
+        BlocProvider(create: (context) => GrnItemQrCubit()),
+      ],
       child: InvC11ScreenBody(fromName: fromName),
     );
   }
@@ -38,32 +40,15 @@ class InvC11ScreenBody extends StatefulWidget {
 }
 
 class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
-  final GlobalKey<FormState> _fromKey = GlobalKey();
+  GrnQr? grnQr;
+  MobileScannerController controller = MobileScannerController();
+  List<String> rackQrData = [];
   late UserInfoModel loggedUser;
-  TextEditingController quantityTextController = TextEditingController();
-  FocusNode quantityFocusNode = FocusNode();
-  TextEditingController goodQtyTextController = TextEditingController();
-  FocusNode goodQtyFocusNode = FocusNode();
-  TextEditingController badQtyTextController = TextEditingController();
-  FocusNode badQtyFocusNode = FocusNode();
   @override
   void initState() {
-    context.read<OperationUnitBloc>().add(OperationUnitGet());
-
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    quantityTextController.dispose();
-    goodQtyTextController.dispose();
-    badQtyTextController.dispose();
-    quantityFocusNode.dispose();
-    goodQtyFocusNode.dispose();
-    badQtyFocusNode.dispose();
-    super.dispose();
   }
 
   @override
@@ -71,318 +56,182 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            const SizedBox(height: 10),
-            Form(
-              key: _fromKey,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: BlocBuilder<UserOrgBloc, UserOrgState>(
-                          builder: (context, state) {
-                            return CustomDropdownSearch<UserOrg>(
-                              hintText: "Select Org",
-                              enabled: state is UserOrgSuccess
-                                  ? state.userOrg.isNotEmpty
-                                  : false,
-
-                              items: state is UserOrgSuccess
-                                  ? state.userOrg
-                                  : [],
-                              onChanged: (value) {},
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  CommonLableWthTextField(
-                    lableName: "Good Qty",
-                    focusNode: goodQtyFocusNode,
-                    textController: goodQtyTextController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Good Quantity";
-                      }
-                      if (int.parse(value) <= 0) {
-                        return "Can't Be Zero";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      var goodQty = value.isEmpty ? 0 : int.parse(value);
-                      badQtyTextController.text = "0";
-                      var badQty = badQtyTextController.text.isEmpty
-                          ? 0
-                          : int.parse(badQtyTextController.text);
-                      quantityTextController.text = (goodQty + badQty)
-                          .toString();
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  CommonLableWthTextField(
-                    lableName: "Bad Qty",
-                    focusNode: badQtyFocusNode,
-                    textController: badQtyTextController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Bad Quantity";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      var badQty = value.isEmpty ? 0 : int.parse(value);
-                      var goodQty = goodQtyTextController.text.isEmpty
-                          ? 0
-                          : int.parse(goodQtyTextController.text);
-                      quantityTextController.text = (goodQty + badQty)
-                          .toString();
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  CommonLableWthTextField(
-                    lableName: "Quantity",
-                    readOnly: true,
-                    focusNode: quantityFocusNode,
-                    textController: quantityTextController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Quantity";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {},
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            Expanded(
-              child: BlocBuilder<GrnQrListBloc, GrnQrListState>(
-                builder: (context, state) {
-                  if (state is GrnQrListLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is GrnQrListSuccess) {
-                    return ListView.separated(
-                      itemBuilder: (context, index) {
-                        var data = state.grnQr[index];
-                        return Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 209, 222, 245),
-                            // color: index % 2 == 0
-                            //     ? const Color.fromARGB(255, 115, 134, 240)
-                            //     : const Color.fromARGB(255, 136, 152, 247),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Item Name",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 15,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                      Text(
-                                        data.itemName.toString(),
-                                        style: textTheme.bodySmall!.copyWith(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Item Code",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 15,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                      Text(
-                                        data.itemCode ?? "",
-                                        style: textTheme.bodySmall!.copyWith(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Lot No",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 15,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                      Text(
-                                        data.trnid.toString(),
-                                        style: textTheme.bodySmall!.copyWith(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "Organization",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 15,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                      Text(
-                                        "${data.organizationCode}-${data.organizationName}",
-                                        style: textTheme.bodySmall!.copyWith(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Qty",
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 15,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                      Text(
-                                        data.qty.toString() ?? "",
-                                        style: textTheme.bodySmall!.copyWith(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: appTheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom().copyWith(
-                                      padding:
-                                          const WidgetStatePropertyAll<
-                                            EdgeInsetsGeometry
-                                          >(
-                                            EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 5,
-                                            ),
-                                          ),
-                                      minimumSize:
-                                          WidgetStateProperty.all<Size>(
-                                            const Size(80, 30),
-                                          ),
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        appTheme.tertiary,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      UserOrg userOrg = context
-                                          .read<
-                                            VariableStateHandlerCubit<UserOrg>
-                                          >()
-                                          .state!;
-                                      context.pushNamed(
-                                        PrintGrnQrScreen.routeName,
-                                        extra: {
-                                          "grnQrData": data,
-                                          "grnQrPrintBlocCtx": context,
-                                          "userOrg": userOrg,
-                                        },
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "Print ",
-                                          style: textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14,
-                                            color: appTheme.white,
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.qr_code,
-                                          color: appTheme.white,
-                                          size: 20,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  child: ReadQrWidget(
+                    qrType: "Item QR",
+                    onPressed: () async {
+                      var data = await buildScanner(context, controller);
+                      if (context.mounted) {
+                        context.read<GrnItemQrCubit>().setItemData(
+                          grnItemQrData: data,
                         );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(height: 10);
-                      },
-                      itemCount: state.grnQr.length,
-                    );
-                  }
-                  return Container();
-                },
-              ),
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(width: 10),
+            BlocBuilder<GrnItemQrCubit, GrnItemQrState>(
+              builder: (context, state) {
+                if (state is GrnItemQrInitial) {
+                  grnQr = null;
+                }
+                if (state is GrnItemQrDataLoaded) {
+                  grnQr = state.grnQr;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: appTheme.primary.withOpacity(0.2),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "#Lot :${grnQr?.trnid?.toString() ?? ""}",
+                          style: textTheme.bodyMedium,
+                        ),
+                        Text(
+                          grnQr?.itemName ?? "",
+                          style: textTheme.bodyMedium,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Qty: ", style: textTheme.bodyMedium),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      grnQr?.qty.toString() ?? "",
+                                      textAlign: TextAlign.right,
+                                      style: textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Org: ", style: textTheme.bodyMedium),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      grnQr?.orgId.toString() ?? "",
+                                      textAlign: TextAlign.right,
+                                      style: textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+            const SizedBox(height: 15),
+            ReadQrWidget(
+              qrType: "Rack QR",
+              onPressed: () async {
+                try {
+                  var data = await buildScanner(context, controller);
+                  if (context.mounted) {
+                    context.read<RackQrCubit>().setrackData(rackQrData: data);
+                  }
+                } catch (e) {
+                  log(e.toString());
+                }
+              },
+            ),
+            BlocBuilder<RackQrCubit, RackQrState>(
+              builder: (context, state) {
+                if (state is RackQrInitial) {
+                  rackQrData.clear();
+                }
+                if (state is RackQrDataLoaded) {
+                  rackQrData = state.rackQRDatalist;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: appTheme.primary.withOpacity(0.2),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Rack Id", style: textTheme.bodyMedium),
+                            const SizedBox(width: 10),
+                            Text(rackQrData[0], style: textTheme.bodyMedium),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+            const SizedBox(height: 15),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Flexible(
+            //       child: BlocBuilder<GrnItemQrCubit, GrnItemQrState>(
+            //         builder: (context, state) {
+            //           return ElevatedButton(
+            //             onPressed: () {
+            //               if (grnQr != null && rackQrData.isNotEmpty) {
+            //                 context.read<GrnItemQrCubit>().add(
+            //                   SmplItemRcv(
+            //                     id: itemQrData?.id ?? 0,
+            //                     rackId: rackQrData[0],
+            //                   ),
+            //                 );
+            //               }
+            //             },
+            //             child: Text(
+            //               state is SmplItemRcvLoading ? "Receiving" : "Receive",
+            //               style: textTheme.bodyMedium!.copyWith(
+            //                 color: appTheme.white,
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            const SizedBox(height: 15),
           ],
         ),
       ),
+      bottomNavigationBar: const UserDetailsWidget(),
     );
   }
 }
