@@ -399,7 +399,7 @@ class PdfService {
                       width: 80,
                       height: 80,
                       data:
-                          "${grnQrData.trnid}${grnQrData.inventoryItemId}\n${grnQrData.itemName}\n${grnQrData.subInv}\n${grnQrData.locatorDesc}\n",
+                          "${grnQrData.trnid}\n${grnQrData.orgId}\n${grnQrData.qty}\n${grnQrData.inventoryItemId}\n${grnQrData.itemCode}-${grnQrData.itemName}\n${grnQrData.subInv}\n${grnQrData.locatorDesc}\n",
                     ),
                   ],
                 ),
