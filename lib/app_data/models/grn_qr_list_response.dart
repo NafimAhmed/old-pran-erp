@@ -56,7 +56,7 @@ class GrnQr {
   final int? locatorId;
   final String? locatorDesc;
   final String? trnid;
-  final int? qty;
+  final num? qty;
 
   GrnQr({
     this.orgId,
@@ -83,7 +83,7 @@ class GrnQr {
     int? locatorId,
     String? locatorDesc,
     String? trnid,
-    int? qty,
+    num? qty,
   }) => GrnQr(
     orgId: orgId ?? this.orgId,
     organizationCode: organizationCode ?? this.organizationCode,
