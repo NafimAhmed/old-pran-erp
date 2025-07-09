@@ -102,4 +102,5 @@ class ApiEndPoints {
   static const String updateGrnQrList = "/ords/rpro/po/GrnQRSave";
   static const String prodTransfer = "/ords/rpro/batch/prodTransfer";
   static const String getItemStock = "/ords/rpro/invtran/OrgWiseStock";
+  static const String grnTrans = "/ords/rpro/po/grn-trans";
 }
