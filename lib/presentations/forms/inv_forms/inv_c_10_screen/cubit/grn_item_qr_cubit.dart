@@ -34,6 +34,7 @@ class GrnItemQrCubit extends Cubit<GrnItemQrState> {
         itemName: list[4].split("-")[1],
         subInv: list[5],
         locatorDesc: list[6],
+        locatorId: int.parse(list[7]),
       );
 
       emit(GrnItemQrDataLoaded(grnQr: grnQr));
