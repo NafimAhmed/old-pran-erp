@@ -6,14 +6,14 @@ import 'package:pran_rfl_erp/global_blocs/base_state.dart';
 @immutable
 sealed class GrnRcvEvent {}
 
-final class GrnRcvsfer extends GrnRcvEvent {
+final class GrnRcv extends GrnRcvEvent {
   final String userId;
   final int orgId;
   final int itemId;
   final String locId;
   final String lotNo;
 
-  GrnRcvsfer({
+  GrnRcv({
     required this.userId,
     required this.orgId,
     required this.itemId,
@@ -37,10 +37,10 @@ class GrnRcvState extends BaseState {
 class GrnRcvBloc extends Bloc<GrnRcvEvent, GrnRcvState> {
   final DataRepo _dataRepo;
   GrnRcvBloc(this._dataRepo) : super(GrnRcvState()) {
-    on<GrnRcvsfer>((event, emit) async {
+    on<GrnRcv>((event, emit) async {
       emit(state.copyWith(isLoading: true));
       try {
-        await _dataRepo.grnIssue(
+        await _dataRepo.grnRcv(
           userId: event.userId,
           orgId: event.orgId,
           itemId: event.itemId,
