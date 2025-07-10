@@ -1577,6 +1577,33 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<void> grnTransfer({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required String locId,
+    required String lotNo,
+  }) {
+    return httpService
+        .postCall(
+          endPoint: ApiEndPoints.grnTrans,
+          parameters: {
+            "userid": userId,
+            "org_id": orgId,
+            "inventory_id": itemId,
+            "locatorid": locId,
+            "lot_no": lotNo,
+          },
+        )
+        .then((response) {
+          var decoderRes = GenericResponse.fromJson(response);
+          if (decoderRes.statusCode != 200) {
+            throw ApiDataException(decoderRes.errorMessage);
+          }
+        });
+  }
+
+  @override
   Future<List<UserOrg>> getGrnOrgList({required int ouId}) async {
     var response = await httpService.getCall(
       endPoint: ApiEndPoints.getGrnOrgList,
