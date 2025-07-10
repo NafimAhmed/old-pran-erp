@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -63,7 +62,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
           if (state.isSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text("Transfer Successful"),
+                content: const Text("Receive Successful"),
                 backgroundColor: appTheme.primary,
               ),
             );
@@ -72,7 +71,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
           } else if (state.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text("Transfer Failed: ${state.error.toString()}"),
+                content: Text("Receive Failed: ${state.error.toString()}"),
                 backgroundColor: Colors.red,
               ),
             );
@@ -231,7 +230,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                           onPressed: () {
                             if (grnQr != null && rackQrData.isNotEmpty) {
                               context.read<GrnRcvBloc>().add(
-                                GrnRcvsfer(
+                                GrnRcv(
                                   userId: loggedUser.userId.toString(),
                                   orgId: grnQr!.orgId!,
                                   itemId: grnQr!.inventoryItemId!,
