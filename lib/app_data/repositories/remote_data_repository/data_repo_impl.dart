@@ -1577,7 +1577,7 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<void> grnTransfer({
+  Future<void> grnIssue({
     required String userId,
     required int orgId,
     required int itemId,
@@ -1585,7 +1585,7 @@ class DataRepoImpl implements DataRepo {
     required String lotNo,
   }) {
     return httpService
-        .postCall(
+        .putCall(
           endPoint: ApiEndPoints.grnTrans,
           parameters: {
             "userid": userId,

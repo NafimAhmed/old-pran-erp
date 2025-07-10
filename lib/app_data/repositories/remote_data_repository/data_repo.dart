@@ -381,7 +381,7 @@ abstract class DataRepo {
     required String locId,
     required String subInv,
   });
-  Future<void> grnTransfer({
+  Future<void> grnIssue({
     required String userId,
     required int orgId,
     required int itemId,
