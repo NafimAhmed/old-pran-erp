@@ -13,7 +13,7 @@ import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/cubit/grn_item_qr_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_11_screen/bloc/grn_trans_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_11_screen/bloc/grn_rcv_bloc.dart';
 
 import '../../../../core/utils/healper_functions.dart';
 
@@ -26,7 +26,7 @@ class InvC11Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => GrnTranBloc(getService())),
+        BlocProvider(create: (context) => GrnRcvBloc(getService())),
         BlocProvider(create: (context) => RackQrCubit()),
         BlocProvider(create: (context) => GrnItemQrCubit()),
       ],
@@ -58,7 +58,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName),
-      body: BlocListener<GrnTranBloc, GrnTranState>(
+      body: BlocListener<GrnRcvBloc, GrnRcvState>(
         listener: (context, state) {
           if (state.isSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -225,13 +225,13 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Flexible(
-                    child: BlocBuilder<GrnTranBloc, GrnTranState>(
+                    child: BlocBuilder<GrnRcvBloc, GrnRcvState>(
                       builder: (context, state) {
                         return ElevatedButton(
                           onPressed: () {
                             if (grnQr != null && rackQrData.isNotEmpty) {
-                              context.read<GrnTranBloc>().add(
-                                GrnTransfer(
+                              context.read<GrnRcvBloc>().add(
+                                GrnRcvsfer(
                                   userId: loggedUser.userId.toString(),
                                   orgId: grnQr!.orgId!,
                                   itemId: grnQr!.inventoryItemId!,
@@ -242,7 +242,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                             }
                           },
                           child: Text(
-                            state.isLoading ? "Transfering..." : "Transfer",
+                            state.isLoading ? "Receiving..." : "Receive",
                             style: textTheme.bodyMedium!.copyWith(
                               color: appTheme.white,
                             ),
