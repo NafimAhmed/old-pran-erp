@@ -4,16 +4,16 @@ import 'package:pran_rfl_erp/app_data/repositories/remote_data_repository/data_r
 import 'package:pran_rfl_erp/global_blocs/base_state.dart';
 
 @immutable
-sealed class GrnTranEvent {}
+sealed class GrnRcvEvent {}
 
-final class GrnTransfer extends GrnTranEvent {
+final class GrnRcvsfer extends GrnRcvEvent {
   final String userId;
   final int orgId;
   final int itemId;
   final String locId;
   final String lotNo;
 
-  GrnTransfer({
+  GrnRcvsfer({
     required this.userId,
     required this.orgId,
     required this.itemId,
@@ -22,11 +22,11 @@ final class GrnTransfer extends GrnTranEvent {
   });
 }
 
-class GrnTranState extends BaseState {
-  GrnTranState({super.isLoading = false, super.error, super.isSuccess = false});
+class GrnRcvState extends BaseState {
+  GrnRcvState({super.isLoading = false, super.error, super.isSuccess = false});
 
-  GrnTranState copyWith({bool? isLoading, Object? error, bool? isSuccess}) {
-    return GrnTranState(
+  GrnRcvState copyWith({bool? isLoading, Object? error, bool? isSuccess}) {
+    return GrnRcvState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       isSuccess: isSuccess ?? this.isSuccess,
@@ -34,13 +34,13 @@ class GrnTranState extends BaseState {
   }
 }
 
-class GrnTranBloc extends Bloc<GrnTranEvent, GrnTranState> {
+class GrnRcvBloc extends Bloc<GrnRcvEvent, GrnRcvState> {
   final DataRepo _dataRepo;
-  GrnTranBloc(this._dataRepo) : super(GrnTranState()) {
-    on<GrnTransfer>((event, emit) async {
+  GrnRcvBloc(this._dataRepo) : super(GrnRcvState()) {
+    on<GrnRcvsfer>((event, emit) async {
       emit(state.copyWith(isLoading: true));
       try {
-        await _dataRepo.grnTransfer(
+        await _dataRepo.grnIssue(
           userId: event.userId,
           orgId: event.orgId,
           itemId: event.itemId,
