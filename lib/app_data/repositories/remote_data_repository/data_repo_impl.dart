@@ -1540,7 +1540,7 @@ class DataRepoImpl implements DataRepo {
   @override
   Future<List<GrnQr>> getGrnQrList({required String userId}) async {
     var response = await httpService.getCall(
-      endPoint: ApiEndPoints.getGrnQrList,
+      endPoint: ApiEndPoints.getGrnQrSave,
       parameters: {"userId": userId},
     );
     var decoderRes = GrnQrListResponse.fromJson(response);
@@ -1781,7 +1781,7 @@ class DataRepoImpl implements DataRepo {
   @override
   Future<void> updateGrnQrList({required String trnId}) async {
     var response = await httpService.postCall(
-      endPoint: ApiEndPoints.updateGrnQrList,
+      endPoint: ApiEndPoints.getGrnQrSave,
       parameters: {"trnId": trnId},
     );
     var decodedRes = GenericResponse.fromJson(response);

@@ -37,6 +37,7 @@ class HttpService with HttpDecoderServiceMixin {
     }
     var request = http.Request('GET', Uri.parse(finalUrl));
     http.StreamedResponse response = await _safeApiCall(request);
+    log(request.toString());
     return await decodeResponse(response);
   }
 
@@ -68,6 +69,7 @@ class HttpService with HttpDecoderServiceMixin {
     }
     var request = http.Request('PUT', Uri.parse(finalUrl));
     http.StreamedResponse response = await _safeApiCall(request);
+    log(request.toString());
     return await decodeResponse(response);
   }
 
@@ -83,6 +85,7 @@ class HttpService with HttpDecoderServiceMixin {
     }
     var request = http.Request('DELETE', Uri.parse(finalUrl));
     http.StreamedResponse response = await _safeApiCall(request);
+    log(request.toString());
     return await decodeResponse(response);
   }
 
@@ -109,6 +112,7 @@ class HttpService with HttpDecoderServiceMixin {
     }
 
     http.StreamedResponse response = await _safeApiCall(request);
+    log(request.toString());
     return await decodeResponse(response);
   }
 
@@ -127,8 +131,10 @@ class HttpService with HttpDecoderServiceMixin {
           "?${pathParameters.entries.map((e) => "${e.key}=${e.value}").join("&")}";
     }
 
-    var request =
-        http.MultipartRequest(method.toUpperCase(), Uri.parse(finalUrl));
+    var request = http.MultipartRequest(
+      method.toUpperCase(),
+      Uri.parse(finalUrl),
+    );
 
     if (fields.isNotEmpty) {
       request.fields.addAll(fields);
@@ -140,6 +146,7 @@ class HttpService with HttpDecoderServiceMixin {
       request.headers.addAll(headers);
     }
     http.StreamedResponse response = await request.send();
+    log(request.toString());
     return await decodeResponse(response);
   }
 }

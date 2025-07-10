@@ -89,8 +89,7 @@ class ApiEndPoints {
   static const String getGrnJOList = "/ords/rpro/po/JOList";
   static const String getGrnPurchaseReqList = "/ords/rpro/po/PRList";
   static const String getGrnPOList = "/ords/rpro/po/GrnPOList";
-  static const String getGrnQrList = "/ords/rpro/po/GrnQRSave";
-  static const String getGrnQrSave = "/ords/rpro/po/GrnQRSave";
+  static const String getGrnQrSave = "/ords/rpro/invtran/GrnQRSave";
   static const String getGrnOrgList = "/ords/rpro/po/GrnOrgList";
   static const String getMOReqList = "/ords/rpro/taskapi/dlivyTaskUdtList";
   static const String moReqSave = "/ords/rpro/taskapi/dlivyTaskUdtList";
@@ -99,8 +98,7 @@ class ApiEndPoints {
   static const String smplColHdrDtlSave =
       "/ords/rpro/opm/batch/smplColHdrDtlSave";
   static const String getSmplColQrList = "/ords/rpro/opm/batch/smlColQrList";
-  static const String updateGrnQrList = "/ords/rpro/po/GrnQRSave";
   static const String prodTransfer = "/ords/rpro/batch/prodTransfer";
   static const String getItemStock = "/ords/rpro/invtran/OrgWiseStock";
-  static const String grnTrans = "/ords/rpro/po/grn-trans";
+  static const String grnTrans = "/ords/rpro/invtran/grn-trans";
 }
