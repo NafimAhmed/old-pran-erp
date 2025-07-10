@@ -388,6 +388,13 @@ abstract class DataRepo {
     required String locId,
     required String lotNo,
   });
+  Future<void> grnRcv({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required String locId,
+    required String lotNo,
+  });
   Future<List<UserOrg>> getGrnOrgList({required int ouId});
   Future<List<MOReqTask>> getMOReqList({required String userId});
   Future<void> moReqSave({required String taskStatus, required int taskId});
