@@ -116,7 +116,7 @@ class _InvC9ScreenBodyState extends State<InvC9ScreenBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "#Lot :${grnQr?.trnid?.toString() ?? ""}",
+                            "#Lot :${grnQr?.lotNumber?.toString() ?? ""}",
                             style: textTheme.bodyMedium,
                           ),
                           Text(
@@ -151,7 +151,7 @@ class _InvC9ScreenBodyState extends State<InvC9ScreenBody> {
                                     const SizedBox(width: 5),
                                     Expanded(
                                       child: Text(
-                                        grnQr?.orgId.toString() ?? "",
+                                        grnQr?.organizationId.toString() ?? "",
                                         textAlign: TextAlign.right,
                                         style: textTheme.bodyMedium,
                                       ),
@@ -181,10 +181,10 @@ class _InvC9ScreenBodyState extends State<InvC9ScreenBody> {
                               context.read<GrnIssueBloc>().add(
                                 GrnIssue(
                                   userId: loggedUser.userId.toString(),
-                                  orgId: grnQr!.orgId!,
+                                  orgId: grnQr!.organizationId!,
                                   itemId: grnQr!.inventoryItemId!,
                                   locId: grnQr!.locatorId?.toString() ?? "",
-                                  lotNo: grnQr!.trnid!,
+                                  lotNo: grnQr!.lotNumber!,
                                 ),
                               );
                             }

@@ -340,7 +340,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                         ),
                                       ),
                                       Text(
-                                        data.subInv ?? "-",
+                                        data.subInventoryCode ?? "-",
                                         style: textTheme.bodySmall!.copyWith(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
@@ -388,7 +388,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                         ),
                                       ),
                                       Text(
-                                        data.trnid ?? "",
+                                        data.lotNumber ?? "",
                                         style: textTheme.bodySmall!.copyWith(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,

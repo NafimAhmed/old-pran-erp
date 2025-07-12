@@ -124,7 +124,9 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                 if (!context.mounted) return;
                 if (status) {
                   context.read<ProdQrPrintStatusBloc>().add(
-                    GrnQrPrintStatusUpdate(trnId: widget.grnQrData.trnid ?? ""),
+                    GrnQrPrintStatusUpdate(
+                      trnId: widget.grnQrData.lotNumber ?? "",
+                    ),
                   );
                   widget.grnQrPrintBlocCtx.read<GrnQrListBloc>().add(
                     GrnQrListGet(

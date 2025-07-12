@@ -26,13 +26,13 @@ class GrnItemQrCubit extends Cubit<GrnItemQrState> {
       var list = grnItemQrData.split("\n");
       GrnQr grnQr = GrnQr();
       grnQr = grnQr.copyWith(
-        trnid: list[0],
-        orgId: int.parse(list[1]),
+        lotNumber: list[0],
+        organizationId: int.parse(list[1]),
         qty: num.parse(list[2]),
         inventoryItemId: int.parse(list[3]),
         itemCode: list[4].split("-")[0],
         itemName: list[4].split("-")[1],
-        subInv: list[5],
+        subInventoryCode: list[5],
         locatorDesc: list[6],
         locatorId: int.parse(list[7]),
       );

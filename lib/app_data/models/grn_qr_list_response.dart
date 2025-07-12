@@ -46,58 +46,58 @@ class GrnQrListResponse {
 }
 
 class GrnQr {
-  final int? orgId;
+  final int? organizationId;
   final String? organizationCode;
   final String? organizationName;
   final String? itemName;
   final String? itemCode;
   final int? inventoryItemId;
-  final String? subInv;
+  final String? subInventoryCode;
   final int? locatorId;
   final String? locatorDesc;
-  final String? trnid;
+  final String? lotNumber;
   final num? qty;
   final String? qrType;
 
   GrnQr({
-    this.orgId,
+    this.organizationId,
     this.organizationCode,
     this.organizationName,
     this.itemName,
     this.itemCode,
     this.inventoryItemId,
-    this.subInv,
+    this.subInventoryCode,
     this.locatorId,
     this.locatorDesc,
-    this.trnid,
+    this.lotNumber,
     this.qty,
     this.qrType,
   });
 
   GrnQr copyWith({
-    int? orgId,
+    int? organizationId,
     String? organizationCode,
     String? organizationName,
     String? itemName,
     String? itemCode,
     int? inventoryItemId,
-    String? subInv,
+    String? subInventoryCode,
     int? locatorId,
     String? locatorDesc,
-    String? trnid,
+    String? lotNumber,
     num? qty,
     String? qrType,
   }) => GrnQr(
-    orgId: orgId ?? this.orgId,
+    organizationId: organizationId ?? this.organizationId,
     organizationCode: organizationCode ?? this.organizationCode,
     organizationName: organizationName ?? this.organizationName,
     itemName: itemName ?? this.itemName,
     itemCode: itemCode ?? this.itemCode,
     inventoryItemId: inventoryItemId ?? this.inventoryItemId,
-    subInv: subInv ?? this.subInv,
+    subInventoryCode: subInventoryCode ?? this.subInventoryCode,
     locatorId: locatorId ?? this.locatorId,
     locatorDesc: locatorDesc ?? this.locatorDesc,
-    trnid: trnid ?? this.trnid,
+    lotNumber: lotNumber ?? this.lotNumber,
     qty: qty ?? this.qty,
     qrType: qrType ?? this.qrType,
   );
@@ -107,31 +107,31 @@ class GrnQr {
   String toJson() => json.encode(toMap());
 
   factory GrnQr.fromMap(Map<String, dynamic> json) => GrnQr(
-    orgId: json["ORG_ID"],
+    organizationId: json["ORGANIZATION_ID"],
     organizationCode: json["ORGANIZATION_CODE"],
     organizationName: json["ORGANIZATION_NAME"],
     itemName: json["Item_Name"],
     itemCode: json["Item_code"],
     inventoryItemId: json["INVENTORY_ITEM_ID"],
-    subInv: json["SUB_INV"],
+    subInventoryCode: json["SUBINVENTORY_CODE"],
     locatorId: json["locator_Id"],
     locatorDesc: json["Locator_desc"],
-    trnid: json["TRNID"],
+    lotNumber: json["LOT_NUMBER"],
     qty: json["qty"],
     qrType: json["QR_TYPE"],
   );
 
   Map<String, dynamic> toMap() => {
-    "ORG_ID": orgId,
+    "ORG_ID": organizationId,
     "ORGANIZATION_CODE": organizationCode,
     "ORGANIZATION_NAME": organizationName,
     "Item_Name": itemName,
     "Item_code": itemCode,
     "INVENTORY_ITEM_ID": inventoryItemId,
-    "SUB_INV": subInv,
+    "SUBINVENTORY_CODE": subInventoryCode,
     "locator_Id": locatorId,
     "Locator_desc": locatorDesc,
-    "TRNID": trnid,
+    "LOT_NUMBER": lotNumber,
     "qty": qty,
     "QR_TYPE": qrType,
   };

@@ -120,7 +120,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "#Lot :${grnQr?.trnid?.toString() ?? ""}",
+                            "#Lot :${grnQr?.lotNumber?.toString() ?? ""}",
                             style: textTheme.bodyMedium,
                           ),
                           Text(
@@ -155,7 +155,7 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                                     const SizedBox(width: 5),
                                     Expanded(
                                       child: Text(
-                                        grnQr?.orgId.toString() ?? "",
+                                        grnQr?.organizationId.toString() ?? "",
                                         textAlign: TextAlign.right,
                                         style: textTheme.bodyMedium,
                                       ),
@@ -232,10 +232,10 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                               context.read<GrnRcvBloc>().add(
                                 GrnRcv(
                                   userId: loggedUser.userId.toString(),
-                                  orgId: grnQr!.orgId!,
+                                  orgId: grnQr!.organizationId!,
                                   itemId: grnQr!.inventoryItemId!,
                                   locId: rackQrData[0],
-                                  lotNo: grnQr!.trnid!,
+                                  lotNo: grnQr!.lotNumber!,
                                 ),
                               );
                             }

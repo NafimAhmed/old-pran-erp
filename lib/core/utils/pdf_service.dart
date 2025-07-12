@@ -284,7 +284,7 @@ class PdfService {
                             ),
 
                             pw.Text(
-                              "Org: ${grnQrData.orgId}-${grnQrData.organizationCode ?? ""}",
+                              "Org: ${grnQrData.organizationId}-${grnQrData.organizationCode ?? ""}",
                               textAlign: pw.TextAlign.left,
                               style: const pw.TextStyle(
                                 fontSize: 8,
@@ -318,7 +318,7 @@ class PdfService {
                                         ),
                                       ),
                                       pw.Text(
-                                        "${grnQrData.trnid}",
+                                        "${grnQrData.lotNumber}",
                                         textAlign: pw.TextAlign.left,
                                         style: const pw.TextStyle(
                                           fontSize: 8,
@@ -365,7 +365,7 @@ class PdfService {
                               endIndent: 0,
                             ),
                             pw.Text(
-                              "Sub Inv: ${grnQrData.subInv ?? ""}",
+                              "Sub Inv: ${grnQrData.subInventoryCode ?? ""}",
                               textAlign: pw.TextAlign.left,
                               style: const pw.TextStyle(
                                 fontSize: 8,
@@ -399,7 +399,7 @@ class PdfService {
                       width: 80,
                       height: 80,
                       data:
-                          "${grnQrData.trnid}\n${grnQrData.orgId}\n${grnQrData.qty}\n${grnQrData.inventoryItemId}\n${grnQrData.itemCode}-${grnQrData.itemName}\n${grnQrData.subInv}\n${grnQrData.locatorDesc}\n${grnQrData.locatorId}\n",
+                          "${grnQrData.lotNumber}\n${grnQrData.organizationId}\n${grnQrData.qty}\n${grnQrData.inventoryItemId}\n${grnQrData.itemCode}-${grnQrData.itemName}\n${grnQrData.subInventoryCode}\n${grnQrData.locatorDesc}\n${grnQrData.locatorId}\n",
                     ),
                   ],
                 ),
