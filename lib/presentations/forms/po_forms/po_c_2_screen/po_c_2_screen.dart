@@ -14,11 +14,11 @@ import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/operation_unit_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/bloc/grn_qr_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_job_order_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_org_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_po_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_purchase_req_list_bloc.dart';
-import 'package:pran_rfl_erp/presentations/forms/po_forms/po_c_2_screen/bloc/grn_qr_list_bloc.dart';
 
 class PoC2Screen extends StatelessWidget {
   const PoC2Screen({super.key, required this.fromName});
@@ -175,7 +175,10 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                       >()
                                       .update(value);
                                   context.read<GrnQrListBloc>().add(
-                                    GrnQrListGet(userId: loggedUser.userId),
+                                    GrnQrListGet(
+                                      userId: loggedUser.userId,
+                                      qrType: "GRN_QR",
+                                    ),
                                   );
                                 }
                               },

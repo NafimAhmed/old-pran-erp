@@ -60,7 +60,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     context.read<GrnQrListBloc>().add(
-      GrnQrListGet(userId: loggedUser.userId.toString()),
+      GrnQrListGet(userId: loggedUser.userId.toString(), qrType: "STOCK_QR"),
     );
     super.initState();
   }

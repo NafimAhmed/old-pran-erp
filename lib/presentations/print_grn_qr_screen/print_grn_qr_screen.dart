@@ -127,7 +127,10 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
                     GrnQrPrintStatusUpdate(trnId: widget.grnQrData.trnid ?? ""),
                   );
                   widget.grnQrPrintBlocCtx.read<GrnQrListBloc>().add(
-                    GrnQrListGet(userId: loggedUser.userId),
+                    GrnQrListGet(
+                      userId: loggedUser.userId,
+                      qrType: widget.grnQrData.qrType ?? "",
+                    ),
                   );
                 }
               } catch (e) {

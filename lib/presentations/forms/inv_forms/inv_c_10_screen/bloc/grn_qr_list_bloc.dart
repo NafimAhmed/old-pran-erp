@@ -9,7 +9,8 @@ sealed class GrnQrListEvent {}
 
 final class GrnQrListGet extends GrnQrListEvent {
   final String userId;
-  GrnQrListGet({required this.userId});
+  final String qrType;
+  GrnQrListGet({required this.userId, required this.qrType});
 }
 
 class GrnQrListState extends BaseState {
@@ -45,7 +46,10 @@ class GrnQrListBloc extends Bloc<GrnQrListEvent, GrnQrListState> {
     on<GrnQrListGet>((event, emit) async {
       emit(state.copyWith(isLoading: true));
       try {
-        var response = await _dataService.getGrnQrList(userId: event.userId);
+        var response = await _dataService.getGrnQrList(
+          userId: event.userId,
+          qrType: event.qrType,
+        );
         _grnQr = response;
         emit(
           state.copyWith(isLoading: false, isSuccess: true, grnQrList: _grnQr),

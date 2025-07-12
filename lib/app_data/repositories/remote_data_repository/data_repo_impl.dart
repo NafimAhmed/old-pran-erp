@@ -1538,10 +1538,13 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<List<GrnQr>> getGrnQrList({required String userId}) async {
+  Future<List<GrnQr>> getGrnQrList({
+    required String userId,
+    required String qrType,
+  }) async {
     var response = await httpService.getCall(
       endPoint: ApiEndPoints.getGrnQrSave,
-      parameters: {"userId": userId},
+      parameters: {"userId": userId, "qtype": qrType},
     );
     var decoderRes = GrnQrListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {

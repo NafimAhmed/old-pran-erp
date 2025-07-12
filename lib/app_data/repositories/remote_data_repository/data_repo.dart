@@ -372,7 +372,10 @@ abstract class DataRepo {
   });
   Future<List<GrnJO>> getGrnJOList({required String reqNo});
   Future<List<GrnPO>> getGrnPOList({required String jobOrderNo});
-  Future<List<GrnQr>> getGrnQrList({required String userId});
+  Future<List<GrnQr>> getGrnQrList({
+    required String userId,
+    required String qrType,
+  });
   Future<void> getGrnQrSave({
     required String userId,
     required int orgId,
