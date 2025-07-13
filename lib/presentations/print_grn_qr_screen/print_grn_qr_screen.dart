@@ -116,8 +116,7 @@ class _PrintQrScreenBodyState extends State<PrintQrScreenBody> {
               // Use context to select the device after checking mounted state
               if (!context.mounted) return;
               try {
-                var status = true;
-                await Printing.layoutPdf(
+                var status = await Printing.layoutPdf(
                   onLayout: (format) =>
                       PdfService.createGrnQrPdf(widget.grnQrData),
                 );

@@ -14,13 +14,13 @@ final class GrnQrListGet extends GrnQrListEvent {
 }
 
 class GrnQrListState extends BaseState {
-  final List<GrnQr>? grnQrList;
+  final List<GrnQr> grnQrList;
 
   GrnQrListState({
     super.isLoading = false,
     super.isSuccess = false,
     super.error,
-    this.grnQrList,
+    this.grnQrList = const [],
   });
 
   GrnQrListState copyWith({
