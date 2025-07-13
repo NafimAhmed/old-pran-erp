@@ -1554,7 +1554,7 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<void> getGrnQrSave({
+  Future<void> grnStockQrSave({
     required String userId,
     required int orgId,
     required int itemId,
@@ -1571,6 +1571,32 @@ class DataRepoImpl implements DataRepo {
         "locId": locId,
         "qty": qty,
         "userId": userId,
+        'qtype': "STOCK_QR",
+      },
+    );
+    var decoderRes = GenericResponse.fromJson(response);
+    if (decoderRes.statusCode != 200) {
+      throw ApiDataException(decoderRes.errorMessage);
+    }
+  }
+
+  @override
+  Future<void> grnQrSave({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required num qty,
+    required int poHeaderId,
+  }) async {
+    var response = await httpService.putCall(
+      endPoint: ApiEndPoints.getGrnQrSave,
+      parameters: {
+        "orgId": orgId,
+        "itemId": itemId,
+        "poHeaderId": poHeaderId,
+        "qty": qty,
+        "userId": userId,
+        'qtype': "GRN_QR",
       },
     );
     var decoderRes = GenericResponse.fromJson(response);

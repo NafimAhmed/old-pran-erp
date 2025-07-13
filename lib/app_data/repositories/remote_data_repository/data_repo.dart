@@ -376,13 +376,20 @@ abstract class DataRepo {
     required String userId,
     required String qrType,
   });
-  Future<void> getGrnQrSave({
+  Future<void> grnStockQrSave({
     required String userId,
     required int orgId,
     required int itemId,
     required num qty,
     required String locId,
     required String subInv,
+  });
+  Future<void> grnQrSave({
+    required String userId,
+    required int orgId,
+    required int itemId,
+    required num qty,
+    required int poHeaderId,
   });
   Future<void> grnIssue({
     required String userId,
