@@ -12,6 +12,7 @@ final class GrnIssue extends GrnIssueEvent {
   final int itemId;
   final String locId;
   final String lotNo;
+  final num qty;
 
   GrnIssue({
     required this.userId,
@@ -19,6 +20,7 @@ final class GrnIssue extends GrnIssueEvent {
     required this.itemId,
     required this.locId,
     required this.lotNo,
+    required this.qty,
   });
 }
 
@@ -42,7 +44,7 @@ class GrnIssueBloc extends Bloc<GrnIssueEvent, GrnIssueState> {
   final DataRepo _dataRepo;
   GrnIssueBloc(this._dataRepo) : super(GrnIssueState()) {
     on<GrnIssue>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(isLoading: true, isSuccess: false, error: null));
       try {
         await _dataRepo.grnIssue(
           userId: event.userId,
@@ -50,8 +52,9 @@ class GrnIssueBloc extends Bloc<GrnIssueEvent, GrnIssueState> {
           itemId: event.itemId,
           locId: event.locId,
           lotNo: event.lotNo,
+          qty: event.qty,
         );
-        emit(state.copyWith(isLoading: false, isSuccess: true));
+        emit(state.copyWith(isLoading: false, isSuccess: true, error: null));
       } catch (error) {
         emit(state.copyWith(isLoading: false, isSuccess: false, error: error));
       }

@@ -52,7 +52,14 @@ class ItemStockListBloc extends Bloc<ItemStockListEvent, ItemStockListState> {
   List<ItemStock>? _itemStockList;
   ItemStockListBloc(this._dataRepo) : super(ItemStockListState()) {
     on<ItemStockListGet>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
+      emit(
+        state.copyWith(
+          isLoading: true,
+          isSuccess: false,
+          itemStockList: null,
+          selectedValue: null,
+        ),
+      );
       try {
         var response = await _dataRepo.getItemStock(orgId: event.orgId);
         _itemStockList = response;
