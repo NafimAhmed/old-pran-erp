@@ -181,10 +181,11 @@ class _InvC9ScreenBodyState extends State<InvC9ScreenBody> {
                               context.read<GrnIssueBloc>().add(
                                 GrnIssue(
                                   userId: loggedUser.userId.toString(),
-                                  orgId: grnQr!.organizationId!,
-                                  itemId: grnQr!.inventoryItemId!,
+                                  orgId: grnQr!.organizationId ?? 0,
+                                  itemId: grnQr!.inventoryItemId ?? 0,
                                   locId: grnQr!.locatorId?.toString() ?? "",
-                                  lotNo: grnQr!.lotNumber!,
+                                  lotNo: grnQr!.lotNumber ?? "",
+                                  qty: grnQr!.qty ?? 0,
                                 ),
                               );
                             }
