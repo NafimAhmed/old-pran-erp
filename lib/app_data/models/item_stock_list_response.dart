@@ -56,7 +56,7 @@ class ItemStock {
   final int? inventoryItemId;
   final String? itemCode;
   final String? itemName;
-  final int? secondaryLocator;
+  final int? locatorId;
   final String? subinventoryCode;
   final String? locatorDesc;
   final double? qty;
@@ -65,7 +65,7 @@ class ItemStock {
     this.inventoryItemId,
     this.itemCode,
     this.itemName,
-    this.secondaryLocator,
+    this.locatorId,
     this.subinventoryCode,
     this.locatorDesc,
     this.qty,
@@ -83,7 +83,7 @@ class ItemStock {
     inventoryItemId: inventoryItemId ?? this.inventoryItemId,
     itemCode: itemCode ?? this.itemCode,
     itemName: itemName ?? this.itemName,
-    secondaryLocator: secondaryLocator ?? this.secondaryLocator,
+    locatorId: secondaryLocator ?? this.locatorId,
     subinventoryCode: subinventoryCode ?? this.subinventoryCode,
     locatorDesc: locatorDesc ?? this.locatorDesc,
     qty: qty ?? this.qty,
@@ -97,7 +97,7 @@ class ItemStock {
     inventoryItemId: json["INVENTORY_ITEM_ID"],
     itemCode: json["Item_Code"],
     itemName: json["Item_Name"],
-    secondaryLocator: json["SECONDARY_LOCATOR"],
+    locatorId: json["Locator_Id"],
     subinventoryCode: json["SUBINVENTORY_CODE"],
     locatorDesc: json["Locator_desc"],
     qty: json["qty"]?.toDouble(),
@@ -107,7 +107,7 @@ class ItemStock {
     "INVENTORY_ITEM_ID": inventoryItemId,
     "Item_Code": itemCode,
     "Item_Name": itemName,
-    "SECONDARY_LOCATOR": secondaryLocator,
+    "Locator_Id": locatorId,
     "SUBINVENTORY_CODE": subinventoryCode,
     "Locator_desc": locatorDesc,
     "qty": qty,
