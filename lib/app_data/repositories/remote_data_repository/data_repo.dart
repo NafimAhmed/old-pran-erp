@@ -397,6 +397,7 @@ abstract class DataRepo {
     required int itemId,
     required String locId,
     required String lotNo,
+    required num qty,
   });
   Future<void> grnRcv({
     required String userId,

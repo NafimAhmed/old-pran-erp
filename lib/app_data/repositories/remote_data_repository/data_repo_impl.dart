@@ -1612,6 +1612,7 @@ class DataRepoImpl implements DataRepo {
     required int itemId,
     required String locId,
     required String lotNo,
+    required num qty,
   }) {
     return httpService
         .postCall(
@@ -1622,6 +1623,7 @@ class DataRepoImpl implements DataRepo {
             "inventory_id": itemId,
             "locatorid": locId,
             "lot_no": lotNo,
+            "V_QTY": qty,
           },
         )
         .then((response) {
