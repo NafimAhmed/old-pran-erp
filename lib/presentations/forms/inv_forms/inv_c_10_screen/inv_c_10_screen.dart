@@ -90,6 +90,10 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                 qrType: "STOCK_QR",
               ),
             );
+            var org = context.read<VariableStateHandlerCubit<UserOrg>>().state!;
+            context.read<ItemStockListBloc>().add(
+              ItemStockListGet(orgId: org.organizationId ?? 0),
+            );
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: const Text("Save Successful"),
@@ -201,7 +205,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                         subInv.text =
                             (state.selectedValue!.subinventoryCode ?? '');
                         locator.text =
-                            state.selectedValue!.locatorDesc?.toString() ?? '';
+                            state.selectedValue!.locatorId?.toString() ?? '';
                       },
                       builder: (context, state) {
                         if (state.selectedValue != null) {
@@ -214,31 +218,31 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                 focusNode: goodQtyFocusNode,
                                 textController: qty,
                               ),
-                              const SizedBox(height: 10),
-                              CommonLableWthTextField(
-                                readOnly: true,
-                                lableName: "Sub Inventory",
-                                focusNode: badQtyFocusNode,
-                                textController: subInv,
-                              ),
-                              const SizedBox(height: 10),
-                              CommonLableWthTextField(
-                                lableName: "Locator",
-                                readOnly: true,
-                                focusNode: quantityFocusNode,
-                                textController: locator,
-                                keyboardType: TextInputType.phone,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Please Enter Quantity";
-                                  }
-                                  return null;
-                                },
-                                onChanged: (value) {},
-                              ),
+                              // const SizedBox(height: 10),
+                              // CommonLableWthTextField(
+                              //   readOnly: true,
+                              //   lableName: "Sub Inventory",
+                              //   focusNode: badQtyFocusNode,
+                              //   textController: subInv,
+                              // ),
+                              // const SizedBox(height: 10),
+                              // CommonLableWthTextField(
+                              //   lableName: "Locator",
+                              //   readOnly: true,
+                              //   focusNode: quantityFocusNode,
+                              //   textController: locator,
+                              //   keyboardType: TextInputType.phone,
+                              //   inputFormatters: [
+                              //     FilteringTextInputFormatter.digitsOnly,
+                              //   ],
+                              //   validator: (value) {
+                              //     if (value == null || value.isEmpty) {
+                              //       return "Please Enter Quantity";
+                              //     }
+                              //     return null;
+                              //   },
+                              //   onChanged: (value) {},
+                              // ),
                             ],
                           );
                         }
