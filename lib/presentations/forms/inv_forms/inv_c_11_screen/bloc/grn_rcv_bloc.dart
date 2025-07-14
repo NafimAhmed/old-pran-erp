@@ -28,7 +28,7 @@ class GrnRcvState extends BaseState {
   GrnRcvState copyWith({bool? isLoading, Object? error, bool? isSuccess}) {
     return GrnRcvState(
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      error: error,
       isSuccess: isSuccess ?? this.isSuccess,
     );
   }
@@ -38,7 +38,7 @@ class GrnRcvBloc extends Bloc<GrnRcvEvent, GrnRcvState> {
   final DataRepo _dataRepo;
   GrnRcvBloc(this._dataRepo) : super(GrnRcvState()) {
     on<GrnRcv>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(isLoading: true, isSuccess: false, error: null));
       try {
         await _dataRepo.grnRcv(
           userId: event.userId,
@@ -47,7 +47,7 @@ class GrnRcvBloc extends Bloc<GrnRcvEvent, GrnRcvState> {
           locId: event.locId,
           lotNo: event.lotNo,
         );
-        emit(state.copyWith(isLoading: false, isSuccess: true));
+        emit(state.copyWith(isLoading: false, isSuccess: true, error: null));
       } catch (error) {
         emit(state.copyWith(isLoading: false, isSuccess: false, error: error));
       }
