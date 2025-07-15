@@ -23,15 +23,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => UserMenuBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => LoggedUserInfoCubit(getService()),
-        ),
-        BlocProvider(
-          create: (context) => UserOrgBloc(getService()),
-        ),
+        BlocProvider(create: (context) => UserMenuBloc(getService())),
+        BlocProvider(create: (context) => LoggedUserInfoCubit(getService())),
+        BlocProvider(create: (context) => UserOrgBloc(getService())),
       ],
       child: MaterialApp.router(
         title: 'ExpressERP',
