@@ -368,14 +368,14 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Sub Inventory",
+                                          "Locator",
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 15,
                                             color: appTheme.primary,
                                           ),
                                         ),
                                         Text(
-                                          data.subInventoryCode ?? "-",
+                                          data.locatorDesc ?? "-",
                                           style: textTheme.bodySmall!.copyWith(
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold,
@@ -390,14 +390,14 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          "Locator",
+                                          "QTY",
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 15,
                                             color: appTheme.primary,
                                           ),
                                         ),
                                         Text(
-                                          data.locatorId?.toString() ?? "-",
+                                          data.qty?.toString() ?? "-",
                                           style: textTheme.bodySmall!.copyWith(
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold,
@@ -417,7 +417,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Trn Id",
+                                          "LOT Number",
                                           style: textTheme.bodyMedium!.copyWith(
                                             fontSize: 15,
                                             color: appTheme.primary,
