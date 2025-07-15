@@ -1,17 +1,21 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
+import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/read_qr_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/text_input_formatters.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/rack_qr_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/cubit/grn_item_qr_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_11_screen/bloc/grn_on_hand_qty_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_11_screen/bloc/grn_rcv_bloc.dart';
 
 import '../../../../core/utils/healper_functions.dart';
@@ -26,6 +30,7 @@ class InvC11Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => GrnRcvBloc(getService())),
+        BlocProvider(create: (context) => GrnOnHandQtyBloc(getService())),
         BlocProvider(create: (context) => RackQrCubit()),
         BlocProvider(create: (context) => GrnItemQrCubit()),
       ],
@@ -42,8 +47,11 @@ class InvC11ScreenBody extends StatefulWidget {
 }
 
 class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
+  TextEditingController lotNoController = TextEditingController();
+  FocusNode lotNoFocusNode = FocusNode();
   GrnQr? grnQr;
   MobileScannerController controller = MobileScannerController();
+
   List<String> rackQrData = [];
   late UserInfoModel loggedUser;
   @override
@@ -51,6 +59,13 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    lotNoController.dispose();
+    lotNoFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,6 +81,10 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                 backgroundColor: appTheme.primary,
               ),
             );
+            context.read<GrnOnHandQtyBloc>().add(GrnOnHandQtyReset());
+            lotNoController.clear();
+            lotNoFocusNode.unfocus();
+
             context.read<GrnItemQrCubit>().resetItemData();
             context.read<RackQrCubit>().resetRackData();
           } else if (state.error != null) {
@@ -100,7 +119,16 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                 ],
               ),
               const SizedBox(width: 10),
-              BlocBuilder<GrnItemQrCubit, GrnItemQrState>(
+              BlocConsumer<GrnItemQrCubit, GrnItemQrState>(
+                listener: (context, state) {
+                  if (state is GrnItemQrDataLoaded) {
+                    if (state.grnQr.lotNumber != null) {
+                      context.read<GrnOnHandQtyBloc>().add(
+                        GrnOnHandQtyGet(lotNo: state.grnQr.lotNumber!),
+                      );
+                    }
+                  }
+                },
                 builder: (context, state) {
                   if (state is GrnItemQrInitial) {
                     grnQr = null;
@@ -219,6 +247,61 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                   return Container();
                 },
               ),
+              BlocConsumer<GrnOnHandQtyBloc, GrnOnHandQtyState>(
+                listenWhen: (previous, current) {
+                  final preQty = previous.onHandQty?.qrOnHandQty;
+                  final currQty = current.onHandQty?.qrOnHandQty;
+                  if (currQty == null || currQty == 0) return false;
+                  if (preQty == currQty) return false;
+                  return true;
+                },
+                listener: (context, state) {
+                  if (state.isSuccess) {
+                    lotNoController.text =
+                        state.onHandQty?.qrOnHandQty.toString() ?? "";
+                  }
+                },
+                buildWhen: (previous, current) {
+                  final preQty = previous.onHandQty?.qrOnHandQty;
+                  final currQty = current.onHandQty?.qrOnHandQty;
+                  if (currQty == null || currQty == 0) return false;
+                  if (preQty == currQty) return false;
+                  return true;
+                },
+
+                builder: (context, state) {
+                  if (state.isSuccess) {
+                    return Column(
+                      children: [
+                        const SizedBox(height: 15),
+                        CommonTextFieldWidget(
+                          controller: lotNoController,
+                          focusNode: lotNoFocusNode,
+                          labelText: "Split Quantity",
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d*\.?\d*'),
+                            ),
+                            NumericalRangeFormatter(
+                              min: 1,
+                              max: state.onHandQty?.qrOnHandQty ?? 0,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {},
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter an quantity";
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
               const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -228,17 +311,45 @@ class _InvC11ScreenBodyState extends State<InvC11ScreenBody> {
                       builder: (context, state) {
                         return ElevatedButton(
                           onPressed: () {
-                            if (grnQr != null && rackQrData.isNotEmpty) {
-                              context.read<GrnRcvBloc>().add(
-                                GrnRcv(
-                                  userId: loggedUser.userId.toString(),
-                                  orgId: grnQr!.organizationId!,
-                                  itemId: grnQr!.inventoryItemId!,
-                                  locId: rackQrData[0],
-                                  lotNo: grnQr!.lotNumber!,
+                            if (grnQr == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please scan Item QR first"),
+                                  backgroundColor: Colors.red,
                                 ),
                               );
+                              return;
                             }
+                            if (rackQrData.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please scan Rack QR first"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+                            if (lotNoController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("On Hand Qty is Zero"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+                            context.read<GrnRcvBloc>().add(
+                              GrnRcv(
+                                userId: loggedUser.userId.toString(),
+                                orgId: grnQr!.organizationId!,
+                                itemId: grnQr!.inventoryItemId!,
+                                locId: rackQrData[0],
+                                lotNo: grnQr!.lotNumber!,
+                                pQty: lotNoController.text.isEmpty
+                                    ? "0"
+                                    : lotNoController.text,
+                              ),
+                            );
                           },
                           child: Text(
                             state.isLoading ? "Receiving..." : "Receive",

@@ -14,6 +14,7 @@ import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_on_hand_qty_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_qr_list_response.dart';
@@ -405,7 +406,9 @@ abstract class DataRepo {
     required int itemId,
     required String locId,
     required String lotNo,
+    required String? pQty,
   });
+  Future<GrnQrOnhandQty> getGrnQrOnHandQty({required String lotNo});
   Future<List<UserOrg>> getGrnOrgList({required int ouId});
   Future<List<MOReqTask>> getMOReqList({required String userId});
   Future<void> moReqSave({required String taskStatus, required int taskId});

@@ -18,6 +18,7 @@ import 'package:pran_rfl_erp/app_data/models/customer_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/department_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/generic_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_jo_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/grn_on_hand_qty_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_org_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_po_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/grn_purchase_req_list_response.dart';
@@ -1641,6 +1642,7 @@ class DataRepoImpl implements DataRepo {
     required int itemId,
     required String locId,
     required String lotNo,
+    required String? pQty,
   }) {
     return httpService
         .putCall(
@@ -1651,6 +1653,7 @@ class DataRepoImpl implements DataRepo {
             "inventory_id": itemId,
             "locatorid": locId,
             "lot_no": lotNo,
+            "p_qty": pQty,
           },
         )
         .then((response) {
@@ -1658,6 +1661,19 @@ class DataRepoImpl implements DataRepo {
           if (decoderRes.statusCode != 200) {
             throw ApiDataException(decoderRes.errorMessage);
           }
+        });
+  }
+
+  @override
+  Future<GrnQrOnhandQty> getGrnQrOnHandQty({required String lotNo}) {
+    return httpService
+        .getCall(endPoint: ApiEndPoints.grnTrans, parameters: {"lotNum": lotNo})
+        .then((response) {
+          var decoderRes = GrnQrOnHandQtyResponse.fromJson(response);
+          if (decoderRes.statusCode != 200) {
+            throw ApiDataException(decoderRes.errmsg);
+          }
+          return decoderRes.grnQrOnhandQty ?? GrnQrOnhandQty();
         });
   }
 
