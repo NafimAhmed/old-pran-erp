@@ -12,6 +12,7 @@ final class GrnRcv extends GrnRcvEvent {
   final int itemId;
   final String locId;
   final String lotNo;
+  final String pQty;
 
   GrnRcv({
     required this.userId,
@@ -19,6 +20,7 @@ final class GrnRcv extends GrnRcvEvent {
     required this.itemId,
     required this.locId,
     required this.lotNo,
+    required this.pQty,
   });
 }
 
@@ -46,6 +48,7 @@ class GrnRcvBloc extends Bloc<GrnRcvEvent, GrnRcvState> {
           itemId: event.itemId,
           locId: event.locId,
           lotNo: event.lotNo,
+          pQty: event.pQty,
         );
         emit(state.copyWith(isLoading: false, isSuccess: true, error: null));
       } catch (error) {
