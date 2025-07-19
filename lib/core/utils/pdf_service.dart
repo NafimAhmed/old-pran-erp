@@ -299,11 +299,9 @@ class PdfService {
                               endIndent: 0,
                             ),
                             pw.Row(
-                              mainAxisAlignment:
-                                  pw.MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
                               children: [
                                 pw.Expanded(
+                                  flex: 2,
                                   child: pw.Row(
                                     crossAxisAlignment:
                                         pw.CrossAxisAlignment.start,
@@ -328,6 +326,7 @@ class PdfService {
                                     ],
                                   ),
                                 ),
+                                pw.SizedBox(width: 10),
                                 pw.Expanded(
                                   child: pw.Row(
                                     crossAxisAlignment:
@@ -345,7 +344,7 @@ class PdfService {
                                       pw.Expanded(
                                         child: pw.Text(
                                           grnQrData.qty?.toString() ?? "",
-                                          textAlign: pw.TextAlign.left,
+                                          textAlign: pw.TextAlign.right,
                                           style: const pw.TextStyle(
                                             fontSize: 8,
                                             color: PdfColors.black,

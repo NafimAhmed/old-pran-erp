@@ -27,14 +27,14 @@ class GrnItemQrCubit extends Cubit<GrnItemQrState> {
       GrnQr grnQr = GrnQr();
       grnQr = grnQr.copyWith(
         lotNumber: list[0],
-        organizationId: int.parse(list[1]),
-        qty: num.parse(list[2]),
-        inventoryItemId: int.parse(list[3]),
+        organizationId: int.tryParse(list[1]),
+        qty: num.tryParse(list[2]),
+        inventoryItemId: int.tryParse(list[3]),
         itemCode: list[4].split("-")[0],
         itemName: list[4].split("-")[1],
         subInventoryCode: list[5],
         locatorDesc: list[6],
-        locatorId: int.parse(list[7]),
+        locatorId: int.tryParse(list[7]),
       );
 
       emit(GrnItemQrDataLoaded(grnQr: grnQr));

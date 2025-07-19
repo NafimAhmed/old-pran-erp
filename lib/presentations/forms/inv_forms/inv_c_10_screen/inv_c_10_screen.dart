@@ -297,7 +297,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                     if (state.isSuccess) {
                       return ListView.separated(
                         itemBuilder: (context, index) {
-                          var data = state.grnQrList![index];
+                          var data = state.grnQrList[index];
                           return Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
