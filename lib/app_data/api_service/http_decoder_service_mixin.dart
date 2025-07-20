@@ -1,14 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
 
 mixin HttpDecoderServiceMixin {
-  Future<String> decodeResponse(
-    http.StreamedResponse response,
-  ) async {
+  Future<String> decodeResponse(http.StreamedResponse response) async {
     switch (response.statusCode) {
       case 200 || 201:
         var jsonBody = await response.stream.bytesToString();
+        //log("Response: $jsonBody");
         return jsonBody;
       case 401:
         throw UnauthorizedException(message: await _parseMessage(response));
@@ -27,7 +27,8 @@ mixin HttpDecoderServiceMixin {
 
       case 422:
         throw UnprocessableEntityException(
-            message: await _parseMessage(response));
+          message: await _parseMessage(response),
+        );
 
       case 403:
         throw ForbiddenException(message: await _parseMessage(response));
@@ -43,7 +44,8 @@ mixin HttpDecoderServiceMixin {
 
       case 500:
         throw InternalServerErrorException(
-            message: await _parseMessage(response));
+          message: await _parseMessage(response),
+        );
 
       default:
         throw ApiDataException(await _parseMessage(response));
