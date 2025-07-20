@@ -38,6 +38,7 @@ import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
 import 'package:pran_rfl_erp/app_data/models/purchase_requisition_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/qr_type_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -238,7 +239,8 @@ abstract class DataRepo {
     required String pDesc,
   });
   Future<List<RqrData>> getRePrintData({required String pTrno});
-  Future<void> enableRePrint({required String pTrno});
+  Future<List<Qrtype>> getQrtype();
+  Future<void> enableRePrint({required String pTrno, required String qrType});
 
   Future<List<JobDetail>> getJobDtlDrillDw({
     required String userid,

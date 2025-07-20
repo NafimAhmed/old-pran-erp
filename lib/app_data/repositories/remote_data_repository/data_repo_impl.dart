@@ -45,6 +45,7 @@ import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/project_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/purchase_requisition_details_response.dart';
 import 'package:pran_rfl_erp/app_data/models/purchase_requisition_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/qr_type_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_menu_response.dart';
 import 'package:pran_rfl_erp/app_data/models/qr_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart';
@@ -878,10 +879,26 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<void> enableRePrint({required String pTrno}) async {
+  Future<List<Qrtype>> getQrtype() {
+    return httpService
+        .getCall(endPoint: ApiEndPoints.getRePrintData, parameters: {})
+        .then((response) {
+          var decodedRes = QrTypeResponse.fromJson(response);
+          if (decodedRes.statusCode != 200) {
+            throw ApiDataException(decodedRes.message);
+          }
+          return decodedRes.qrtype ?? [];
+        });
+  }
+
+  @override
+  Future<void> enableRePrint({
+    required String pTrno,
+    required String qrType,
+  }) async {
     var response = await httpService.putCall(
       endPoint: ApiEndPoints.getRePrintData,
-      parameters: {"ptrno": pTrno},
+      parameters: {"ptrno": pTrno, "qrtype": qrType},
     );
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {

@@ -8,8 +8,9 @@ sealed class EnableRePrintQrEvent {}
 
 final class EnableRePrintQrData extends EnableRePrintQrEvent {
   final String lotNo;
+  final String qrType;
 
-  EnableRePrintQrData({required this.lotNo});
+  EnableRePrintQrData({required this.lotNo, required this.qrType});
 }
 
 @immutable
@@ -35,7 +36,10 @@ class EnableRePrintQrBloc
       emit(EnableRePrintQrLoading());
 
       try {
-        await _dataService.enableRePrint(pTrno: event.lotNo);
+        await _dataService.enableRePrint(
+          pTrno: event.lotNo,
+          qrType: event.qrType,
+        );
         emit(EnableRePrintQrSuccess());
       } catch (e) {
         emit(EnableRePrintQrError(error: e));
