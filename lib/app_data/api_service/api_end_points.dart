@@ -11,7 +11,8 @@ class ApiEndPoints {
   static const String getUserOrg = "/ords/rpro/batch/userorgs";
   static const String getRcvingOrgs = "/ords/rpro/opm/batch/rcvingOrgs";
   static const String getUserBatchData = "/ords/rpro/batch/prodBatchData";
-  static const String getUserBasicData = "/ords/rpro/batch/prodBasicData";
+  static const String getUserBasicData = "/ords/rpro/batch/userbasicdata";
+  static const String getProdBasicData = "/ords/rpro/batch/prodBasicData";
   static const String interOrgTransfer = "/ords/rpro/invtran/IOTapi";
   static const String ebsInterOrgTransfer = "/ords/rpro/invtran/EBSIOTapi";
   static const String userQrSave = "/ords/rpro/batch/userqrsave";

@@ -26,6 +26,7 @@ import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.
 import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/locator_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
@@ -45,6 +46,7 @@ import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/sub_inv_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -109,7 +111,7 @@ abstract class DataRepo {
     required String orgid,
     required String jobOrderNo,
   });
-  Future<ProdBasicDataResponse> getUserBasicData({
+  Future<ProdBasicDataResponse> getProdBasicData({
     required String userid,
     required String orgid,
   });
@@ -138,6 +140,9 @@ abstract class DataRepo {
     required String qty,
     required String shiftnm,
     required String shiftFromTime,
+    required String subInvCode,
+    required int locId,
+    required String locator,
     num? hr,
   });
 
@@ -444,4 +449,13 @@ abstract class DataRepo {
     required String rackId,
   });
   Future<List<ItemStock>> getItemStock({required int orgId});
+  Future<List<SubInventory>> getSubInventory({
+    required int orgId,
+    required int itemId,
+  });
+  Future<List<Locator>> getLocator({
+    required int orgId,
+    required int itemId,
+    required String subInvCode,
+  });
 }

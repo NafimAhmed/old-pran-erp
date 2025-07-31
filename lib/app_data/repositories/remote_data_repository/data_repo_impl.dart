@@ -32,6 +32,7 @@ import 'package:pran_rfl_erp/app_data/models/job_order_completion_list_response.
 import 'package:pran_rfl_erp/app_data/models/job_order_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/job_order_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/jobhist_response.dart';
+import 'package:pran_rfl_erp/app_data/models/locator_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/lot_trn_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_assign_response.dart';
 import 'package:pran_rfl_erp/app_data/models/machine_create_response.dart';
@@ -52,6 +53,7 @@ import 'package:pran_rfl_erp/app_data/models/rcv_inv_org_trn_data_response.dart'
 import 'package:pran_rfl_erp/app_data/models/re_print_qr_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/smpl_qr_list_response.dart';
+import 'package:pran_rfl_erp/app_data/models/sub_inv_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sub_inv_response.dart';
 import 'package:pran_rfl_erp/app_data/models/sys_menu_parent_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
@@ -310,12 +312,12 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<ProdBasicDataResponse> getUserBasicData({
+  Future<ProdBasicDataResponse> getProdBasicData({
     required String userid,
     required String orgid,
   }) async {
     var response = await httpService.postCall(
-      endPoint: ApiEndPoints.getUserBasicData,
+      endPoint: ApiEndPoints.getProdBasicData,
       parameters: {"userid": userid, "orgid": orgid},
     );
     var decoderRes = ProdBasicDataResponse.fromJson(response);
@@ -381,6 +383,9 @@ class DataRepoImpl implements DataRepo {
     required String qty,
     required String shiftnm,
     required String shiftFromTime,
+    required String subInvCode,
+    required int locId,
+    required String locator,
     num? hr,
   }) async {
     var response = await httpService.postCall(
@@ -396,6 +401,9 @@ class DataRepoImpl implements DataRepo {
         "qty": qty,
         "shiftnm": shiftnm,
         "shiftFromTime": shiftFromTime,
+        "p_SUBINV": subInvCode,
+        "p_LOCATOR_id": locId,
+        "P_LOCATOR": locator,
         "hr": hr,
       },
     );
@@ -1907,6 +1915,49 @@ class DataRepoImpl implements DataRepo {
             throw ApiDataException(decodedRes.message);
           }
           return decodedRes.itemStock ?? [];
+        });
+  }
+
+  @override
+  Future<List<SubInventory>> getSubInventory({
+    required int orgId,
+    required int itemId,
+  }) {
+    return httpService
+        .getCall(
+          endPoint: ApiEndPoints.getUserBasicData,
+          parameters: {"orgid": orgId, "itmid": itemId},
+        )
+        .then((response) {
+          var decodedRes = SubInvListResponse.fromJson(response);
+          if (decodedRes.statusCode != 200) {
+            throw ApiDataException(decodedRes.message);
+          }
+          return decodedRes.subInventory ?? [];
+        });
+  }
+
+  @override
+  Future<List<Locator>> getLocator({
+    required int orgId,
+    required int itemId,
+    required String subInvCode,
+  }) {
+    return httpService
+        .putCall(
+          endPoint: ApiEndPoints.getUserBasicData,
+          parameters: {
+            "orgid": orgId,
+            "itemId": itemId,
+            "subInvCode": subInvCode,
+          },
+        )
+        .then((response) {
+          var decodedRes = LocatorListResponse.fromJson(response);
+          if (decodedRes.statusCode != 200) {
+            throw ApiDataException(decodedRes.message);
+          }
+          return decodedRes.locator ?? [];
         });
   }
 }
