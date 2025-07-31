@@ -26,10 +26,7 @@ class MOTaskWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: taskStatusTypeCubit,
-      child: TaskWidgetContent(
-        data: data,
-        index: index,
-      ),
+      child: TaskWidgetContent(data: data, index: index),
     );
   }
 }
@@ -47,12 +44,13 @@ class TaskWidgetContent extends StatelessWidget {
         key: Key(data.taskId.toString()),
         direction:
             context.watch<VariableStateHandlerCubit<TaskStatusType>>().state !=
-                    null
-                ? DismissDirection.startToEnd
-                : DismissDirection.none,
+                null
+            ? DismissDirection.startToEnd
+            : DismissDirection.none,
         dismissThresholds: const {DismissDirection.startToEnd: 0.8},
         confirmDismiss: (direction) async {
-          var result = await showDialog<bool>(
+          var result =
+              await showDialog<bool>(
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
@@ -63,14 +61,18 @@ class TaskWidgetContent extends StatelessWidget {
                         child: const Text("Cancel"),
                         onPressed: () {
                           Navigator.pop(
-                              context, false); // Return false if cancelled
+                            context,
+                            false,
+                          ); // Return false if cancelled
                         },
                       ),
                       TextButton(
                         child: const Text("OK"),
                         onPressed: () {
                           Navigator.pop(
-                              context, true); // Return true if confirmed
+                            context,
+                            true,
+                          ); // Return true if confirmed
                         },
                       ),
                     ],
@@ -82,20 +84,23 @@ class TaskWidgetContent extends StatelessWidget {
             var status = context
                 .read<VariableStateHandlerCubit<TaskStatusType>>()
                 .state!;
-            var loggedUser =
-                context.read<LoggedUserInfoCubit>().state.userInfoModel!;
+            var loggedUser = context
+                .read<LoggedUserInfoCubit>()
+                .state
+                .userInfoModel!;
             context.read<MOReqSaveBloc>().add(
-                  MOReqSave(
-                    userId: loggedUser.userId,
-                    taskStatus: status.value,
-                    taskId: data.taskId ?? 0,
-                  ),
-                );
+              MOReqSave(
+                userId: loggedUser.userId,
+                taskStatus: status.value,
+                taskId: data.taskId ?? 0,
+              ),
+            );
 
             // Listen to the stream of TaskAssignBloc
             final completer = Completer<bool>();
-            final subscription =
-                context.read<MOReqSaveBloc>().stream.listen((state) {
+            final subscription = context.read<MOReqSaveBloc>().stream.listen((
+              state,
+            ) {
               if (state is MOReqSaveSuccess) {
                 completer.complete(true); // Complete with true on success
               } else if (state is MOReqSaveError) {
@@ -123,13 +128,8 @@ class TaskWidgetContent extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(
-                width: 10,
-              ),
-              Icon(
-                Icons.save,
-                color: appTheme.white,
-              )
+              const SizedBox(width: 10),
+              Icon(Icons.save, color: appTheme.white),
             ],
           ),
         ),
@@ -183,51 +183,54 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Item",
-                          style: textTheme.bodyMedium!.copyWith(
-                            color: appTheme.white,
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Item",
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.white,
+                            ),
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              data.item ?? "",
-                              style: textTheme.bodySmall!.copyWith(
-                                color: appTheme.white,
-                              ),
+                          Text(
+                            data.item ?? "",
+                            style: textTheme.bodySmall!.copyWith(
+                              color: appTheme.white,
                             ),
-                            Text(
-                              "  X ",
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Qty",
+                            style: textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.white,
                             ),
-                            Text(
-                              data.qty.toString(),
-                              style: textTheme.bodyMedium!.copyWith(
-                                color: appTheme.white,
-                              ),
+                          ),
+                          Text(
+                            data.qty?.toString() ?? "",
+                            style: textTheme.bodySmall!.copyWith(
+                              color: appTheme.white,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -253,7 +256,7 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                     Flexible(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             "Requested by",
@@ -273,9 +276,7 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -301,7 +302,7 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                     Flexible(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             "Given Org",
@@ -321,9 +322,7 @@ class TaskWidgetContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
@@ -335,7 +334,8 @@ class TaskWidgetContent extends StatelessWidget {
                           if (value != null) {
                             context
                                 .read<
-                                    VariableStateHandlerCubit<TaskStatusType>>()
+                                  VariableStateHandlerCubit<TaskStatusType>
+                                >()
                                 .update(value);
                           }
                         },
