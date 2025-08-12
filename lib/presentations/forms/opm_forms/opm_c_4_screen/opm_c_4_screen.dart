@@ -25,9 +25,7 @@ class OpmC4Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => TopJoInfoBloc(getService()),
-        ),
+        BlocProvider(create: (context) => TopJoInfoBloc(getService())),
         BlocProvider(
           create: (context) => JobDetailsBloc(getService()), //FG/SFG details
         ),
@@ -39,9 +37,7 @@ class OpmC4Screen extends StatelessWidget {
           create: (context) => JobOrderInfoBloc(getService()), //FG/SFG Status
         ),
       ],
-      child: TransferDetailsScreenBody(
-        fromName: fromName,
-      ),
+      child: TransferDetailsScreenBody(fromName: fromName),
     );
   }
 }
@@ -72,80 +68,67 @@ class _TransferDetailsScreenBodyState extends State<TransferDetailsScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(appBartitle: widget.fromName), //job report
-      body: BlocListener<JobOrderInfoBloc, JobOrderInfoState>(
-        listener: (context, state) {},
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: BlocBuilder<TopJoInfoBloc, TopJoInfoState>(
-              builder: (context, state) {
-                if (state is TopJoInfoLoading) {
-                  return const CircularProgressIndicator();
-                }
-                if (state is TopJoInfoSuccess) {
-                  var jobHisDataSource = JobHistoryDataSource(
-                    jobHistoryData: state.topJoInfoList,
-                  );
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: BlocBuilder<TopJoInfoBloc, TopJoInfoState>(
+          builder: (context, state) {
+            if (state is TopJoInfoLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is TopJoInfoSuccess) {
+              var jobHisDataSource = JobHistoryDataSource(
+                jobHistoryData: state.topJoInfoList,
+              );
 
-                  chartData = state.topJoInfoList
-                      .map(
-                        (e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0),
-                      )
-                      .toList();
+              chartData = state.topJoInfoList
+                  .map((e) => _ChartData(e.jobOrderNo ?? "", e.goodQty ?? 0))
+                  .toList();
 
-                  return Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CommonTextFieldWidget(
-                        controller: _searchController,
-                        hintText: "Search Job Order No",
-                        onChanged: (value) {
-                          context.read<TopJoInfoBloc>().add(
-                                TopJoInfoFilter(
-                                  searchValue: _searchController.text,
-                                ),
-                              );
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: JobDetailsTableWidget(
-                          controller: controller,
-                          source: jobHisDataSource,
-                          onCellTap: (details) {
-                            if ([0, 1, 2]
-                                .contains(details.rowColumnIndex.columnIndex)) {
-                              var jobOrder = jobHisDataSource
-                                  .jobHisData[
-                                      details.rowColumnIndex.rowIndex - 1]
-                                  .jobOrderNo;
+              return Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CommonTextFieldWidget(
+                    controller: _searchController,
+                    hintText: "Search Job Order No",
+                    onChanged: (value) {
+                      context.read<TopJoInfoBloc>().add(
+                        TopJoInfoFilter(searchValue: _searchController.text),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: JobDetailsTableWidget(
+                      controller: controller,
+                      source: jobHisDataSource,
+                      onCellTap: (details) {
+                        if ([
+                          0,
+                          1,
+                          2,
+                        ].contains(details.rowColumnIndex.columnIndex)) {
+                          var jobOrder = jobHisDataSource
+                              .jobHisData[details.rowColumnIndex.rowIndex - 1]
+                              .jobOrderNo;
 
-                              AppModal.showCustomModal(
-                                context,
-                                content: TopJoInfoDialog(
-                                  jobOrder: jobOrder ?? "",
-                                  blocContext: context,
-                                  userId: loggedUser.userId,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                return Container();
-              },
-            ),
-          ),
+                          AppModal.showCustomModal(
+                            context,
+                            content: TopJoInfoDialog(
+                              jobOrder: jobOrder ?? "",
+                              blocContext: context,
+                              userId: loggedUser.userId,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }
+            return Container();
+          },
         ),
       ),
       bottomNavigationBar: const UserDetailsWidget(),
