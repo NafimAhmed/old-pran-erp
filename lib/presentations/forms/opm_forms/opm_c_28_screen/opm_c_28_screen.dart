@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pran_rfl_erp/app_data/models/locator_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/shift_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/sub_inv_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_org_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -20,7 +22,9 @@ import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/shift_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/locator_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/prod_batch_data_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/sub_inv_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_print_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_qr_save_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/user_basic_data_bloc.dart';
@@ -43,6 +47,8 @@ class OpmC28Screen extends StatelessWidget {
         BlocProvider(create: (context) => ProdBatchDataBloc(getService())),
         BlocProvider(create: (context) => UserQrSaveBloc(getService())),
         BlocProvider(create: (context) => UserQrPrintBloc(getService())),
+        BlocProvider(create: (context) => SubInvListBloc(getService())),
+        BlocProvider(create: (context) => LocatorListBloc(getService())),
         BlocProvider(create: (context) => ShiftDataBloc(getService())),
         BlocProvider(create: (context) => VariableStateHandlerCubit<UserOrg>()),
         BlocProvider(
@@ -143,6 +149,21 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
     var seletedShift = context
         .read<VariableStateHandlerCubit<ShiftData>>()
         .state;
+    var subInvCode = context
+        .read<LocatorListBloc>()
+        .state
+        .selectedValue!
+        .subinventoryCode!;
+    var locId = context
+        .read<LocatorListBloc>()
+        .state
+        .selectedValue!
+        .secondaryLocator!;
+    var locator = context
+        .read<LocatorListBloc>()
+        .state
+        .selectedValue!
+        .fullLocator!;
     context.read<UserQrSaveBloc>().add(
       UserQrSave(
         userid: loggedUser.userId,
@@ -155,6 +176,9 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
         qty: quantityTextController.text,
         shiftnm: seletedShift?.shiftName ?? "",
         shiftFromTime: timeTextController.text,
+        subInvCode: subInvCode,
+        locId: locId,
+        locator: locator,
         hr: hrTextController.text.isEmpty
             ? 0
             : num.parse(hrTextController.text),
@@ -219,6 +243,16 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
       goodQtyTextController.text = value.totalPQty?.toString() ?? "0";
       badQtyTextController.text = '0';
       quantityTextController.text = value.totalPQty?.toString() ?? "0";
+      context.read<SubInvListBloc>().add(SubInvListDeselect());
+      context.read<SubInvListBloc>().add(
+        SubInvListGet(
+          orgId: context
+              .read<VariableStateHandlerCubit<UserOrg>>()
+              .state!
+              .organizationId!,
+          itemId: value.inventoryItemId!,
+        ),
+      );
     }
   }
 
@@ -239,6 +273,8 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
           context.read<VariableStateHandlerCubit<UserMachine>>().reset();
           context.read<VariableStateHandlerCubit<UserBatch>>().reset();
           context.read<VariableStateHandlerCubit<ShiftData>>().reset();
+          context.read<SubInvListBloc>().add(SubInvListDeselect());
+          context.read<LocatorListBloc>().add(LocatorListDeselect());
           context.read<ShiftDataBloc>().add(ResetShiftData());
           context.read<UserBasicDataBloc>().add(
             UserBasicDataGet(
@@ -379,32 +415,91 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          Expanded(
-                            child: BlocBuilder<UserOrgBloc, UserOrgState>(
-                              builder: (context, state) {
-                                return const CustomDropdownSearch<UserOrg>(
-                                  hintText: "Select Sub Inv",
-                                  enabled: false,
-                                  items: [],
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child:
-                                BlocBuilder<
-                                  UserBasicDataBloc,
-                                  UserBasicDataState
-                                >(
-                                  builder: (context, state) {
-                                    return const CustomDropdownSearch<String>(
-                                      enabled: false,
-                                      hintText: "Select Locator",
-                                      items: [],
-                                    );
+                          BlocBuilder<SubInvListBloc, SubInvListState>(
+                            builder: (context, state) {
+                              return Expanded(
+                                child: CustomDropdownSearch<SubInventory>(
+                                  enabled: state.isSuccess
+                                      ? state.subInvList.isNotEmpty
+                                      : false,
+                                  value: state.selectedValue,
+                                  hintText: "Sub Inventory",
+
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      context.read<LocatorListBloc>().add(
+                                        LocatorListDeselect(),
+                                      );
+                                      context.read<SubInvListBloc>().add(
+                                        SubInvListSelect(selectedValue: value),
+                                      );
+                                      context.read<LocatorListBloc>().add(
+                                        LocatorListGet(
+                                          orgId:
+                                              context
+                                                  .read<
+                                                    VariableStateHandlerCubit<
+                                                      UserOrg
+                                                    >
+                                                  >()
+                                                  .state!
+                                                  .organizationId ??
+                                              0,
+                                          itemId:
+                                              context
+                                                  .read<
+                                                    VariableStateHandlerCubit<
+                                                      UserBatch
+                                                    >
+                                                  >()
+                                                  .state!
+                                                  .inventoryItemId ??
+                                              0,
+
+                                          subInvCode:
+                                              value.secondaryInventory ?? "",
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  items: state.subInvList,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Please Select Sub Inventory";
+                                    }
+                                    return null;
                                   },
                                 ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          BlocBuilder<LocatorListBloc, LocatorListState>(
+                            builder: (context, state) {
+                              return Expanded(
+                                child: CustomDropdownSearch<Locator>(
+                                  enabled: state.isSuccess
+                                      ? state.locatorList.isNotEmpty
+                                      : false,
+                                  value: state.selectedValue,
+                                  hintText: "Locator",
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      context.read<LocatorListBloc>().add(
+                                        LocatorListSelect(selectedValue: value),
+                                      );
+                                    }
+                                  },
+                                  items: state.locatorList,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Please Select Locator";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
