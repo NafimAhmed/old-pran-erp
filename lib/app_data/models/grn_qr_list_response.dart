@@ -58,7 +58,7 @@ class GrnQr {
   final String? lotNumber;
   final num? qty;
   final String? qrType;
-
+  final String? jobOrderNo;
   GrnQr({
     this.organizationId,
     this.organizationCode,
@@ -72,6 +72,7 @@ class GrnQr {
     this.lotNumber,
     this.qty,
     this.qrType,
+    this.jobOrderNo,
   });
 
   GrnQr copyWith({
@@ -87,6 +88,7 @@ class GrnQr {
     String? lotNumber,
     num? qty,
     String? qrType,
+    String? jobOrderNo,
   }) => GrnQr(
     organizationId: organizationId ?? this.organizationId,
     organizationCode: organizationCode ?? this.organizationCode,
@@ -100,6 +102,7 @@ class GrnQr {
     lotNumber: lotNumber ?? this.lotNumber,
     qty: qty ?? this.qty,
     qrType: qrType ?? this.qrType,
+    jobOrderNo: jobOrderNo ?? this.jobOrderNo,
   );
 
   factory GrnQr.fromJson(String str) => GrnQr.fromMap(json.decode(str));
@@ -119,6 +122,7 @@ class GrnQr {
     lotNumber: json["LOT_NUMBER"],
     qty: json["qty"],
     qrType: json["QR_TYPE"],
+    jobOrderNo: json["JOB_ORDER_NO"],
   );
 
   Map<String, dynamic> toMap() => {
@@ -134,5 +138,6 @@ class GrnQr {
     "LOT_NUMBER": lotNumber,
     "qty": qty,
     "QR_TYPE": qrType,
+    "JOB_ORDER_NO": jobOrderNo,
   };
 }

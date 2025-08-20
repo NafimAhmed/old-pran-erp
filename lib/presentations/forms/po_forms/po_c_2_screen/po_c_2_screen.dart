@@ -565,27 +565,27 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // Column(
-                                    //   crossAxisAlignment:
-                                    //       CrossAxisAlignment.start,
-                                    //   children: [
-                                    //     Text(
-                                    //       "Job Order",
-                                    //       style: textTheme.bodyMedium!.copyWith(
-                                    //         fontSize: 15,
-                                    //         color: appTheme.primary,
-                                    //       ),
-                                    //     ),
-                                    //     Text(
-                                    //       data.batchId.toString(),
-                                    //       style: textTheme.bodySmall!.copyWith(
-                                    //         fontSize: 10,
-                                    //         fontWeight: FontWeight.bold,
-                                    //         color: appTheme.primary,
-                                    //       ),
-                                    //     ),
-                                    //   ],
-                                    // ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Job Order",
+                                          style: textTheme.bodyMedium!.copyWith(
+                                            fontSize: 15,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          data.jobOrderNo.toString(),
+                                          style: textTheme.bodySmall!.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: appTheme.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(width: 10),
                                     Column(
                                       crossAxisAlignment:

@@ -364,7 +364,7 @@ class PdfService {
                               endIndent: 0,
                             ),
                             pw.Text(
-                              "Sub Inv: ${grnQrData.subInventoryCode ?? ""}",
+                              "Job Order: ${grnQrData.jobOrderNo ?? ""}",
                               textAlign: pw.TextAlign.left,
                               style: const pw.TextStyle(
                                 fontSize: 8,
@@ -372,21 +372,21 @@ class PdfService {
                                 color: PdfColors.black,
                               ),
                             ),
-                            pw.Divider(
-                              color: PdfColors.black,
-                              height: 5,
-                              indent: 0,
-                              endIndent: 0,
-                            ),
-                            pw.Text(
-                              "Locator: ${grnQrData.locatorDesc ?? ""}",
-                              textAlign: pw.TextAlign.left,
-                              style: const pw.TextStyle(
-                                fontSize: 8,
+                            // pw.Divider(
+                            //   color: PdfColors.black,
+                            //   height: 5,
+                            //   indent: 0,
+                            //   endIndent: 0,
+                            // ),
+                            // pw.Text(
+                            //   "Locator: ${grnQrData.locatorDesc ?? ""}",
+                            //   textAlign: pw.TextAlign.left,
+                            //   style: const pw.TextStyle(
+                            //     fontSize: 8,
 
-                                color: PdfColors.black,
-                              ),
-                            ),
+                            //     color: PdfColors.black,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
