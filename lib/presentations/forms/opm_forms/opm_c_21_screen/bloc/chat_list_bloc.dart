@@ -9,9 +9,7 @@ sealed class ChatListEvent {}
 final class GetConversation extends ChatListEvent {
   final String userId;
 
-  GetConversation({
-    required this.userId,
-  });
+  GetConversation({required this.userId});
 }
 
 @immutable
@@ -39,9 +37,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
     on<GetConversation>((event, emit) async {
       emit(ChatListLoading());
       try {
-        var response = await _dataService.getMessages(
-          userid: event.userId,
-        );
+        var response = await _dataService.getMessages(userid: event.userId);
         emit(ChatListSuccess(conversation: response));
       } catch (e) {
         emit(ChatListError(error: e));

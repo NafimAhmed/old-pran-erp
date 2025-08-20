@@ -29,25 +29,17 @@ class OpmC22Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ChatBloc(getService()),
-        ),
+        BlocProvider(create: (context) => ChatBloc(getService())),
         BlocProvider(
           create: (context) => BatchShiftChangeDataBloc(getService()),
         ),
-        BlocProvider(
-          create: (context) => ShiftDataBloc(getService()),
-        ),
+        BlocProvider(create: (context) => ShiftDataBloc(getService())),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<UserMachine>(),
         ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<UserOrg>(),
-        ),
+        BlocProvider(create: (context) => VariableStateHandlerCubit<UserOrg>()),
       ],
-      child: OpmC22ScreenBody(
-        fromName: fromName,
-      ),
+      child: OpmC22ScreenBody(fromName: fromName),
     );
   }
 }
@@ -104,9 +96,7 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             BlocBuilder<UserOrgBloc, UserOrgState>(
               builder: (context, state) {
                 return CommonDropDownMenuWidget<UserOrg>(
@@ -115,23 +105,22 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
                       ? state.userOrg.isNotEmpty
                       : false,
                   controller: orgDropDownTextController,
-                  dropdownMenuEntries:
-                      state is UserOrgSuccess ? state.userOrg : [],
+                  dropdownMenuEntries: state is UserOrgSuccess
+                      ? state.userOrg
+                      : [],
                   onSelected: (value) {
                     if (value != null) {
                       // FocusScope.of(context).unfocus();
                       FocusManager.instance.primaryFocus?.unfocus();
-                      context
-                          .read<VariableStateHandlerCubit<UserOrg>>()
-                          .update(value);
+                      context.read<VariableStateHandlerCubit<UserOrg>>().update(
+                        value,
+                      );
                     }
                   },
                 );
               },
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Form(
               key: fromKey,
               child: Row(
@@ -154,27 +143,25 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
                           null
                       ? Row(
                           children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
+                            const SizedBox(width: 10),
                             ElevatedButton(
                               onPressed: () {
                                 if (fromKey.currentState!.validate()) {
                                   var selectedOrg = context
                                       .read<
-                                          VariableStateHandlerCubit<UserOrg>>()
+                                        VariableStateHandlerCubit<UserOrg>
+                                      >()
                                       .state!;
                                   context.read<BatchShiftChangeDataBloc>().add(
-                                        GetBatch(
-                                          userId: loggedUser.userId,
-                                          orgId:
-                                              selectedOrg.organizationId ?? 0,
-                                          batchNo: batchNoController.text,
-                                        ),
-                                      );
-                                  context
-                                      .read<ShiftDataBloc>()
-                                      .add(GetShiftData());
+                                    GetBatch(
+                                      userId: loggedUser.userId,
+                                      orgId: selectedOrg.organizationId ?? 0,
+                                      batchNo: batchNoController.text,
+                                    ),
+                                  );
+                                  context.read<ShiftDataBloc>().add(
+                                    GetShiftData(),
+                                  );
                                 }
                               },
                               child: Text(
@@ -190,15 +177,11 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             BlocBuilder<BatchShiftChangeDataBloc, BatchShiftChangeDataState>(
               builder: (context, state) {
                 if (state is BatchShiftChangeDataLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (state is BatchShiftChangeDataSuccess) {
                   return Expanded(
@@ -219,7 +202,7 @@ class _OpmC22ScreenBodyState extends State<OpmC22ScreenBody> {
                           const SizedBox(height: 10),
                       itemCount:
                           state.batchShiftChangedata.shiftBatchData?.length ??
-                              0,
+                          0,
                     ),
                   );
                 }
@@ -259,9 +242,7 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => BatchShiftChangeBloc(getService()),
-        ),
+        BlocProvider(create: (context) => BatchShiftChangeBloc(getService())),
         // BlocProvider(
 
         //   create: (context) => VariableStateHandlerCubit<UserMachine>(),
@@ -273,15 +254,16 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
       child: BlocListener<BatchShiftChangeBloc, BatchShiftChangeState>(
         listener: (context, state) {
           if (state is BatchShiftChangeSuccess) {
-            var selectedOrg =
-                context.read<VariableStateHandlerCubit<UserOrg>>().state!;
+            var selectedOrg = context
+                .read<VariableStateHandlerCubit<UserOrg>>()
+                .state!;
             context.read<BatchShiftChangeDataBloc>().add(
-                  GetBatch(
-                    userId: widget.loggedUser.userId,
-                    orgId: selectedOrg.organizationId ?? 0,
-                    batchNo: widget.searchedBatch,
-                  ),
-                );
+              GetBatch(
+                userId: widget.loggedUser.userId,
+                orgId: selectedOrg.organizationId ?? 0,
+                batchNo: widget.searchedBatch,
+              ),
+            );
           }
         },
         child: Container(
@@ -310,9 +292,7 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                 widget.data?.machineName ?? "",
                 style: textTheme.bodyMedium!.copyWith(),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -320,20 +300,15 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Shift",
-                          style: textTheme.bodyMedium!.copyWith(),
-                        ),
+                        Text("Shift", style: textTheme.bodyMedium!.copyWith()),
                         Text(
                           widget.data?.shiftName ?? "",
                           style: textTheme.bodyMedium!.copyWith(),
-                        )
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
+                  const SizedBox(width: 15),
                   Flexible(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -345,29 +320,25 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                         Text(
                           widget.data?.shiftManPower.toString() ?? "",
                           style: textTheme.bodyMedium!.copyWith(),
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               CommonDropDownMenuWidget<UserMachine>(
                 hintText: "Select Machine",
                 controller: textController,
                 dropdownMenuEntries: widget.machineData,
                 onSelected: (value) {
-                  context
-                      .read<VariableStateHandlerCubit<UserMachine>>()
-                      .update(value!);
+                  context.read<VariableStateHandlerCubit<UserMachine>>().update(
+                    value!,
+                  );
                   // FocusManager.instance.primaryFocus?.unfocus();
                 },
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -391,9 +362,7 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                       },
                     ),
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
+                  const SizedBox(width: 15),
                   Expanded(
                     child: CommonTextFieldWidget(
                       controller: hrTextController,
@@ -411,9 +380,7 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               BlocBuilder<BatchShiftChangeBloc, BatchShiftChangeState>(
                 builder: (context, state) {
                   return ElevatedButton(
@@ -425,20 +392,20 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                           .read<VariableStateHandlerCubit<ShiftData>>()
                           .state;
                       context.read<BatchShiftChangeBloc>().add(
-                            ChangeBatchShift(
-                              userId: widget.loggedUser.userId,
-                              lotNo: widget.data?.lotNo ?? "",
-                              shiftName: selectedShift != null
-                                  ? selectedShift.shiftName ?? ""
-                                  : widget.data?.shiftName ?? "",
-                              machineName: selectedMachine != null
-                                  ? selectedMachine.machineName ?? ""
-                                  : widget.data?.machineName ?? "",
-                              manPower: hrTextController.text.isNotEmpty
-                                  ? hrTextController.text
-                                  : widget.data?.shiftManPower.toString() ?? "",
-                            ),
-                          );
+                        ChangeBatchShift(
+                          userId: widget.loggedUser.userId,
+                          lotNo: widget.data?.lotNo ?? "",
+                          shiftName: selectedShift != null
+                              ? selectedShift.shiftName ?? ""
+                              : widget.data?.shiftName ?? "",
+                          machineName: selectedMachine != null
+                              ? selectedMachine.machineName ?? ""
+                              : widget.data?.machineName ?? "",
+                          manPower: hrTextController.text.isNotEmpty
+                              ? hrTextController.text
+                              : widget.data?.shiftManPower.toString() ?? "",
+                        ),
+                      );
                     },
                     child: Text(
                       state is BatchShiftChangeLoading ? "Saving.." : "Save",
@@ -448,7 +415,7 @@ class _BatchShiftDataWidgetState extends State<BatchShiftDataWidget> {
                     ),
                   );
                 },
-              )
+              ),
             ],
           ),
         ),

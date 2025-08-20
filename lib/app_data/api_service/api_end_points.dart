@@ -56,6 +56,7 @@ class ApiEndPoints {
   static const String getOpmDashboardSM = "/ords/rpro/batch/opmDashboardSM";
   static const String askAdd = "/ords/rpro/glaiml/askadd";
   static const String getMessages = "/ords/rpro/glaiml/askans";
+  static const String getOrgWiseMessage = "/ords/rpro/glaiml/orgWiseMessage";
   static const String getTaskInfoList = "/ords/rpro/taskapi/taskupdt";
   static const String getJoList = "/ords/rpro/taskapi/jobtask";
   static const String saveTaskStatus = "/ords/rpro/taskapi/taskupdt";

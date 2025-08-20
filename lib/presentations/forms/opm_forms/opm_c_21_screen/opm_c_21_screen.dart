@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_text_field_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
-import 'package:pran_rfl_erp/core/utils/image_constant.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_21_screen/bloc/chat_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_21_screen/bloc/chat_list_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_22_screen/bloc/typing_bloc.dart';
 
 class OpmC21Screen extends StatelessWidget {
   const OpmC21Screen({super.key, required this.fromName});
@@ -20,16 +21,10 @@ class OpmC21Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ChatBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => ChatListBloc(getService()),
-        ),
+        BlocProvider(create: (context) => ChatBloc(getService())),
+        BlocProvider(create: (context) => ChatListBloc(getService())),
       ],
-      child: OpmC21ScreenBody(
-        fromName: fromName,
-      ),
+      child: OpmC21ScreenBody(fromName: fromName),
     );
   }
 }
@@ -44,17 +39,18 @@ class OpmC21ScreenBody extends StatefulWidget {
 class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
   late UserInfoModel loggedUser;
   late TextEditingController askTextController;
+  late FocusNode askFocusNode;
   late ScrollController chatScroll;
+  Map<int, TypingBloc> typeBlocMap = {};
   @override
   void initState() {
     chatScroll = ScrollController();
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     askTextController = TextEditingController();
+    askFocusNode = FocusNode();
     context.read<ChatListBloc>().add(
-          GetConversation(
-            userId: loggedUser.userId,
-          ),
-        );
+      GetConversation(userId: loggedUser.userId),
+    );
 
     super.initState();
   }
@@ -62,6 +58,8 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
   @override
   void dispose() {
     askTextController.dispose();
+    askFocusNode.dispose();
+    chatScroll.dispose();
     super.dispose();
   }
 
@@ -75,20 +73,21 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
           BlocListener<ChatBloc, ChatState>(
             listener: (context, state) {
               if (state is ChatSuccess) {
-                askTextController.clear();
-                context.read<ChatListBloc>().add(
-                      GetConversation(
-                        userId: loggedUser.userId,
-                      ),
-                    );
+                // context.read<ChatListBloc>().add(
+                //   GetConversation(userId: loggedUser.userId),
+                // );
               }
             },
           ),
-          BlocListener<ChatListBloc, ChatListState>(
+          BlocListener<ChatBloc, ChatState>(
             listener: (context, state) {
-              if (state is ChatListSuccess) {
+              if (state is ChatSuccess) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  chatScroll.jumpTo(chatScroll.position.maxScrollExtent);
+                  chatScroll.animateTo(
+                    chatScroll.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
                 });
               }
             },
@@ -100,15 +99,13 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
               Expanded(
                 flex: 5,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   decoration: const BoxDecoration(
                     color: Color.fromRGBO(179, 214, 246, 0.16),
                   ),
-                  child: BlocBuilder<ChatListBloc, ChatListState>(
+                  child: BlocBuilder<ChatBloc, ChatState>(
                     builder: (context, state) {
-                      if (state is ChatListSuccess) {
+                      if (state is ChatSuccess) {
                         conversation = state.conversation;
                       }
                       return ListView.separated(
@@ -119,7 +116,20 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
                         itemBuilder: (context, index) {
                           var data = conversation[index];
                           if (data.chatOwner == "SYSTEM") {
-                            return ReceivedMessage(message: data.askText ?? "");
+                            return ReceivedMessage(
+                              message: data.askText ?? "",
+                              typIngBloc: typeBlocMap.putIfAbsent(
+                                index,
+                                () => TypingBloc(getService())
+                                  ..add(
+                                    StartTyping(
+                                      message: data.askText ?? "",
+                                      typeAble:
+                                          index == conversation.length - 1,
+                                    ),
+                                  ),
+                              ),
+                            );
                           } else {
                             return SentMessage(message: data.askText ?? "");
                           }
@@ -144,40 +154,76 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
                     Expanded(
                       child: CommonTextFieldWidget(
                         controller: askTextController,
+                        focusNode: askFocusNode,
+                        textAlign: TextAlign.left,
                         hintText: "Type Here",
+                        maxLines: 2,
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            if (askTextController.text.isEmpty) {
+                              return;
+                            }
+                            var bloc;
+                            if (typeBlocMap.isNotEmpty) {
+                              bloc = typeBlocMap.values.last;
+                            }
+
+                            if (bloc != null && bloc.state.completed) {
+                              context.read<ChatBloc>().add(
+                                SendMessage(
+                                  userId: loggedUser.userId,
+                                  askText: askTextController.text,
+                                ),
+                              );
+                              askTextController.clear();
+                            } else if (typeBlocMap.isEmpty) {
+                              context.read<ChatBloc>().add(
+                                SendMessage(
+                                  userId: loggedUser.userId,
+                                  askText: askTextController.text,
+                                ),
+                              );
+                              askTextController.clear();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 2),
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                    "Please wait for the previous message to complete.",
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: appTheme.primary,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.send,
+                                  color: appTheme.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         fillColor: appTheme.white,
                         filled: true,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: () {
-                        context.read<ChatBloc>().add(
-                              SendMessage(
-                                userId: loggedUser.userId,
-                                askText: askTextController.text,
-                              ),
-                            );
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: appTheme.primary,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.send,
-                            color: appTheme.white,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ),
+
+                    // const SizedBox(width: 10),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -187,10 +233,7 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
 }
 
 class SentMessage extends StatelessWidget {
-  const SentMessage({
-    super.key,
-    required this.message,
-  });
+  const SentMessage({super.key, required this.message});
   final String message;
   @override
   Widget build(BuildContext context) {
@@ -200,10 +243,8 @@ class SentMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            constraints: const BoxConstraints(
-              maxWidth: 247,
-            ),
-            padding: const EdgeInsets.all(20),
+            constraints: const BoxConstraints(maxWidth: 247),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15),
@@ -219,7 +260,8 @@ class SentMessage extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.left,
-              style: textTheme.bodySmall!.copyWith(
+              style: textTheme.bodyMedium!.copyWith(
+                fontSize: 18,
                 color: appTheme.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -257,37 +299,46 @@ class SentMessage extends StatelessWidget {
 }
 
 class ReceivedMessage extends StatelessWidget {
+  final String message;
+  final TypingBloc typIngBloc;
+  final bool isTyping;
   const ReceivedMessage({
     super.key,
     required this.message,
+    required this.typIngBloc,
+    this.isTyping = false,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: typIngBloc,
+      child: ReceivedMessageContent(message: message),
+    );
+  }
+}
+
+class ReceivedMessageContent extends StatefulWidget {
+  const ReceivedMessageContent({super.key, required this.message});
   final String message;
+
+  @override
+  State<ReceivedMessageContent> createState() => _ReceivedMessageContentState();
+}
+
+class _ReceivedMessageContentState extends State<ReceivedMessageContent> {
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 15),
-          child: Container(
-            height: 32,
-            width: 32,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: Image.asset(ImageConstant.malePlaceholder),
-          ),
-        ),
-        const SizedBox(width: 10),
         Flexible(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                constraints: const BoxConstraints(
-                  maxWidth: 247,
-                ),
-                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(right: 10, left: 10),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
@@ -300,12 +351,24 @@ class ReceivedMessage extends StatelessWidget {
                   ),
                   color: appTheme.white,
                 ),
-                child: Text(
-                  message,
-                  textAlign: TextAlign.left,
-                  style: textTheme.bodySmall!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: BlocBuilder<TypingBloc, TypingState>(
+                  builder: (context, state) {
+                    return HtmlWidget(
+                      state.typedText,
+                      textStyle: textTheme.bodyMedium!.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                    // return Text(
+                    //   state.typedText,
+                    //   textAlign: TextAlign.left,
+                    //   style: textTheme.bodySmall!.copyWith(
+                    //     fontWeight: FontWeight.w600,
+                    //     fontSize: 18,
+                    //   ),
+                    // );
+                  },
                 ),
               ),
               const SizedBox(height: 5),

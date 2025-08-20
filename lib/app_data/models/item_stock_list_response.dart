@@ -83,7 +83,7 @@ class ItemStock {
     inventoryItemId: inventoryItemId ?? this.inventoryItemId,
     itemCode: itemCode ?? this.itemCode,
     itemName: itemName ?? this.itemName,
-    locatorId: secondaryLocator ?? this.locatorId,
+    locatorId: secondaryLocator ?? locatorId,
     subinventoryCode: subinventoryCode ?? this.subinventoryCode,
     locatorDesc: locatorDesc ?? this.locatorDesc,
     qty: qty ?? this.qty,

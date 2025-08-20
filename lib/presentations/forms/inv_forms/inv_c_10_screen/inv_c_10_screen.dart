@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pran_rfl_erp/app_data/models/item_stock_list_response.dart';
@@ -490,7 +489,7 @@ class _InvC10ScreenBodyState extends State<InvC10ScreenBody> {
                         separatorBuilder: (context, index) {
                           return const SizedBox(height: 10);
                         },
-                        itemCount: state.grnQrList?.length ?? 0,
+                        itemCount: state.grnQrList.length ?? 0,
                       );
                     }
                     return Container();

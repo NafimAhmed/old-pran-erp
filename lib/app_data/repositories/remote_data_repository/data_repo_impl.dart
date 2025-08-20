@@ -40,6 +40,7 @@ import 'package:pran_rfl_erp/app_data/models/mo_req_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/operation_unit_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/opm_dash_sm_response.dart';
 import 'package:pran_rfl_erp/app_data/models/org_response.dart';
+import 'package:pran_rfl_erp/app_data/models/org_wise_message_response.dart';
 import 'package:pran_rfl_erp/app_data/models/parent_task_list.dart';
 import 'package:pran_rfl_erp/app_data/models/po_job_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_basic_data_response.dart';
@@ -1958,6 +1959,19 @@ class DataRepoImpl implements DataRepo {
             throw ApiDataException(decodedRes.message);
           }
           return decodedRes.locator ?? [];
+        });
+  }
+
+  @override
+  Future<List<OrgWiseMessage>> getOrgWiseMess() {
+    return httpService
+        .getCall(endPoint: ApiEndPoints.getOrgWiseMessage, parameters: {})
+        .then((response) {
+          var decodedRes = OrgWiseMessageResponse.fromJson(response);
+          if (decodedRes.statusCode != 200) {
+            throw ApiDataException(decodedRes.message);
+          }
+          return decodedRes.orgwisemessage ?? [];
         });
   }
 }
