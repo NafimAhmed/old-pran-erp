@@ -58,14 +58,12 @@ class CommonTextFieldWidget extends StatelessWidget {
       obscureText: obscureText,
       autocorrect: false,
       maxLines: maxLines,
+      minLines: 1,
       textAlign: textAlign,
       enableSuggestions: false,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      style: style ??
-          textTheme.bodyMedium!.copyWith(
-            color: appTheme.primary,
-          ),
+      style: style ?? textTheme.bodyMedium!.copyWith(color: appTheme.primary),
       onTapOutside: (event) {
         focusNode?.unfocus();
       },
@@ -82,13 +80,8 @@ class CommonTextFieldWidget extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: Colors.black,
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 8,
-        ),
-      ).applyDefaults(
-        Theme.of(context).inputDecorationTheme,
-      ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      ).applyDefaults(Theme.of(context).inputDecorationTheme),
       validator: validator,
       onChanged: onChanged,
     );
