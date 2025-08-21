@@ -479,7 +479,7 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                             orgId: orgId,
                             itemId: grnPo.itemId ?? 0,
                             poHeaderId: grnPo.poHeaderId ?? 0,
-                            qty: num.parse(quantityTextController.text),
+                            qty: num.parse(goodQtyTextController.text),
                           ),
                         );
                       }
