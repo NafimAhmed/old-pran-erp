@@ -13,6 +13,7 @@ import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/common_lable_wth_textfield.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/text_input_formatters.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/operation_unit_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
@@ -389,70 +390,98 @@ class _POC2ScreenBodyState extends State<POC2ScreenBody> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
-                    CommonLableWthTextField(
-                      lableName: "Good Qty",
-                      focusNode: goodQtyFocusNode,
-                      textController: goodQtyTextController,
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please Enter Good Quantity";
+                    BlocBuilder<VariableStateHandlerCubit<GrnPO>, GrnPO?>(
+                      builder: (context, state) {
+                        if (state == null) {
+                          return const SizedBox.shrink();
                         }
-                        if (int.parse(value) <= 0) {
-                          return "Can't Be Zero";
-                        }
-                        return null;
+                        return Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            CommonLableWthTextField(
+                              lableName: "Good Qty",
+                              focusNode: goodQtyFocusNode,
+                              textController: goodQtyTextController,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                NumericalRangeFormatter(
+                                  min: 1,
+                                  max: state.quantity ?? 1,
+                                ),
+                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Good Quantity";
+                                }
+                                if (int.parse(value) <= 0) {
+                                  return "Can't Be Zero";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                var goodQty = value.isEmpty
+                                    ? 0
+                                    : int.parse(value);
+                                badQtyTextController.text = "0";
+                                var badQty = badQtyTextController.text.isEmpty
+                                    ? 0
+                                    : int.parse(badQtyTextController.text);
+                                quantityTextController.text = (goodQty + badQty)
+                                    .toString();
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            CommonLableWthTextField(
+                              lableName: "Bad Qty",
+                              focusNode: badQtyFocusNode,
+                              textController: badQtyTextController,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                NumericalRangeFormatter(
+                                  min: 0,
+                                  max: state.quantity ?? 1,
+                                ),
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Bad Quantity";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                var badQty = value.isEmpty
+                                    ? 0
+                                    : int.parse(value);
+                                var goodQty = goodQtyTextController.text.isEmpty
+                                    ? 0
+                                    : int.parse(goodQtyTextController.text);
+                                quantityTextController.text = (goodQty + badQty)
+                                    .toString();
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            CommonLableWthTextField(
+                              lableName: "Quantity",
+                              readOnly: true,
+                              focusNode: quantityFocusNode,
+                              textController: quantityTextController,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Quantity";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {},
+                            ),
+                          ],
+                        );
                       },
-                      onChanged: (value) {
-                        var goodQty = value.isEmpty ? 0 : int.parse(value);
-                        badQtyTextController.text = "0";
-                        var badQty = badQtyTextController.text.isEmpty
-                            ? 0
-                            : int.parse(badQtyTextController.text);
-                        quantityTextController.text = (goodQty + badQty)
-                            .toString();
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    CommonLableWthTextField(
-                      lableName: "Bad Qty",
-                      focusNode: badQtyFocusNode,
-                      textController: badQtyTextController,
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please Enter Bad Quantity";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        var badQty = value.isEmpty ? 0 : int.parse(value);
-                        var goodQty = goodQtyTextController.text.isEmpty
-                            ? 0
-                            : int.parse(goodQtyTextController.text);
-                        quantityTextController.text = (goodQty + badQty)
-                            .toString();
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    CommonLableWthTextField(
-                      lableName: "Quantity",
-                      readOnly: true,
-                      focusNode: quantityFocusNode,
-                      textController: quantityTextController,
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please Enter Quantity";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {},
                     ),
                   ],
                 ),
