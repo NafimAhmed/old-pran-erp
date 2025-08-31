@@ -16,6 +16,7 @@ class ApiEndPoints {
   static const String interOrgTransfer = "/ords/rpro/invtran/IOTapi";
   static const String ebsInterOrgTransfer = "/ords/rpro/invtran/EBSIOTapi";
   static const String userQrSave = "/ords/rpro/batch/userqrsave";
+  static const String userQrSaveWithTrn = "/ords/rpro/batch/batch_trn_complete";
   static const String getUserQrPrintData = "/ords/rpro/batch/userqrprint";
   static const String updateProdQrPrintStatus = "/ords/rpro/batch/userqrsave";
   static const String getSystemModule = "/ords/rpro/sysadmin/sysmanager";

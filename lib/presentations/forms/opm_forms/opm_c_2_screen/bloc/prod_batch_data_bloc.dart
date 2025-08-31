@@ -17,6 +17,17 @@ final class ProdBatchDataGet extends ProdBatchDataEvent {
   });
 }
 
+final class ProdBatchWipDataGet extends ProdBatchDataEvent {
+  final String userId;
+  final String orgid;
+  final String jobOrderNo;
+  ProdBatchWipDataGet({
+    required this.userId,
+    required this.orgid,
+    required this.jobOrderNo,
+  });
+}
+
 final class ProdBatchDataReset extends ProdBatchDataEvent {}
 
 @immutable
@@ -50,11 +61,21 @@ class ProdBatchDataBloc extends Bloc<ProdBatchDataEvent, ProdBatchDataState> {
           jobOrderNo: event.jobOrderNo,
         );
 
-        emit(
-          ProdBatchDataSuccess(
-            prodBatchList: response,
-          ),
+        emit(ProdBatchDataSuccess(prodBatchList: response));
+      } catch (e) {
+        emit(ProdBatchDataError(error: e));
+      }
+    });
+    on<ProdBatchWipDataGet>((event, emit) async {
+      emit(ProdBatchDataLoading());
+      try {
+        var response = await _dataService.getProdBatchWipData(
+          userid: event.userId,
+          orgid: event.orgid,
+          jobOrderNo: event.jobOrderNo,
         );
+
+        emit(ProdBatchDataSuccess(prodBatchList: response));
       } catch (e) {
         emit(ProdBatchDataError(error: e));
       }

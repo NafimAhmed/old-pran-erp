@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
@@ -142,23 +146,77 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
+                  left: 10,
+                  right: 10,
                   top: 15,
                   bottom: 15,
                 ),
                 color: const Color.fromRGBO(179, 214, 246, 0.16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: CommonTextFieldWidget(
-                        controller: askTextController,
-                        focusNode: askFocusNode,
-                        textAlign: TextAlign.left,
-                        hintText: "Type Here",
-                        maxLines: 2,
-                        suffixIcon: GestureDetector(
+                child: CommonTextFieldWidget(
+                  controller: askTextController,
+                  focusNode: askFocusNode,
+                  textAlign: TextAlign.left,
+                  hintText: "Type Here",
+                  maxLines: 2,
+
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          List<PlatformFile>? pickedFiles;
+
+                          try {
+                            pickedFiles = (await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowMultiple: false,
+                              allowedExtensions: [
+                                'jpg',
+                                'pdf',
+                                'doc',
+                                'png',
+                                'xlsx',
+                              ],
+                            ))?.files;
+                          } on PlatformException catch (e) {
+                            log('Unsupported operation: $e');
+                          } catch (e) {
+                            log(e.toString());
+                          }
+
+                          if (pickedFiles != null) {
+                            PlatformFile file = pickedFiles.first;
+
+                            print(file.name);
+                            print(file.bytes);
+                            print(file.size);
+                            print(file.extension);
+                            print(file.path);
+                          } else {
+                            // User canceled the picker
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: appTheme.white,
+                            border: Border.all(
+                              color: appTheme.primary,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.attach_file_rounded,
+                            color: appTheme.primary,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: GestureDetector(
                           onTap: () {
                             if (askTextController.text.isEmpty) {
                               return;
@@ -196,32 +254,28 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
                               );
                             }
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: appTheme.primary,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.send,
-                                  color: appTheme.white,
-                                  size: 24,
-                                ),
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 5, left: 5),
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: appTheme.primary,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.send,
+                                color: appTheme.white,
+                                size: 24,
                               ),
                             ),
                           ),
                         ),
-                        fillColor: appTheme.white,
-                        filled: true,
                       ),
-                    ),
-
-                    // const SizedBox(width: 10),
-                  ],
+                    ],
+                  ),
+                  fillColor: appTheme.white,
+                  filled: true,
                 ),
               ),
             ],

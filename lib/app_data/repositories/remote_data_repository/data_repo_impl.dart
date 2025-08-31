@@ -6,8 +6,8 @@ import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
-import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_complete_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
@@ -313,11 +313,48 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<List<UserBatch>> getProdBatchWipData({
+    required String userid,
+    required String orgid,
+    required String jobOrderNo,
+  }) async {
+    var response = await httpService.postCall(
+      endPoint: ApiEndPoints.getUserBatchData,
+      parameters: {
+        "userid": userid,
+        "orgid": orgid,
+        "job_order_no": jobOrderNo,
+      },
+    );
+    var decoderRes = ProdBatchDataResponse.fromJson(response);
+    if (decoderRes.statusCode == 200) {
+      return decoderRes.prodBatchData ?? [];
+    }
+    throw ApiDataException(decoderRes.errmsg);
+  }
+
+  @override
   Future<ProdBasicDataResponse> getProdBasicData({
     required String userid,
     required String orgid,
   }) async {
     var response = await httpService.postCall(
+      endPoint: ApiEndPoints.getProdBasicData,
+      parameters: {"userid": userid, "orgid": orgid},
+    );
+    var decoderRes = ProdBasicDataResponse.fromJson(response);
+    if (decoderRes.statusCode == 200) {
+      return decoderRes;
+    }
+    throw ApiDataException(decoderRes.errmsg);
+  }
+
+  @override
+  Future<ProdBasicDataResponse> getProdBasicData2({
+    required String userid,
+    required String orgid,
+  }) async {
+    var response = await httpService.getCall(
       endPoint: ApiEndPoints.getProdBasicData,
       parameters: {"userid": userid, "orgid": orgid},
     );
@@ -406,6 +443,48 @@ class DataRepoImpl implements DataRepo {
         "p_LOCATOR_id": locId,
         "P_LOCATOR": locator,
         "hr": hr,
+      },
+    );
+    var decoderRes = BatchQrDataResponse.fromJson(response);
+    if (decoderRes.statusCode == 200) {
+      return decoderRes.batchQrData ?? [];
+    }
+    throw ApiDataException(decoderRes.errorMessage);
+  }
+
+  @override
+  Future<List<BatchQrData>> userQrSaveWithTrn({
+    required String userid,
+    required String itemid,
+    required String machine,
+    required String batchid,
+    required String orgid,
+    required String goodQty,
+    required String badQty,
+    required String qty,
+    required String shiftnm,
+    required String shiftFromTime,
+    required String subInvCode,
+    required int locId,
+    required String locator,
+    num? hr,
+  }) async {
+    var response = await httpService.putCall(
+      endPoint: ApiEndPoints.userQrSaveWithTrn,
+      parameters: {
+        "p_user_name": userid,
+        "p_organization_id": orgid,
+        "p_batch_id": batchid,
+        "p_inventory_item_id": itemid,
+        "p_locator_id": locId,
+        "p_qty": goodQty,
+        "p_SUBINV": subInvCode,
+        "hr": hr,
+        "machine": machine,
+        "badqty": badQty,
+        "qty": qty,
+        "shiftnm": shiftnm,
+        "shiftFromTime": shiftFromTime,
       },
     );
     var decoderRes = BatchQrDataResponse.fromJson(response);
@@ -624,6 +703,22 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<List<LotTrnData>> getLotTrnDataNew({
+    required String userId,
+    required String racklocator,
+  }) async {
+    var response = await httpService.getCall(
+      endPoint: ApiEndPoints.getLotTrnData,
+      parameters: {"P_LOT_NUMBER": racklocator},
+    );
+    var decodedRes = LotTrnResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.message);
+    }
+    return decodedRes.lotTrnData ?? [];
+  }
+
+  @override
   Future<List<BatchCloseData>> getBatchCloseData({
     required String userId,
   }) async {
@@ -655,11 +750,11 @@ class DataRepoImpl implements DataRepo {
 
   @override
   Future<List<BatchCompData>> getBatchCompData({required String userId}) async {
-    var response = await httpService.postCall(
+    var response = await httpService.getCall(
       endPoint: ApiEndPoints.getBatchCloseData,
       parameters: {"userid": userId},
     );
-    var decodedRes = BatchCompDataResponse.fromJson(response);
+    var decodedRes = BatchCompleteListResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
       throw ApiDataException(decodedRes.message);
     }
@@ -701,11 +796,11 @@ class DataRepoImpl implements DataRepo {
   @override
   Future<void> completeBatch({
     required String userId,
-    required String batchid,
+    required int batchid,
   }) async {
-    var response = await httpService.postCall(
-      endPoint: ApiEndPoints.completeBatch,
-      parameters: {"userid": userId, "batchid": batchid},
+    var response = await httpService.getCall(
+      endPoint: ApiEndPoints.userQrSaveWithTrn,
+      parameters: {"p_user_name": userId, "p_batch_id": batchid},
     );
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
@@ -1557,7 +1652,7 @@ class DataRepoImpl implements DataRepo {
       endPoint: ApiEndPoints.getGrnPOList,
       parameters: {"jobOrderNo": jobOrderNo},
     );
-    var decoderRes = GrnPOListResponse.fromJson(response);
+    var decoderRes = GrnPoListResponse.fromJson(response);
     if (decoderRes.statusCode != 200) {
       throw ApiDataException(decoderRes.message);
     }
@@ -1870,6 +1965,26 @@ class DataRepoImpl implements DataRepo {
     required String rackId,
   }) async {
     var response = await httpService.postCall(
+      endPoint: ApiEndPoints.prodTransfer,
+      parameters: {
+        "v_userid": userId,
+        "v_tlockid": rackId,
+        "v_itemlotno": pTrnId,
+      },
+    );
+    var decodedRes = GenericResponse.fromJson(response);
+    if (decodedRes.statusCode != 200) {
+      throw ApiDataException(decodedRes.errorMessage);
+    }
+  }
+
+  @override
+  Future<void> prodTransferNew({
+    required String userId,
+    required String pTrnId,
+    required String rackId,
+  }) async {
+    var response = await httpService.getCall(
       endPoint: ApiEndPoints.prodTransfer,
       parameters: {
         "v_userid": userId,

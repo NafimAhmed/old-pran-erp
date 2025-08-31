@@ -2,8 +2,8 @@ import 'package:pran_rfl_erp/app_data/models/Job_order_sum_history_response.dart
 import 'package:pran_rfl_erp/app_data/models/apps_user_response.dart';
 import 'package:pran_rfl_erp/app_data/models/authentication_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_close_data_response.dart';
-import 'package:pran_rfl_erp/app_data/models/batch_comp_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_comp_dtl_response.dart';
+import 'package:pran_rfl_erp/app_data/models/batch_complete_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_qr_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_shift_change_response.dart';
 import 'package:pran_rfl_erp/app_data/models/batch_status_check_response.dart';
@@ -112,7 +112,16 @@ abstract class DataRepo {
     required String orgid,
     required String jobOrderNo,
   });
+  Future<List<UserBatch>> getProdBatchWipData({
+    required String userid,
+    required String orgid,
+    required String jobOrderNo,
+  });
   Future<ProdBasicDataResponse> getProdBasicData({
+    required String userid,
+    required String orgid,
+  });
+  Future<ProdBasicDataResponse> getProdBasicData2({
     required String userid,
     required String orgid,
   });
@@ -131,6 +140,22 @@ abstract class DataRepo {
   });
 
   Future<List<BatchQrData>> userQrSave({
+    required String userid,
+    required String itemid,
+    required String machine,
+    required String batchid,
+    required String orgid,
+    required String goodQty,
+    required String badQty,
+    required String qty,
+    required String shiftnm,
+    required String shiftFromTime,
+    required String subInvCode,
+    required int locId,
+    required String locator,
+    num? hr,
+  });
+  Future<List<BatchQrData>> userQrSaveWithTrn({
     required String userid,
     required String itemid,
     required String machine,
@@ -197,6 +222,10 @@ abstract class DataRepo {
     required String userId,
     required String racklocator,
   });
+  Future<List<LotTrnData>> getLotTrnDataNew({
+    required String userId,
+    required String racklocator,
+  });
   Future<List<BatchCloseData>> getBatchCloseData({required String userId});
   Future<void> batchClose({required String userId, required int batchid});
   Future<List<BatchCompData>> getBatchCompData({required String userId});
@@ -209,7 +238,7 @@ abstract class DataRepo {
     required String mtldtlid,
     required String madeqty,
   });
-  Future<void> completeBatch({required String userId, required String batchid});
+  Future<void> completeBatch({required String userId, required int batchid});
   Future<void> getBatchReleaseData({
     required String userId,
     required String orgId,
@@ -445,6 +474,11 @@ abstract class DataRepo {
   Future<void> updateGrnQrList({required String trnId});
   Future<void> uploadPicture({required String filePath});
   Future<void> prodTransfer({
+    required String userId,
+    required String pTrnId,
+    required String rackId,
+  });
+  Future<void> prodTransferNew({
     required String userId,
     required String pTrnId,
     required String rackId,

@@ -13,6 +13,12 @@ final class UserBasicDataGet extends UserBasicDataEvent {
   UserBasicDataGet({required this.userId, required this.orgid});
 }
 
+final class UserBasicDataGet2 extends UserBasicDataEvent {
+  final String userId;
+  final String orgid;
+  UserBasicDataGet2({required this.userId, required this.orgid});
+}
+
 @immutable
 sealed class UserBasicDataState {}
 
@@ -39,6 +45,19 @@ class UserBasicDataBloc extends Bloc<UserBasicDataEvent, UserBasicDataState> {
       emit(UserBasicDataLoading());
       try {
         var response = await _dataService.getProdBasicData(
+          userid: event.userId,
+          orgid: event.orgid,
+        );
+
+        emit(UserBasicDataSuccess(prodBasicData: response));
+      } catch (e) {
+        emit(UserBasicDataError(error: e));
+      }
+    });
+    on<UserBasicDataGet2>((event, emit) async {
+      emit(UserBasicDataLoading());
+      try {
+        var response = await _dataService.getProdBasicData2(
           userid: event.userId,
           orgid: event.orgid,
         );

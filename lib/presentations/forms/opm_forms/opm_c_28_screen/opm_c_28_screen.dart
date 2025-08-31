@@ -20,6 +20,7 @@ import 'package:pran_rfl_erp/common_widgets/custom_dropdown_search.dart';
 import 'package:pran_rfl_erp/common_widgets/custom_snackBar_widget.dart';
 import 'package:pran_rfl_erp/common_widgets/user_details_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/text_input_formatters.dart';
 import 'package:pran_rfl_erp/global_blocs/bloc/shift_data_bloc.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/variable_state_handler_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_2_screen/bloc/locator_list_bloc.dart';
@@ -165,7 +166,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
         .selectedValue!
         .fullLocator!;
     context.read<UserQrSaveBloc>().add(
-      UserQrSave(
+      UserQrSaveWithTrn(
         userid: loggedUser.userId,
         itemid: selectedBatch!.inventoryItemId.toString(),
         machine: selectedMachine!.machineName!,
@@ -201,7 +202,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
     context.read<ProdBatchDataBloc>().add(ProdBatchDataReset());
 
     context.read<UserBasicDataBloc>().add(
-      UserBasicDataGet(
+      UserBasicDataGet2(
         userId: loggedUser.userId,
         orgid: value.organizationId!.toString(),
       ),
@@ -227,7 +228,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
           .read<VariableStateHandlerCubit<UserOrg>>()
           .state!;
       context.read<ProdBatchDataBloc>().add(
-        ProdBatchDataGet(
+        ProdBatchWipDataGet(
           userId: loggedUser.userId,
           orgid: selectedOrg.organizationId?.toString() ?? "",
           jobOrderNo: value.jobOrderNo ?? "",
@@ -277,7 +278,7 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
           context.read<LocatorListBloc>().add(LocatorListDeselect());
           context.read<ShiftDataBloc>().add(ResetShiftData());
           context.read<UserBasicDataBloc>().add(
-            UserBasicDataGet(
+            UserBasicDataGet2(
               userId: loggedUser.userId,
               orgid: context
                   .read<VariableStateHandlerCubit<UserOrg>>()
@@ -320,6 +321,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                               builder: (context, state) {
                                 return CustomDropdownSearch<UserOrg>(
                                   hintText: "Select Org",
+                                  value: context
+                                      .watch<
+                                        VariableStateHandlerCubit<UserOrg>
+                                      >()
+                                      .state,
                                   enabled: state is UserOrgSuccess
                                       ? state.userOrg.isNotEmpty
                                       : false,
@@ -347,6 +353,13 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                                     ?.isNotEmpty ??
                                                 false
                                           : false,
+                                      value: context
+                                          .watch<
+                                            VariableStateHandlerCubit<
+                                              UserMachine
+                                            >
+                                          >()
+                                          .state,
                                       hintText: "Select Machine",
                                       items: state is UserBasicDataSuccess
                                           ? state
@@ -379,6 +392,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                                     ?.isNotEmpty ??
                                                 false
                                           : false,
+                                      value: context
+                                          .watch<
+                                            VariableStateHandlerCubit<PendingJo>
+                                          >()
+                                          .state,
                                       hintText: "Select JO",
                                       onChanged: _onSelectJO,
                                       items: state is UserBasicDataSuccess
@@ -401,6 +419,11 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                                       enabled: state is ProdBatchDataSuccess
                                           ? state.prodBatchList.isNotEmpty
                                           : false,
+                                      value: context
+                                          .watch<
+                                            VariableStateHandlerCubit<UserBatch>
+                                          >()
+                                          .state,
                                       hintText: "Select Batch",
                                       onChanged: _onSelectBatch,
                                       items: state is ProdBatchDataSuccess
@@ -510,23 +533,38 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                         textController: goodQtyTextController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*'),
+                          ),
+                          NumericalRangeFormatter(
+                            min: 1.0,
+                            max:
+                                context
+                                    .watch<
+                                      VariableStateHandlerCubit<UserBatch>
+                                    >()
+                                    .state
+                                    ?.totalPQty ??
+                                0,
+                          ),
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please Enter Good Quantity";
                           }
-                          if (int.parse(value) <= 0) {
+                          if (num.parse(value) <= 0) {
                             return "Can't Be Zero";
                           }
                           return null;
                         },
                         onChanged: (value) {
-                          var goodQty = value.isEmpty ? 0 : int.parse(value);
+                          var goodQty = value.isEmpty
+                              ? 0
+                              : num.tryParse(value) ?? 0;
                           badQtyTextController.text = "0";
                           var badQty = badQtyTextController.text.isEmpty
                               ? 0
-                              : int.parse(badQtyTextController.text);
+                              : num.tryParse(badQtyTextController.text) ?? 0;
                           quantityTextController.text = (goodQty + badQty)
                               .toString();
                         },
@@ -538,7 +576,20 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                         textController: badQtyTextController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*'),
+                          ),
+                          NumericalRangeFormatter(
+                            min: 1.0,
+                            max:
+                                context
+                                    .watch<
+                                      VariableStateHandlerCubit<UserBatch>
+                                    >()
+                                    .state
+                                    ?.totalPQty ??
+                                0,
+                          ),
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -547,10 +598,10 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                           return null;
                         },
                         onChanged: (value) {
-                          var badQty = value.isEmpty ? 0 : int.parse(value);
+                          var badQty = value.isEmpty ? 0 : num.parse(value);
                           var goodQty = goodQtyTextController.text.isEmpty
                               ? 0
-                              : int.parse(goodQtyTextController.text);
+                              : num.parse(goodQtyTextController.text);
                           quantityTextController.text = (goodQty + badQty)
                               .toString();
                         },
@@ -563,7 +614,9 @@ class _OpmC28ScreenBodyState extends State<OpmC28ScreenBody> {
                         textController: quantityTextController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*'),
+                          ),
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {

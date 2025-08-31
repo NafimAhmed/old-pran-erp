@@ -17,6 +17,18 @@ final class ProdTransferBatch extends ProdTransferBatchEvent {
   });
 }
 
+final class ProdTransferBatchNew extends ProdTransferBatchEvent {
+  final String pTrnid;
+  final String userid;
+  final String rackId;
+
+  ProdTransferBatchNew({
+    required this.pTrnid,
+    required this.userid,
+    required this.rackId,
+  });
+}
+
 @immutable
 sealed class ProdTransferBatchState {}
 
@@ -40,6 +52,19 @@ class ProdTransferBatchBloc
       emit(ProdTransferBatchLoading());
       try {
         await _dataService.prodTransfer(
+          pTrnId: event.pTrnid,
+          rackId: event.rackId,
+          userId: event.userid,
+        );
+        emit(ProdTransferBatchSuccess());
+      } catch (error) {
+        emit(ProdTransferBatchError(error: error));
+      }
+    });
+    on<ProdTransferBatchNew>((event, emit) async {
+      emit(ProdTransferBatchLoading());
+      try {
+        await _dataService.prodTransferNew(
           pTrnId: event.pTrnid,
           rackId: event.rackId,
           userId: event.userid,

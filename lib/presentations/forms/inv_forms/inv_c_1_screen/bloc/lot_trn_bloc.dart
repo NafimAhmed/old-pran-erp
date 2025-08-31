@@ -13,6 +13,13 @@ final class GetLotTrnData extends LotTrnEvent {
   GetLotTrnData({required this.userId, required this.racklocator});
 }
 
+final class GetLotTrnDataNew extends LotTrnEvent {
+  final String userId;
+  final String racklocator;
+
+  GetLotTrnDataNew({required this.userId, required this.racklocator});
+}
+
 final class RestLotTrnData extends LotTrnEvent {}
 
 @immutable
@@ -45,6 +52,19 @@ class LotTrnBloc extends Bloc<LotTrnEvent, LotTrnState> {
           // racklocator: "PB02412744476",
           racklocator: event.racklocator,
         );
+        emit(LotTrnSuccess(lotTrnDataList: response));
+      } catch (e) {
+        emit(LotTrnError(error: e));
+      }
+    });
+    on<GetLotTrnDataNew>((event, emit) async {
+      emit(LotTrnLoading());
+      try {
+        var response = await _dataService.getLotTrnDataNew(
+          userId: event.userId,
+          racklocator: event.racklocator,
+        );
+
         emit(LotTrnSuccess(lotTrnDataList: response));
       } catch (e) {
         emit(LotTrnError(error: e));
