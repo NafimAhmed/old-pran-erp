@@ -1,34 +1,29 @@
 import 'dart:convert';
 
-class GrnPOListResponse {
+class GrnPoListResponse {
   final int? statusCode;
   final String? message;
   final List<GrnPO>? poList;
 
-  GrnPOListResponse({
-    this.statusCode,
-    this.message,
-    this.poList,
-  });
+  GrnPoListResponse({this.statusCode, this.message, this.poList});
 
-  GrnPOListResponse copyWith({
+  GrnPoListResponse copyWith({
     int? statusCode,
     String? message,
     List<GrnPO>? poList,
-  }) =>
-      GrnPOListResponse(
-        statusCode: statusCode ?? this.statusCode,
-        message: message ?? this.message,
-        poList: poList ?? this.poList,
-      );
+  }) => GrnPoListResponse(
+    statusCode: statusCode ?? this.statusCode,
+    message: message ?? this.message,
+    poList: poList ?? this.poList,
+  );
 
-  factory GrnPOListResponse.fromJson(String str) =>
-      GrnPOListResponse.fromMap(json.decode(str));
+  factory GrnPoListResponse.fromJson(String str) =>
+      GrnPoListResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory GrnPOListResponse.fromMap(Map<String, dynamic> json) =>
-      GrnPOListResponse(
+  factory GrnPoListResponse.fromMap(Map<String, dynamic> json) =>
+      GrnPoListResponse(
         statusCode: json["status_code"],
         message: json["message"],
         poList: json["PO_list"] == null
@@ -37,12 +32,12 @@ class GrnPOListResponse {
       );
 
   Map<String, dynamic> toMap() => {
-        "status_code": statusCode,
-        "message": message,
-        "PO_list": poList == null
-            ? []
-            : List<dynamic>.from(poList!.map((x) => x.toMap())),
-      };
+    "status_code": statusCode,
+    "message": message,
+    "PO_list": poList == null
+        ? []
+        : List<dynamic>.from(poList!.map((x) => x.toMap())),
+  };
 }
 
 class GrnPO {
@@ -51,10 +46,11 @@ class GrnPO {
   final String? jobOrderNo;
   final String? reqNo;
   final int? reqLineNo;
+  final String? poNo;
   final int? poHeaderId;
   final int? itemId;
   final String? itemDescription;
-  final int? quantity;
+  final num? quantity;
   final String? unitMeasLookupCode;
   final String? needByDate;
 
@@ -63,8 +59,9 @@ class GrnPO {
     this.requisitionNumber,
     this.jobOrderNo,
     this.reqNo,
-    this.poHeaderId,
     this.reqLineNo,
+    this.poNo,
+    this.poHeaderId,
     this.itemId,
     this.itemDescription,
     this.quantity,
@@ -77,61 +74,64 @@ class GrnPO {
     String? requisitionNumber,
     String? jobOrderNo,
     String? reqNo,
-    int? poHeaderId,
     int? reqLineNo,
+    String? poNo,
+    int? poHeaderId,
     int? itemId,
     String? itemDescription,
-    int? quantity,
+    double? quantity,
     String? unitMeasLookupCode,
     String? needByDate,
-  }) =>
-      GrnPO(
-        operationUnit: operationUnit ?? this.operationUnit,
-        requisitionNumber: requisitionNumber ?? this.requisitionNumber,
-        jobOrderNo: jobOrderNo ?? this.jobOrderNo,
-        reqNo: reqNo ?? this.reqNo,
-        reqLineNo: reqLineNo ?? this.reqLineNo,
-        itemId: itemId ?? this.itemId,
-        poHeaderId: poHeaderId ?? this.poHeaderId,
-        itemDescription: itemDescription ?? this.itemDescription,
-        quantity: quantity ?? this.quantity,
-        unitMeasLookupCode: unitMeasLookupCode ?? this.unitMeasLookupCode,
-        needByDate: needByDate ?? this.needByDate,
-      );
+  }) => GrnPO(
+    operationUnit: operationUnit ?? this.operationUnit,
+    requisitionNumber: requisitionNumber ?? this.requisitionNumber,
+    jobOrderNo: jobOrderNo ?? this.jobOrderNo,
+    reqNo: reqNo ?? this.reqNo,
+    reqLineNo: reqLineNo ?? this.reqLineNo,
+    poNo: poNo ?? this.poNo,
+    poHeaderId: poHeaderId ?? this.poHeaderId,
+    itemId: itemId ?? this.itemId,
+    itemDescription: itemDescription ?? this.itemDescription,
+    quantity: quantity ?? this.quantity,
+    unitMeasLookupCode: unitMeasLookupCode ?? this.unitMeasLookupCode,
+    needByDate: needByDate ?? this.needByDate,
+  );
 
   factory GrnPO.fromJson(String str) => GrnPO.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory GrnPO.fromMap(Map<String, dynamic> json) => GrnPO(
-        operationUnit: json["Operation_Unit"],
-        requisitionNumber: json["Requisition_Number"],
-        jobOrderNo: json["JOB_ORDER_NO"],
-        reqNo: json["req_no"],
-        reqLineNo: json["req_line_no"],
-        poHeaderId: json["po_header_id"],
-        itemId: json["ITEM_ID"],
-        itemDescription: json["ITEM_DESCRIPTION"],
-        quantity: json["QUANTITY"],
-        unitMeasLookupCode: json["UNIT_MEAS_LOOKUP_CODE"],
-        needByDate: json["NEED_BY_DATE"],
-      );
+    operationUnit: json["Operation_Unit"],
+    requisitionNumber: json["Requisition_Number"],
+    jobOrderNo: json["JOB_ORDER_NO"],
+    reqNo: json["req_no"],
+    reqLineNo: json["req_line_no"],
+    poNo: json["po_no"],
+    poHeaderId: json["po_header_id"],
+    itemId: json["ITEM_ID"],
+    itemDescription: json["ITEM_DESCRIPTION"],
+    quantity: json["QUANTITY"]?.toDouble(),
+    unitMeasLookupCode: json["UNIT_MEAS_LOOKUP_CODE"],
+    needByDate: json["NEED_BY_DATE"],
+  );
 
   Map<String, dynamic> toMap() => {
-        "Operation_Unit": operationUnit,
-        "Requisition_Number": requisitionNumber,
-        "JOB_ORDER_NO": jobOrderNo,
-        "req_no": reqNo,
-        "req_line_no": reqLineNo,
-        "po_header_id": poHeaderId,
-        "ITEM_ID": itemId,
-        "ITEM_DESCRIPTION": itemDescription,
-        "QUANTITY": quantity,
-        "UNIT_MEAS_LOOKUP_CODE": unitMeasLookupCode,
-        "NEED_BY_DATE": needByDate,
-      };
+    "Operation_Unit": operationUnit,
+    "Requisition_Number": requisitionNumber,
+    "JOB_ORDER_NO": jobOrderNo,
+    "req_no": reqNo,
+    "req_line_no": reqLineNo,
+    "po_no": poNo,
+    "po_header_id": poHeaderId,
+    "ITEM_ID": itemId,
+    "ITEM_DESCRIPTION": itemDescription,
+    "QUANTITY": quantity,
+    "UNIT_MEAS_LOOKUP_CODE": unitMeasLookupCode,
+    "NEED_BY_DATE": needByDate,
+  };
   @override
   String toString() {
-    return "$itemId-$itemDescription";
+    return 'PoNo: $poNo, Item: $itemId-$itemDescription, Qty: $quantity';
   }
 }
