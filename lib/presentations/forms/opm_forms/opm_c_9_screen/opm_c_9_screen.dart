@@ -5,8 +5,9 @@ import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
 import 'package:pran_rfl_erp/common_widgets/common_app_bar_widget.dart';
 import 'package:pran_rfl_erp/core/theme/app_theme.dart';
+import 'package:pran_rfl_erp/core/utils/enums.dart';
 import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
-import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_9_screen/bloc/batch_comp_bloc.dart';
+import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_9_screen/bloc/batch_comp_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_9_screen/widgets/complete_widget.dart';
 
 class OpmC9Screen extends StatelessWidget {
@@ -19,7 +20,7 @@ class OpmC9Screen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BatchCompBloc(getService()), //list
+          create: (context) => BatchCompListBloc(getService()), //list
         ),
       ],
       child: OpmC9ScreenBody(fromName: fromName),
@@ -112,7 +113,7 @@ class _CompleteTabState extends State<CompleteTab> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
-    context.read<BatchCompBloc>().add(
+    context.read<BatchCompListBloc>().add(
       GetBatchCompData(userId: loggedUser.userId),
     );
     super.initState();
@@ -124,7 +125,7 @@ class _CompleteTabState extends State<CompleteTab> {
       children: [
         const SizedBox(height: 15),
         Expanded(
-          child: BlocBuilder<BatchCompBloc, BatchCompState>(
+          child: BlocBuilder<BatchCompListBloc, BatchCompListState>(
             builder: (context, state) {
               if (state.fetchStatus == RequestStatus.loading) {
                 return const Center(child: CircularProgressIndicator());

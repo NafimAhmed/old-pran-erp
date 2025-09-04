@@ -26,29 +26,23 @@ class SysAdminC2Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => AppsUserBloc(getService()),
-        ),
+        BlocProvider(create: (context) => AppsUserBloc(getService())),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<AppsUserData>(),
         ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<bool>(),
-        ),
-        BlocProvider(
-          create: (context) => UserCreateBloc(getService()),
-        ),
+        BlocProvider(create: (context) => VariableStateHandlerCubit<bool>()),
+        BlocProvider(create: (context) => UserCreateBloc(getService())),
       ],
-      child: SysAdminC2ScreenBody(
-        fromName: fromName,
-      ),
+      child: SysAdminC2ScreenBody(fromName: fromName),
     );
   }
 }
 
 class SysAdminC2ScreenBody extends StatefulWidget {
-  const SysAdminC2ScreenBody(
-      {super.key, required this.fromName}); //user creation
+  const SysAdminC2ScreenBody({
+    super.key,
+    required this.fromName,
+  }); //user creation
   final String fromName;
   @override
   State<SysAdminC2ScreenBody> createState() => _SysAdminC2ScreenBodyState();
@@ -57,6 +51,10 @@ class SysAdminC2ScreenBody extends StatefulWidget {
 class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
   TextEditingController userNameTextController = TextEditingController();
   FocusNode userNameFocusNode = FocusNode();
+  TextEditingController desigTextController = TextEditingController();
+  FocusNode desigFocusNode = FocusNode();
+  TextEditingController deptTextController = TextEditingController();
+  FocusNode deptFocusNode = FocusNode();
 
   TextEditingController userIdTextController = TextEditingController();
   FocusNode userIdFocusNode = FocusNode();
@@ -91,7 +89,11 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
     mobileTextController.dispose();
     passFocusNode.dispose();
     passTextController.dispose();
-
+    deptFocusNode.dispose();
+    deptTextController.dispose();
+    desigFocusNode.dispose();
+    desigTextController.dispose();
+    dropDownTextController.dispose();
     super.dispose();
   }
 
@@ -117,21 +119,15 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
           }
           if (state is UserCreateError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.errorSnackber(
-                message: state.error.toString(),
-              ),
+              CustomSnackBar.errorSnackber(message: state.error.toString()),
             );
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Form(
                 key: formKey,
                 child: Column(
@@ -150,9 +146,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         return null;
                       },
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     CommonLableWthTextField(
                       lableName: "User Name",
                       focusNode: userNameFocusNode,
@@ -166,9 +160,35 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         return null;
                       },
                     ),
-                    const SizedBox(
-                      height: 10,
+                    const SizedBox(height: 10),
+                    CommonLableWthTextField(
+                      lableName: "Designation",
+                      focusNode: desigFocusNode,
+                      textController: desigTextController,
+                      keyboardType: TextInputType.text,
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Designation";
+                        }
+                        return null;
+                      },
                     ),
+                    const SizedBox(height: 10),
+                    CommonLableWthTextField(
+                      lableName: "Department",
+                      focusNode: deptFocusNode,
+                      textController: deptTextController,
+                      keyboardType: TextInputType.text,
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter dept Name";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
                     CommonLableWthTextField(
                       lableName: "Mobile No",
                       focusNode: mobileFocusNode,
@@ -183,9 +203,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         return null;
                       },
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     CommonLableWthTextField(
                       lableName: "Password",
                       obscureText: context
@@ -220,9 +238,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Expanded(
@@ -231,8 +247,8 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                               return CommonDropDownMenuWidget<AppsUserData>(
                                 enabled: state is AppsUserSuccess
                                     ? state.appsDataList.isNotEmpty
-                                        ? true
-                                        : false
+                                          ? true
+                                          : false
                                     : false,
                                 // enableFilter: true,
                                 controller: dropDownTextController,
@@ -243,8 +259,8 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                   FocusManager.instance.primaryFocus?.unfocus();
                                   context
                                       .read<
-                                          VariableStateHandlerCubit<
-                                              AppsUserData>>()
+                                        VariableStateHandlerCubit<AppsUserData>
+                                      >()
                                       .update(value!);
                                   appUserTextController.text =
                                       value.description ?? "";
@@ -258,9 +274,7 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                             },
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           // flex: 2,
                           child: CommonTextFieldWidget(
@@ -272,15 +286,11 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               BlocBuilder<UserCreateBloc, UserCreateState>(
                 builder: (context, state) {
                   return ElevatedButton(
@@ -295,17 +305,17 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                             .read<VariableStateHandlerCubit<AppsUserData>>()
                             .state!;
                         context.read<UserCreateBloc>().add(
-                              CreateUser(
-                                userId: loggedUser.userId,
-                                appUser: appUser.userId.toString(),
-                                deptName: "",
-                                desigName: "",
-                                mobileNo: mobileTextController.text,
-                                newUserId: userIdTextController.text,
-                                newUserName: userNameTextController.text,
-                                passw: passTextController.text,
-                              ),
-                            );
+                          CreateUser(
+                            userId: loggedUser.userId,
+                            appUser: appUser.userId.toString(),
+                            deptName: deptTextController.text,
+                            desigName: desigTextController.text,
+                            mobileNo: mobileTextController.text,
+                            newUserId: userIdTextController.text,
+                            newUserName: userNameTextController.text,
+                            passw: passTextController.text,
+                          ),
+                        );
                       }
                     },
                     child: Text(
@@ -355,12 +365,10 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                       style: textTheme.bodySmall!.copyWith(
                                         fontWeight: FontWeight.bold,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
+                                const SizedBox(height: 5),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -373,12 +381,10 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                       state.createdUserList[index].userName ??
                                           "",
                                       style: textTheme.bodySmall!,
-                                    )
+                                    ),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
+                                const SizedBox(height: 5),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -391,12 +397,10 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                       state.createdUserList[index].appUserId ??
                                           "",
                                       style: textTheme.bodySmall!,
-                                    )
+                                    ),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
+                                const SizedBox(height: 5),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -409,23 +413,22 @@ class _SysAdminC2ScreenBodyState extends State<SysAdminC2ScreenBody> {
                                       state.createdUserList[index].mobileNo ??
                                           "",
                                       style: textTheme.bodySmall!,
-                                    )
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           );
                         },
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: 10,
-                        ),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 10),
                         itemCount: state.createdUserList.length,
                       );
                     }
                     return Container();
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),

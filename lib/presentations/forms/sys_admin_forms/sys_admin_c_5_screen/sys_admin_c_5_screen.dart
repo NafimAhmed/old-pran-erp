@@ -24,25 +24,15 @@ class SysAdminC5Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => QrUserBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => OrgBloc(getService()),
-        ),
-        BlocProvider(
-          create: (context) => OrgAccessBloc(getService()),
-        ),
+        BlocProvider(create: (context) => QrUserBloc(getService())),
+        BlocProvider(create: (context) => OrgBloc(getService())),
+        BlocProvider(create: (context) => OrgAccessBloc(getService())),
         BlocProvider(
           create: (context) => VariableStateHandlerCubit<QrUserData>(),
         ),
-        BlocProvider(
-          create: (context) => VariableStateHandlerCubit<UserOrg>(),
-        ),
+        BlocProvider(create: (context) => VariableStateHandlerCubit<UserOrg>()),
       ],
-      child: SysAdminC5ScreenBody(
-        fromName: fromName,
-      ),
+      child: SysAdminC5ScreenBody(fromName: fromName),
     );
   }
 }
@@ -82,9 +72,9 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
       body: BlocListener<OrgAccessBloc, OrgAccessState>(
         listener: (context, state) {
           if (state is OrgAccessSuccess) {
-            context.read<VariableStateHandlerCubit<QrUserData>>().reset();
+            //context.read<VariableStateHandlerCubit<QrUserData>>().reset();
             context.read<VariableStateHandlerCubit<UserOrg>>().reset();
-            userDropDownTextController.clear();
+            //userDropDownTextController.clear();
             orgDropDownTextController.clear();
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(
@@ -94,23 +84,17 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
           }
           if (state is OrgAccessError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.successSnackber(
-                message: state.error.toString(),
-              ),
+              CustomSnackBar.successSnackber(message: state.error.toString()),
             );
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Form(
             key: fromKey,
             child: Column(
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 BlocBuilder<QrUserBloc, QrUserState>(
                   builder: (context, state) {
                     return CommonDropDownMenuWidget<QrUserData>(
@@ -118,8 +102,9 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                       enabled: state is QrUserSuccess
                           ? state.qrUsers.isNotEmpty
                           : false,
-                      dropdownMenuEntries:
-                          state is QrUserSuccess ? state.qrUsers : [],
+                      dropdownMenuEntries: state is QrUserSuccess
+                          ? state.qrUsers
+                          : [],
                       controller: userDropDownTextController,
                       onSelected: (value) {
                         if (value != null) {
@@ -133,15 +118,14 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                     );
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 BlocBuilder<OrgBloc, OrgState>(
                   builder: (context, state) {
                     return CommonDropDownMenuWidget<UserOrg>(
                       hintText: "Select Org",
-                      dropdownMenuEntries:
-                          state is OrgSuccess ? state.userOrgList : [],
+                      dropdownMenuEntries: state is OrgSuccess
+                          ? state.userOrgList
+                          : [],
                       enabled: state is OrgSuccess
                           ? state.userOrgList.isNotEmpty
                           : false,
@@ -158,9 +142,7 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                     );
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 BlocBuilder<OrgAccessBloc, OrgAccessState>(
                   builder: (context, state) {
                     return ElevatedButton(
@@ -190,12 +172,12 @@ class _SysAdminC5ScreenBodyState extends State<SysAdminC5ScreenBody> {
                             return;
                           }
                           context.read<OrgAccessBloc>().add(
-                                GiveOrgAccess(
-                                  newUserId: newUserId.userId ?? "",
-                                  userId: loggedUser.userId,
-                                  orgId: orgId.organizationId.toString(),
-                                ),
-                              );
+                            GiveOrgAccess(
+                              newUserId: newUserId.userId ?? "",
+                              userId: loggedUser.userId,
+                              orgId: orgId.organizationId.toString(),
+                            ),
+                          );
                         }
                       },
                       child: Text(

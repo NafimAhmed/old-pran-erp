@@ -24,6 +24,14 @@ final class GrnIssue extends GrnIssueEvent {
   });
 }
 
+final class NewIssue extends GrnIssueEvent {
+  final String userId;
+  final int orgId;
+  final String lotNo;
+
+  NewIssue({required this.userId, required this.orgId, required this.lotNo});
+}
+
 class GrnIssueState extends BaseState {
   GrnIssueState({
     super.isLoading = false,
@@ -53,6 +61,19 @@ class GrnIssueBloc extends Bloc<GrnIssueEvent, GrnIssueState> {
           locId: event.locId,
           lotNo: event.lotNo,
           qty: event.qty,
+        );
+        emit(state.copyWith(isLoading: false, isSuccess: true, error: null));
+      } catch (error) {
+        emit(state.copyWith(isLoading: false, isSuccess: false, error: error));
+      }
+    });
+    on<NewIssue>((event, emit) async {
+      emit(state.copyWith(isLoading: true, isSuccess: false, error: null));
+      try {
+        await _dataRepo.newIssue(
+          userId: event.userId,
+          orgId: event.orgId,
+          lotNo: event.lotNo,
         );
         emit(state.copyWith(isLoading: false, isSuccess: true, error: null));
       } catch (error) {

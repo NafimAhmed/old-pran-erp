@@ -9,6 +9,8 @@ import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_10_screen/inv_c
     show InvC10Screen;
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_11_screen/inv_c_11_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_12_screen/inv_c_12_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_13_screen/inv_c_13_screen.dart';
+import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_14_screen/inv_c_14_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_1_screen/inv_c_1_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_2_screen/inv_c_2_screen.dart';
 import 'package:pran_rfl_erp/presentations/forms/inv_forms/inv_c_3_screen/inv_c_3_screen.dart';
@@ -453,6 +455,22 @@ class AppNavigation {
         name: InvC12Screen.routeName,
         builder: (context, state) {
           return InvC12Screen(fromName: state.extra as String);
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: InvC13Screen.routePath,
+        name: InvC13Screen.routeName,
+        builder: (context, state) {
+          return InvC13Screen(fromName: state.extra as String);
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: InvC14Screen.routePath,
+        name: InvC14Screen.routeName,
+        builder: (context, state) {
+          return InvC14Screen(fromName: state.extra as String);
         },
       ),
       GoRoute(

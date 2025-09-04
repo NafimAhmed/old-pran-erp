@@ -24,6 +24,20 @@ final class GrnRcv extends GrnRcvEvent {
   });
 }
 
+final class NewRcv extends GrnRcvEvent {
+  final String userId;
+  final String locId;
+  final String lotNo;
+  final String pQty;
+
+  NewRcv({
+    required this.userId,
+    required this.locId,
+    required this.lotNo,
+    required this.pQty,
+  });
+}
+
 class GrnRcvState extends BaseState {
   GrnRcvState({super.isLoading = false, super.error, super.isSuccess = false});
 
@@ -46,6 +60,20 @@ class GrnRcvBloc extends Bloc<GrnRcvEvent, GrnRcvState> {
           userId: event.userId,
           orgId: event.orgId,
           itemId: event.itemId,
+          locId: event.locId,
+          lotNo: event.lotNo,
+          pQty: event.pQty,
+        );
+        emit(state.copyWith(isLoading: false, isSuccess: true, error: null));
+      } catch (error) {
+        emit(state.copyWith(isLoading: false, isSuccess: false, error: error));
+      }
+    });
+    on<NewRcv>((event, emit) async {
+      emit(state.copyWith(isLoading: true, isSuccess: false, error: null));
+      try {
+        await _dataRepo.newRcv(
+          userId: event.userId,
           locId: event.locId,
           lotNo: event.lotNo,
           pQty: event.pQty,

@@ -86,13 +86,13 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
       body: BlocListener<QrUserMenuPermissionBloc, QrUserMenuPermissionState>(
         listener: (context, state) {
           if (state is QrUserMenuPermissionSuccess) {
-            context.read<VariableStateHandlerCubit<QrUserData>>().reset();
+            // context.read<VariableStateHandlerCubit<QrUserData>>().reset();
 
-            context.read<VariableStateHandlerCubit<QrUserChildMenu>>().reset();
-            userNameTextController.clear();
-            userMobTextController.clear();
-            userDeptTextController.clear();
-            userDesgTextController.clear();
+            // context.read<VariableStateHandlerCubit<QrUserChildMenu>>().reset();
+            // userNameTextController.clear();
+            // userMobTextController.clear();
+            // userDeptTextController.clear();
+            // userDesgTextController.clear();
 
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar.successSnackber(message: "Permission Given..!"),
@@ -119,6 +119,9 @@ class _SysAdminC3ScreenBodyState extends State<SysAdminC3ScreenBody> {
                   builder: (context, state) {
                     return CustomDropdownSearch<QrUserData>(
                       hintText: "Select User",
+                      value: context
+                          .watch<VariableStateHandlerCubit<QrUserData>>()
+                          .state,
                       items: state is QrUserSuccess ? state.qrUsers : [],
                       enabled: state is QrUserSuccess
                           ? state.qrUsers.isNotEmpty

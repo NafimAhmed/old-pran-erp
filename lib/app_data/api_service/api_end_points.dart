@@ -104,4 +104,5 @@ class ApiEndPoints {
   static const String prodTransfer = "/ords/rpro/batch/prodTransfer";
   static const String getItemStock = "/ords/rpro/invtran/OrgWiseStock";
   static const String grnTrans = "/ords/rpro/invtran/grn-trans";
+  static const String restockTemp = "/ords/rpro/invtran/restock_temp";
 }

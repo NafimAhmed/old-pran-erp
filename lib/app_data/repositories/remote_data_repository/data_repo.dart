@@ -437,6 +437,17 @@ abstract class DataRepo {
     required String lotNo,
     required num qty,
   });
+  Future<void> newIssue({
+    required String userId,
+    required int orgId,
+    required String lotNo,
+  });
+  Future<void> newRcv({
+    required String userId,
+    required String locId,
+    required String lotNo,
+    required String? pQty,
+  });
   Future<void> grnRcv({
     required String userId,
     required int orgId,

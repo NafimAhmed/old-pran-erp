@@ -609,8 +609,8 @@ class DataRepoImpl implements DataRepo {
         "passw": passw,
         "appuser": appUser,
         "mobileno": mobileNo,
-        "designame": "null",
-        "deptname": "null",
+        "designame": desigName,
+        "deptname": deptName,
       },
     );
     var decodedRes = UserCreateResponse.fromJson(response);
@@ -789,7 +789,7 @@ class DataRepoImpl implements DataRepo {
     );
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw ApiDataException(decodedRes.message);
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -804,7 +804,7 @@ class DataRepoImpl implements DataRepo {
     );
     var decodedRes = GenericResponse.fromJson(response);
     if (decodedRes.statusCode != 200) {
-      throw ApiDataException(decodedRes.message);
+      throw ApiDataException(decodedRes.errorMessage);
     }
   }
 
@@ -1757,6 +1757,29 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
+  Future<void> newIssue({
+    required String userId,
+    required int orgId,
+    required String lotNo,
+  }) {
+    return httpService
+        .postCall(
+          endPoint: ApiEndPoints.restockTemp,
+          parameters: {
+            "p_user_name": userId,
+            "p_organization_id": orgId,
+            "p_lot_no": lotNo,
+          },
+        )
+        .then((response) {
+          var decoderRes = GenericResponse.fromJson(response);
+          if (decoderRes.statusCode != 200) {
+            throw ApiDataException(decoderRes.errorMessage);
+          }
+        });
+  }
+
+  @override
   Future<void> grnRcv({
     required String userId,
     required int orgId,
@@ -1774,6 +1797,31 @@ class DataRepoImpl implements DataRepo {
             "inventory_id": itemId,
             "locatorid": locId,
             "lot_no": lotNo,
+            "p_qty": pQty,
+          },
+        )
+        .then((response) {
+          var decoderRes = GenericResponse.fromJson(response);
+          if (decoderRes.statusCode != 200) {
+            throw ApiDataException(decoderRes.errorMessage);
+          }
+        });
+  }
+
+  @override
+  Future<void> newRcv({
+    required String userId,
+    required String locId,
+    required String lotNo,
+    required String? pQty,
+  }) {
+    return httpService
+        .getCall(
+          endPoint: ApiEndPoints.restockTemp,
+          parameters: {
+            "p_user_name": userId,
+            "p_locatorid": locId,
+            "p_lot_no": lotNo,
             "p_qty": pQty,
           },
         )
