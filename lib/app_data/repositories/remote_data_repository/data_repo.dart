@@ -493,6 +493,10 @@ abstract class DataRepo {
     required String userId,
     required String pTrnId,
     required String rackId,
+    required String pQty,
+    required int pItemId,
+    required int pOrgId,
+    required int pFlocatorId,
   });
   Future<List<ItemStock>> getItemStock({required int orgId});
   Future<List<SubInventory>> getSubInventory({

@@ -49,7 +49,7 @@ class LotTrnBloc extends Bloc<LotTrnEvent, LotTrnState> {
       try {
         var response = await _dataService.getLotTrnData(
           userId: event.userId,
-          // racklocator: "PB02412744476",
+          //racklocator: "PE925090293049",
           racklocator: event.racklocator,
         );
         emit(LotTrnSuccess(lotTrnDataList: response));
@@ -62,6 +62,8 @@ class LotTrnBloc extends Bloc<LotTrnEvent, LotTrnState> {
       try {
         var response = await _dataService.getLotTrnDataNew(
           userId: event.userId,
+
+          ///racklocator: "PE925090293049",
           racklocator: event.racklocator,
         );
 

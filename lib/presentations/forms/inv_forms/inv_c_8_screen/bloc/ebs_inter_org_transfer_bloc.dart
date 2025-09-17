@@ -19,6 +19,26 @@ final class EbsInterOrgTran extends EbsInterOrgTranEvent {
   });
 }
 
+final class EbsInterOrgTranNew extends EbsInterOrgTranEvent {
+  final String pTrnid;
+  final String userid;
+  final String rackId;
+  final String pQty;
+  final int pItemId;
+  final int pOrgId;
+  final int pFlocatorId;
+
+  EbsInterOrgTranNew({
+    required this.pTrnid,
+    required this.userid,
+    required this.rackId,
+    required this.pQty,
+    required this.pItemId,
+    required this.pOrgId,
+    required this.pFlocatorId,
+  });
+}
+
 @immutable
 sealed class EbsInterOrgTranState {}
 
@@ -46,6 +66,24 @@ class EbsInterOrgTranBloc
           itemlotno: event.itemlotno,
           torackid: event.torackid,
           trnid: event.trnid,
+        );
+        emit(EbsInterOrgTranSuccess());
+      } catch (error) {
+        emit(EbsInterOrgTranError(error: error));
+      }
+    });
+
+    on<EbsInterOrgTranNew>((event, emit) async {
+      emit(EbsInterOrgTranLoading());
+      try {
+        await _dataService.prodTransferNew(
+          pTrnId: event.pTrnid,
+          rackId: event.rackId,
+          userId: event.userid,
+          pQty: event.pQty,
+          pItemId: event.pItemId,
+          pOrgId: event.pOrgId,
+          pFlocatorId: event.pFlocatorId,
         );
         emit(EbsInterOrgTranSuccess());
       } catch (error) {

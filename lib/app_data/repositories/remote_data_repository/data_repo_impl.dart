@@ -2031,6 +2031,10 @@ class DataRepoImpl implements DataRepo {
     required String userId,
     required String pTrnId,
     required String rackId,
+    required String pQty,
+    required int pItemId,
+    required int pOrgId,
+    required int? pFlocatorId,
   }) async {
     var response = await httpService.getCall(
       endPoint: ApiEndPoints.prodTransfer,
@@ -2038,6 +2042,11 @@ class DataRepoImpl implements DataRepo {
         "v_userid": userId,
         "v_tlockid": rackId,
         "v_itemlotno": pTrnId,
+
+        "v_organization_id": pOrgId,
+        "v_inventory_item_id": pItemId,
+        "P_QTY": pQty,
+        "P_FLOCATOR_ID": pFlocatorId,
       },
     );
     var decodedRes = GenericResponse.fromJson(response);

@@ -55,7 +55,7 @@ class LotTrnData {
   final String? batchStatus;
   final int? orgId;
   final int? invItemId;
-
+  final String? organizationCode;
   LotTrnData({
     this.batchNo,
     this.trnid,
@@ -70,6 +70,7 @@ class LotTrnData {
     this.batchStatus,
     this.orgId,
     this.invItemId,
+    this.organizationCode,
   });
 
   LotTrnData copyWith({
@@ -78,7 +79,7 @@ class LotTrnData {
     String? itemCode,
     String? itemName,
     String? lotno,
-    int? rackQty,
+    num? rackQty,
     String? subinventory,
     int? rackLocatorId,
     String? joborder,
@@ -86,6 +87,7 @@ class LotTrnData {
     String? batchStatus,
     int? orgId,
     int? invItemId,
+    String? organizationCode,
   }) => LotTrnData(
     batchNo: batchNo ?? this.batchNo,
     trnid: trnid ?? this.trnid,
@@ -100,6 +102,7 @@ class LotTrnData {
     batchStatus: batchStatus ?? this.batchStatus,
     orgId: orgId ?? this.orgId,
     invItemId: invItemId ?? this.invItemId,
+    organizationCode: organizationCode ?? this.organizationCode,
   );
 
   factory LotTrnData.fromJson(String str) =>
@@ -121,6 +124,7 @@ class LotTrnData {
     batchStatus: json["BATCH_STATUS"],
     orgId: json["ORGANIZATION_ID"],
     invItemId: json["INVENTORY_ITEM_ID"],
+    organizationCode: json["ORGANIZATION_CODE"],
   );
 
   Map<String, dynamic> toMap() => {
@@ -137,5 +141,6 @@ class LotTrnData {
     "BATCH_STATUS": batchStatus,
     "ORGANIZATION_ID": orgId,
     "INVENTORY_ITEM_ID": invItemId,
+    "ORGANIZATION_CODE": organizationCode,
   };
 }

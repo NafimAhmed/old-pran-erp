@@ -59,12 +59,12 @@ class _InvC12ScreenBodyState extends State<InvC12ScreenBody> {
   @override
   void initState() {
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
-    context.read<LotTrnBloc>().add(
-      GetLotTrnDataNew(
-        userId: loggedUser.userId,
-        racklocator: itemQrData?.lotno ?? "",
-      ),
-    );
+    // context.read<LotTrnBloc>().add(
+    //   GetLotTrnDataNew(
+    //     userId: loggedUser.userId,
+    //     racklocator: itemQrData?.lotno ?? "",
+    //   ),
+    // );
     super.initState();
   }
 
@@ -352,6 +352,8 @@ class _IotTrnViewState extends State<IotTrnView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(10),
           bottomRight: Radius.circular(10),
@@ -407,11 +409,14 @@ class _IotTrnViewState extends State<IotTrnView> {
                       }
                       if (rackQrData.isNotEmpty) {
                         context.read<EbsInterOrgTranBloc>().add(
-                          EbsInterOrgTran(
+                          EbsInterOrgTranNew(
                             userid: widget.loggedUser.userId,
-                            trnid: widget.iotTrnData.trnid.toString(),
-                            itemlotno: widget.iotTrnData.lotno.toString(),
-                            torackid: rackQrData[0],
+                            pTrnid: widget.iotTrnData.lotno ?? "",
+                            rackId: rackQrData[0],
+                            pQty: textController.text,
+                            pItemId: widget.iotTrnData.invItemId ?? 0,
+                            pOrgId: widget.iotTrnData.orgId ?? 0,
+                            pFlocatorId: widget.iotTrnData.rackLocatorId ?? 0,
                           ),
                         );
                       } else {
@@ -453,6 +458,19 @@ class _IotTrnViewState extends State<IotTrnView> {
               ),
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "On Hand:",
+                style: textTheme.bodyMedium!.copyWith(color: appTheme.primary),
+              ),
+              Text(
+                widget.iotTrnData.rackQty?.toString() ?? "-",
+                style: textTheme.bodyMedium!.copyWith(color: appTheme.primary),
+              ),
+            ],
+          ),
           const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -486,11 +504,11 @@ class _IotTrnViewState extends State<IotTrnView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Batch Status:",
+                "Org:",
                 style: textTheme.bodyMedium!.copyWith(color: appTheme.primary),
               ),
               Text(
-                widget.iotTrnData.batchStatus ?? "",
+                widget.iotTrnData.organizationCode?.toString() ?? "",
                 style: textTheme.bodyMedium!.copyWith(color: appTheme.primary),
               ),
             ],
