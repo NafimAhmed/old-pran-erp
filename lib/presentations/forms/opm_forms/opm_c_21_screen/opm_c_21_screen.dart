@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pran_rfl_erp/app_data/models/chat_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/user_info_model.dart';
 import 'package:pran_rfl_erp/app_dependency/di_container.dart';
@@ -15,6 +16,8 @@ import 'package:pran_rfl_erp/global_blocs/cubit/logged_user_info_cubit.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_21_screen/bloc/chat_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_21_screen/bloc/chat_list_bloc.dart';
 import 'package:pran_rfl_erp/presentations/forms/opm_forms/opm_c_22_screen/bloc/typing_bloc.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class OpmC21Screen extends StatelessWidget {
   const OpmC21Screen({super.key, required this.fromName});
@@ -46,8 +49,13 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
   late FocusNode askFocusNode;
   late ScrollController chatScroll;
   Map<int, TypingBloc> typeBlocMap = {};
+  final SpeechToText _speechToText = SpeechToText();
+  bool _speechEnabled = false;
+  String _lastWords = "";
+
   @override
   void initState() {
+    super.initState();
     chatScroll = ScrollController();
     loggedUser = context.read<LoggedUserInfoCubit>().state.userInfoModel!;
     askTextController = TextEditingController();
@@ -55,8 +63,10 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
     context.read<ChatListBloc>().add(
       GetConversation(userId: loggedUser.userId),
     );
-
-    super.initState();
+    listenForPermissions();
+    if (!_speechEnabled) {
+      _initSpeech();
+    }
   }
 
   @override
@@ -64,7 +74,63 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
     askTextController.dispose();
     askFocusNode.dispose();
     chatScroll.dispose();
+
     super.dispose();
+  }
+
+  void listenForPermissions() async {
+    final status = await Permission.microphone.status;
+    switch (status) {
+      case PermissionStatus.denied:
+        _requestForPermission();
+        break;
+      case PermissionStatus.granted:
+        break;
+      case PermissionStatus.limited:
+        break;
+      case PermissionStatus.permanentlyDenied:
+        break;
+      case PermissionStatus.restricted:
+        break;
+      case PermissionStatus.provisional:
+        break;
+    }
+  }
+
+  Future<void> _requestForPermission() async {
+    await Permission.microphone.request();
+  }
+
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+  }
+
+  /// Each time to start a speech recognition session
+  void _startListening() async {
+    await _speechToText.listen(
+      onResult: _onSpeechResult,
+      listenFor: const Duration(seconds: 30),
+      localeId: "en_En",
+    );
+    setState(() {});
+  }
+
+  /// Manually stop the active speech recognition session
+  /// Note that there are also timeouts that each platform enforces
+  /// and the SpeechToText plugin supports setting timeouts on the
+  /// listen method.
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  /// This is the callback that the SpeechToText plugin calls when
+  /// the platform returns recognized words.
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = "${result.recognizedWords} ";
+      askTextController.text = _lastWords;
+    });
   }
 
   List<GptInfo> conversation = [];
@@ -152,130 +218,154 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
                   bottom: 15,
                 ),
                 color: const Color.fromRGBO(179, 214, 246, 0.16),
-                child: CommonTextFieldWidget(
-                  controller: askTextController,
-                  focusNode: askFocusNode,
-                  textAlign: TextAlign.left,
-                  hintText: "Type Here",
-                  maxLines: 2,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CommonTextFieldWidget(
+                        controller: askTextController,
+                        focusNode: askFocusNode,
+                        textAlign: TextAlign.left,
+                        hintText: "Type Here",
+                        maxLines: 2,
 
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          List<PlatformFile>? pickedFiles;
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                List<PlatformFile>? pickedFiles;
 
-                          try {
-                            pickedFiles = (await FilePicker.platform.pickFiles(
-                              type: FileType.custom,
-                              allowMultiple: false,
-                              allowedExtensions: [
-                                'jpg',
-                                'pdf',
-                                'doc',
-                                'png',
-                                'xlsx',
-                              ],
-                            ))?.files;
-                          } on PlatformException catch (e) {
-                            log('Unsupported operation: $e');
-                          } catch (e) {
-                            log(e.toString());
-                          }
+                                try {
+                                  pickedFiles =
+                                      (await FilePicker.platform.pickFiles(
+                                        type: FileType.custom,
+                                        allowMultiple: false,
+                                        allowedExtensions: [
+                                          'jpg',
+                                          'pdf',
+                                          'doc',
+                                          'png',
+                                          'xlsx',
+                                        ],
+                                      ))?.files;
+                                } on PlatformException catch (e) {
+                                  log('Unsupported operation: $e');
+                                } catch (e) {
+                                  log(e.toString());
+                                }
 
-                          if (pickedFiles != null) {
-                            PlatformFile file = pickedFiles.first;
+                                if (pickedFiles != null) {
+                                  PlatformFile file = pickedFiles.first;
 
-                            print(file.name);
-                            print(file.bytes);
-                            print(file.size);
-                            print(file.extension);
-                            print(file.path);
-                          } else {
-                            // User canceled the picker
-                          }
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: appTheme.white,
-                            border: Border.all(
-                              color: appTheme.primary,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.attach_file_rounded,
-                            color: appTheme.primary,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        child: GestureDetector(
-                          onTap: () {
-                            if (askTextController.text.isEmpty) {
-                              return;
-                            }
-                            var bloc;
-                            if (typeBlocMap.isNotEmpty) {
-                              bloc = typeBlocMap.values.last;
-                            }
-
-                            if (bloc != null && bloc.state.completed) {
-                              context.read<ChatBloc>().add(
-                                SendMessage(
-                                  userId: loggedUser.userId,
-                                  askText: askTextController.text,
-                                ),
-                              );
-                              askTextController.clear();
-                            } else if (typeBlocMap.isEmpty) {
-                              context.read<ChatBloc>().add(
-                                SendMessage(
-                                  userId: loggedUser.userId,
-                                  askText: askTextController.text,
-                                ),
-                              );
-                              askTextController.clear();
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 2),
-                                  backgroundColor: Colors.red,
-                                  content: Text(
-                                    "Please wait for the previous message to complete.",
+                                  print(file.name);
+                                  print(file.bytes);
+                                  print(file.size);
+                                  print(file.extension);
+                                  print(file.path);
+                                } else {
+                                  // User canceled the picker
+                                }
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: appTheme.white,
+                                  border: Border.all(
+                                    color: appTheme.primary,
+                                    width: 1.5,
                                   ),
                                 ),
-                              );
-                            }
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 5, left: 5),
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: appTheme.primary,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.send,
-                                color: appTheme.white,
-                                size: 24,
+                                child: Icon(
+                                  Icons.attach_file_rounded,
+                                  color: appTheme.primary,
+                                  size: 24,
+                                ),
                               ),
                             ),
-                          ),
+                            Flexible(
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (askTextController.text.isEmpty) {
+                                    return;
+                                  }
+                                  var bloc;
+                                  if (typeBlocMap.isNotEmpty) {
+                                    bloc = typeBlocMap.values.last;
+                                  }
+
+                                  if (bloc != null && bloc.state.completed) {
+                                    context.read<ChatBloc>().add(
+                                      SendMessage(
+                                        userId: loggedUser.userId,
+                                        askText: askTextController.text,
+                                      ),
+                                    );
+                                    askTextController.clear();
+                                  } else if (typeBlocMap.isEmpty) {
+                                    context.read<ChatBloc>().add(
+                                      SendMessage(
+                                        userId: loggedUser.userId,
+                                        askText: askTextController.text,
+                                      ),
+                                    );
+                                    askTextController.clear();
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                          "Please wait for the previous message to complete.",
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                    right: 5,
+                                    left: 5,
+                                  ),
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: appTheme.primary,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.send,
+                                      color: appTheme.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        fillColor: appTheme.white,
+                        filled: true,
                       ),
-                    ],
-                  ),
-                  fillColor: appTheme.white,
-                  filled: true,
+                    ),
+                    FloatingActionButton.small(
+                      onPressed:
+                          // If not yet listening for speech start, otherwise stop
+                          _speechToText.isNotListening
+                          ? _startListening
+                          : _stopListening,
+                      tooltip: 'Listen',
+                      backgroundColor: Colors.blueGrey,
+                      child: Icon(
+                        _speechToText.isNotListening
+                            ? Icons.mic_off
+                            : Icons.mic,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
