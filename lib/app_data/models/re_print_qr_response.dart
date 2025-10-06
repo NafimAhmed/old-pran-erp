@@ -50,7 +50,7 @@ class RqrData {
   final String? orgCode;
   final String? customerName;
   final String? subInv;
-  final int? madeQty;
+  final num? madeQty;
   final String? makeDate;
   final int? madeBy;
   final String? userName;
@@ -79,7 +79,7 @@ class RqrData {
     String? orgCode,
     String? customerName,
     String? subInv,
-    int? madeQty,
+    num? madeQty,
     String? makeDate,
     int? madeBy,
     String? userName,

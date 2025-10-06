@@ -105,4 +105,5 @@ class ApiEndPoints {
   static const String getItemStock = "/ords/rpro/invtran/OrgWiseStock";
   static const String grnTrans = "/ords/rpro/invtran/grn-trans";
   static const String restockTemp = "/ords/rpro/invtran/restock_temp";
+  static const String testList = "/ords/rpro/specification/test-list";
 }

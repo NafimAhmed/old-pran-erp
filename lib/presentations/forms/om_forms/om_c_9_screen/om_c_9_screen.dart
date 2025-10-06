@@ -92,23 +92,14 @@ class _OmC8ScreenBodyState extends State<OmC9ScreenBody> {
               ),
               const SizedBox(height: 10),
               BlocConsumer<ItemQrCubit, ItemQrState>(
-                listener: (context, state) {
-                  if (state is ItemQrInitial) {
-                    context.read<LotTrnBloc>().add(RestLotTrnData());
-                  }
-                },
+                listener: (context, state) {},
                 builder: (context, state) {
                   if (state is ItemQrInitial) {
                     itemQrData = null;
                   }
                   if (state is ItemQrDataLoaded) {
                     itemQrData = state.userBatchQrData;
-                    context.read<LotTrnBloc>().add(
-                      GetLotTrnDataNew(
-                        userId: loggedUser.userId,
-                        racklocator: itemQrData?.lotno ?? "",
-                      ),
-                    );
+
                     return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -217,137 +208,67 @@ class _OmC8ScreenBodyState extends State<OmC9ScreenBody> {
                   if (state.chalanItems.isEmpty) {
                     return const Center(child: Text("No items added"));
                   }
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: state.chalanItems.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final data = state.chalanItems[index];
-                      return Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header row
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    data.itemname ?? "Unknown Item",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      "Batch: ${data.batchNo ?? "-"}",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.blue.shade700,
-                                        fontWeight: FontWeight.w500,
+                  return Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(12),
+                      itemCount: state.chalanItems.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final data = state.chalanItems[index];
+                        return Card(
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Header row
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        data.itemname ?? "-",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
 
-                              // Customer & Buyer
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildInfoTile(
-                                      "Customer",
-                                      data.custname,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: _buildInfoTile(
-                                      "Buyer",
-                                      data.buyername,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
+                                const SizedBox(height: 8),
 
-                              // PO & Lot No
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildInfoTile(
-                                      "Cust PO",
-                                      data.custpo,
+                                // PO & Lot No
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildInfoTile(
+                                        "Lot No",
+                                        data.lotno,
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: _buildInfoTile("Lot No", data.lotno),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Good Qty & Exp Date
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildInfoTile(
-                                      "Good Qty",
-                                      data.goodQty?.toString(),
+                                    Expanded(
+                                      child: _buildInfoTile(
+                                        "Good Qty",
+                                        data.goodQty?.toString(),
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: _buildInfoTile(
-                                      "Exp Date",
-                                      data.expdate,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              const SizedBox(height: 8),
-                              // Footer
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Job: ${data.jobno ?? "-"}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Created: ${data.createdDate ?? "-"}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   );
                 },
               ),

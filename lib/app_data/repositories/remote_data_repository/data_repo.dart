@@ -54,6 +54,7 @@ import 'package:pran_rfl_erp/app_data/models/system_module_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/test_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
@@ -509,4 +510,5 @@ abstract class DataRepo {
     required String subInvCode,
   });
   Future<List<OrgWiseMessage>> getOrgWiseMess();
+  Future<List<TestList>> getTestList();
 }

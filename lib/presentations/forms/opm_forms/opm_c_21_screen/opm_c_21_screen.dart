@@ -51,6 +51,7 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
   Map<int, TypingBloc> typeBlocMap = {};
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
+  bool _isButtonHeld = false;
   String _lastWords = "";
 
   @override
@@ -101,24 +102,32 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
     await Permission.microphone.request();
   }
 
-  void _initSpeech() async {
-    _speechEnabled = await _speechToText.initialize();
-  }
-
-  /// Each time to start a speech recognition session
-  void _startListening() async {
-    await _speechToText.listen(
-      onResult: _onSpeechResult,
-      listenFor: const Duration(seconds: 30),
-      localeId: "en_En",
+  Future<void> _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize(
+      onStatus: _statusListener, //  listen to status
+      onError: (error) {
+        debugPrint("Speech error: $error");
+      },
     );
     setState(() {});
   }
 
-  /// Manually stop the active speech recognition session
-  /// Note that there are also timeouts that each platform enforces
-  /// and the SpeechToText plugin supports setting timeouts on the
-  /// listen method.
+  void _statusListener(String status) {
+    if (_isButtonHeld) {
+      _startListening(); // restart if still holding
+    }
+  }
+
+  void _startListening() async {
+    await _speechToText.listen(
+      onResult: _onSpeechResult,
+      listenFor: const Duration(seconds: 60), // max per session
+      pauseFor: const Duration(seconds: 1),
+      localeId: "en_US",
+    );
+    setState(() {});
+  }
+
   void _stopListening() async {
     await _speechToText.stop();
     setState(() {});
@@ -128,7 +137,7 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
   /// the platform returns recognized words.
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
-      _lastWords = "${result.recognizedWords} ";
+      _lastWords = "$_lastWords${result.recognizedWords} ";
       askTextController.text = _lastWords;
     });
   }
@@ -351,25 +360,42 @@ class _OpmC21ScreenBodyState extends State<OpmC21ScreenBody> {
                         filled: true,
                       ),
                     ),
-                    FloatingActionButton.small(
-                      onPressed:
-                          // If not yet listening for speech start, otherwise stop
-                          _speechToText.isNotListening
-                          ? _startListening
-                          : _stopListening,
-                      tooltip: 'Listen',
-                      backgroundColor: Colors.blueGrey,
-                      child: Icon(
-                        _speechToText.isNotListening
-                            ? Icons.mic_off
-                            : Icons.mic,
-                      ),
-                    ),
+                    _buildMicButton(),
                   ],
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMicButton() {
+    return GestureDetector(
+      onLongPressStart: (details) {
+        if (_speechEnabled && !_speechToText.isListening) {
+          _isButtonHeld = true; //  start holding
+          _startListening();
+        }
+      },
+      onLongPressEnd: (details) {
+        _isButtonHeld = false; //  stop holding
+        _lastWords = "";
+        _stopListening();
+      },
+      child: Container(
+        margin: const EdgeInsets.only(left: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: _speechToText.isNotListening
+              ? appTheme.white
+              : appTheme.primary,
+          border: Border.all(color: appTheme.primary, width: 1.5),
+        ),
+        child: Icon(
+          size: 30,
+          _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
         ),
       ),
     );

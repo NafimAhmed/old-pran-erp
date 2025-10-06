@@ -62,6 +62,7 @@ import 'package:pran_rfl_erp/app_data/models/task_info_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/task_note_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/temp_batch_data_response.dart';
+import 'package:pran_rfl_erp/app_data/models/test_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/top_jo_info_list_response.dart';
 import 'package:pran_rfl_erp/app_data/models/transfer_batch_data_response.dart';
 import 'package:pran_rfl_erp/app_data/models/prod_batch_data_response.dart';
@@ -2144,6 +2145,19 @@ class DataRepoImpl implements DataRepo {
             throw ApiDataException(decodedRes.message);
           }
           return decodedRes.orgwisemessage ?? [];
+        });
+  }
+
+  @override
+  Future<List<TestList>> getTestList() {
+    return httpService
+        .getCall(endPoint: ApiEndPoints.testList, parameters: {})
+        .then((response) {
+          var decodedRes = TestListResponse.fromJson(response);
+          if (decodedRes.statusCode != 200) {
+            throw ApiDataException(decodedRes.message);
+          }
+          return decodedRes.testList ?? [];
         });
   }
 }
