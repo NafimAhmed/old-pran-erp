@@ -281,6 +281,7 @@ class _ProjectC2ScreenBodyState extends State<ProjectC2ScreenBody> {
                       return ListView.separated(
                         itemBuilder: (context, index) {
                           var data = state.taskInfoFilterList[index];
+                          print(data);
                           return TaskWidget(
                             taskStatusTypeCubit:
                                 taskStatusTypeCubits.putIfAbsent(

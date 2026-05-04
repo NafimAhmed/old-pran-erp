@@ -44,6 +44,7 @@ class TaskWidgetContent extends StatelessWidget {
   final int index;
   @override
   Widget build(BuildContext context) {
+    print(data.taskStartDate);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Dismissible(
@@ -308,7 +309,7 @@ class TaskWidgetContent extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
-                            DateTime.parse(data.taskCreactionDate ?? "")
+                            DateTime.parse(data.taskStartDate ?? "")
                                 .toFormatedString("dd-MMM-yyyy"),
                             style: textTheme.bodyMedium!.copyWith(
                                 // color: appTheme.primary,

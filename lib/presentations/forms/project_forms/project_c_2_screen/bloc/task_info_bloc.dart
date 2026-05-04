@@ -61,6 +61,7 @@ class TaskInfoBloc extends Bloc<TaskInfoEvent, TaskInfoState> {
         );
         _taskInfoList = response;
 
+        print(_taskInfoList);
         emit(
           TaskInfoSuccess(
             taskInfoList: _taskInfoList,

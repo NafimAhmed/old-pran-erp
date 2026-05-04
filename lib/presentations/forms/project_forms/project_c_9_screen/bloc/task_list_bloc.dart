@@ -11,10 +11,7 @@ sealed class TaskListEvent {}
 final class TaskListGet extends TaskListEvent {
   final String userId;
   final String searchValue;
-  TaskListGet({
-    required this.userId,
-    required this.searchValue,
-  });
+  TaskListGet({required this.userId, required this.searchValue});
 }
 
 final class RemoveTask extends TaskListEvent {
@@ -55,12 +52,11 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       try {
         var response = await _dataService.getTaskList(userId: event.userId);
         _dataList = response;
+        print(_dataList);
         if (event.searchValue.isNotEmpty) {
           emit(TaskListSuccess(taskList: _filterList(event.searchValue)));
         } else {
-          emit(
-            TaskListSuccess(taskList: _dataList),
-          );
+          emit(TaskListSuccess(taskList: _dataList));
         }
       } catch (e) {
         emit(TaskListError(error: e));
@@ -68,9 +64,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     });
     on<RemoveTask>((event, emit) async {
       _dataList.removeAt(event.index);
-      emit(
-        TaskListSuccess(taskList: _dataList),
-      );
+      emit(TaskListSuccess(taskList: _dataList));
     });
     on<TaskListFilter>((event, emit) async {
       emit(TaskListLoading());
@@ -86,18 +80,14 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     });
   }
   List<Task> _filterList(String filerText) {
-    var filterlist = _dataList.where(
-      (element) {
-        return (element.jobOrderNo
-                    ?.toLowerCase()
-                    .contains(filerText.toLowerCase()) ??
-                false) ||
-            (element.taskName
-                    ?.toLowerCase()
-                    .contains(filerText.toLowerCase()) ??
-                false);
-      },
-    ).toList();
+    var filterlist = _dataList.where((element) {
+      return (element.jobOrderNo?.toLowerCase().contains(
+                filerText.toLowerCase(),
+              ) ??
+              false) ||
+          (element.taskName?.toLowerCase().contains(filerText.toLowerCase()) ??
+              false);
+    }).toList();
     return filterlist;
   }
 }

@@ -6,6 +6,7 @@ import 'package:pran_rfl_erp/app_data/api_service/http_decoder_service_mixin.dar
 import 'package:pran_rfl_erp/config/app_config.dart';
 import 'package:pran_rfl_erp/core/exceptions/api_exceptions.dart';
 import 'package:pran_rfl_erp/core/exceptions/custom_exception.dart';
+import 'package:logging/logging.dart';
 
 class HttpService with HttpDecoderServiceMixin {
   final AppConfig appConfig;
@@ -13,8 +14,11 @@ class HttpService with HttpDecoderServiceMixin {
   HttpService({required this.appConfig});
 
   Future<http.StreamedResponse> _safeApiCall(Request request) async {
+    
+
     try {
       http.StreamedResponse response = await request.send();
+      print(response);
       return response;
     } on SocketException {
       throw const ServerDownException();
